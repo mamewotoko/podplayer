@@ -8,6 +8,6 @@ podplayer - a simple android podcast player
 - make pretty list
 
 ----
-Takashi Masuyama < mamewotoko@gmail.com > 
+Takashi Masuyama < mamewotoko@gmail.com >  
 http://www002.upp.so-net.ne.jp/mamewo/
 
