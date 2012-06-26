@@ -1,7 +1,6 @@
 package com.mamewo.podplayer0;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import android.app.Service;
@@ -26,7 +25,7 @@ public class PlayerService
 	final static
 	private String TAG = "podcast";
 	private final IBinder binder_ = new LocalBinder();
-	private ArrayList<URL> currentPlaylist_;
+	private ArrayList<String> currentPlaylist_;
 	private int playCursor_;
 	private MediaPlayer player_;
 	
@@ -37,10 +36,6 @@ public class PlayerService
 			stopMusic();
 		}
 		return START_STICKY;
-	}
-	
-	public void setPlaylist(ArrayList<URL> playlist) {
-		currentPlaylist_ = playlist;
 	}
 	
 	public boolean isPlaying() {
@@ -79,7 +74,7 @@ public class PlayerService
 	 * @param playlist playlist to play
 	 * @return true if playlist is played, false if it fails.
 	 */
-	public boolean playMusic(ArrayList<URL> playlist) {
+	public boolean playMusic(ArrayList<String> playlist) {
 		currentPlaylist_ = playlist;
 		if(null == playlist){
 			return false;
@@ -97,12 +92,12 @@ public class PlayerService
 		if (player_.isPlaying()) {
 			return false;
 		}
-		URL path = currentPlaylist_.get(playCursor_);
+		String path = currentPlaylist_.get(playCursor_);
 		//skip unsupported files filtering by filename ...
 		Log.i(TAG, "playMusic: " + path);
 		try {
 			player_.reset();
-			player_.setDataSource(path.toString());
+			player_.setDataSource(path);
 			//TODO: use async prepare
 			player_.prepare();
 			player_.start();

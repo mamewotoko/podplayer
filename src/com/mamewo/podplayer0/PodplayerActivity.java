@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 public class PodplayerActivity
 	extends Activity
@@ -31,15 +32,14 @@ public class PodplayerActivity
 {
 	private URL[] podcastURLlist_;
 	private Button loadButton_;
-	private Button playButton_;
-	private Button stopButton_;
+	private ToggleButton playButton_;
 	private Handler handler_;
 	private ListView listview_;
-	private ArrayAdapter<URL> adapter_;
+	private ArrayAdapter<String> adapter_;
 	private static String TAG = "podcast";
 	private Thread worker_;
 	private PlayerService player_ = null;
-
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -48,13 +48,11 @@ public class PodplayerActivity
 		setContentView(R.layout.main);
 		loadButton_ = (Button) findViewById(R.id.load_button);
 		loadButton_.setOnClickListener(this);
-		playButton_ = (Button) findViewById(R.id.play_button);
+		playButton_ = (ToggleButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
-		stopButton_ = (Button) findViewById(R.id.stop_button);
-		stopButton_.setOnClickListener(this);
 		listview_ = (ListView) findViewById(R.id.listView1);
 		adapter_ =
-			new ArrayAdapter<URL>(this, android.R.layout.simple_list_item_1);
+			new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
 		listview_.setAdapter(adapter_);
 		handler_ = new Handler();
 		try {
@@ -70,27 +68,47 @@ public class PodplayerActivity
 	}
 
 	@Override
+	public void onStart(){
+		super.onStart();
+		updatePodcast();
+	}
+	
+	@Override
+	public void onDestroy(){
+		player_ = null;
+		super.onDestroy();
+	}
+
+	private void updatePodcast(){
+		if(null != worker_ && worker_.getState() != Thread.State.TERMINATED){
+			showMessage(this, "Other thread running");
+		}
+		else {
+			adapter_.clear();
+			worker_ = new Thread(this, "xmlparse");
+			worker_.start();
+		}
+	}
+	
+	@Override
 	public void onClick(View v) {
 		//add option to load onStart
 		if (v == loadButton_) {
-			if(null != worker_ && worker_.getState() != Thread.State.TERMINATED){
-				showMessage(this, "Other thread running");
-			}
-			else {
-				//adapter_.clear();
-				worker_ = new Thread(this, "xmlparse");
-				worker_.start();
-			}
+			updatePodcast();
 		}
 		else if (v == playButton_) {
-			ArrayList<URL> playlist = new ArrayList<URL>();
-			for (int i = 0; i < adapter_.getCount(); i++) {
-				playlist.add(adapter_.getItem(i));
+			if(player_.isPlaying()) {
+				player_.stopMusic();
 			}
-			player_.playMusic(playlist);
-		}
-		else if (v == stopButton_) {
-			player_.stopMusic();
+			else {
+				ArrayList<String> playlist = new ArrayList<String>();
+				for (int i = 0; i < adapter_.getCount(); i++) {
+					playlist.add(adapter_.getItem(i));
+				}
+				player_.playMusic(playlist);
+			}
+			//TODO: toggle
+			playButton_.setChecked(player_.isPlaying());
 		}
 	}
 
@@ -121,13 +139,12 @@ public class PodplayerActivity
 					if(eventType == XmlPullParser.START_TAG) {
 						if("enclosure".equalsIgnoreCase(parser.getName())) {
 							final String podcastURL = parser.getAttributeValue(null, "url");
-							final URL purl = new URL(podcastURL);
 							//add to UI
 							handler_.post(new Runnable() {
 								@Override
 								public void run() {
 									Log.d(TAG, "add: " + podcastURL);
-									adapter_.add(purl);
+									adapter_.add(podcastURL);
 								}
 							});
 						}

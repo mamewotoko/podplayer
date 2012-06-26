@@ -6,6 +6,7 @@ podplayer - a simple android podcast player
 - implement player
 - show web page of podcast
 - make pretty list
+- display loading icon
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
