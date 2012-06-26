@@ -1,4 +1,6 @@
-# podplayer - a simple android podcast player
+=======
+podplayer - a simple android podcast player
+=========
 
 ## TODO
 - implement player
@@ -8,3 +10,4 @@
 ----
 Takashi Masuyama < mamewotoko@gmail.com > 
 http://www002.upp.so-net.ne.jp/mamewo/
+
