@@ -148,12 +148,12 @@ public class PodplayerActivity
 				int eventType = parser.getEventType();
 				String title = null;
 				String podcastURL = null;
-				int titlelevel = 0;
+				boolean inTitle = false;
 				while(eventType != XmlPullParser.END_DOCUMENT) {
 					//Log.d(TAG, "eventType: " + eventType);
 					if(eventType == XmlPullParser.START_TAG) {
 						if("title".equalsIgnoreCase(parser.getName())) {
-							titlelevel++;
+							inTitle = true;
 						}
 						else if("enclosure".equalsIgnoreCase(parser.getName())) {
 							podcastURL = parser.getAttributeValue(null, "url");
@@ -161,7 +161,7 @@ public class PodplayerActivity
 						}
 					}
 					else if(eventType == XmlPullParser.TEXT) {
-						if(titlelevel > 0) {
+						if(inTitle) {
 							title = parser.getText();
 						}
 					}
@@ -184,7 +184,7 @@ public class PodplayerActivity
 							title = null;
 						}
 						else if ("title".equalsIgnoreCase(parser.getName())) {
-							titlelevel--;
+							inTitle = false;
 						}
 					}
 					eventType = parser.next();

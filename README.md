@@ -1,12 +1,13 @@
 =======
 podplayer - a simple android podcast player
-=========
+=======
 
 ## TODO
-- implement player
 - show web page of podcast
-- make pretty list
+- add date and link to list
 - display loading icon
+- nonblocking UI etc..
+- cache podcast?
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
