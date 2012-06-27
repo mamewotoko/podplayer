@@ -20,22 +20,26 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class PodplayerActivity
 	extends Activity
-	implements OnClickListener, Runnable, ServiceConnection
+	implements OnClickListener, Runnable, ServiceConnection, OnItemClickListener
 {
 	private URL[] podcastURLlist_;
 	private Button loadButton_;
 	private ToggleButton playButton_;
+	private ImageButton nextButton_;
 	private Handler handler_;
 	private ListView listview_;
-	private ArrayAdapter<String> adapter_;
+	private ArrayAdapter<PodInfo> adapter_;
 	private static String TAG = "podcast";
 	private Thread worker_;
 	private PlayerService player_ = null;
@@ -50,14 +54,18 @@ public class PodplayerActivity
 		loadButton_.setOnClickListener(this);
 		playButton_ = (ToggleButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
+		nextButton_ = (ImageButton) findViewById(R.id.next_button);
+		nextButton_.setOnClickListener(this);
 		listview_ = (ListView) findViewById(R.id.listView1);
+		listview_.setOnItemClickListener(this);
 		adapter_ =
-			new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+			new ArrayAdapter<PodInfo>(this, android.R.layout.simple_list_item_1);
 		listview_.setAdapter(adapter_);
 		handler_ = new Handler();
 		try {
 			podcastURLlist_ = 
-					new URL[]{ new URL("http://www.nhk.or.jp/rj/podcast/rss/english.xml") };
+					new URL[]{ new URL("http://www.nhk.or.jp/rj/podcast/rss/english.xml"),
+							   new URL("http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500") };
 		}
 		catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -101,14 +109,18 @@ public class PodplayerActivity
 				player_.stopMusic();
 			}
 			else {
-				ArrayList<String> playlist = new ArrayList<String>();
+				ArrayList<PodInfo> playlist = new ArrayList<PodInfo>();
 				for (int i = 0; i < adapter_.getCount(); i++) {
 					playlist.add(adapter_.getItem(i));
 				}
 				player_.playMusic(playlist);
 			}
-			//TODO: toggle
 			playButton_.setChecked(player_.isPlaying());
+		}
+		else if (v == nextButton_) {
+			if(player_.isPlaying()) {
+				player_.playNext();
+			}
 		}
 	}
 
@@ -134,19 +146,45 @@ public class PodplayerActivity
 				//use reader or give correct encoding
 				parser.setInput(is, "UTF-8");
 				int eventType = parser.getEventType();
+				String title = null;
+				String podcastURL = null;
+				int titlelevel = 0;
 				while(eventType != XmlPullParser.END_DOCUMENT) {
 					//Log.d(TAG, "eventType: " + eventType);
 					if(eventType == XmlPullParser.START_TAG) {
-						if("enclosure".equalsIgnoreCase(parser.getName())) {
-							final String podcastURL = parser.getAttributeValue(null, "url");
+						if("title".equalsIgnoreCase(parser.getName())) {
+							titlelevel++;
+						}
+						else if("enclosure".equalsIgnoreCase(parser.getName())) {
+							podcastURL = parser.getAttributeValue(null, "url");
 							//add to UI
-							handler_.post(new Runnable() {
-								@Override
-								public void run() {
-									Log.d(TAG, "add: " + podcastURL);
-									adapter_.add(podcastURL);
+						}
+					}
+					else if(eventType == XmlPullParser.TEXT) {
+						if(titlelevel > 0) {
+							title = parser.getText();
+						}
+					}
+					else if(eventType == XmlPullParser.END_TAG) {
+						if("item".equalsIgnoreCase(parser.getName())) {
+							if(podcastURL != null) {
+								if(title == null) {
+									title = podcastURL;
 								}
-							});
+								final PodInfo info = new PodInfo(podcastURL, title);
+								handler_.post(new Runnable() {
+									@Override
+									public void run() {
+										//Log.d(TAG, "add: " + info.url_);
+										adapter_.add(info);
+									}
+								});
+							}
+							podcastURL = null;
+							title = null;
+						}
+						else if ("title".equalsIgnoreCase(parser.getName())) {
+							titlelevel--;
 						}
 					}
 					eventType = parser.next();
@@ -173,6 +211,19 @@ public class PodplayerActivity
 		}
 	}
 	
+	public static class PodInfo {
+		public String url_;
+		public String title_;
+		public PodInfo(String url, String title) {
+			url_ = url;
+			title_ = title;
+		}
+		@Override
+		public String toString() {
+			return title_;
+		}
+	}
+		
 	public static void showMessage(Context c, String message) {
 		Toast.makeText(c, message, Toast.LENGTH_LONG).show();
 	}
@@ -185,5 +236,16 @@ public class PodplayerActivity
 	@Override
 	public void onServiceDisconnected(ComponentName name) {
 		player_ = null;
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+		Log.d(TAG, "onItemClick is called: " + pos);
+		ArrayList<PodInfo> playlist = new ArrayList<PodInfo>();
+		for (int i = 0; i < adapter_.getCount(); i++) {
+			playlist.add(adapter_.getItem(i));
+		}
+		player_.playNth(playlist, pos);
+		playButton_.setChecked(player_.isPlaying());
 	}
 }
