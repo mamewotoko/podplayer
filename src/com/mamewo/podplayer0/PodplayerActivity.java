@@ -33,7 +33,9 @@ import com.mamewo.podplayer0.PlayerService.PodInfo;
 
 public class PodplayerActivity
 	extends Activity
-	implements OnClickListener, Runnable, ServiceConnection, OnItemClickListener
+	implements OnClickListener, Runnable, 
+	ServiceConnection, OnItemClickListener,
+	PlayerService.PlayerStateListener
 {
 	private URL[] podcastURLlist_;
 	private Button loadButton_;
@@ -78,7 +80,7 @@ public class PodplayerActivity
 		boolean result = bindService(intent, this, Context.BIND_AUTO_CREATE);
 		Log.d(TAG, "bindService: " + result);
 	}
-
+	
 	@Override
 	public void onStart(){
 		super.onStart();
@@ -234,6 +236,7 @@ public class PodplayerActivity
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder binder) {
 		player_ = ((PlayerService.LocalBinder)binder).getService();
+		player_.setOnStartMusicListener(this);
 	}
 
 	@Override
@@ -250,5 +253,16 @@ public class PodplayerActivity
 		}
 		player_.playNth(playlist, pos);
 		playButton_.setChecked(player_.isPlaying());
+	}
+
+	@Override
+	public void onStartMusic(PodInfo info) {
+		loadingIcon_.setVisibility(View.INVISIBLE);
+		playButton_.setChecked(true);
+	}
+
+	@Override
+	public void onStartLoadingMusic(PodInfo info) {
+		loadingIcon_.setVisibility(View.VISIBLE);
 	}
 }

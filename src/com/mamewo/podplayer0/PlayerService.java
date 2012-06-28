@@ -16,6 +16,9 @@ import android.util.Log;
  */
 public class PlayerService
 	extends Service
+	implements MediaPlayer.OnCompletionListener,
+	MediaPlayer.OnErrorListener,
+	MediaPlayer.OnPreparedListener
 {
 	final static
 	public String PACKAGE_NAME = PlayerService.class.getPackage().getName();
@@ -28,7 +31,8 @@ public class PlayerService
 	private ArrayList<PodInfo> currentPlaylist_;
 	private int playCursor_;
 	private MediaPlayer player_;
-	
+	private PlayerStateListener listener_;
+
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
 		String action = intent.getAction();
@@ -48,24 +52,6 @@ public class PlayerService
 		}
 		playCursor_ = (playCursor_ + 1) % currentPlaylist_.size();
 		playMusic();
-	}
-
-	public class MusicCompletionListener
-	implements MediaPlayer.OnCompletionListener,
-				MediaPlayer.OnErrorListener
-	{
-		public void onCompletion(MediaPlayer mp) {
-			playNext();
-		}
-
-		// This method is not called when DRM error occurs
-		public boolean onError(MediaPlayer mp, int what, int extra) {
-			//TODO: show error message to GUI
-			Log.i(TAG, "onError is called, cannot play this media");
-			//TODO: call playNext if error occurred while playing music
-			playNext();
-			return true;
-		}
 	}
 
 	/**
@@ -104,9 +90,10 @@ public class PlayerService
 		try {
 			player_.reset();
 			player_.setDataSource(info.url_);
-			//TODO: use async prepare
-			player_.prepare();
-			player_.start();
+			player_.prepareAsync();
+			if(null != listener_){
+				listener_.onStartLoadingMusic(info);
+			}
 		}
 		catch (IOException e) {
 			return false;
@@ -143,10 +130,11 @@ public class PlayerService
 	public void onCreate(){
 		super.onCreate();
 		currentPlaylist_ = null;
+		listener_ = null;
 		player_ = new MediaPlayer();
-		MusicCompletionListener l = new MusicCompletionListener();
-		player_.setOnCompletionListener(l);
-		player_.setOnErrorListener(l);
+		player_.setOnCompletionListener(this);
+		player_.setOnErrorListener(this);
+		player_.setOnPreparedListener(this);
 	}
 	
 	@Override
@@ -165,5 +153,39 @@ public class PlayerService
 		public String toString() {
 			return title_;
 		}
+	}
+
+	@Override
+	public void onPrepared(MediaPlayer player) {
+		Log.d(TAG, "onPrepared");
+		player_.start();
+		if(null != listener_){
+			listener_.onStartMusic(currentPlaylist_.get(playCursor_));
+		}
+	}
+
+	@Override
+	public void onCompletion(MediaPlayer mp) {
+		playNext();
+	}
+
+	// This method is not called when DRM error occurs
+	@Override
+	public boolean onError(MediaPlayer mp, int what, int extra) {
+		//TODO: show error message to GUI
+		Log.i(TAG, "onError is called, cannot play this media");
+		//TODO: call playNext if error occurred while playing music
+		playNext();
+		return true;
+	}
+
+	//use intent instead?
+	public void setOnStartMusicListener(PlayerStateListener listener) {
+		listener_ = listener;
+	}
+	
+	public interface PlayerStateListener {
+		public void onStartLoadingMusic(PodInfo info);
+		public void onStartMusic(PodInfo info);
 	}
 }

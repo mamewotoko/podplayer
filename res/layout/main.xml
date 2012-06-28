@@ -11,13 +11,13 @@
     <Button
         android:id="@+id/load_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:text="Load" />
 
     <ToggleButton
         android:id="@+id/play_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:textOff="Play"
         android:textOn="Stop" />
     <ImageButton
