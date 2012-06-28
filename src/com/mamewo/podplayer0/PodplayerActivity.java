@@ -26,8 +26,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+import com.mamewo.podplayer0.PlayerService.PodInfo;
 
 public class PodplayerActivity
 	extends Activity
@@ -39,12 +41,12 @@ public class PodplayerActivity
 	private ImageButton nextButton_;
 	private Handler handler_;
 	private ListView listview_;
+	private ProgressBar loadingIcon_;
 	private ArrayAdapter<PodInfo> adapter_;
 	private static String TAG = "podcast";
 	private Thread worker_;
 	private PlayerService player_ = null;
 	
-	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,6 +58,8 @@ public class PodplayerActivity
 		playButton_.setOnClickListener(this);
 		nextButton_ = (ImageButton) findViewById(R.id.next_button);
 		nextButton_.setOnClickListener(this);
+		loadingIcon_ = (ProgressBar) findViewById(R.id.loading_icon);
+		loadingIcon_.setOnClickListener(this);
 		listview_ = (ListView) findViewById(R.id.listView1);
 		listview_.setOnItemClickListener(this);
 		adapter_ =
@@ -126,7 +130,6 @@ public class PodplayerActivity
 
 	@Override
 	public void run() {
-		Log.d(TAG, "run");
 		XmlPullParserFactory factory;
 		try {
 			factory = XmlPullParserFactory.newInstance();
@@ -135,6 +138,13 @@ public class PodplayerActivity
 			e1.printStackTrace();
 			return;
 		}
+
+		handler_.post(new Runnable() {
+			@Override
+			public void run() {
+				loadingIcon_.setVisibility(View.VISIBLE);
+			}
+		});
 
 		for(URL url: podcastURLlist_) {
 			Log.d(TAG, "get URL: " + url);
@@ -157,7 +167,6 @@ public class PodplayerActivity
 						}
 						else if("enclosure".equalsIgnoreCase(parser.getName())) {
 							podcastURL = parser.getAttributeValue(null, "url");
-							//add to UI
 						}
 					}
 					else if(eventType == XmlPullParser.TEXT) {
@@ -207,22 +216,16 @@ public class PodplayerActivity
 						e.printStackTrace();
 					}
 				}
+				handler_.post(new Runnable() {
+					@Override
+					public void run() {
+						loadingIcon_.setVisibility(View.INVISIBLE);
+					}
+				});
 			}
 		}
 	}
 	
-	public static class PodInfo {
-		public String url_;
-		public String title_;
-		public PodInfo(String url, String title) {
-			url_ = url;
-			title_ = title;
-		}
-		@Override
-		public String toString() {
-			return title_;
-		}
-	}
 		
 	public static void showMessage(Context c, String message) {
 		Toast.makeText(c, message, Toast.LENGTH_LONG).show();

@@ -25,7 +25,7 @@ public class PlayerService
 	final static
 	private String TAG = "podcast";
 	private final IBinder binder_ = new LocalBinder();
-	private ArrayList<PodplayerActivity.PodInfo> currentPlaylist_;
+	private ArrayList<PodInfo> currentPlaylist_;
 	private int playCursor_;
 	private MediaPlayer player_;
 	
@@ -74,7 +74,7 @@ public class PlayerService
 	 * @param playlist playlist to play
 	 * @return true if playlist is played, false if it fails.
 	 */
-	public boolean playMusic(ArrayList<PodplayerActivity.PodInfo> playlist) {
+	public boolean playMusic(ArrayList<PodInfo> playlist) {
 		currentPlaylist_ = playlist;
 		if(null == playlist){
 			return false;
@@ -84,7 +84,7 @@ public class PlayerService
 		return playMusic();
 	}
 
-	public void playNth(ArrayList<PodplayerActivity.PodInfo> list, int pos) {
+	public void playNth(ArrayList<PodInfo> list, int pos) {
 		currentPlaylist_ = list;
 		playCursor_ = pos % currentPlaylist_.size();
 		playMusic();
@@ -98,7 +98,7 @@ public class PlayerService
 		if (player_.isPlaying()) {
 			return false;
 		}
-		PodplayerActivity.PodInfo info = currentPlaylist_.get(playCursor_);
+		PodInfo info = currentPlaylist_.get(playCursor_);
 		//skip unsupported files filtering by filename ...
 		Log.i(TAG, "playMusic: " + info.url_);
 		try {
@@ -152,5 +152,18 @@ public class PlayerService
 	@Override
 	public IBinder onBind(Intent intent) {
 		return binder_;
+	}
+
+	public static class PodInfo {
+		public String url_;
+		public String title_;
+		public PodInfo(String url, String title) {
+			url_ = url;
+			title_ = title;
+		}
+		@Override
+		public String toString() {
+			return title_;
+		}
 	}
 }
