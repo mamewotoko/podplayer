@@ -246,7 +246,6 @@ public class PodplayerActivity
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-		Log.d(TAG, "onItemClick is called: " + pos);
 		ArrayList<PodInfo> playlist = new ArrayList<PodInfo>();
 		for (int i = 0; i < adapter_.getCount(); i++) {
 			playlist.add(adapter_.getItem(i));
