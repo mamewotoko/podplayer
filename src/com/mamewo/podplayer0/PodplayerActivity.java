@@ -1,10 +1,16 @@
 package com.mamewo.podplayer0;
 
+/**
+ * @author Takashi Masuyama <mamewotoko@gmail.com>
+ * http://www002.upp.so-net.ne.jp/mamewo/
+ */
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -104,6 +110,14 @@ public class PodplayerActivity
 		}
 	}
 	
+	private void updatePlaylist() {
+		List<PodInfo> playlist = new ArrayList<PodInfo>();
+		for (int i = 0; i < adapter_.getCount(); i++) {
+			playlist.add(adapter_.getItem(i));
+		}
+		player_.setPlaylist(playlist);
+	}
+	
 	@Override
 	public void onClick(View v) {
 		//add option to load onStart
@@ -115,11 +129,8 @@ public class PodplayerActivity
 				player_.stopMusic();
 			}
 			else {
-				ArrayList<PodInfo> playlist = new ArrayList<PodInfo>();
-				for (int i = 0; i < adapter_.getCount(); i++) {
-					playlist.add(adapter_.getItem(i));
-				}
-				player_.playMusic(playlist);
+				updatePlaylist();
+				player_.playNth(0);
 			}
 			playButton_.setChecked(player_.isPlaying());
 		}
@@ -246,11 +257,8 @@ public class PodplayerActivity
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-		ArrayList<PodInfo> playlist = new ArrayList<PodInfo>();
-		for (int i = 0; i < adapter_.getCount(); i++) {
-			playlist.add(adapter_.getItem(i));
-		}
-		player_.playNth(playlist, pos);
+		updatePlaylist();
+		player_.playNth(pos);
 		playButton_.setChecked(player_.isPlaying());
 	}
 

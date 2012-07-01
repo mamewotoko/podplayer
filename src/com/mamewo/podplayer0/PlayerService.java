@@ -1,8 +1,7 @@
 package com.mamewo.podplayer0;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
+import java.util.List;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -28,7 +27,7 @@ public class PlayerService
 	final static
 	private String TAG = "podcast";
 	private final IBinder binder_ = new LocalBinder();
-	private ArrayList<PodInfo> currentPlaylist_;
+	private List<PodInfo> currentPlaylist_;
 	private int playCursor_;
 	private MediaPlayer player_;
 	private PlayerStateListener listener_;
@@ -54,26 +53,13 @@ public class PlayerService
 		playMusic();
 	}
 
-	/**
-	 * play given playlist from beginning.
-	 * 
-	 * @param playlist playlist to play
-	 * @return true if playlist is played, false if it fails.
-	 */
-	public boolean playMusic(ArrayList<PodInfo> playlist) {
+	public void setPlaylist(List<PodInfo> playlist) {
 		currentPlaylist_ = playlist;
-		if(null == playlist){
-			return false;
-		}
-		Log.d(TAG, "playMusic playlist: playMusic");
-		playCursor_ = 0;
-		return playMusic();
 	}
 
-	public void playNth(ArrayList<PodInfo> list, int pos) {
-		currentPlaylist_ = list;
+	public boolean playNth(int pos) {
 		playCursor_ = pos % currentPlaylist_.size();
-		playMusic();
+		return playMusic();
 	}
 
 	public boolean playMusic() {

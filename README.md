@@ -10,6 +10,7 @@ podplayer - a simple android podcast player
 - add UI to abort loading
 - cache podcast?
 - download mp3 files at specified time
+- add test
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
