@@ -16,6 +16,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import android.app.Activity;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -53,6 +54,7 @@ public class PodplayerActivity
 	private ArrayAdapter<PodInfo> adapter_;
 	private static String TAG = "podcast";
 	private Thread worker_;
+	//TODO: wait until player_ is not null (service is connected)
 	private PlayerService player_ = null;
 	
 	@Override
@@ -64,6 +66,7 @@ public class PodplayerActivity
 		loadButton_.setOnClickListener(this);
 		playButton_ = (ToggleButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
+		playButton_.setEnabled(false);
 		nextButton_ = (ImageButton) findViewById(R.id.next_button);
 		nextButton_.setOnClickListener(this);
 		loadingIcon_ = (ProgressBar) findViewById(R.id.loading_icon);
@@ -83,20 +86,32 @@ public class PodplayerActivity
 			e.printStackTrace();
 		}
 		Intent intent = new Intent(this, PlayerService.class);
+		startService(intent);
 		boolean result = bindService(intent, this, Context.BIND_AUTO_CREATE);
 		Log.d(TAG, "bindService: " + result);
+		updatePodcast();
 	}
 	
 	@Override
 	public void onStart(){
 		super.onStart();
-		updatePodcast();
+		updateUI();
 	}
 	
 	@Override
 	public void onDestroy(){
-		player_ = null;
+		unbindService(this);
+		if (! player_.isPlaying()) {
+			Intent intent = new Intent(this, PlayerService.class);
+			stopService(intent);
+		}
 		super.onDestroy();
+	}
+
+	private void updateUI() {
+		if (null != player_) {
+			playButton_.setChecked(player_.isPlaying());
+		}
 	}
 
 	private void updatePodcast(){
@@ -213,10 +228,12 @@ public class PodplayerActivity
 				}
 			}
 			catch (IOException e) {
+				notifyStopLoading();
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			catch (XmlPullParserException e) {
+				notifyStopLoading();
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -229,17 +246,20 @@ public class PodplayerActivity
 						e.printStackTrace();
 					}
 				}
-				handler_.post(new Runnable() {
-					@Override
-					public void run() {
-						loadingIcon_.setVisibility(View.INVISIBLE);
-					}
-				});
 			}
 		}
+		notifyStopLoading();
 	}
 	
-		
+	private void notifyStopLoading(){
+		handler_.post(new Runnable() {
+			@Override
+			public void run() {
+				loadingIcon_.setVisibility(View.INVISIBLE);
+			}
+		});
+	}
+	
 	public static void showMessage(Context c, String message) {
 		Toast.makeText(c, message, Toast.LENGTH_LONG).show();
 	}
@@ -248,6 +268,8 @@ public class PodplayerActivity
 	public void onServiceConnected(ComponentName name, IBinder binder) {
 		player_ = ((PlayerService.LocalBinder)binder).getService();
 		player_.setOnStartMusicListener(this);
+		playButton_.setEnabled(true);
+		updateUI();
 	}
 
 	@Override

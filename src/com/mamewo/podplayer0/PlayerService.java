@@ -2,6 +2,9 @@ package com.mamewo.podplayer0;
 
 import java.io.IOException;
 import java.util.List;
+
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -23,9 +26,12 @@ public class PlayerService
 	public String PACKAGE_NAME = PlayerService.class.getPackage().getName();
 	final static
 	public String STOP_MUSIC_ACTION = PACKAGE_NAME + ".STOP_MUSIC_ACTION";
-	
+	final static
+	private Class<PodplayerActivity> userClass_ = PodplayerActivity.class;
 	final static
 	private String TAG = "podcast";
+	final static
+	private int NOTIFY_PLAYING_ID = 1;
 	private final IBinder binder_ = new LocalBinder();
 	private List<PodInfo> currentPlaylist_;
 	private int playCursor_;
@@ -84,24 +90,34 @@ public class PlayerService
 		catch (IOException e) {
 			return false;
 		}
+		startForeground();
 		return true;
 	}
 
+	public void startForeground() {
+		//TODO: localize
+		String podTitle = "playing podcast";
+		Notification note =
+				new Notification(R.drawable.ic_launcher, podTitle, 0);
+		Intent ni = new Intent(this, userClass_);
+		PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
+		//TODO: localize
+		note.setLatestEventInfo(this, podTitle, "", npi);
+		startForeground(NOTIFY_PLAYING_ID, note);
+	}
+	
 	public void stopMusic() {
 		if(player_.isPlaying()){
 			player_.stop();
 		}
+		stopForeground(true);
 	}
 
 	public void pauseMusic() {
 		if(player_.isPlaying()){
 			player_.pause();
 		}
-		//clearNotification();
-	}
-	
-	public void quit(){
-		stopSelf();
+		stopForeground(true);
 	}
 	
 	public class LocalBinder
@@ -121,6 +137,15 @@ public class PlayerService
 		player_.setOnCompletionListener(this);
 		player_.setOnErrorListener(this);
 		player_.setOnPreparedListener(this);
+	}
+	
+	@Override
+	public void onDestroy() {
+		stopForeground(false);
+		player_ = null;
+		listener_ = null;
+		currentPlaylist_ = null;
+		super.onDestroy();
 	}
 	
 	@Override
