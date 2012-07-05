@@ -90,11 +90,12 @@ public class PlayerService
 		catch (IOException e) {
 			return false;
 		}
-		startForeground();
+		//TODO: localize
+		startForeground("Playing podcast", info.title_);
 		return true;
 	}
 
-	public void startForeground() {
+	public void startForeground(String title, String description) {
 		//TODO: localize
 		String podTitle = "playing podcast";
 		Notification note =
@@ -102,7 +103,7 @@ public class PlayerService
 		Intent ni = new Intent(this, userClass_);
 		PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
 		//TODO: localize
-		note.setLatestEventInfo(this, podTitle, "", npi);
+		note.setLatestEventInfo(this, title, description, npi);
 		startForeground(NOTIFY_PLAYING_ID, note);
 	}
 	
