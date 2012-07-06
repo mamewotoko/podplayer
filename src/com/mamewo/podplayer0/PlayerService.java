@@ -157,13 +157,11 @@ public class PlayerService
 	public static class PodInfo {
 		public String url_;
 		public String title_;
-		public PodInfo(String url, String title) {
+		public String pubdate_;
+		public PodInfo(String url, String title, String pubdate) {
 			url_ = url;
 			title_ = title;
-		}
-		@Override
-		public String toString() {
-			return title_;
+			pubdate_ = pubdate;
 		}
 	}
 

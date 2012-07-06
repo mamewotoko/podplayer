@@ -28,14 +28,17 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import com.mamewo.podplayer0.PlayerService.PodInfo;
@@ -77,8 +80,7 @@ public class PodplayerActivity
 		loadingIcon_.setOnClickListener(this);
 		listview_ = (ListView) findViewById(R.id.listView1);
 		listview_.setOnItemClickListener(this);
-		adapter_ =
-			new ArrayAdapter<PodInfo>(this, android.R.layout.simple_list_item_1);
+		adapter_ = new EpisodeAdapter(this);
 		listview_.setAdapter(adapter_);
 		handler_ = new Handler();
 		try {
@@ -160,6 +162,10 @@ public class PodplayerActivity
 		}
 	}
 
+	enum TagName {
+		TITLE, PUBDATE, NONE
+	};
+	
 	@Override
 	public void run() {
 		XmlPullParserFactory factory;
@@ -194,20 +200,28 @@ public class PodplayerActivity
 				int eventType = parser.getEventType();
 				String title = null;
 				String podcastURL = null;
-				boolean inTitle = false;
+				String pubdate = "";
+				TagName tagName = TagName.NONE;
 				while(eventType != XmlPullParser.END_DOCUMENT && !abortFlag_) {
 					//Log.d(TAG, "eventType: " + eventType);
 					if(eventType == XmlPullParser.START_TAG) {
 						if("title".equalsIgnoreCase(parser.getName())) {
-							inTitle = true;
+							tagName = TagName.TITLE;
+						}
+						else if("pubdate".equalsIgnoreCase(parser.getName())) {
+							tagName = TagName.PUBDATE;
 						}
 						else if("enclosure".equalsIgnoreCase(parser.getName())) {
 							podcastURL = parser.getAttributeValue(null, "url");
 						}
 					}
 					else if(eventType == XmlPullParser.TEXT) {
-						if(inTitle) {
+						if(tagName == TagName.TITLE) {
 							title = parser.getText();
+						}
+						else if(tagName == TagName.PUBDATE) {
+							//TODO: convert time zone
+							pubdate = parser.getText();
 						}
 					}
 					else if(eventType == XmlPullParser.END_TAG) {
@@ -216,7 +230,7 @@ public class PodplayerActivity
 								if(title == null) {
 									title = podcastURL;
 								}
-								final PodInfo info = new PodInfo(podcastURL, title);
+								final PodInfo info = new PodInfo(podcastURL, title, pubdate);
 								handler_.post(new Runnable() {
 									@Override
 									public void run() {
@@ -228,8 +242,9 @@ public class PodplayerActivity
 							podcastURL = null;
 							title = null;
 						}
-						else if ("title".equalsIgnoreCase(parser.getName())) {
-							inTitle = false;
+						else if ("title".equalsIgnoreCase(parser.getName())
+								|| "pubdate".equalsIgnoreCase(parser.getName())) {
+							tagName = TagName.NONE;
 						}
 					}
 					eventType = parser.next();
@@ -301,5 +316,32 @@ public class PodplayerActivity
 	@Override
 	public void onStartLoadingMusic(PodInfo info) {
 		loadingIcon_.setVisibility(View.VISIBLE);
+	}
+
+	public class EpisodeAdapter
+		extends ArrayAdapter<PodInfo> {
+
+		public EpisodeAdapter(Context context) {
+			super(context, R.layout.epsode_item);
+		}
+		
+		//TODO: optimize
+		@Override
+		public View getView (int position, View convertView, ViewGroup parent) {
+			View view;
+			if (null == convertView) {
+				view = View.inflate(PodplayerActivity.this, R.layout.epsode_item, null);
+			}
+			else {
+				view = convertView;
+			}
+			PodInfo info = getItem(position);
+			TextView titleView = (TextView)view.findViewById(R.id.episode_title);
+			TextView timeView = (TextView)view.findViewById(R.id.episode_time);
+			titleView.setText(info.title_);
+			timeView.setText(info.pubdate_);
+			return view;
+		}
+
 	}
 }
