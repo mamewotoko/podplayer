@@ -74,7 +74,7 @@ public class PlayerService
 			return false;
 		}
 		if (player_.isPlaying()) {
-			return false;
+			stopMusic();
 		}
 		PodInfo info = currentPlaylist_.get(playCursor_);
 		//skip unsupported files filtering by filename ...

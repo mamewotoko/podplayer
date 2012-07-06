@@ -21,7 +21,6 @@
             </intent-filter>
         </activity>
         <service android:name=".PlayerService" />
-        
     </application>
 
 </manifest>

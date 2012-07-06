@@ -27,8 +27,10 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -56,11 +58,13 @@ public class PodplayerActivity
 	private Thread worker_;
 	//TODO: wait until player_ is not null (service is connected)
 	private PlayerService player_ = null;
+	private boolean abortFlag_;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		worker_ = null;
+		abortFlag_ = false;
 		setContentView(R.layout.main);
 		loadButton_ = (Button) findViewById(R.id.load_button);
 		loadButton_.setOnClickListener(this);
@@ -159,6 +163,7 @@ public class PodplayerActivity
 	@Override
 	public void run() {
 		XmlPullParserFactory factory;
+		abortFlag_ = false;
 		try {
 			factory = XmlPullParserFactory.newInstance();
 		}
@@ -175,6 +180,9 @@ public class PodplayerActivity
 		});
 
 		for(URL url: podcastURLlist_) {
+			if(abortFlag_){
+				break;
+			}
 			Log.d(TAG, "get URL: " + url);
 			InputStream is = null;
 			try {
@@ -187,7 +195,7 @@ public class PodplayerActivity
 				String title = null;
 				String podcastURL = null;
 				boolean inTitle = false;
-				while(eventType != XmlPullParser.END_DOCUMENT) {
+				while(eventType != XmlPullParser.END_DOCUMENT && !abortFlag_) {
 					//Log.d(TAG, "eventType: " + eventType);
 					if(eventType == XmlPullParser.START_TAG) {
 						if("title".equalsIgnoreCase(parser.getName())) {
