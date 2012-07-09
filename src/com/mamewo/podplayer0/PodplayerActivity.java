@@ -25,6 +25,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -35,12 +38,12 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
 import com.mamewo.podplayer0.PlayerService.PodInfo;
 
 public class PodplayerActivity
@@ -62,6 +65,7 @@ public class PodplayerActivity
 	//TODO: wait until player_ is not null (service is connected)
 	private PlayerService player_ = null;
 	private boolean abortFlag_;
+	private boolean finishServiceOnExit = false;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -106,8 +110,13 @@ public class PodplayerActivity
 	
 	@Override
 	public void onDestroy(){
+		Log.d(TAG, "onDestroy");
+		boolean playing = player_.isPlaying();
+		if(finishServiceOnExit && playing) {
+			player_.stopMusic();
+		}
 		unbindService(this);
-		if (! player_.isPlaying()) {
+		if (finishServiceOnExit || ! playing) {
 			Intent intent = new Intent(this, PlayerService.class);
 			stopService(intent);
 		}
@@ -318,6 +327,26 @@ public class PodplayerActivity
 		loadingIcon_.setVisibility(View.VISIBLE);
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.mainmenu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		boolean handled = false;
+		switch(item.getItemId()) {
+		case R.id.exit_menu:
+			finishServiceOnExit = true;
+			finish();
+			handled = true;
+			break;
+		}
+		return handled;
+	}
+	
 	public class EpisodeAdapter
 		extends ArrayAdapter<PodInfo> {
 
