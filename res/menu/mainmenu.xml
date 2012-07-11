@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/exit_menu" android:title="exit" android:icon="@android:drawable/ic_delete"></item>
+    <item android:id="@+id/pref_menu" android:icon="@android:drawable/ic_menu_preferences" android:title="Preference"></item><item android:id="@+id/exit_menu" android:title="Exit" android:icon="@android:drawable/ic_delete"></item>
+    
 </menu>

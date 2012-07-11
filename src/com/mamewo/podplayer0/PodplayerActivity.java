@@ -345,6 +345,10 @@ public class PodplayerActivity
 			finish();
 			handled = true;
 			break;
+		case R.id.pref_menu:
+			startActivity(new Intent(this, PodplayerPreference.class));
+			handled = true;
+			break;
 		}
 		return handled;
 	}

@@ -11,9 +11,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 /**
@@ -53,9 +55,13 @@ public class PlayerService
 			stopMusic();
 		}
 		else if(JACK_UNPLUGGED_ACTION.equals(action)) {
-			//TODO: add preference to select to pause or not
-			pauseMusic();
-			//TODO: implement to start continuation
+			SharedPreferences pref =
+					PreferenceManager.getDefaultSharedPreferences(this);
+			boolean pause = pref.getBoolean("pause_on_unplugged", true);
+			if (pause) {
+				pauseMusic();
+				//TODO: implement to start continuation (playMusic)
+			}
 		}
 		return START_STICKY;
 	}
