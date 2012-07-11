@@ -60,7 +60,7 @@ public class PodplayerActivity
 	private ListView listview_;
 	private ProgressBar loadingIcon_;
 	private ArrayAdapter<PodInfo> adapter_;
-	private static String TAG = "podcast";
+	private static String TAG = "podplayer";
 	private Thread worker_;
 	//TODO: wait until player_ is not null (service is connected)
 	private PlayerService player_ = null;
@@ -90,6 +90,7 @@ public class PodplayerActivity
 		try {
 			podcastURLlist_ = 
 					new URL[]{ new URL("http://www.nhk.or.jp/rj/podcast/rss/english.xml"),
+							   new URL("http://www.discovery.com/radio/xml/news.xml"),
 							   new URL("http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500") };
 		}
 		catch (MalformedURLException e) {
@@ -306,6 +307,7 @@ public class PodplayerActivity
 
 	@Override
 	public void onServiceDisconnected(ComponentName name) {
+		player_.clearOnStartMusicListener();
 		player_ = null;
 	}
 
@@ -371,6 +373,11 @@ public class PodplayerActivity
 			timeView.setText(info.pubdate_);
 			return view;
 		}
+	}
 
+	@Override
+	public void onStopMusic() {
+		Log.d(TAG, "onStopMusic");
+		updateUI();
 	}
 }

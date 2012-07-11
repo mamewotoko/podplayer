@@ -4,6 +4,8 @@ podplayer - a simple android podcast player
 
 TODO
 ----------
+* add error handling
+    * clear notification on error
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
 * add UI to abort loading
@@ -16,4 +18,3 @@ TODO
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
 http://www002.upp.so-net.ne.jp/mamewo/
-

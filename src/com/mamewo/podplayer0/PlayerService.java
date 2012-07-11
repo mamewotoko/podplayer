@@ -3,10 +3,14 @@ package com.mamewo.podplayer0;
 import java.io.IOException;
 import java.util.List;
 
+
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
@@ -27,9 +31,11 @@ public class PlayerService
 	final static
 	public String STOP_MUSIC_ACTION = PACKAGE_NAME + ".STOP_MUSIC_ACTION";
 	final static
+	public String JACK_UNPLUGGED_ACTION = PACKAGE_NAME + ".JUCK_UNPLUGGED_ACTION";
+	final static
 	private Class<PodplayerActivity> userClass_ = PodplayerActivity.class;
 	final static
-	private String TAG = "podcast";
+	private String TAG = "podplayer";
 	final static
 	private int NOTIFY_PLAYING_ID = 1;
 	private final IBinder binder_ = new LocalBinder();
@@ -37,12 +43,19 @@ public class PlayerService
 	private int playCursor_;
 	private MediaPlayer player_;
 	private PlayerStateListener listener_;
-
+	public Receiver receiver_;
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
 		String action = intent.getAction();
+		Log.d(TAG, "onStartCommand: " + action);
 		if (STOP_MUSIC_ACTION.equals(action)) {
 			stopMusic();
+		}
+		else if(JACK_UNPLUGGED_ACTION.equals(action)) {
+			//TODO: add preference to select to pause or not
+			pauseMusic();
+			//TODO: implement to start continuation
 		}
 		return START_STICKY;
 	}
@@ -112,6 +125,9 @@ public class PlayerService
 			player_.stop();
 		}
 		stopForeground(true);
+		if(null != listener_){
+			listener_.onStopMusic();
+		}
 	}
 
 	public void pauseMusic() {
@@ -119,6 +135,9 @@ public class PlayerService
 			player_.pause();
 		}
 		stopForeground(true);
+		if(null != listener_){
+			listener_.onStopMusic();
+		}
 	}
 	
 	public class LocalBinder
@@ -138,10 +157,14 @@ public class PlayerService
 		player_.setOnCompletionListener(this);
 		player_.setOnErrorListener(this);
 		player_.setOnPreparedListener(this);
+		receiver_ = new Receiver();
+		registerReceiver(receiver_,
+						new IntentFilter(Intent.ACTION_HEADSET_PLUG));
 	}
 	
 	@Override
 	public void onDestroy() {
+		unregisterReceiver(receiver_);
 		stopForeground(false);
 		player_ = null;
 		listener_ = null;
@@ -193,9 +216,36 @@ public class PlayerService
 	public void setOnStartMusicListener(PlayerStateListener listener) {
 		listener_ = listener;
 	}
+	public void clearOnStartMusicListener() {
+		listener_ = null;
+	}
 	
 	public interface PlayerStateListener {
 		public void onStartLoadingMusic(PodInfo info);
 		public void onStartMusic(PodInfo info);
+		public void onStopMusic();
+	}
+	
+	final static
+	public class Receiver
+		extends BroadcastReceiver
+	{
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.d(TAG, "onReceive is called");
+			String action = intent.getAction();
+			if (null == action) {
+				return;
+			}
+			if(Intent.ACTION_HEADSET_PLUG.equals(action)) {
+				if(intent.getIntExtra("state", 1) == 0) {
+					Log.d(TAG, "unplugged");
+					//unplugged
+					Intent i = new Intent(context, PlayerService.class);
+					i.setAction(JACK_UNPLUGGED_ACTION);
+					context.startService(i);
+				}
+			}
+		}
 	}
 }
