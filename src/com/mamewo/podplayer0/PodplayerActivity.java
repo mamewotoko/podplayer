@@ -90,8 +90,9 @@ public class PodplayerActivity
 		try {
 			podcastURLlist_ = 
 					new URL[]{ new URL("http://www.nhk.or.jp/rj/podcast/rss/english.xml"),
-							   new URL("http://www.discovery.com/radio/xml/news.xml"),
-							   new URL("http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500") };
+								new URL("http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500"),
+								new URL("http://www.discovery.com/radio/xml/news.xml")
+			};
 		}
 		catch (MalformedURLException e) {
 			e.printStackTrace();

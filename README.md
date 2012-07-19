@@ -4,6 +4,7 @@ podplayer - a simple android podcast player
 
 TODO
 ----------
+* Sort episode by date
 * add error handling
     * clear notification on error
 * add UI to add podcast URL
