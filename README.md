@@ -5,6 +5,10 @@ podplayer - a simple android podcast player
 TODO
 ----------
 * Sort episode by date
+* Update podcast list by pull list to down
+* add search UI
+* Acquire wifi lock
+http://developer.android.com/guide/topics/media/mediaplayer.html
 * add error handling
     * clear notification on error
 * add UI to add podcast URL

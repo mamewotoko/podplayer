@@ -13,6 +13,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -47,6 +49,14 @@ public class PlayerService
 	private PlayerStateListener listener_;
 	public Receiver receiver_;
 	
+	static
+	public boolean isNetworkConnected(Context context) {
+		ConnectivityManager connMgr =
+				(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		return (networkInfo != null && networkInfo.isConnected());
+	}
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
 		String action = intent.getAction();
@@ -70,12 +80,12 @@ public class PlayerService
 		return player_.isPlaying();
 	}
 
-	public void playNext() {
+	public boolean playNext() {
 		if (isPlaying()) {
 			stopMusic();
 		}
 		playCursor_ = (playCursor_ + 1) % currentPlaylist_.size();
-		playMusic();
+		return playMusic();
 	}
 
 	public void setPlaylist(List<PodInfo> playlist) {
@@ -83,6 +93,9 @@ public class PlayerService
 	}
 
 	public boolean playNth(int pos) {
+		if(currentPlaylist_.size() == 0) {
+			return false;
+		}
 		playCursor_ = pos % currentPlaylist_.size();
 		return playMusic();
 	}
@@ -91,9 +104,6 @@ public class PlayerService
 		if (null == currentPlaylist_ || currentPlaylist_.isEmpty()) {
 			Log.i(TAG, "playMusic: playlist is null");
 			return false;
-		}
-		if (player_.isPlaying()) {
-			stopMusic();
 		}
 		PodInfo info = currentPlaylist_.get(playCursor_);
 		//skip unsupported files filtering by filename ...
@@ -212,9 +222,14 @@ public class PlayerService
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 		//TODO: show error message to GUI
-		Log.i(TAG, "onError is called, cannot play this media");
-		//TODO: call playNext if error occurred while playing music
-		playNext();
+		PodInfo info = currentPlaylist_.get(playCursor_);
+		Log.i(TAG, "onError: what: " + what + " extra: " + extra + " url: " + info.url_);
+		if(info.url_.startsWith("http:") && ! isNetworkConnected(this)) {
+			stopMusic();
+		}
+		else {
+			playNext();
+		}
 		return true;
 	}
 

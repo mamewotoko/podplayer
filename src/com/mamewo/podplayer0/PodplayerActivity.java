@@ -128,6 +128,9 @@ public class PodplayerActivity
 	private void updateUI() {
 		if (null != player_) {
 			playButton_.setChecked(player_.isPlaying());
+			if(! player_.isPlaying()) {
+				loadingIcon_.setVisibility(View.INVISIBLE);
+			}
 		}
 	}
 
