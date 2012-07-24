@@ -21,9 +21,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,9 +53,10 @@ public class PodplayerActivity
 	extends Activity
 	implements OnClickListener, Runnable, 
 	ServiceConnection, OnItemClickListener,
-	PlayerService.PlayerStateListener
+	PlayerService.PlayerStateListener,
+	OnSharedPreferenceChangeListener
 {
-	private URL[] podcastURLlist_;
+	private List<URL> podcastURLlist_;
 	private Button loadButton_;
 	private ToggleButton playButton_;
 	private ImageButton nextButton_;
@@ -66,6 +70,7 @@ public class PodplayerActivity
 	private PlayerService player_ = null;
 	private boolean abortFlag_;
 	private boolean finishServiceOnExit = false;
+	private String allSites_;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -87,20 +92,19 @@ public class PodplayerActivity
 		adapter_ = new EpisodeAdapter(this);
 		listview_.setAdapter(adapter_);
 		handler_ = new Handler();
-		try {
-			podcastURLlist_ = 
-					new URL[]{ new URL("http://www.nhk.or.jp/rj/podcast/rss/english.xml"),
-								new URL("http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500"),
-								new URL("http://www.discovery.com/radio/xml/news.xml")
-			};
-		}
-		catch (MalformedURLException e) {
-			e.printStackTrace();
+		String[] allsiteList = getResources().getStringArray(R.array.pref_podcastlist_urls);
+		allSites_ = allsiteList[0];
+		for(int i = 1; i < allsiteList.length; i++) {
+			allSites_ += MultiListPreference.SEPARATOR + allsiteList[i];
 		}
 		Intent intent = new Intent(this, PlayerService.class);
 		startService(intent);
 		boolean result = bindService(intent, this, Context.BIND_AUTO_CREATE);
 		Log.d(TAG, "bindService: " + result);
+		SharedPreferences pref=
+				PreferenceManager.getDefaultSharedPreferences(this);
+		pref.registerOnSharedPreferenceChangeListener(this);
+		syncPreference(pref, "all");
 		updatePodcast();
 	}
 	
@@ -113,6 +117,9 @@ public class PodplayerActivity
 	@Override
 	public void onDestroy(){
 		Log.d(TAG, "onDestroy");
+		SharedPreferences pref=
+				PreferenceManager.getDefaultSharedPreferences(this);
+		pref.unregisterOnSharedPreferenceChangeListener(this);
 		boolean playing = player_.isPlaying();
 		if(finishServiceOnExit && playing) {
 			player_.stopMusic();
@@ -387,5 +394,29 @@ public class PodplayerActivity
 	public void onStopMusic() {
 		Log.d(TAG, "onStopMusic");
 		updateUI();
+	}
+
+	private void syncPreference(SharedPreferences pref, String key){
+		boolean updateAll = "all".equals(key);
+		if(updateAll || "podcastlist".equals(key)) {
+			String prefURLString = pref.getString("podcastlist", allSites_);
+			Log.d(TAG, "prefURLString: " + prefURLString);
+			String[] list = prefURLString.split(MultiListPreference.SEPARATOR);
+			podcastURLlist_ = new ArrayList<URL>();
+			for (String url: list) {
+				try {
+					podcastURLlist_.add(new URL(url));
+				}
+				catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
+		Log.d(TAG, "onSharedPreferneceChanged: " + key);
+		syncPreference(pref, key);
 	}
 }

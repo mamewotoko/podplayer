@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <com.mamewo.podplayer0.MultiListPreference 
+        android:key="podcastlist"
+        android:entries="@array/pref_podcastlist_keys"
+        android:entryValues="@array/pref_podcastlist_urls"
+        android:title="@string/pref_podcastlist_title"/>
     <CheckBoxPreference android:selectable="true" android:key="pause_on_unplugged" android:title="Pause on unplagged" android:enabled="true" android:defaultValue="true" android:summaryOff="play after unplugged" android:summaryOn="pause on unplugged"/>
     <Preference android:title="Version" android:selectable="true" android:key="version"/>
 </PreferenceScreen>

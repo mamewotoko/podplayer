@@ -35,6 +35,13 @@
         android:visibility="invisible" />
 
 </LinearLayout>
+
+<MediaController
+    android:id="@+id/mediaController1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+</MediaController>
+
 <ListView
             android:id="@+id/listView1"
             android:layout_width="match_parent"
