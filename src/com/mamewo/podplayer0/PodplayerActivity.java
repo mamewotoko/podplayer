@@ -41,6 +41,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -71,6 +72,7 @@ public class PodplayerActivity
 	private boolean abortFlag_;
 	private boolean finishServiceOnExit = false;
 	private String allSites_;
+	private PodInfo currentPodInfo_;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -105,7 +107,6 @@ public class PodplayerActivity
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
 		syncPreference(pref, "all");
-		updatePodcast();
 	}
 	
 	@Override
@@ -134,6 +135,7 @@ public class PodplayerActivity
 
 	private void updateUI() {
 		if (null != player_) {
+			adapter_.notifyDataSetChanged();
 			playButton_.setChecked(player_.isPlaying());
 			if(! player_.isPlaying()) {
 				loadingIcon_.setVisibility(View.INVISIBLE);
@@ -330,17 +332,6 @@ public class PodplayerActivity
 	}
 
 	@Override
-	public void onStartMusic(PodInfo info) {
-		loadingIcon_.setVisibility(View.INVISIBLE);
-		playButton_.setChecked(true);
-	}
-
-	@Override
-	public void onStartLoadingMusic(PodInfo info) {
-		loadingIcon_.setVisibility(View.VISIBLE);
-	}
-
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.mainmenu, menu);
@@ -386,13 +377,33 @@ public class PodplayerActivity
 			TextView timeView = (TextView)view.findViewById(R.id.episode_time);
 			titleView.setText(info.title_);
 			timeView.setText(info.pubdate_);
+			ImageView icon = (ImageView)view.findViewById(R.id.play_icon);
+			if(currentPodInfo_ == info) {
+				icon.setVisibility(View.VISIBLE);
+			}
+			else {
+				icon.setVisibility(View.INVISIBLE);
+			}
 			return view;
 		}
 	}
 
 	@Override
+	public void onStartMusic(PodInfo info) {
+		updateUI();
+	}
+
+	@Override
+	public void onStartLoadingMusic(PodInfo info) {
+		loadingIcon_.setVisibility(View.VISIBLE);
+		currentPodInfo_ = info;
+		updateUI();
+	}
+
+	@Override
 	public void onStopMusic() {
 		Log.d(TAG, "onStopMusic");
+		currentPodInfo_ = null;
 		updateUI();
 	}
 
@@ -411,6 +422,7 @@ public class PodplayerActivity
 					e.printStackTrace();
 				}
 			}
+			updatePodcast();
 		}
 	}
 	
