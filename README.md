@@ -20,6 +20,13 @@ http://developer.android.com/guide/topics/media/mediaplayer.html
 * add date and link to episode list
 * add test
 
+Appendix
+----------
+* podplayer uses the following software which is licensed under the 
+[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
+Copyright (c) 2011 [Johan Nilsson](http://markupartist.com)
+https://github.com/johannilsson/android-pulltorefresh
+
 ----
-Takashi Masuyama < mamewotoko@gmail.com >  
+Copyright (c) 2012 Takashi Masuyama < mamewotoko@gmail.com >  
 http://www002.upp.so-net.ne.jp/mamewo/

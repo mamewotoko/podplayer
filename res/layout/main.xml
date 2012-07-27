@@ -8,11 +8,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
-    <Button
-        android:id="@+id/load_button"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:text="Load" />
 
     <ToggleButton
         android:id="@+id/play_button"
@@ -28,23 +23,16 @@
             android:src="@android:drawable/ic_media_next"
             android:tint="#fff" />
 
-    <ProgressBar
-        android:id="@+id/loading_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible" />
-
 </LinearLayout>
-
-<MediaController
-    android:id="@+id/mediaController1"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
-</MediaController>
-
+<!-- 
 <ListView
             android:id="@+id/listView1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-        </ListView>
+            android:layout_height="wrap_content"  />
+         -->
+         <com.markupartist.android.widget.PullToRefreshListView
+            android:id="@+id/episode_list"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            />
 </LinearLayout>

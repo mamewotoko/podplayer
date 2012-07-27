@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -49,51 +50,46 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.mamewo.podplayer0.PlayerService.PodInfo;
+import com.markupartist.android.widget.PullToRefreshListView;
 
 public class PodplayerActivity
 	extends Activity
-	implements OnClickListener, Runnable, 
+	implements OnClickListener,
 	ServiceConnection, OnItemClickListener,
 	PlayerService.PlayerStateListener,
-	OnSharedPreferenceChangeListener
+	OnSharedPreferenceChangeListener,
+	PullToRefreshListView.OnRefreshListener
 {
 	private List<URL> podcastURLlist_;
-	private Button loadButton_;
 	private ToggleButton playButton_;
 	private ImageButton nextButton_;
-	private Handler handler_;
-	private ListView listview_;
-	private ProgressBar loadingIcon_;
+	private PullToRefreshListView episodeList_;
 	private ArrayAdapter<PodInfo> adapter_;
-	private static String TAG = "podplayer";
-	private Thread worker_;
 	//TODO: wait until player_ is not null (service is connected)
 	private PlayerService player_ = null;
-	private boolean abortFlag_;
 	private boolean finishServiceOnExit = false;
 	private String allSites_;
 	private PodInfo currentPodInfo_;
-	
+	private GetEpisodeTask loadTask_;
+
+	final static
+	private String TAG = "podplayer";
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		worker_ = null;
-		abortFlag_ = false;
 		setContentView(R.layout.main);
-		loadButton_ = (Button) findViewById(R.id.load_button);
-		loadButton_.setOnClickListener(this);
+		loadTask_ = null;
 		playButton_ = (ToggleButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
 		playButton_.setEnabled(false);
 		nextButton_ = (ImageButton) findViewById(R.id.next_button);
 		nextButton_.setOnClickListener(this);
-		loadingIcon_ = (ProgressBar) findViewById(R.id.loading_icon);
-		loadingIcon_.setOnClickListener(this);
-		listview_ = (ListView) findViewById(R.id.listView1);
-		listview_.setOnItemClickListener(this);
+		episodeList_ = (PullToRefreshListView) findViewById(R.id.episode_list);
+		episodeList_.setOnItemClickListener(this);
+		episodeList_.setOnRefreshListener(this);
 		adapter_ = new EpisodeAdapter(this);
-		listview_.setAdapter(adapter_);
-		handler_ = new Handler();
+		episodeList_.setAdapter(adapter_);
 		String[] allsiteList = getResources().getStringArray(R.array.pref_podcastlist_urls);
 		allSites_ = allsiteList[0];
 		for(int i = 1; i < allsiteList.length; i++) {
@@ -113,6 +109,9 @@ public class PodplayerActivity
 	public void onStart(){
 		super.onStart();
 		updateUI();
+		if(adapter_.getCount() == 1) {
+			updatePodcast();
+		}
 	}
 	
 	@Override
@@ -137,20 +136,17 @@ public class PodplayerActivity
 		if (null != player_) {
 			adapter_.notifyDataSetChanged();
 			playButton_.setChecked(player_.isPlaying());
-			if(! player_.isPlaying()) {
-				loadingIcon_.setVisibility(View.INVISIBLE);
-			}
 		}
 	}
 
 	private void updatePodcast(){
-		if(null != worker_ && worker_.getState() != Thread.State.TERMINATED){
-			showMessage(this, "Other thread running");
+		if(null != loadTask_ && loadTask_.getStatus() == AsyncTask.Status.RUNNING){
+			showMessage(this, "Already loading");
 		}
 		else {
 			adapter_.clear();
-			worker_ = new Thread(this, "xmlparse");
-			worker_.start();
+			loadTask_ = new GetEpisodeTask();
+			loadTask_.execute();
 		}
 	}
 	
@@ -165,10 +161,7 @@ public class PodplayerActivity
 	@Override
 	public void onClick(View v) {
 		//add option to load onStart
-		if (v == loadButton_) {
-			updatePodcast();
-		}
-		else if (v == playButton_) {
+		if (v == playButton_) {
 			if(player_.isPlaying()) {
 				player_.stopMusic();
 			}
@@ -189,121 +182,7 @@ public class PodplayerActivity
 		TITLE, PUBDATE, NONE
 	};
 	
-	@Override
-	public void run() {
-		XmlPullParserFactory factory;
-		abortFlag_ = false;
-		try {
-			factory = XmlPullParserFactory.newInstance();
-		}
-		catch (XmlPullParserException e1) {
-			e1.printStackTrace();
-			return;
-		}
-
-		handler_.post(new Runnable() {
-			@Override
-			public void run() {
-				loadingIcon_.setVisibility(View.VISIBLE);
-			}
-		});
-
-		for(URL url: podcastURLlist_) {
-			if(abortFlag_){
-				break;
-			}
-			Log.d(TAG, "get URL: " + url);
-			InputStream is = null;
-			try {
-				is = url.openConnection().getInputStream();
-				//pull parser
-				XmlPullParser parser = factory.newPullParser();
-				//use reader or give correct encoding
-				parser.setInput(is, "UTF-8");
-				int eventType = parser.getEventType();
-				String title = null;
-				String podcastURL = null;
-				String pubdate = "";
-				TagName tagName = TagName.NONE;
-				while(eventType != XmlPullParser.END_DOCUMENT && !abortFlag_) {
-					//Log.d(TAG, "eventType: " + eventType);
-					if(eventType == XmlPullParser.START_TAG) {
-						if("title".equalsIgnoreCase(parser.getName())) {
-							tagName = TagName.TITLE;
-						}
-						else if("pubdate".equalsIgnoreCase(parser.getName())) {
-							tagName = TagName.PUBDATE;
-						}
-						else if("enclosure".equalsIgnoreCase(parser.getName())) {
-							podcastURL = parser.getAttributeValue(null, "url");
-						}
-					}
-					else if(eventType == XmlPullParser.TEXT) {
-						if(tagName == TagName.TITLE) {
-							title = parser.getText();
-						}
-						else if(tagName == TagName.PUBDATE) {
-							//TODO: convert time zone
-							pubdate = parser.getText();
-						}
-					}
-					else if(eventType == XmlPullParser.END_TAG) {
-						if("item".equalsIgnoreCase(parser.getName())) {
-							if(podcastURL != null) {
-								if(title == null) {
-									title = podcastURL;
-								}
-								final PodInfo info = new PodInfo(podcastURL, title, pubdate);
-								handler_.post(new Runnable() {
-									@Override
-									public void run() {
-										//Log.d(TAG, "add: " + info.url_);
-										adapter_.add(info);
-									}
-								});
-							}
-							podcastURL = null;
-							title = null;
-						}
-						else if ("title".equalsIgnoreCase(parser.getName())
-								|| "pubdate".equalsIgnoreCase(parser.getName())) {
-							tagName = TagName.NONE;
-						}
-					}
-					eventType = parser.next();
-				}
-			}
-			catch (IOException e) {
-				notifyStopLoading();
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch (XmlPullParserException e) {
-				notifyStopLoading();
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			finally {
-				if(null != is) {
-					try {
-						is.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-		notifyStopLoading();
-	}
-	
 	private void notifyStopLoading(){
-		handler_.post(new Runnable() {
-			@Override
-			public void run() {
-				loadingIcon_.setVisibility(View.INVISIBLE);
-			}
-		});
 	}
 	
 	public static void showMessage(Context c, String message) {
@@ -327,7 +206,13 @@ public class PodplayerActivity
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
 		updatePlaylist();
-		player_.playNth(pos);
+		//refresh header is added....
+		if(currentPodInfo_ == adapter_.getItem(pos-1)) {
+			player_.pauseMusic();
+		}
+		else {
+			player_.playNth(pos-1);
+		}
 		playButton_.setChecked(player_.isPlaying());
 	}
 
@@ -395,7 +280,6 @@ public class PodplayerActivity
 
 	@Override
 	public void onStartLoadingMusic(PodInfo info) {
-		loadingIcon_.setVisibility(View.VISIBLE);
 		currentPodInfo_ = info;
 		updateUI();
 	}
@@ -422,7 +306,6 @@ public class PodplayerActivity
 					e.printStackTrace();
 				}
 			}
-			updatePodcast();
 		}
 	}
 	
@@ -430,5 +313,120 @@ public class PodplayerActivity
 	public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
 		Log.d(TAG, "onSharedPreferneceChanged: " + key);
 		syncPreference(pref, key);
+	}
+	
+	private class GetEpisodeTask
+		extends AsyncTask<Void, PodInfo, Void> {
+		
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			XmlPullParserFactory factory;
+			try {
+				factory = XmlPullParserFactory.newInstance();
+			}
+			catch (XmlPullParserException e1) {
+				//TODO: show exception to ui
+				e1.printStackTrace();
+				return null;
+			}
+
+			for(URL url: podcastURLlist_) {
+				if(isCancelled()){
+					break;
+				}
+				Log.d(TAG, "get URL: " + url);
+				InputStream is = null;
+				try {
+					is = url.openConnection().getInputStream();
+					//pull parser
+					XmlPullParser parser = factory.newPullParser();
+					//use reader or give correct encoding
+					parser.setInput(is, "UTF-8");
+					int eventType = parser.getEventType();
+					String title = null;
+					String podcastURL = null;
+					String pubdate = "";
+					TagName tagName = TagName.NONE;
+					while(eventType != XmlPullParser.END_DOCUMENT && !isCancelled()) {
+						//Log.d(TAG, "eventType: " + eventType);
+						if(eventType == XmlPullParser.START_TAG) {
+							if("title".equalsIgnoreCase(parser.getName())) {
+								tagName = TagName.TITLE;
+							}
+							else if("pubdate".equalsIgnoreCase(parser.getName())) {
+								tagName = TagName.PUBDATE;
+							}
+							else if("enclosure".equalsIgnoreCase(parser.getName())) {
+								podcastURL = parser.getAttributeValue(null, "url");
+							}
+						}
+						else if(eventType == XmlPullParser.TEXT) {
+							if(tagName == TagName.TITLE) {
+								title = parser.getText();
+							}
+							else if(tagName == TagName.PUBDATE) {
+								//TODO: convert time zone
+								pubdate = parser.getText();
+							}
+						}
+						else if(eventType == XmlPullParser.END_TAG) {
+							if("item".equalsIgnoreCase(parser.getName())) {
+								if(podcastURL != null) {
+									if(title == null) {
+										title = podcastURL;
+									}
+									PodInfo info = new PodInfo(podcastURL, title, pubdate);
+									publishProgress(info);
+								}
+								podcastURL = null;
+								title = null;
+							}
+							else if ("title".equalsIgnoreCase(parser.getName())
+									|| "pubdate".equalsIgnoreCase(parser.getName())) {
+								tagName = TagName.NONE;
+							}
+						}
+						eventType = parser.next();
+					}
+				}
+				catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				catch (XmlPullParserException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				finally {
+					if(null != is) {
+						try {
+							is.close();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+			return null;
+		}
+		
+		@Override
+		protected void onProgressUpdate(PodInfo... values){
+			for (int i = 0; i < values.length; i++) {
+				adapter_.add(values[i]);
+			}
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			episodeList_.onRefreshComplete();
+			//TODO: call set last updated
+		}
+	}
+
+	@Override
+	public void onRefresh() {
+		updatePodcast();
 	}
 }
