@@ -2,6 +2,24 @@
 podplayer - a simple android podcast player
 ===============================================================================
 
+What!?
+----------
+A simple podcast player android application.
+
+How to build
+------------
+1. clone source
+2. update project
+    * In this directory
+     android update project -p . -n podplayer -t android-10
+    * In libsrc/pulltorefresh/pulltorefresh directory
+     android update project -p . -n pulltoupdate -t android-10
+### ant
+    ant debug
+A file bin/podplayer-debug.apk is created if successed.
+### Eclipse
+TODO: write here
+
 TODO
 ----------
 * Sort episode by date

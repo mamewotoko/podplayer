@@ -3,6 +3,7 @@
 	<name>podplayer</name>
 	<comment></comment>
 	<projects>
+		<project>pulltorefresh</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
