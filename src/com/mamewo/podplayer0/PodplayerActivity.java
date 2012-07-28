@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -345,13 +347,13 @@ public class PodplayerActivity
 					XmlPullParser parser = factory.newPullParser();
 					//use reader or give correct encoding
 					parser.setInput(is, "UTF-8");
-					int eventType = parser.getEventType();
 					String title = null;
 					String podcastURL = null;
 					String pubdate = "";
 					TagName tagName = TagName.NONE;
-					while(eventType != XmlPullParser.END_DOCUMENT && !isCancelled()) {
-						//Log.d(TAG, "eventType: " + eventType);
+					int eventType;
+					Log.d(TAG, "start XML parsing");
+					while((eventType = parser.getEventType()) != XmlPullParser.END_DOCUMENT && !isCancelled()) {
 						if(eventType == XmlPullParser.START_TAG) {
 							Log.d(TAG, "starttag: " + parser.getName());
 							if("title".equalsIgnoreCase(parser.getName())) {
@@ -402,6 +404,7 @@ public class PodplayerActivity
 					e.printStackTrace();
 				}
 				finally {
+					Log.d(TAG, "isCanceled? " + isCancelled());
 					if(null != is) {
 						try {
 							is.close();
@@ -412,6 +415,7 @@ public class PodplayerActivity
 					}
 				}
 			}
+			Log.d(TAG, "doBackground exit");
 			return null;
 		}
 		
@@ -424,6 +428,9 @@ public class PodplayerActivity
 
 		@Override
 		protected void onPostExecute(Void result) {
+			DateFormat df = DateFormat.getDateTimeInstance();
+			String dateStr = df.format(new Date());
+			episodeList_.setLastUpdated("Last updated: " + dateStr);
 			episodeList_.onRefreshComplete();
 			//TODO: call set last updated
 		}
