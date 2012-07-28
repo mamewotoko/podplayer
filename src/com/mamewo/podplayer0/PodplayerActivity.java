@@ -397,12 +397,10 @@ public class PodplayerActivity
 					}
 				}
 				catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Log.i(TAG, "IOException", e);
 				}
 				catch (XmlPullParserException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Log.i(TAG, "XmlPullParserException", e);
 				}
 				finally {
 					Log.d(TAG, "isCanceled? " + isCancelled());
