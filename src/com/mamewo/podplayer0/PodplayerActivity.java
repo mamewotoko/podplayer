@@ -109,7 +109,10 @@ public class PodplayerActivity
 	public void onStart(){
 		super.onStart();
 		updateUI();
-		if(adapter_.getCount() == 1) {
+		Log.d(TAG, "onStart: adapter_.count: " + adapter_.getCount());
+		if(adapter_.getCount() == 0){
+			//umm....
+			episodeList_.prepareForRefresh();
 			updatePodcast();
 		}
 	}
@@ -350,6 +353,7 @@ public class PodplayerActivity
 					while(eventType != XmlPullParser.END_DOCUMENT && !isCancelled()) {
 						//Log.d(TAG, "eventType: " + eventType);
 						if(eventType == XmlPullParser.START_TAG) {
+							Log.d(TAG, "starttag: " + parser.getName());
 							if("title".equalsIgnoreCase(parser.getName())) {
 								tagName = TagName.TITLE;
 							}
