@@ -111,7 +111,6 @@ public class PodplayerActivity
 	public void onStart(){
 		super.onStart();
 		updateUI();
-		Log.d(TAG, "onStart: adapter_.count: " + adapter_.getCount());
 		if(adapter_.getCount() == 0){
 			//umm....
 			episodeList_.prepareForRefresh();
@@ -342,7 +341,9 @@ public class PodplayerActivity
 				Log.d(TAG, "get URL: " + url);
 				InputStream is = null;
 				try {
+					Log.d(TAG, "before open");
 					is = url.openConnection().getInputStream();
+					Log.d(TAG, "after open");
 					//pull parser
 					XmlPullParser parser = factory.newPullParser();
 					//use reader or give correct encoding
@@ -432,7 +433,7 @@ public class PodplayerActivity
 			String dateStr = df.format(new Date());
 			episodeList_.setLastUpdated("Last updated: " + dateStr);
 			episodeList_.onRefreshComplete();
-			//TODO: call set last updated
+			loadTask_ = null;
 		}
 	}
 
