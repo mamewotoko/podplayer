@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,7 +28,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -36,17 +36,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -73,6 +68,8 @@ public class PodplayerActivity
 	private String allSites_;
 	private PodInfo currentPodInfo_;
 	private GetEpisodeTask loadTask_;
+	static final
+	private int NET_READ_TIMEOUT_MILLIS = 30 * 1000;
 
 	final static
 	private String TAG = "podplayer";
@@ -185,9 +182,6 @@ public class PodplayerActivity
 	enum TagName {
 		TITLE, PUBDATE, NONE
 	};
-	
-	private void notifyStopLoading(){
-	}
 	
 	public static void showMessage(Context c, String message) {
 		Toast.makeText(c, message, Toast.LENGTH_LONG).show();
@@ -342,7 +336,10 @@ public class PodplayerActivity
 				InputStream is = null;
 				try {
 					Log.d(TAG, "before open");
-					is = url.openConnection().getInputStream();
+					//TODO: set read timeout
+					URLConnection conn = url.openConnection();
+					conn.setReadTimeout(NET_READ_TIMEOUT_MILLIS);
+					is = conn.getInputStream();
 					Log.d(TAG, "after open");
 					//pull parser
 					XmlPullParser parser = factory.newPullParser();
@@ -353,10 +350,8 @@ public class PodplayerActivity
 					String pubdate = "";
 					TagName tagName = TagName.NONE;
 					int eventType;
-					Log.d(TAG, "start XML parsing");
 					while((eventType = parser.getEventType()) != XmlPullParser.END_DOCUMENT && !isCancelled()) {
 						if(eventType == XmlPullParser.START_TAG) {
-							Log.d(TAG, "starttag: " + parser.getName());
 							if("title".equalsIgnoreCase(parser.getName())) {
 								tagName = TagName.TITLE;
 							}

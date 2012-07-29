@@ -2,7 +2,7 @@
 podplayer - a simple android podcast player
 ===============================================================================
 
-What!?
+What?
 ----------
 A simple podcast player android application.
 
@@ -16,17 +16,24 @@ How to build
      android update project -p . -n pulltoupdate -t android-10
 ### ant
     ant debug
-A file bin/podplayer-debug.apk is created if successed.
+A file bin/podplayer-debug.apk is created if succeed.
 ### Eclipse
 TODO: write here
 
+Screenshot
+----------
+![main screen](doc/mainscreen.png)
+![preference](doc/preference.png)
+
 TODO
 ----------
-* Fix a bug that sometimes update podcast is blocked
-* Sort episode by date
-* Update podcast list by pull list to down
+* fix a bug that sometimes update podcast is blocked
+   * by setting read timeout appropriately to HttpConnection?
+* add HTTP proxy setting
+* sort episode by date
+* ipdate podcast list by pull list to down
 * add search UI
-* Acquire wifi lock
+* acquire wifi lock?
 http://developer.android.com/guide/topics/media/mediaplayer.html
 * add error handling
     * clear notification on error
@@ -34,8 +41,8 @@ http://developer.android.com/guide/topics/media/mediaplayer.html
     * Web browser displays text/xml as content (I want intent...)
 * add UI to abort loading
 * display mark which is already played, new item etc...
-* hilight playing episode
 * show web page of podcast
+* display site icon of podcast
 * add date and link to episode list
 * add test
 
