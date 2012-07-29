@@ -8,8 +8,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:focusable="false"
-        android:src="@android:drawable/ic_media_play" 
-        android:tint="#0a0" />
+        android:src="@android:drawable/ic_media_play"
+        android:tint="#9E9"
+        android:visibility="gone" />
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"

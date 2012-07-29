@@ -4,11 +4,12 @@ podplayer - a simple android podcast player
 
 What?
 ----------
+![icon](https://github.com/mamewotoko/podplayer/raw/res/drawable-hmdi/ic_launchar.png)
 A simple podcast player android application.
 
 Screenshot
 ----------
-![main screen](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/mainscreen.png)
+![main screen](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/mainscreen.png) 
 ![preference](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/preference.png)
 
 Google Play
@@ -23,9 +24,11 @@ How to build
      android update project -p . -n podplayer -t android-10
     * In the libsrc/pulltorefresh/pulltorefresh directory
      android update project -p . -n pulltoupdate -t android-10
+
 ### ant
     ant debug
 A file bin/podplayer-debug.apk is created if succeed.
+
 ### Eclipse
 1. import this directory, whose name is podplayer.
 2. import the libsrc/pulltorefresh/pulltorefresh directory, whose name is pulltorefresh
@@ -37,12 +40,11 @@ A file bin/podplayer-debug.apk is created if succeed.
 
 TODO
 ----------
-* fix a bug that sometimes update podcast is blocked
-   * by setting read timeout appropriately to HttpConnection?
+* ignore prepared when stop button is clicked while preparing podcast
 * add HTTP proxy setting
 * sort episode by date
 * ipdate podcast list by pull list to down
-* add search UI
+* add episode search UI
 * acquire wifi lock?
 http://developer.android.com/guide/topics/media/mediaplayer.html
 * add error handling

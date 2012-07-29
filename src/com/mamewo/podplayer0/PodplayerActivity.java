@@ -123,7 +123,6 @@ public class PodplayerActivity
 	
 	@Override
 	public void onDestroy(){
-		Log.d(TAG, "onDestroy");
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.unregisterOnSharedPreferenceChangeListener(this);
@@ -270,7 +269,7 @@ public class PodplayerActivity
 				icon.setVisibility(View.VISIBLE);
 			}
 			else {
-				icon.setVisibility(View.INVISIBLE);
+				icon.setVisibility(View.GONE);
 			}
 			return view;
 		}
