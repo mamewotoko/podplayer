@@ -15,14 +15,8 @@
         android:summaryOff="play after unplugged"
         android:summaryOn="pause on unplugged"
         android:title="Pause on unplagged" />
-    <Preference
-        android:key="license"
-        android:selectable="true"
-        android:title="License" />
     
-    <Preference
-        android:key="version"
-        android:selectable="true"
-        android:title="Version" />
-
+    
+    <CheckBoxPreference android:key="load_on_start" android:title="Autoload podcast" android:defaultValue="true" android:summaryOff="Do not load automatically" android:summaryOn="Load podcasts when app starts."/><PreferenceCategory android:title="Others"><Preference android:key="license" android:selectable="true" android:title="License" /><Preference android:key="version" android:selectable="true" android:title="Version" /></PreferenceCategory>
+    
 </PreferenceScreen>

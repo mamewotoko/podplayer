@@ -55,7 +55,8 @@ public class PodplayerActivity
 	ServiceConnection, OnItemClickListener,
 	PlayerService.PlayerStateListener,
 	OnSharedPreferenceChangeListener,
-	PullToRefreshListView.OnRefreshListener
+	PullToRefreshListView.OnRefreshListener,
+	PullToRefreshListView.OnCancelListener
 {
 	private List<URL> podcastURLlist_;
 	private ToggleButton playButton_;
@@ -87,8 +88,10 @@ public class PodplayerActivity
 		episodeList_ = (PullToRefreshListView) findViewById(R.id.episode_list);
 		episodeList_.setOnItemClickListener(this);
 		episodeList_.setOnRefreshListener(this);
+		episodeList_.setOnCancelListener(this);
 		adapter_ = new EpisodeAdapter(this);
 		episodeList_.setAdapter(adapter_);
+		
 		String[] allsiteList = getResources().getStringArray(R.array.pref_podcastlist_urls);
 		allSites_ = allsiteList[0];
 		for(int i = 1; i < allsiteList.length; i++) {
@@ -108,7 +111,10 @@ public class PodplayerActivity
 	public void onStart(){
 		super.onStart();
 		updateUI();
-		if(adapter_.getCount() == 0){
+		SharedPreferences pref =
+				PreferenceManager.getDefaultSharedPreferences(this);
+		boolean doLoad = pref.getBoolean("load_on_start", true);
+		if(doLoad && adapter_.getCount() == 0){
 			//umm....
 			episodeList_.prepareForRefresh();
 			updatePodcast();
@@ -142,13 +148,12 @@ public class PodplayerActivity
 
 	private void updatePodcast(){
 		if(null != loadTask_ && loadTask_.getStatus() == AsyncTask.Status.RUNNING){
-			showMessage(this, "Already loading");
+			Log.d(TAG, "Already loading");
+			return;
 		}
-		else {
-			adapter_.clear();
-			loadTask_ = new GetEpisodeTask();
-			loadTask_.execute();
-		}
+		adapter_.clear();
+		loadTask_ = new GetEpisodeTask();
+		loadTask_.execute();
 	}
 	
 	private void updatePlaylist() {
@@ -433,5 +438,13 @@ public class PodplayerActivity
 	@Override
 	public void onRefresh() {
 		updatePodcast();
+	}
+
+	@Override
+	public void onCancel() {
+		if (null != loadTask_) {
+			loadTask_.cancel(true);
+			loadTask_ = null;
+		}
 	}
 }
