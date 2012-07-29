@@ -22,8 +22,8 @@ TODO: write here
 
 Screenshot
 ----------
-![main screen](doc/mainscreen.png)
-![preference](doc/preference.png)
+![main screen](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/mainscreen.png)
+![preference](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/preference.png)
 
 TODO
 ----------
