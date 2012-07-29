@@ -6,24 +6,34 @@ What?
 ----------
 A simple podcast player android application.
 
+Screenshot
+----------
+![main screen](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/mainscreen.png)
+![preference](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/preference.png)
+
+Google Play
+------------
+https://play.google.com/store/apps/details?id=com.mamewo.podplayer0
+
 How to build
 ------------
 1. clone source
 2. update project
     * In this directory
      android update project -p . -n podplayer -t android-10
-    * In libsrc/pulltorefresh/pulltorefresh directory
+    * In the libsrc/pulltorefresh/pulltorefresh directory
      android update project -p . -n pulltoupdate -t android-10
 ### ant
     ant debug
 A file bin/podplayer-debug.apk is created if succeed.
 ### Eclipse
-TODO: write here
-
-Screenshot
-----------
-![main screen](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/mainscreen.png)
-![preference](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/preference.png)
+1. import this directory, whose name is podplayer.
+2. import the libsrc/pulltorefresh/pulltorefresh directory, whose name is pulltorefresh
+3. add project reference
+    1. right click podplayer project -> properties. 
+    2. select Project References. 
+    3. check pulltorefresh. 
+4. run podplayer as Android Application
 
 TODO
 ----------

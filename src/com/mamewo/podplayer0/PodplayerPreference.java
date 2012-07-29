@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -16,16 +17,18 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.util.Log;
+import android.view.View;
 
 public class PodplayerPreference
 	extends PreferenceActivity
-	implements OnPreferenceClickListener
+	implements OnPreferenceClickListener,
+	View.OnClickListener
 {
 	static final
 	private String GIT_URL = "https://github.com/mamewotoko/podplayer";
 	static final
 	private String TAG = "podplayer";
-	
+	private View logo_;
 	
 	private Preference version_;
 	private Preference license_;
@@ -51,11 +54,15 @@ public class PodplayerPreference
 	@Override
 	public boolean onPreferenceClick(Preference item) {
 		if (item == version_) {
-			Intent i =
-				new Intent(Intent.ACTION_VIEW, Uri.parse(GIT_URL));
-			startActivity(new Intent(i));
+			Dialog dialog = new Dialog(this);
+			dialog.setContentView(R.layout.version_dialog);
+			dialog.setTitle("Google Play & github");
+			logo_ = dialog.findViewById(R.id.github_logo);
+			logo_.setOnClickListener(this);
+			dialog.show();
+			return true;
 		}
-		else if(item == license_) {
+		if(item == license_) {
 			//TODO: Localize?
 			StringBuffer licenseText = new StringBuffer();
 			Resources res = getResources();
@@ -88,7 +95,17 @@ public class PodplayerPreference
 			})
 			.create()
 			.show();
+			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void onClick(View view) {
+		if (view == logo_) {
+			Intent i =
+					new Intent(Intent.ACTION_VIEW, Uri.parse(GIT_URL));
+			startActivity(new Intent(i));
+		}
 	}
 }
