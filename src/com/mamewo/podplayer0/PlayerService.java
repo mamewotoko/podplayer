@@ -47,7 +47,9 @@ public class PlayerService
 	private int playCursor_;
 	private MediaPlayer player_;
 	private PlayerStateListener listener_;
-	public Receiver receiver_;
+	private Receiver receiver_;
+	private boolean isPreparing_;
+	private boolean abortPreparing_;
 	
 	static
 	public boolean isNetworkConnected(Context context) {
@@ -77,7 +79,7 @@ public class PlayerService
 	}
 	
 	public boolean isPlaying() {
-		return player_.isPlaying();
+		return (! abortPreparing_) && (isPreparing_ || player_.isPlaying());
 	}
 
 	public boolean playNext() {
@@ -101,6 +103,9 @@ public class PlayerService
 	}
 
 	public boolean playMusic() {
+		if (isPreparing_) {
+			return false;
+		}
 		if (null == currentPlaylist_ || currentPlaylist_.isEmpty()) {
 			Log.i(TAG, "playMusic: playlist is null");
 			return false;
@@ -112,6 +117,7 @@ public class PlayerService
 			player_.reset();
 			player_.setDataSource(info.url_);
 			player_.prepareAsync();
+			isPreparing_ = true;
 			if(null != listener_){
 				listener_.onStartLoadingMusic(info);
 			}
@@ -137,17 +143,24 @@ public class PlayerService
 	}
 	
 	public void stopMusic() {
-		if(player_.isPlaying()){
+		if (isPreparing_) {
+			abortPreparing_ = true;
+		}
+		else if(player_.isPlaying()){
 			player_.stop();
 		}
 		stopForeground(true);
 		if(null != listener_){
+			Log.d(TAG, "call onStopMusic");
 			listener_.onStopMusic();
 		}
 	}
 
 	public void pauseMusic() {
-		if(player_.isPlaying()){
+		if (isPreparing_) {
+			abortPreparing_ = true;
+		}
+		else if(player_.isPlaying()){
 			player_.pause();
 		}
 		stopForeground(true);
@@ -176,6 +189,8 @@ public class PlayerService
 		receiver_ = new Receiver();
 		registerReceiver(receiver_,
 						new IntentFilter(Intent.ACTION_HEADSET_PLUG));
+		isPreparing_ = false;
+		abortPreparing_ = false;
 	}
 	
 	@Override
@@ -207,6 +222,12 @@ public class PlayerService
 	@Override
 	public void onPrepared(MediaPlayer player) {
 		Log.d(TAG, "onPrepared");
+		isPreparing_ = false;
+		if(abortPreparing_) {
+			Log.d(TAG, "onPrepared aborted");
+			abortPreparing_ = false;
+			return;
+		}
 		player_.start();
 		if(null != listener_){
 			listener_.onStartMusic(currentPlaylist_.get(playCursor_));

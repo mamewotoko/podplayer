@@ -40,10 +40,9 @@ A file bin/podplayer-debug.apk is created if succeed.
 
 TODO
 ----------
-* ignore prepared when stop button is clicked while preparing podcast
+* play episode which is clicked while preparing other item
 * add HTTP proxy setting
 * sort episode by date
-* ipdate podcast list by pull list to down
 * add episode search UI
 * acquire wifi lock?
 http://developer.android.com/guide/topics/media/mediaplayer.html

@@ -139,10 +139,11 @@ public class PodplayerActivity
 	}
 
 	private void updateUI() {
-		if (null != player_) {
-			adapter_.notifyDataSetChanged();
-			playButton_.setChecked(player_.isPlaying());
+		if(null == player_) {
+			return;
 		}
+		adapter_.notifyDataSetChanged();
+		playButton_.setChecked(player_.isPlaying());
 	}
 
 	private void updatePodcast(){
@@ -207,15 +208,14 @@ public class PodplayerActivity
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-		updatePlaylist();
 		//refresh header is added....
 		if(currentPodInfo_ == adapter_.getItem(pos-1)) {
 			player_.pauseMusic();
 		}
 		else {
+			updatePlaylist();
 			player_.playNth(pos-1);
 		}
-		playButton_.setChecked(player_.isPlaying());
 	}
 
 	@Override
@@ -275,6 +275,7 @@ public class PodplayerActivity
 		}
 	}
 
+	//UI is updated in following callback methods
 	@Override
 	public void onStartMusic(PodInfo info) {
 		updateUI();
@@ -292,6 +293,7 @@ public class PodplayerActivity
 		currentPodInfo_ = null;
 		updateUI();
 	}
+	// end of callback methods
 
 	private void syncPreference(SharedPreferences pref, String key){
 		boolean updateAll = "all".equals(key);
@@ -327,8 +329,7 @@ public class PodplayerActivity
 				factory = XmlPullParserFactory.newInstance();
 			}
 			catch (XmlPullParserException e1) {
-				//TODO: show exception to ui
-				e1.printStackTrace();
+				Log.i(TAG, "cannot get xml parser", e1);
 				return null;
 			}
 
@@ -340,14 +341,11 @@ public class PodplayerActivity
 				InputStream is = null;
 				try {
 					Log.d(TAG, "before open");
-					//TODO: set read timeout
 					URLConnection conn = url.openConnection();
 					conn.setReadTimeout(NET_READ_TIMEOUT_MILLIS);
 					is = conn.getInputStream();
-					Log.d(TAG, "after open");
-					//pull parser
 					XmlPullParser parser = factory.newPullParser();
-					//use reader or give correct encoding
+					//TODO: use reader or give correct encoding
 					parser.setInput(is, "UTF-8");
 					String title = null;
 					String podcastURL = null;
@@ -402,18 +400,16 @@ public class PodplayerActivity
 					Log.i(TAG, "XmlPullParserException", e);
 				}
 				finally {
-					Log.d(TAG, "isCanceled? " + isCancelled());
 					if(null != is) {
 						try {
 							is.close();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+						}
+						catch (IOException e) {
+							Log.i(TAG, "input stream cannot be close", e);
 						}
 					}
 				}
 			}
-			Log.d(TAG, "doBackground exit");
 			return null;
 		}
 		
