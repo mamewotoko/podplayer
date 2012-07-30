@@ -22,11 +22,10 @@ How to build
 2. update project
     * In this directory
 
-     android update project -p . -n podplayer -t android-10
+     `android update project -p . -n podplayer -t android-10`
     * In the libsrc/pulltorefresh/pulltorefresh directory
 
-     android update project -p . -n pulltoupdate -t android-10
-
+     `android update project -p . -n pulltoupdate -t android-10`
 ### ant
 
     ant debug
