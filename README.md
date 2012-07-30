@@ -53,7 +53,6 @@ http://developer.android.com/guide/topics/media/mediaplayer.html
 * add error handling
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
-* add UI to abort loading
 * display mark which is already played, new item etc...
 * show web page of podcast
 * display site icon of podcast
