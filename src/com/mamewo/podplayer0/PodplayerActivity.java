@@ -439,6 +439,7 @@ public class PodplayerActivity
 			episodeList_.setLastUpdated("Last updated: " + dateStr);
 			episodeList_.onRefreshComplete();
 			loadTask_ = null;
+			updatePlaylist();
 		}
 	}
 
