@@ -4,12 +4,12 @@ podplayer - a simple android podcast player
 
 What?
 ----------
-![icon](https://github.com/mamewotoko/podplayer/raw/res/drawable-hmdi/ic_launchar.png)
+![icon](https://github.com/mamewotoko/podplayer/raw/pullupdate/res/drawable-hdpi/ic_launcher.png)
 A simple podcast player android application.
 
 Screenshot
 ----------
-![main screen](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/mainscreen.png) 
+![main screen](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/mainscreen.png)    
 ![preference](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/preference.png)
 
 Google Play
