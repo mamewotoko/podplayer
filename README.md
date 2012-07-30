@@ -41,20 +41,23 @@ A file bin/podplayer-debug.apk is created if succeed.
 TODO
 ----------
 * play episode which is clicked while preparing other item
-* add HTTP proxy setting
+* show proxy setting as summary of preference
 * sort episode by date
 * add episode search UI
+* show description of playing episode
+* add cool widget to play episode
+* implement play after pause
+* add slider to show current playing position
 * acquire wifi lock?
 http://developer.android.com/guide/topics/media/mediaplayer.html
 * add error handling
-    * clear notification on error
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
 * add UI to abort loading
 * display mark which is already played, new item etc...
 * show web page of podcast
 * display site icon of podcast
-* add date and link to episode list
+* add link to episode list
 * add test
 
 License

@@ -15,8 +15,28 @@
         android:summaryOff="play after unplugged"
         android:summaryOn="pause on unplugged"
         android:title="Pause on unplagged" />
-    
-    
-    <CheckBoxPreference android:key="load_on_start" android:title="Autoload podcast" android:defaultValue="true" android:summaryOff="Do not load automatically" android:summaryOn="Load podcasts when app starts."/><PreferenceCategory android:title="Others"><Preference android:key="license" android:selectable="true" android:title="License" /><Preference android:key="version" android:selectable="true" android:title="Version" /></PreferenceCategory>
-    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="load_on_start"
+        android:summaryOff="Do not load automatically"
+        android:summaryOn="Load podcasts when app starts."
+        android:title="Autoload podcast" />
+
+    <PreferenceCategory android:title="Network setting" >
+        <com.mamewo.podplayer0.ProxyPreference
+            android:key="pref_proxy"
+            android:selectable="true"
+            android:title="HTTP proxy" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Others" >
+        <Preference
+            android:key="license"
+            android:selectable="true"
+            android:title="License" />
+        <Preference
+            android:key="version"
+            android:selectable="true"
+            android:title="Version" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

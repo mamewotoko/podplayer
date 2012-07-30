@@ -7,7 +7,9 @@ package com.mamewo.podplayer0;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
@@ -340,8 +342,18 @@ public class PodplayerActivity
 				Log.d(TAG, "get URL: " + url);
 				InputStream is = null;
 				try {
-					Log.d(TAG, "before open");
-					URLConnection conn = url.openConnection();
+					Proxy proxy = Proxy.NO_PROXY;
+					SharedPreferences pref =
+							PreferenceManager.getDefaultSharedPreferences(PodplayerActivity.this);
+					String proxySetting = pref.getString("pref_proxy", "");
+					Log.d(TAG, "pref_Proxy: " + proxySetting);
+					String[] proxyValue = proxySetting.split(":");
+					if(proxyValue != null && proxyValue.length == 2) {
+						//TODO: resolve host name!?
+						proxy = new Proxy(Proxy.Type.HTTP, 
+										  new InetSocketAddress(proxyValue[0], Integer.valueOf(proxyValue[1])));
+					}
+					URLConnection conn = url.openConnection(proxy);
 					conn.setReadTimeout(NET_READ_TIMEOUT_MILLIS);
 					is = conn.getInputStream();
 					XmlPullParser parser = factory.newPullParser();
