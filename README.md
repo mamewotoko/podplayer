@@ -21,11 +21,14 @@ How to build
 1. clone source
 2. update project
     * In this directory
+
      android update project -p . -n podplayer -t android-10
     * In the libsrc/pulltorefresh/pulltorefresh directory
+
      android update project -p . -n pulltoupdate -t android-10
 
 ### ant
+
     ant debug
 A file bin/podplayer-debug.apk is created if succeed.
 
@@ -41,6 +44,7 @@ A file bin/podplayer-debug.apk is created if succeed.
 TODO
 ----------
 * play episode which is clicked while preparing other item
+* set proxy of MediaPlayer if any
 * show proxy setting as summary of preference
 * sort episode by date
 * add episode search UI
