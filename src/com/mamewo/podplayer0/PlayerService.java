@@ -214,12 +214,14 @@ public class PlayerService
 		final public String title_;
 		final public String pubdate_;
 		final public String link_;
+		final public int index_;
 
-		public PodInfo(String url, String title, String pubdate, String link) {
+		public PodInfo(String url, String title, String pubdate, String link, int index) {
 			url_ = url;
 			title_ = title;
 			pubdate_ = pubdate;
 			link_ = link;
+			index_ = index;
 		}
 	}
 

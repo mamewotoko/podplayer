@@ -7,9 +7,7 @@ package com.mamewo.podplayer0;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
@@ -28,6 +26,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,9 +43,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -60,6 +61,7 @@ public class PodplayerActivity
 	ServiceConnection,
 	OnItemClickListener,
 	OnItemLongClickListener,
+	OnItemSelectedListener,
 	PlayerService.PlayerStateListener,
 	OnSharedPreferenceChangeListener,
 	PullToRefreshListView.OnRefreshListener,
@@ -68,6 +70,7 @@ public class PodplayerActivity
 	private List<URL> podcastURLlist_;
 	private ToggleButton playButton_;
 	private ImageButton nextButton_;
+	private Spinner selector_;
 	private PullToRefreshListView episodeList_;
 	private ArrayAdapter<PodInfo> adapter_;
 	//TODO: wait until player_ is not null (service is connected)
@@ -75,9 +78,11 @@ public class PodplayerActivity
 	private boolean finishServiceOnExit = false;
 	private PodInfo currentPodInfo_;
 	private GetEpisodeTask loadTask_;
+	//TODO: add preference
 	static final
 	private int NET_READ_TIMEOUT_MILLIS = 30 * 1000;
-
+	private List<PodInfo> loadedEpisode_;
+	
 	final static
 	private String TAG = "podplayer";
 
@@ -86,11 +91,14 @@ public class PodplayerActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		loadTask_ = null;
+		loadedEpisode_ = new ArrayList<PodInfo>();
 		playButton_ = (ToggleButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
 		playButton_.setEnabled(false);
 		nextButton_ = (ImageButton) findViewById(R.id.next_button);
 		nextButton_.setOnClickListener(this);
+		selector_ = (Spinner) findViewById(R.id.podcast_selector);
+		selector_.setOnItemSelectedListener(this);
 		episodeList_ = (PullToRefreshListView) findViewById(R.id.episode_list);
 		episodeList_.setOnItemClickListener(this);
 		episodeList_.setOnItemLongClickListener(this);
@@ -112,6 +120,26 @@ public class PodplayerActivity
 	@Override
 	public void onStart(){
 		super.onStart();
+		List<String> list = new ArrayList<String>();
+		list.add("All");
+		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
+		String[] urls = getResources().getStringArray(R.array.pref_podcastlist_urls);
+		int j = 0;
+		for(int i = 0; i < urls.length; i++) {
+			if(urls[i].equals(podcastURLlist_.get(j).toString())) {
+				list.add(titles[i]);
+				j++;
+				if(j >= podcastURLlist_.size()) {
+					break;
+				}
+			}
+		}
+		ArrayAdapter<String> adapter =
+				new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
+		//TODO: load if selected item is changed
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		selector_.setAdapter(adapter);
+		selector_.setSelection(0);
 		updateUI();
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
@@ -322,8 +350,8 @@ public class PodplayerActivity
 	}
 	
 	private class GetEpisodeTask
-		extends AsyncTask<Void, PodInfo, Void> {
-		
+		extends AsyncTask<Void, PodInfo, Void>
+	{
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			XmlPullParserFactory factory;
@@ -334,12 +362,16 @@ public class PodplayerActivity
 				Log.i(TAG, "cannot get xml parser", e1);
 				return null;
 			}
-
+			String[] urls = getResources().getStringArray(R.array.pref_podcastlist_urls);
+			int podcastIndex = 0;
 			for(URL url: podcastURLlist_) {
 				if(isCancelled()){
 					break;
 				}
-				Log.d(TAG, "get URL: " + url);
+				while(! urls[podcastIndex].equals(url.toString())){
+					podcastIndex++;
+				}
+				Log.d(TAG, "get URL: " + podcastIndex + ": "+ url);
 				InputStream is = null;
 				try {
 					URLConnection conn = url.openConnection();
@@ -380,7 +412,6 @@ public class PodplayerActivity
 							}
 							else if(tagName == TagName.LINK) {
 								link = parser.getText();
-								Log.d(TAG, "XMLparse: link: " + link);
 							}
 						}
 						else if(eventType == XmlPullParser.END_TAG) {
@@ -390,7 +421,7 @@ public class PodplayerActivity
 									if(title == null) {
 										title = podcastURL;
 									}
-									PodInfo info = new PodInfo(podcastURL, title, pubdate, link);
+									PodInfo info = new PodInfo(podcastURL, title, pubdate, link, podcastIndex);
 									publishProgress(info);
 								}
 								podcastURL = null;
@@ -429,7 +460,19 @@ public class PodplayerActivity
 		@Override
 		protected void onProgressUpdate(PodInfo... values){
 			for (int i = 0; i < values.length; i++) {
-				adapter_.add(values[i]);
+				PodInfo info = values[i];
+				loadedEpisode_.add(info);
+				int selectorPos = selector_.getSelectedItemPosition();
+				if(selectorPos == 0) {
+					adapter_.add(info);
+				}
+				else {
+					String selectedTitle = (String)selector_.getSelectedItem();
+					int index = podcastTitle2Index(selectedTitle);
+					if(index == info.index_) {
+						adapter_.add(info);
+					}
+				}
 			}
 		}
 
@@ -480,5 +523,53 @@ public class PodplayerActivity
 				new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
 		startActivity(new Intent(i));
 		return true;
+	}
+
+	
+	@Override
+	public void onItemSelected(AdapterView<?> adapter, View view, int pos,
+			long id) {
+		//0: all
+		Log.d(TAG, "selector: pos " + pos);
+		adapter_.clear();
+		if(pos == 0){
+			for(int i = 0; i < loadedEpisode_.size(); i++) {
+				PodInfo info = loadedEpisode_.get(i);
+				adapter_.add(info);
+			}
+			return;
+		}
+		String selectedTitle = (String)adapter.getItemAtPosition(pos);
+		int selectedIndex = podcastTitle2Index(selectedTitle);
+		for(int i = 0; i < loadedEpisode_.size(); i++) {
+			PodInfo info = loadedEpisode_.get(i);
+			Log.d(TAG, "onItemSelected: " + info.index_ + " " + info.title_);
+			if(selectedIndex == info.index_){
+				adapter_.add(info);
+			}
+			else if(selectedIndex < info.index_) {
+				break;
+			}
+		}
+		//umm...
+		episodeList_.onRefreshComplete();
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> adapter) {
+		for(int i = 0; i < loadedEpisode_.size(); i++) {
+			PodInfo info = loadedEpisode_.get(i);
+			adapter_.add(info);
+		}
+	}
+	
+	private int podcastTitle2Index(String title){
+		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
+		for(int i = 0; i < titles.length; i++) {
+			if(title.equals(titles[i])) {
+				return i;
+			}
+		}
+		return -1;
 	}
 }

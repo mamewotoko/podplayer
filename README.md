@@ -38,7 +38,7 @@ A file bin/podplayer-debug.apk is created if succeed.
     1. right click podplayer project -> properties. 
     2. select Project References. 
     3. check pulltorefresh. 
-4. run podplayer as Android Application
+4. run podplayer project as Android Application
 
 TODO
 ----------
