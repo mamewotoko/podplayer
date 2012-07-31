@@ -26,8 +26,8 @@ How to build
     * In the libsrc/pulltorefresh/pulltorefresh directory
 
      `android update project -p . -n pulltoupdate -t android-10`
-### ant
 
+### ant
     ant debug
 A file bin/podplayer-debug.apk is created if succeed.
 
@@ -60,7 +60,7 @@ TODO
 * display icon of podcast
 * add link to episode list
 * set default value of MultiListPreference by array name not by string value
-* support video cast
+* support video cast??
 * add test
 * write user guide?
 
