@@ -26,7 +26,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -114,12 +113,14 @@ public class PodplayerActivity
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
-		syncPreference(pref, "all");
 	}
 	
 	@Override
 	public void onStart(){
 		super.onStart();
+		SharedPreferences pref=
+				PreferenceManager.getDefaultSharedPreferences(this);
+		syncPreference(pref, "all");
 		List<String> list = new ArrayList<String>();
 		list.add("All");
 		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
@@ -140,15 +141,13 @@ public class PodplayerActivity
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		selector_.setAdapter(adapter);
 		selector_.setSelection(0);
-		updateUI();
-		SharedPreferences pref =
-				PreferenceManager.getDefaultSharedPreferences(this);
 		boolean doLoad = pref.getBoolean("load_on_start", true);
 		if(doLoad && adapter_.getCount() == 0){
 			//umm....
 			episodeList_.prepareForRefresh();
 			updatePodcast();
 		}
+		updateUI();
 	}
 	
 	@Override
@@ -486,6 +485,7 @@ public class PodplayerActivity
 				String dateStr = df.format(new Date());
 				episodeList_.setLastUpdated("Last updated: " + dateStr);
 			}
+			Log.d(TAG, "complete (onPostExecute)");
 			episodeList_.onRefreshComplete();
 			loadTask_ = null;
 			//TODO: Sync playlist
@@ -537,21 +537,23 @@ public class PodplayerActivity
 				PodInfo info = loadedEpisode_.get(i);
 				adapter_.add(info);
 			}
-			return;
 		}
-		String selectedTitle = (String)adapter.getItemAtPosition(pos);
-		int selectedIndex = podcastTitle2Index(selectedTitle);
-		for(int i = 0; i < loadedEpisode_.size(); i++) {
-			PodInfo info = loadedEpisode_.get(i);
-			Log.d(TAG, "onItemSelected: " + info.index_ + " " + info.title_);
-			if(selectedIndex == info.index_){
-				adapter_.add(info);
-			}
-			else if(selectedIndex < info.index_) {
-				break;
+		else {
+			String selectedTitle = (String)adapter.getItemAtPosition(pos);
+			int selectedIndex = podcastTitle2Index(selectedTitle);
+			for(int i = 0; i < loadedEpisode_.size(); i++) {
+				PodInfo info = loadedEpisode_.get(i);
+				Log.d(TAG, "onItemSelected: " + info.index_ + " " + info.title_);
+				if(selectedIndex == info.index_){
+					adapter_.add(info);
+				}
+				else if(selectedIndex < info.index_) {
+					break;
+				}
 			}
 		}
 		//umm...
+		Log.d(TAG, "complete (selected)");
 		episodeList_.onRefreshComplete();
 	}
 

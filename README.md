@@ -42,6 +42,7 @@ A file bin/podplayer-debug.apk is created if succeed.
 
 TODO
 ----------
+* fix a bug that when only one episode is registered, list is in tap to refresh mode after loaded
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
 * add timeout preference
