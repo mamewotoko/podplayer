@@ -42,9 +42,10 @@ A file bin/podplayer-debug.apk is created if succeed.
 
 TODO
 ----------
+* add UI to add podcast URL
+    * Web browser displays text/xml as content (I want intent...)
+* add confirm dialog to open web site
 * play episode which is clicked while preparing other item
-* set proxy of MediaPlayer if any
-* show proxy setting as summary of preference
 * sort episode by date
 * add episode search UI
 * show description of playing episode
@@ -54,11 +55,8 @@ TODO
 * acquire wifi lock?
 http://developer.android.com/guide/topics/media/mediaplayer.html
 * add error handling
-* add UI to add podcast URL
-    * Web browser displays text/xml as content (I want intent...)
 * display mark which is already played, new item etc...
-* show web page of podcast
-* display site icon of podcast
+* display icon of podcast
 * add link to episode list
 * set default value of MultiListPreference by array name not by string value
 * add test

@@ -208,14 +208,18 @@ public class PlayerService
 		return binder_;
 	}
 
-	public static class PodInfo {
-		public String url_;
-		public String title_;
-		public String pubdate_;
-		public PodInfo(String url, String title, String pubdate) {
+	static
+	public class PodInfo {
+		final public String url_;
+		final public String title_;
+		final public String pubdate_;
+		final public String link_;
+
+		public PodInfo(String url, String title, String pubdate, String link) {
 			url_ = url;
 			title_ = title;
 			pubdate_ = pubdate;
+			link_ = link;
 		}
 	}
 

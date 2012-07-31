@@ -28,9 +28,11 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -41,6 +43,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -54,7 +57,9 @@ import com.markupartist.android.widget.PullToRefreshListView;
 public class PodplayerActivity
 	extends Activity
 	implements OnClickListener,
-	ServiceConnection, OnItemClickListener,
+	ServiceConnection,
+	OnItemClickListener,
+	OnItemLongClickListener,
 	PlayerService.PlayerStateListener,
 	OnSharedPreferenceChangeListener,
 	PullToRefreshListView.OnRefreshListener,
@@ -88,6 +93,7 @@ public class PodplayerActivity
 		nextButton_.setOnClickListener(this);
 		episodeList_ = (PullToRefreshListView) findViewById(R.id.episode_list);
 		episodeList_.setOnItemClickListener(this);
+		episodeList_.setOnItemLongClickListener(this);
 		episodeList_.setOnRefreshListener(this);
 		episodeList_.setOnCancelListener(this);
 		adapter_ = new EpisodeAdapter(this);
@@ -181,7 +187,7 @@ public class PodplayerActivity
 	}
 
 	enum TagName {
-		TITLE, PUBDATE, NONE
+		TITLE, PUBDATE, LINK, NONE
 	};
 	
 	public static void showMessage(Context c, String message) {
@@ -347,15 +353,20 @@ public class PodplayerActivity
 					String pubdate = "";
 					TagName tagName = TagName.NONE;
 					int eventType;
+					String link = null;
 					while((eventType = parser.getEventType()) != XmlPullParser.END_DOCUMENT && !isCancelled()) {
 						if(eventType == XmlPullParser.START_TAG) {
-							if("title".equalsIgnoreCase(parser.getName())) {
+							String currentName = parser.getName();
+							if("title".equalsIgnoreCase(currentName)) {
 								tagName = TagName.TITLE;
 							}
-							else if("pubdate".equalsIgnoreCase(parser.getName())) {
+							else if("pubdate".equalsIgnoreCase(currentName)) {
 								tagName = TagName.PUBDATE;
 							}
-							else if("enclosure".equalsIgnoreCase(parser.getName())) {
+							else if("link".equalsIgnoreCase(currentName)) {
+								tagName = TagName.LINK;
+							}
+							else if("enclosure".equalsIgnoreCase(currentName)) {
 								podcastURL = parser.getAttributeValue(null, "url");
 							}
 						}
@@ -367,21 +378,28 @@ public class PodplayerActivity
 								//TODO: convert time zone
 								pubdate = parser.getText();
 							}
+							else if(tagName == TagName.LINK) {
+								link = parser.getText();
+								Log.d(TAG, "XMLparse: link: " + link);
+							}
 						}
 						else if(eventType == XmlPullParser.END_TAG) {
-							if("item".equalsIgnoreCase(parser.getName())) {
+							String currentName = parser.getName();
+							if("item".equalsIgnoreCase(currentName)) {
 								if(podcastURL != null) {
 									if(title == null) {
 										title = podcastURL;
 									}
-									PodInfo info = new PodInfo(podcastURL, title, pubdate);
+									PodInfo info = new PodInfo(podcastURL, title, pubdate, link);
 									publishProgress(info);
 								}
 								podcastURL = null;
 								title = null;
+								link = null;
 							}
-							else if ("title".equalsIgnoreCase(parser.getName())
-									|| "pubdate".equalsIgnoreCase(parser.getName())) {
+							else if ("title".equalsIgnoreCase(currentName)
+									|| "pubdate".equalsIgnoreCase(currentName)
+									|| "link".equalsIgnoreCase(currentName)) {
 								tagName = TagName.NONE;
 							}
 						}
@@ -443,5 +461,24 @@ public class PodplayerActivity
 			loadTask_.cancel(true);
 			loadTask_ = null;
 		}
+	}
+
+	@Override
+	public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos,
+			long id) {
+		PodInfo info = adapter_.getItem(pos-1);
+		Log.d(TAG, "onlongclick: " + info.link_ + " pos: " + pos);
+		if (null == info.link_) {
+			return false;
+		}
+		//TODO: add preference to enable this 
+		Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		if (vibrator != null) {
+			vibrator.vibrate(100);
+		}
+		Intent i =
+				new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
+		startActivity(new Intent(i));
+		return true;
 	}
 }
