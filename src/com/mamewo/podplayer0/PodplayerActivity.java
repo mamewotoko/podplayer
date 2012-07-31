@@ -336,18 +336,7 @@ public class PodplayerActivity
 				Log.d(TAG, "get URL: " + url);
 				InputStream is = null;
 				try {
-					Proxy proxy = Proxy.NO_PROXY;
-					SharedPreferences pref =
-							PreferenceManager.getDefaultSharedPreferences(PodplayerActivity.this);
-					String proxySetting = pref.getString("pref_proxy", "");
-					Log.d(TAG, "pref_Proxy: " + proxySetting);
-					String[] proxyValue = proxySetting.split(":");
-					if(proxyValue != null && proxyValue.length == 2) {
-						//TODO: resolve host name!?
-						proxy = new Proxy(Proxy.Type.HTTP, 
-										  new InetSocketAddress(proxyValue[0], Integer.valueOf(proxyValue[1])));
-					}
-					URLConnection conn = url.openConnection(proxy);
+					URLConnection conn = url.openConnection();
 					conn.setReadTimeout(NET_READ_TIMEOUT_MILLIS);
 					is = conn.getInputStream();
 					XmlPullParser parser = factory.newPullParser();
