@@ -44,6 +44,8 @@ TODO
 ----------
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
+* add timeout preference
+* use Google Reader to manage listened episode
 * add confirm dialog to open web site
 * play episode which is clicked while preparing other item
 * sort episode by date
@@ -59,7 +61,9 @@ http://developer.android.com/guide/topics/media/mediaplayer.html
 * display icon of podcast
 * add link to episode list
 * set default value of MultiListPreference by array name not by string value
+* support video cast
 * add test
+* write user guide?
 
 License
 ----------

@@ -6,6 +6,7 @@
         <item>CompuCast</item>
         <item>Discovory News</item>
         <item>BBC: The English We Speak</item>
+        <item>Wall Street Journal This Morning</item>
     </string-array>
     
     <string-array name="pref_podcastlist_urls">
@@ -14,5 +15,6 @@
         <item>http://computersciencepodcast.com/compucast.rss</item>
         <item>http://www.discovery.com/radio/xml/news.xml</item>
         <item>http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml</item>
+        <item>http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml</item>
     </string-array>
 </resources>

@@ -5,7 +5,7 @@
         android:entries="@array/pref_podcastlist_keys"
         android:entryValues="@array/pref_podcastlist_urls"
         android:key="podcastlist"
-        android:defaultValue="http://www.nhk.or.jp/rj/podcast/rss/english.xml!http://feeds.voanews.com/ps/getRSS?client=Standard&amp;PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&amp;startIndex=1&amp;endIndex=500!http://computersciencepodcast.com/compucast.rss!http://www.discovery.com/radio/xml/news.xml!http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml"
+        android:defaultValue="http://www.nhk.or.jp/rj/podcast/rss/english.xml!http://feeds.voanews.com/ps/getRSS?client=Standard&amp;PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&amp;startIndex=1&amp;endIndex=500!http://computersciencepodcast.com/compucast.rss!http://www.discovery.com/radio/xml/news.xml!http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml!http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml"
         android:title="@string/pref_podcastlist_title" />
 
     <CheckBoxPreference
