@@ -54,8 +54,7 @@ TODO
 * add cool widget to play episode
 * implement play after pause
 * add slider to show current playing position
-* acquire wifi lock?
-http://developer.android.com/guide/topics/media/mediaplayer.html
+* acquire [wifi lock](http://developer.android.com/guide/topics/media/mediaplayer.html)
 * add error handling
 * display mark which is already played, new item etc...
 * display icon of podcast
