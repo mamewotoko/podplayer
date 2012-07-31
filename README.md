@@ -60,6 +60,7 @@ http://developer.android.com/guide/topics/media/mediaplayer.html
 * show web page of podcast
 * display site icon of podcast
 * add link to episode list
+* set default value of MultiListPreference by array name not by string value
 * add test
 
 License

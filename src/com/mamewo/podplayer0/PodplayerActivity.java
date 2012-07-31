@@ -68,7 +68,6 @@ public class PodplayerActivity
 	//TODO: wait until player_ is not null (service is connected)
 	private PlayerService player_ = null;
 	private boolean finishServiceOnExit = false;
-	private String allSites_;
 	private PodInfo currentPodInfo_;
 	private GetEpisodeTask loadTask_;
 	static final
@@ -94,11 +93,6 @@ public class PodplayerActivity
 		adapter_ = new EpisodeAdapter(this);
 		episodeList_.setAdapter(adapter_);
 		
-		String[] allsiteList = getResources().getStringArray(R.array.pref_podcastlist_urls);
-		allSites_ = allsiteList[0];
-		for(int i = 1; i < allsiteList.length; i++) {
-			allSites_ += MultiListPreference.SEPARATOR + allsiteList[i];
-		}
 		Intent intent = new Intent(this, PlayerService.class);
 		startService(intent);
 		boolean result = bindService(intent, this, Context.BIND_AUTO_CREATE);
@@ -300,7 +294,7 @@ public class PodplayerActivity
 	private void syncPreference(SharedPreferences pref, String key){
 		boolean updateAll = "all".equals(key);
 		if(updateAll || "podcastlist".equals(key)) {
-			String prefURLString = pref.getString("podcastlist", allSites_);
+			String prefURLString = pref.getString("podcastlist", "");
 			Log.d(TAG, "prefURLString: " + prefURLString);
 			String[] list = prefURLString.split(MultiListPreference.SEPARATOR);
 			podcastURLlist_ = new ArrayList<URL>();
@@ -434,11 +428,17 @@ public class PodplayerActivity
 
 		@Override
 		protected void onPostExecute(Void result) {
-			DateFormat df = DateFormat.getDateTimeInstance();
-			String dateStr = df.format(new Date());
-			episodeList_.setLastUpdated("Last updated: " + dateStr);
+			if(adapter_.isEmpty()) {
+				episodeList_.setLastUpdated("");
+			}
+			else {
+				DateFormat df = DateFormat.getDateTimeInstance();
+				String dateStr = df.format(new Date());
+				episodeList_.setLastUpdated("Last updated: " + dateStr);
+			}
 			episodeList_.onRefreshComplete();
 			loadTask_ = null;
+			//TODO: Sync playlist
 			updatePlaylist();
 		}
 	}
