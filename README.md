@@ -46,6 +46,7 @@ TODO
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
 * add timeout preference
+* support native player
 * use Google Reader to manage listened episode
 * add confirm dialog to open web site
 * play episode which is clicked while preparing other item

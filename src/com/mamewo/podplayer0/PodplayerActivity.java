@@ -186,11 +186,7 @@ public class PodplayerActivity
 	}
 	
 	private void updatePlaylist() {
-		List<PodInfo> playlist = new ArrayList<PodInfo>();
-		for (int i = 0; i < adapter_.getCount(); i++) {
-			playlist.add(adapter_.getItem(i));
-		}
-		player_.setPlaylist(playlist);
+		player_.setPlaylist(loadedEpisode_);
 	}
 	
 	@Override
@@ -238,12 +234,21 @@ public class PodplayerActivity
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
 		//refresh header is added....
-		if(currentPodInfo_ == adapter_.getItem(pos-1)) {
+		PodInfo info = adapter_.getItem(pos-1);
+		if(currentPodInfo_ == info) {
 			player_.pauseMusic();
 		}
 		else {
+			Log.d(TAG, "clicked: " + pos + " " + info.title_);
 			updatePlaylist();
-			player_.playNth(pos-1);
+			//umm...
+			int playPos;
+			for(playPos = pos-1; playPos < loadedEpisode_.size(); playPos++) {
+				if(loadedEpisode_.get(playPos) == info) {
+					break;
+				}
+			}
+			player_.playNth(playPos);
 		}
 	}
 
