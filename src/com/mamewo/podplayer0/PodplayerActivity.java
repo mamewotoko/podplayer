@@ -142,12 +142,10 @@ public class PodplayerActivity
 		selector_.setAdapter(adapter);
 		selector_.setSelection(0);
 		boolean doLoad = pref.getBoolean("load_on_start", true);
-		if(doLoad && adapter_.getCount() == 0){
-			//umm....
-			episodeList_.prepareForRefresh();
-			updatePodcast();
-		}
 		updateUI();
+		if(doLoad && adapter_.getCount() == 0){
+			episodeList_.startRefresh();
+		}
 	}
 	
 	@Override
@@ -490,7 +488,6 @@ public class PodplayerActivity
 				String dateStr = df.format(new Date());
 				episodeList_.setLastUpdated("Last updated: " + dateStr);
 			}
-			Log.d(TAG, "complete (onPostExecute)");
 			episodeList_.onRefreshComplete();
 			loadTask_ = null;
 			//TODO: Sync playlist
@@ -532,8 +529,7 @@ public class PodplayerActivity
 
 	
 	@Override
-	public void onItemSelected(AdapterView<?> adapter, View view, int pos,
-			long id) {
+	public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
 		//0: all
 		Log.d(TAG, "selector: pos " + pos);
 		adapter_.clear();
@@ -557,9 +553,10 @@ public class PodplayerActivity
 				}
 			}
 		}
-		//umm...
-		Log.d(TAG, "complete (selected)");
-		episodeList_.onRefreshComplete();
+		if (null == loadTask_) {
+			Log.d(TAG, "hide header");
+			episodeList_.hideHeader();
+		}
 	}
 
 	@Override
