@@ -23,11 +23,9 @@ How to build
 1. Clone source
 2. Update project
     * In this directory
-
-     `android update project -p . -n podplayer -t android-10`
+        android update project -p . -n podplayer -t android-10
     * In the libsrc/pulltorefresh/pulltorefresh directory
-
-     `android update project -p . -n pulltoupdate -t android-10`
+        android update project -p . -n pulltoupdate -t android-10
 
 ### ant
     ant debug
@@ -45,15 +43,15 @@ A file bin/podplayer-debug.apk is created if succeed.
 How to test
 -----------
 1. Download robotium and scirocco jars
-    cd test/podtest/libs
-    sh setup.sh
+        cd test/podtest/libs
+        sh setup.sh
 2. update project
-    cd ../
-    android update test-project -m ../../ -n podtest -p .
+        cd ../
+        android update test-project -m ../../ -n podtest -p .
 
 ### ant
-    ant debug install
-    ant test
+        ant debug install
+        ant test
 
 ### Eclipse
 1. Import the test/podtest directory
