@@ -50,8 +50,8 @@ How to test
         android update test-project -m ../../ -n podtest -p .
 
 ### ant
-        ant debug install
-        ant test
+    ant debug install
+    ant test
 
 ### Eclipse
 1. Import the test/podtest directory
