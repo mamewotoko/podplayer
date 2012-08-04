@@ -49,7 +49,7 @@ How to test
      cd test/podtest/libs
      sh setup.sh
 2. update project
- 
+`` 
      cd ../
      android update test-project -m ../../ -n podtest -p .
 
