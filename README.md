@@ -14,7 +14,7 @@ Screenshot
 
 Google Play
 ------------
-<img src="https://github.com/mamewotoko/podplayer/raw/pullupdate/res/drawable/qr.png" width="86" height="86>
+<img src="https://github.com/mamewotoko/podplayer/raw/pullupdate/res/drawable/qr.png" width="86" height="86> 
 https://play.google.com/store/apps/details?id=com.mamewo.podplayer0
 
 How to build
