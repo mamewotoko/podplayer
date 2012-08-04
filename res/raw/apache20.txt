@@ -5,6 +5,7 @@ This application is built using open source software:
 
 * pulltorefresh
 https://github.com/johannilsson/android-pulltorefresh
+modified by Takashi Masuyama
 
 ---------------------
 Apache License
