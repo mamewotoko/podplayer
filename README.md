@@ -50,6 +50,7 @@ How to test
 2. update project
     cd ../
     android update test-project -m ../../ -n podtest -p .
+
 ### ant
     ant debug install
     ant test
