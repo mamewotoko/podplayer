@@ -23,7 +23,7 @@
         android:summaryOn="Load podcasts when app starts."
         android:title="Autoload podcast" />
 
-    <PreferenceCategory android:title="Others" >
+    <CheckBoxPreference android:summaryOff="off" android:defaultValue="false" android:key="enable_long_click" android:summaryOn="on" android:title="Open link on long click"/><PreferenceCategory android:title="Others" >
         <Preference
             android:key="license"
             android:selectable="true"
@@ -33,5 +33,6 @@
             android:selectable="true"
             android:title="Version" />
     </PreferenceCategory>
+    
 
 </PreferenceScreen>

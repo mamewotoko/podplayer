@@ -509,11 +509,13 @@ public class PodplayerActivity
 	}
 
 	@Override
-	public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos,
-			long id) {
+	public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
 		PodInfo info = adapter_.getItem(pos-1);
 		Log.d(TAG, "onlongclick: " + info.link_ + " pos: " + pos);
-		if (null == info.link_) {
+		SharedPreferences pref=
+				PreferenceManager.getDefaultSharedPreferences(this);
+		boolean enableLongClick = pref.getBoolean("enable_long_click", false);
+		if ((! enableLongClick) || null == info.link_) {
 			return false;
 		}
 		//TODO: add preference to enable this 
@@ -531,7 +533,7 @@ public class PodplayerActivity
 	@Override
 	public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
 		//0: all
-		Log.d(TAG, "selector: pos " + pos);
+		//Log.d(TAG, "selector: pos " + pos);
 		adapter_.clear();
 		if(pos == 0){
 			for(int i = 0; i < loadedEpisode_.size(); i++) {
@@ -544,7 +546,7 @@ public class PodplayerActivity
 			int selectedIndex = podcastTitle2Index(selectedTitle);
 			for(int i = 0; i < loadedEpisode_.size(); i++) {
 				PodInfo info = loadedEpisode_.get(i);
-				Log.d(TAG, "onItemSelected: " + info.index_ + " " + info.title_);
+				//Log.d(TAG, "onItemSelected: " + info.index_ + " " + info.title_);
 				if(selectedIndex == info.index_){
 					adapter_.add(info);
 				}
@@ -554,7 +556,6 @@ public class PodplayerActivity
 			}
 		}
 		if (null == loadTask_) {
-			Log.d(TAG, "hide header");
 			episodeList_.hideHeader();
 		}
 	}
