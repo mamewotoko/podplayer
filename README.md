@@ -46,12 +46,12 @@ How to test
 -----------
 1. Download robotium and scirocco jars
  
-     cd test/podtest/libs
-     sh setup.sh
+        cd test/podtest/libs
+        sh setup.sh
 2. update project
-`` 
-     cd ../
-     android update test-project -m ../../ -n podtest -p .
+
+        cd ../
+        android update test-project -m ../../ -n podtest -p .
 
 ### ant
     ant debug install
