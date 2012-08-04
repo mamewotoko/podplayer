@@ -81,6 +81,12 @@ public class PodplayerActivity
 	static final
 	private int NET_READ_TIMEOUT_MILLIS = 30 * 1000;
 	private List<PodInfo> loadedEpisode_;
+	final static
+	private String DEFAULT_PODCAST_LIST = "http://www.nhk.or.jp/rj/podcast/rss/english.xml"
+			+ "!http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500"
+			+ "!http://computersciencepodcast.com/compucast.rss!http://www.discovery.com/radio/xml/news.xml"
+			+ "!http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml"
+			+ "!http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml";
 	
 	final static
 	private String TAG = "podplayer";
@@ -126,11 +132,11 @@ public class PodplayerActivity
 		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
 		String[] urls = getResources().getStringArray(R.array.pref_podcastlist_urls);
 		int j = 0;
-		for(int i = 0; i < urls.length; i++) {
-			if(urls[i].equals(podcastURLlist_.get(j).toString())) {
-				list.add(titles[i]);
-				j++;
-				if(j >= podcastURLlist_.size()) {
+		for(int i = 0; i < podcastURLlist_.size(); i++) {
+			String podcastURL = podcastURLlist_.get(i).toString();
+			for ( ; j < urls.length; j++) {
+				if(podcastURL.equals(urls[j])) {
+					list.add(titles[j++]);
 					break;
 				}
 			}
@@ -330,8 +336,7 @@ public class PodplayerActivity
 	private void syncPreference(SharedPreferences pref, String key){
 		boolean updateAll = "all".equals(key);
 		if(updateAll || "podcastlist".equals(key)) {
-			String prefURLString = pref.getString("podcastlist", "");
-			Log.d(TAG, "prefURLString: " + prefURLString);
+			String prefURLString = pref.getString("podcastlist", DEFAULT_PODCAST_LIST);
 			String[] list = prefURLString.split(MultiListPreference.SEPARATOR);
 			podcastURLlist_ = new ArrayList<URL>();
 			for (String url: list) {

@@ -14,6 +14,7 @@ Screenshot
 
 Google Play
 ------------
+<img src="https://github.com/mamewotoko/podplayer/raw/pullupdate/res/drawable/qr.png" width="86" height="86>
 https://play.google.com/store/apps/details?id=com.mamewo.podplayer0
 
 How to build
@@ -47,6 +48,7 @@ TODO
     * Web browser displays text/xml as content (I want intent...)
 * add timeout preference
 * support native player
+* save podcast list and updated time as state
 * use Google Reader to manage listened episode
 * add confirm dialog to open web site
 * play episode which is clicked while preparing other item
@@ -63,7 +65,6 @@ TODO
 * add link to episode list
 * set default value of MultiListPreference by array name not by string value
 * support video cast??
-* add test
 * write user guide?
 
 License
