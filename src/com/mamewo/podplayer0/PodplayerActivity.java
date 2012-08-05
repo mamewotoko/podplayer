@@ -7,6 +7,7 @@ package com.mamewo.podplayer0;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -66,7 +67,7 @@ public class PodplayerActivity
 	PullToRefreshListView.OnRefreshListener,
 	PullToRefreshListView.OnCancelListener
 {
-	private List<URL> podcastURLlist_;
+	private PodplayerState state_;
 	private ToggleButton playButton_;
 	private ImageButton nextButton_;
 	private Spinner selector_;
@@ -75,12 +76,12 @@ public class PodplayerActivity
 	//TODO: wait until player_ is not null (service is connected)
 	private PlayerService player_ = null;
 	private boolean finishServiceOnExit = false;
+	//TODO: save this information or sync in onStart
 	private PodInfo currentPodInfo_;
 	private GetEpisodeTask loadTask_;
 	//TODO: add preference
 	static final
 	private int NET_READ_TIMEOUT_MILLIS = 30 * 1000;
-	private List<PodInfo> loadedEpisode_;
 	final static
 	private String DEFAULT_PODCAST_LIST = "http://www.nhk.or.jp/rj/podcast/rss/english.xml"
 			+ "!http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500"
@@ -95,8 +96,14 @@ public class PodplayerActivity
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		state_ = null;
+		if(null != savedInstanceState){
+			state_ = (PodplayerState) savedInstanceState.get("state");
+		}
+		if(null == state_){
+			state_ = new PodplayerState();
+		}
 		loadTask_ = null;
-		loadedEpisode_ = new ArrayList<PodInfo>();
 		playButton_ = (ToggleButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
 		playButton_.setEnabled(false);
@@ -111,7 +118,7 @@ public class PodplayerActivity
 		episodeList_.setOnCancelListener(this);
 		adapter_ = new EpisodeAdapter(this);
 		episodeList_.setAdapter(adapter_);
-		
+
 		Intent intent = new Intent(this, PlayerService.class);
 		startService(intent);
 		boolean result = bindService(intent, this, Context.BIND_AUTO_CREATE);
@@ -132,8 +139,8 @@ public class PodplayerActivity
 		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
 		String[] urls = getResources().getStringArray(R.array.pref_podcastlist_urls);
 		int j = 0;
-		for(int i = 0; i < podcastURLlist_.size(); i++) {
-			String podcastURL = podcastURLlist_.get(i).toString();
+		for(int i = 0; i < state_.podcastURLlist_.size(); i++) {
+			String podcastURL = state_.podcastURLlist_.get(i).toString();
 			for ( ; j < urls.length; j++) {
 				if(podcastURL.equals(urls[j])) {
 					list.add(titles[j++]);
@@ -152,6 +159,9 @@ public class PodplayerActivity
 		if(doLoad && adapter_.getCount() == 0){
 			episodeList_.startRefresh();
 		}
+		else {
+			episodeList_.onRefreshComplete(state_.lastUpdated_);
+		}
 	}
 	
 	@Override
@@ -169,6 +179,11 @@ public class PodplayerActivity
 			stopService(intent);
 		}
 		super.onDestroy();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putSerializable("state", state_);
 	}
 
 	private void updateUI() {
@@ -190,7 +205,7 @@ public class PodplayerActivity
 	}
 	
 	private void updatePlaylist() {
-		player_.setPlaylist(loadedEpisode_);
+		player_.setPlaylist(state_.loadedEpisode_);
 	}
 	
 	@Override
@@ -247,8 +262,8 @@ public class PodplayerActivity
 			updatePlaylist();
 			//umm...
 			int playPos;
-			for(playPos = pos-1; playPos < loadedEpisode_.size(); playPos++) {
-				if(loadedEpisode_.get(playPos) == info) {
+			for(playPos = pos-1; playPos < state_.loadedEpisode_.size(); playPos++) {
+				if(state_.loadedEpisode_.get(playPos) == info) {
 					break;
 				}
 			}
@@ -338,10 +353,10 @@ public class PodplayerActivity
 		if(updateAll || "podcastlist".equals(key)) {
 			String prefURLString = pref.getString("podcastlist", DEFAULT_PODCAST_LIST);
 			String[] list = prefURLString.split(MultiListPreference.SEPARATOR);
-			podcastURLlist_ = new ArrayList<URL>();
+			state_.podcastURLlist_.clear();
 			for (String url: list) {
 				try {
-					podcastURLlist_.add(new URL(url));
+					state_.podcastURLlist_.add(new URL(url));
 				}
 				catch (MalformedURLException e) {
 					e.printStackTrace();
@@ -371,7 +386,7 @@ public class PodplayerActivity
 			}
 			String[] urls = getResources().getStringArray(R.array.pref_podcastlist_urls);
 			int podcastIndex = 0;
-			for(URL url: podcastURLlist_) {
+			for(URL url: state_.podcastURLlist_) {
 				if(isCancelled()){
 					break;
 				}
@@ -468,7 +483,7 @@ public class PodplayerActivity
 		protected void onProgressUpdate(PodInfo... values){
 			for (int i = 0; i < values.length; i++) {
 				PodInfo info = values[i];
-				loadedEpisode_.add(info);
+				state_.loadedEpisode_.add(info);
 				int selectorPos = selector_.getSelectedItemPosition();
 				if(selectorPos == 0) {
 					adapter_.add(info);
@@ -490,8 +505,8 @@ public class PodplayerActivity
 			}
 			else {
 				DateFormat df = DateFormat.getDateTimeInstance();
-				String dateStr = df.format(new Date());
-				episodeList_.setLastUpdated("Last updated: " + dateStr);
+				state_.lastUpdated_ = df.format(new Date());
+				episodeList_.setLastUpdated("Last updated: " + state_.lastUpdated_);
 			}
 			episodeList_.onRefreshComplete();
 			loadTask_ = null;
@@ -541,16 +556,16 @@ public class PodplayerActivity
 		//Log.d(TAG, "selector: pos " + pos);
 		adapter_.clear();
 		if(pos == 0){
-			for(int i = 0; i < loadedEpisode_.size(); i++) {
-				PodInfo info = loadedEpisode_.get(i);
+			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
+				PodInfo info = state_.loadedEpisode_.get(i);
 				adapter_.add(info);
 			}
 		}
 		else {
 			String selectedTitle = (String)adapter.getItemAtPosition(pos);
 			int selectedIndex = podcastTitle2Index(selectedTitle);
-			for(int i = 0; i < loadedEpisode_.size(); i++) {
-				PodInfo info = loadedEpisode_.get(i);
+			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
+				PodInfo info = state_.loadedEpisode_.get(i);
 				//Log.d(TAG, "onItemSelected: " + info.index_ + " " + info.title_);
 				if(selectedIndex == info.index_){
 					adapter_.add(info);
@@ -567,8 +582,8 @@ public class PodplayerActivity
 
 	@Override
 	public void onNothingSelected(AdapterView<?> adapter) {
-		for(int i = 0; i < loadedEpisode_.size(); i++) {
-			PodInfo info = loadedEpisode_.get(i);
+		for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
+			PodInfo info = state_.loadedEpisode_.get(i);
 			adapter_.add(info);
 		}
 	}
@@ -581,5 +596,20 @@ public class PodplayerActivity
 			}
 		}
 		return -1;
+	}
+	
+	final public static
+	class PodplayerState
+		implements Serializable
+	{
+		private List<PodInfo> loadedEpisode_;
+		private List<URL> podcastURLlist_;
+		private String lastUpdated_;
+
+		private PodplayerState() {
+			loadedEpisode_ = new ArrayList<PodInfo>();
+			podcastURLlist_ = new ArrayList<URL>();
+			lastUpdated_ = "";
+		}
 	}
 }

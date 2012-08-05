@@ -1,6 +1,7 @@
 package com.mamewo.podplayer0;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -209,7 +210,9 @@ public class PlayerService
 	}
 
 	static
-	public class PodInfo {
+	public class PodInfo
+		implements Serializable
+	{
 		final public String url_;
 		final public String title_;
 		final public String pubdate_;

@@ -78,6 +78,7 @@ TODO
 * add cool widget to play episode
 * implement play after pause
 * add slider to show current playing position
+* add Wifi only mode
 * acquire [wifi lock](http://developer.android.com/reference/android/net/wifi/WifiManager.WifiLock.html)
 * add error handling
 * display mark which is already played, new item etc...
