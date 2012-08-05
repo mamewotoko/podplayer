@@ -79,9 +79,6 @@ public class PodplayerActivity
 	//TODO: save this information or sync in onStart
 	private PodInfo currentPodInfo_;
 	private GetEpisodeTask loadTask_;
-	//TODO: add preference
-	static final
-	private int NET_READ_TIMEOUT_MILLIS = 30 * 1000;
 	final static
 	private String DEFAULT_PODCAST_LIST = "http://www.nhk.or.jp/rj/podcast/rss/english.xml"
 			+ "!http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500"
@@ -397,7 +394,11 @@ public class PodplayerActivity
 				InputStream is = null;
 				try {
 					URLConnection conn = url.openConnection();
-					conn.setReadTimeout(NET_READ_TIMEOUT_MILLIS);
+					SharedPreferences pref =
+							PreferenceManager.getDefaultSharedPreferences(PodplayerActivity.this);
+					int timeout = Integer.valueOf(pref.getString("read_timeout", "30"));
+					timeout = timeout * 1000;
+					conn.setReadTimeout(timeout);
 					is = conn.getInputStream();
 					XmlPullParser parser = factory.newPullParser();
 					//TODO: use reader or give correct encoding

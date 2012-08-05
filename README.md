@@ -66,7 +66,6 @@ TODO
 * fix a bug that when only one episode is registered, list is in tap to refresh mode after loaded
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
-* add timeout preference
 * support native player
 * save podcast list and updated time as state
 * use Google Reader to manage listened episode
@@ -82,7 +81,7 @@ TODO
 * acquire [wifi lock](http://developer.android.com/reference/android/net/wifi/WifiManager.WifiLock.html)
 * add error handling
 * display mark which is already played, new item etc...
-* display icon of podcast
+* display icon of each podcast
 * add link to episode list
 * set default value of MultiListPreference by array name not by string value
 * support video cast??

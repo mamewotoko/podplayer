@@ -17,4 +17,20 @@
         <item>http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml</item>
         <item>http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml</item>
     </string-array>
+    
+    <string-array name="pref_timeout_titles">
+        <item>None</item>
+        <item>15 sec</item>
+        <item>30 sec</item>
+        <item>60 sec</item>
+        <item>120 sec</item>
+    </string-array>
+    
+    <string-array name="pref_timeout_values">
+        <item>0</item>
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>120</item>
+    </string-array>
 </resources>

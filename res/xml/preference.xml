@@ -16,14 +16,14 @@
         android:summaryOff="play after unplugged"
         android:summaryOn="pause on unplugged"
         android:title="Pause on unplagged" />
-    <CheckBoxPreference
+    <CheckBoxPreference android:summaryOff="off" android:defaultValue="false" android:key="enable_long_click" android:summaryOn="on" android:title="Open link on long click" /><CheckBoxPreference
         android:defaultValue="true"
         android:key="load_on_start"
         android:summaryOff="Do not load automatically"
         android:summaryOn="Load podcasts when app starts."
         android:title="Autoload podcast" />
 
-    <CheckBoxPreference android:summaryOff="off" android:defaultValue="false" android:key="enable_long_click" android:summaryOn="on" android:title="Open link on long click"/><PreferenceCategory android:title="Others" >
+    <ListPreference android:entries="@array/pref_timeout_titles" android:dialogTitle="Read timeout" android:entryValues="@array/pref_timeout_values" android:defaultValue="30" android:title="Read timeout" android:key="read_timeout"/><PreferenceCategory android:title="Others" >
         <Preference
             android:key="license"
             android:selectable="true"
@@ -33,6 +33,7 @@
             android:selectable="true"
             android:title="Version" />
     </PreferenceCategory>
+    
     
 
 </PreferenceScreen>
