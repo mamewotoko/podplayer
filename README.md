@@ -64,6 +64,8 @@ How to test
 TODO
 ----------
 * fix a bug that when only one episode is registered, list is in tap to refresh mode after loaded
+* use ListActivity?
+* use database to manage loaded episodes
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
 * support native player
@@ -75,7 +77,6 @@ TODO
 * add episode search UI
 * show description of playing episode
 * add cool widget to play episode
-* implement play after pause
 * add slider to show current playing position
 * add Wifi only mode
 * acquire [wifi lock](http://developer.android.com/reference/android/net/wifi/WifiManager.WifiLock.html)

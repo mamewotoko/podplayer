@@ -38,6 +38,10 @@ public class PlayerService
 	final static
 	public String JACK_UNPLUGGED_ACTION = PACKAGE_NAME + ".JUCK_UNPLUGGED_ACTION";
 	final static
+	public int STOP = 1;
+	final static
+	public int PAUSE = 2;
+	final static
 	private Class<PodplayerActivity> userClass_ = PodplayerActivity.class;
 	final static
 	private String TAG = "podplayer";
@@ -51,6 +55,7 @@ public class PlayerService
 	private Receiver receiver_;
 	private boolean isPreparing_;
 	private boolean abortPreparing_;
+	private boolean isPausing_;
 	
 	static
 	public boolean isNetworkConnected(Context context) {
@@ -103,6 +108,20 @@ public class PlayerService
 		return playMusic();
 	}
 
+	public boolean restartMusic() {
+		if(! isPausing_) {
+			return false;
+		}
+		player_.start();
+		if(null != listener_){
+			//TODO: playlist may be updated. verify it.
+			PodInfo info = currentPlaylist_.get(playCursor_);
+			listener_.onStartLoadingMusic(info);
+		}
+		return true;
+	}
+
+	
 	public boolean playMusic() {
 		if (isPreparing_) {
 			return false;
@@ -119,6 +138,7 @@ public class PlayerService
 			player_.setDataSource(info.url_);
 			player_.prepareAsync();
 			isPreparing_ = true;
+			isPausing_ = false;
 			if(null != listener_){
 				listener_.onStartLoadingMusic(info);
 			}
@@ -150,10 +170,11 @@ public class PlayerService
 		else if(player_.isPlaying()){
 			player_.stop();
 		}
+		isPausing_ = false;
 		stopForeground(true);
 		if(null != listener_){
 			Log.d(TAG, "call onStopMusic");
-			listener_.onStopMusic();
+			listener_.onStopMusic(STOP);
 		}
 	}
 
@@ -164,9 +185,10 @@ public class PlayerService
 		else if(player_.isPlaying()){
 			player_.pause();
 		}
+		isPausing_ = true;
 		stopForeground(true);
 		if(null != listener_){
-			listener_.onStopMusic();
+			listener_.onStopMusic(PAUSE);
 		}
 	}
 	
@@ -192,6 +214,7 @@ public class PlayerService
 						new IntentFilter(Intent.ACTION_HEADSET_PLUG));
 		isPreparing_ = false;
 		abortPreparing_ = false;
+		isPausing_ = false;
 	}
 	
 	@Override
@@ -213,6 +236,7 @@ public class PlayerService
 	public class PodInfo
 		implements Serializable
 	{
+		private static final long serialVersionUID = 1L;
 		final public String url_;
 		final public String title_;
 		final public String pubdate_;
@@ -274,7 +298,7 @@ public class PlayerService
 	public interface PlayerStateListener {
 		public void onStartLoadingMusic(PodInfo info);
 		public void onStartMusic(PodInfo info);
-		public void onStopMusic();
+		public void onStopMusic(int mode);
 	}
 	
 	final static

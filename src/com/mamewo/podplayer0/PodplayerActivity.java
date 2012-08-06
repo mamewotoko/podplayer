@@ -79,6 +79,7 @@ public class PodplayerActivity
 	//TODO: save this information or sync in onStart
 	private PodInfo currentPodInfo_;
 	private GetEpisodeTask loadTask_;
+	private int stopMode_;
 	final static
 	private String DEFAULT_PODCAST_LIST = "http://www.nhk.or.jp/rj/podcast/rss/english.xml"
 			+ "!http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500"
@@ -131,6 +132,7 @@ public class PodplayerActivity
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		syncPreference(pref, "all");
+		stopMode_ = PlayerService.STOP;
 		List<String> list = new ArrayList<String>();
 		list.add("All");
 		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
@@ -210,11 +212,14 @@ public class PodplayerActivity
 		//add option to load onStart
 		if (v == playButton_) {
 			if(player_.isPlaying()) {
-				player_.stopMusic();
+				player_.pauseMusic();
 			}
 			else {
 				updatePlaylist();
-				player_.playNth(0);
+				if(! player_.restartMusic()) {
+					//TODO: call playMusic?
+					player_.playNth(0);
+				}
 			}
 			playButton_.setChecked(player_.isPlaying());
 		}
@@ -252,7 +257,12 @@ public class PodplayerActivity
 		//refresh header is added....
 		PodInfo info = adapter_.getItem(pos-1);
 		if(currentPodInfo_ == info) {
-			player_.pauseMusic();
+			if(player_.isPlaying()) {
+				player_.pauseMusic();
+			}
+			else {
+				player_.restartMusic();
+			}
 		}
 		else {
 			Log.d(TAG, "clicked: " + pos + " " + info.title_);
@@ -316,6 +326,15 @@ public class PodplayerActivity
 			timeView.setText(info.pubdate_);
 			ImageView icon = (ImageView)view.findViewById(R.id.play_icon);
 			if(currentPodInfo_ == info) {
+				//cache!
+				if(player_.isPlaying()) {
+					icon.setImageResource(android.R.drawable.ic_media_play);
+				}
+				else {
+					if(stopMode_ == PlayerService.PAUSE) {
+						icon.setImageResource(android.R.drawable.ic_media_pause);
+					}
+				}
 				icon.setVisibility(View.VISIBLE);
 			}
 			else {
@@ -338,9 +357,12 @@ public class PodplayerActivity
 	}
 
 	@Override
-	public void onStopMusic() {
+	public void onStopMusic(int mode) {
 		Log.d(TAG, "onStopMusic");
-		currentPodInfo_ = null;
+		if(mode == PlayerService.STOP) {
+			currentPodInfo_ = null;
+		}
+		stopMode_ = mode;
 		updateUI();
 	}
 	// end of callback methods
