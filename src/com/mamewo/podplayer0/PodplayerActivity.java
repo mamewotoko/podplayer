@@ -20,6 +20,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import android.app.Activity;
+import android.app.ListActivity;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -47,6 +48,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,10 +58,9 @@ import com.mamewo.podplayer0.PlayerService.PodInfo;
 import com.markupartist.android.widget.PullToRefreshListView;
 
 public class PodplayerActivity
-	extends Activity
+	extends ListActivity
 	implements OnClickListener,
 	ServiceConnection,
-	OnItemClickListener,
 	OnItemLongClickListener,
 	OnItemSelectedListener,
 	PlayerService.PlayerStateListener,
@@ -109,12 +110,12 @@ public class PodplayerActivity
 		nextButton_.setOnClickListener(this);
 		selector_ = (Spinner) findViewById(R.id.podcast_selector);
 		selector_.setOnItemSelectedListener(this);
-		episodeList_ = (PullToRefreshListView) findViewById(R.id.episode_list);
-		episodeList_.setOnItemClickListener(this);
+		episodeList_ = (PullToRefreshListView) getListView();
 		episodeList_.setOnItemLongClickListener(this);
 		episodeList_.setOnRefreshListener(this);
 		episodeList_.setOnCancelListener(this);
 		adapter_ = new EpisodeAdapter(this);
+		setListAdapter(adapter_);
 		episodeList_.setAdapter(adapter_);
 		stopMode_ = PlayerService.STOP;
 
@@ -255,7 +256,7 @@ public class PodplayerActivity
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+	public void onListItemClick(ListView list, View view, int pos, long id) {
 		//refresh header is added....
 		PodInfo info = adapter_.getItem(pos-1);
 		if(currentPodInfo_ == info) {
@@ -574,7 +575,7 @@ public class PodplayerActivity
 		return true;
 	}
 
-	
+	//Filter is changed
 	@Override
 	public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
 		//0: all

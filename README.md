@@ -64,7 +64,6 @@ How to test
 TODO
 ----------
 * fix a bug that when only one episode is registered, list is in tap to refresh mode after loaded
-* use ListActivity?
 * use database to manage loaded episodes
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
@@ -73,6 +72,7 @@ TODO
 * use Google Reader to manage listened episode
 * add confirm dialog to open web site
 * play episode which is clicked while preparing other item
+* use ListActivity?
 * sort episode by date
 * add episode search UI
 * show description of playing episode
