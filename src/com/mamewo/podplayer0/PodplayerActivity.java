@@ -116,6 +116,7 @@ public class PodplayerActivity
 		episodeList_.setOnCancelListener(this);
 		adapter_ = new EpisodeAdapter(this);
 		episodeList_.setAdapter(adapter_);
+		stopMode_ = PlayerService.STOP;
 
 		Intent intent = new Intent(this, PlayerService.class);
 		startService(intent);
@@ -132,11 +133,11 @@ public class PodplayerActivity
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		syncPreference(pref, "all");
-		stopMode_ = PlayerService.STOP;
 		List<String> list = new ArrayList<String>();
 		list.add("All");
 		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
 		String[] urls = getResources().getStringArray(R.array.pref_podcastlist_urls);
+		//stop loading?
 		int j = 0;
 		for(int i = 0; i < state_.podcastURLlist_.size(); i++) {
 			String podcastURL = state_.podcastURLlist_.get(i).toString();
@@ -198,6 +199,7 @@ public class PodplayerActivity
 			Log.d(TAG, "Already loading");
 			return;
 		}
+		Log.d(TAG, "updatePodcast starts: " + loadTask_);
 		adapter_.clear();
 		loadTask_ = new GetEpisodeTask();
 		loadTask_.execute();
@@ -372,7 +374,7 @@ public class PodplayerActivity
 		if(updateAll || "podcastlist".equals(key)) {
 			String prefURLString = pref.getString("podcastlist", DEFAULT_PODCAST_LIST);
 			String[] list = prefURLString.split(MultiListPreference.SEPARATOR);
-			state_.podcastURLlist_.clear();
+			state_.podcastURLlist_ = new ArrayList<URL>();
 			for (String url: list) {
 				try {
 					state_.podcastURLlist_.add(new URL(url));
