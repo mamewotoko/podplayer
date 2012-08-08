@@ -27,6 +27,12 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.gesture.Gesture;
+import android.gesture.GestureLibraries;
+import android.gesture.GestureLibrary;
+import android.gesture.GestureOverlayView;
+import android.gesture.GestureOverlayView.OnGesturePerformedListener;
+import android.gesture.Prediction;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,7 +50,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -64,11 +69,11 @@ public class PodplayerActivity
 	PlayerService.PlayerStateListener,
 	OnSharedPreferenceChangeListener,
 	PullToRefreshListView.OnRefreshListener,
-	PullToRefreshListView.OnCancelListener
+	PullToRefreshListView.OnCancelListener,
+	OnGesturePerformedListener
 {
 	private PodplayerState state_;
 	private ToggleButton playButton_;
-	private ImageButton nextButton_;
 	private Spinner selector_;
 	private PullToRefreshListView episodeList_;
 	private ArrayAdapter<PodInfo> adapter_;
@@ -79,12 +84,16 @@ public class PodplayerActivity
 	private PodInfo currentPodInfo_;
 	private GetEpisodeTask loadTask_;
 	private int stopMode_;
+	private GestureLibrary gestureLib_;
+	private GestureOverlayView gestureView_;
 	final static
 	private String DEFAULT_PODCAST_LIST = "http://www.nhk.or.jp/rj/podcast/rss/english.xml"
 			+ "!http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500"
 			+ "!http://computersciencepodcast.com/compucast.rss!http://www.discovery.com/radio/xml/news.xml"
 			+ "!http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml"
 			+ "!http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml";
+	final static
+	private double RECOGNIZE_SCORE_THRESHOLD = 4.5;
 	
 	final static
 	private String TAG = "podplayer";
@@ -104,8 +113,6 @@ public class PodplayerActivity
 		playButton_ = (ToggleButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
 		playButton_.setEnabled(false);
-		nextButton_ = (ImageButton) findViewById(R.id.next_button);
-		nextButton_.setOnClickListener(this);
 		selector_ = (Spinner) findViewById(R.id.podcast_selector);
 		selector_.setOnItemSelectedListener(this);
 		episodeList_ = (PullToRefreshListView) getListView();
@@ -124,6 +131,13 @@ public class PodplayerActivity
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
+		gestureLib_ = GestureLibraries.fromRawResource(this, R.raw.gestures);
+		//TODO: check result
+		if(! gestureLib_.load()){
+			Log.d(TAG, "gesture load failed");
+		}
+		gestureView_ = (GestureOverlayView)findViewById(R.id.gesture_view);
+		gestureView_.addOnGesturePerformedListener(this);
 	}
 	
 	@Override
@@ -224,16 +238,7 @@ public class PodplayerActivity
 			}
 			playButton_.setChecked(player_.isPlaying());
 		}
-		else if (v == nextButton_) {
-			if(player_.isPlaying()) {
-				player_.playNext();
-			}
-		}
 	}
-
-	enum TagName {
-		TITLE, PUBDATE, LINK, NONE
-	};
 	
 	public static void showMessage(Context c, String message) {
 		Toast.makeText(c, message, Toast.LENGTH_LONG).show();
@@ -268,17 +273,21 @@ public class PodplayerActivity
 		else {
 			Log.d(TAG, "clicked: " + pos + " " + info.title_);
 			updatePlaylist();
-			//umm...
-			int playPos;
-			for(playPos = pos-1; playPos < state_.loadedEpisode_.size(); playPos++) {
-				if(state_.loadedEpisode_.get(playPos) == info) {
-					break;
-				}
-			}
-			player_.playNth(playPos);
+			playByInfo(info);
 		}
 	}
 
+	private void playByInfo(PodInfo info) {
+		//umm...
+		int playPos;
+		for(playPos = 0; playPos < state_.loadedEpisode_.size(); playPos++) {
+			if(state_.loadedEpisode_.get(playPos) == info) {
+				break;
+			}
+		}
+		player_.playNth(playPos);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -392,10 +401,15 @@ public class PodplayerActivity
 		Log.d(TAG, "onSharedPreferneceChanged: " + key);
 		syncPreference(pref, key);
 	}
+
+	enum TagName {
+		TITLE, PUBDATE, LINK, NONE
+	};
 	
 	private class GetEpisodeTask
 		extends AsyncTask<Void, PodInfo, Void>
 	{
+
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			XmlPullParserFactory factory;
@@ -637,5 +651,39 @@ public class PodplayerActivity
 			podcastURLlist_ = new ArrayList<URL>();
 			lastUpdated_ = "";
 		}
+	}
+
+	@Override
+	public void onGesturePerformed(GestureOverlayView view, Gesture gesture) {
+		ArrayList<Prediction> predictions = gestureLib_.recognize(gesture);
+		if(predictions.size() == 0){
+			showMessage(this, "unknown gesture");
+			return;
+		}
+		//predictions is sorted by score
+		Prediction p = predictions.get(0);
+		if(p.score < RECOGNIZE_SCORE_THRESHOLD) {
+			showMessage(this, "gesture with low score");
+			return;
+		}
+		if("next".equals(p.name)) {
+			player_.playNext();
+		}
+		else if("play".equals(p.name)) {
+			Log.d(TAG, "play by gesture");
+			updatePlaylist();
+			if(! player_.restartMusic()) {
+				//TODO: call playMusic?
+				player_.playNth(0);
+			}
+		}
+		else if("pause".equals(p.name)) {
+			player_.pauseMusic();
+		}
+		else if("back".equals(p.name)) {
+			player_.stopMusic();
+			player_.playMusic();
+		}
+		showMessage(this, p.name);
 	}
 }

@@ -63,21 +63,16 @@ How to test
 
 TODO
 ----------
-* fix a bug that when only one episode is registered, list is in tap to refresh mode after loaded
-* add gesture UI
-    * load gesture
-      http://developer.android.com/reference/android/gesture/GestureLibraries.html
-    * recognize gesture
-      http://developer.android.com/reference/android/gesture/GestureOverlayView.html
 * use database to manage loaded episodes
+   * display mark which is already played, new item etc...
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
-* support native player
+* add table of gestures as preference
+* fix a bug that when only one episode is registered, list is in tap to refresh mode after loaded
 * save podcast list and updated time as state
 * use Google Reader to manage listened episode
 * add confirm dialog to open web site
 * play episode which is clicked while preparing other item
-* use ListActivity?
 * sort episode by date
 * add episode search UI
 * show description of playing episode
@@ -86,11 +81,11 @@ TODO
 * add Wifi only mode
 * acquire [wifi lock](http://developer.android.com/reference/android/net/wifi/WifiManager.WifiLock.html)
 * add error handling
-* display mark which is already played, new item etc...
 * display icon of each podcast
 * add link to episode list
 * set default value of MultiListPreference by array name not by string value
 * support video cast??
+* support native player?
 * write user guide?
 
 License

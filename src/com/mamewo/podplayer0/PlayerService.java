@@ -76,9 +76,8 @@ public class PlayerService
 			SharedPreferences pref =
 					PreferenceManager.getDefaultSharedPreferences(this);
 			boolean pause = pref.getBoolean("pause_on_unplugged", true);
-			if (pause) {
+			if (pause && player_.isPlaying()) {
 				pauseMusic();
-				//TODO: implement to start continuation (playMusic)
 			}
 		}
 		return START_STICKY;
@@ -109,6 +108,7 @@ public class PlayerService
 	}
 
 	public boolean restartMusic() {
+		Log.d(TAG, "restartMusic: isPausing: " + isPausing_);
 		if(! isPausing_) {
 			return false;
 		}
@@ -178,7 +178,9 @@ public class PlayerService
 		}
 	}
 
+	//TODO: correct paused state
 	public void pauseMusic() {
+		Log.d(TAG, "pauseMusic");
 		if (isPreparing_) {
 			abortPreparing_ = true;
 		}
@@ -215,6 +217,7 @@ public class PlayerService
 		isPreparing_ = false;
 		abortPreparing_ = false;
 		isPausing_ = false;
+		playCursor_ = 0;
 	}
 	
 	@Override
