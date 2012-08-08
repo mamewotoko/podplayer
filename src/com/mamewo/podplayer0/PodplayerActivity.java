@@ -19,7 +19,6 @@ import java.util.List;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
-import android.app.Activity;
 import android.app.ListActivity;
 
 import android.content.ComponentName;
@@ -42,7 +41,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -300,6 +298,8 @@ public class PodplayerActivity
 		case R.id.pref_menu:
 			startActivity(new Intent(this, PodplayerPreference.class));
 			handled = true;
+			break;
+		default:
 			break;
 		}
 		return handled;

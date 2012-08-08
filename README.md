@@ -64,6 +64,11 @@ How to test
 TODO
 ----------
 * fix a bug that when only one episode is registered, list is in tap to refresh mode after loaded
+* add gesture UI
+    * load gesture
+      http://developer.android.com/reference/android/gesture/GestureLibraries.html
+    * recognize gesture
+      http://developer.android.com/reference/android/gesture/GestureOverlayView.html
 * use database to manage loaded episodes
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
