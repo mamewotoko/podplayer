@@ -93,7 +93,7 @@ public class PodplayerActivity
 			+ "!http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml"
 			+ "!http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml";
 	final static
-	private double RECOGNIZE_SCORE_THRESHOLD = 4.5;
+	private double RECOGNIZE_SCORE_THRESHOLD = 3.0;
 	
 	final static
 	private String TAG = "podplayer";
@@ -663,7 +663,7 @@ public class PodplayerActivity
 		//predictions is sorted by score
 		Prediction p = predictions.get(0);
 		if(p.score < RECOGNIZE_SCORE_THRESHOLD) {
-			showMessage(this, "gesture with low score");
+			showMessage(this, "gesture with low score: " + p.score);
 			return;
 		}
 		if("next".equals(p.name)) {
