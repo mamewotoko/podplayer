@@ -29,9 +29,14 @@ public class PodplayerPreference
 	static final
 	private String TAG = "podplayer";
 	private View logo_;
+	static final
+	private int VERSION_DIALOG = 1;
+	static final
+	private int GESTURE_TABLE_DIALOG = 2;
 	
 	private Preference version_;
 	private Preference license_;
+	private Preference gestureTable_;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,8 @@ public class PodplayerPreference
 		catch (NameNotFoundException e) {
 			version_.setSummary("unknown");
 		}
+		gestureTable_ = findPreference("gesture_table");
+		gestureTable_.setOnPreferenceClickListener(this);
 		version_.setOnPreferenceClickListener(this);
 		license_ = findPreference("license");
 		license_.setOnPreferenceClickListener(this);
@@ -53,13 +60,14 @@ public class PodplayerPreference
 
 	@Override
 	public boolean onPreferenceClick(Preference item) {
+		if (item == gestureTable_) {
+			//TODO: add close button
+			showDialog(GESTURE_TABLE_DIALOG);
+			return true;
+		}
 		if (item == version_) {
-			Dialog dialog = new Dialog(this);
-			dialog.setContentView(R.layout.version_dialog);
-			dialog.setTitle("Google Play & github");
-			logo_ = dialog.findViewById(R.id.github_logo);
-			logo_.setOnClickListener(this);
-			dialog.show();
+			//TODO: add close button
+			showDialog(VERSION_DIALOG);
 			return true;
 		}
 		if(item == license_) {
@@ -100,6 +108,30 @@ public class PodplayerPreference
 		return false;
 	}
 
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog;
+		switch(id) {
+		case GESTURE_TABLE_DIALOG:
+			dialog = new Dialog(this);
+			dialog.setContentView(R.layout.gesture_table);
+			dialog.setTitle("Gesture table");
+			dialog.show();
+			break;
+		case VERSION_DIALOG:
+			dialog = new Dialog(this);
+			dialog.setContentView(R.layout.version_dialog);
+			dialog.setTitle("Google Play & github");
+			logo_ = dialog.findViewById(R.id.github_logo);
+			logo_.setOnClickListener(this);
+			break;
+		default:
+			dialog = null;
+			break;
+		}
+		return dialog;
+	}
+	
 	@Override
 	public void onClick(View view) {
 		if (view == logo_) {

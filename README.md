@@ -65,6 +65,11 @@ TODO
 ----------
 * use database to manage loaded episodes
    * display mark which is already played, new item etc...
+* add preference
+    * to disable gesture
+    * change gesture score threshold
+* use expandable list
+* add close button to dialog
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
 * add table of gestures as preference
