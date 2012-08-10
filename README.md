@@ -65,17 +65,19 @@ TODO
 ----------
 * use database to manage loaded episodes
    * display mark which is already played, new item etc...
-* display icon of each podcast
-* add preference
-    * change the threshold of gesture score
-* use expandable list
-* add close button to dialog
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
+* display icon of each podcast
+* optimize initialization of podplaye
+* show summary of preference item
+    * gesture score
+    * read timeout
+* use expandable list
+* add close button to dialog
 * add table of gestures as preference
 * fix a bug that when only one episode is registered, list is in tap to refresh mode after loaded
 * save podcast list and updated time as state
-* use Google Reader to manage listened episode
+* use Google Reader or some other service to manage listened episode
 * add confirm dialog to open web site
 * play episode which is clicked while preparing other item
 * sort episode by date
@@ -86,11 +88,11 @@ TODO
 * add Wifi only mode
 * acquire [wifi lock](http://developer.android.com/reference/android/net/wifi/WifiManager.WifiLock.html)
 * add error handling
-* add link to episode list
 * set default value of MultiListPreference by array name not by string value
 * support video cast??
 * support native player?
 * write user guide?
+* check apk size
 
 License
 ----------

@@ -37,18 +37,25 @@
         android:key="read_timeout"
         android:title="Read timeout" />
 
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="enable_gesture"
-        android:summaryOff="gesture off"
-        android:summaryOn="gesture on"
-        android:title="Use gesture" />
+    <PreferenceCategory android:title="Gesture" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="enable_gesture"
+            android:summaryOff="gesture off"
+            android:summaryOn="gesture on"
+            android:title="Use gesture" />
 
-    <PreferenceScreen
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:key="gesture_table"
-        android:title="Gesture table" />
+        <com.mamewo.podplayer0.DoublePreference
+            android:defaultValue="3.0"
+            android:key="gesture_score_threshold"
+            android:title="Threshold of score" />
 
+        <PreferenceScreen
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:key="gesture_table"
+            android:title="Gesture table" >
+        </PreferenceScreen>
+    </PreferenceCategory>
     <PreferenceCategory android:title="Others" >
         <Preference
             android:key="license"

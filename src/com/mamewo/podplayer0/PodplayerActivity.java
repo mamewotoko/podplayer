@@ -85,6 +85,7 @@ public class PodplayerActivity
 	private GetEpisodeTask loadTask_;
 	private int stopMode_;
 	private GestureLibrary gestureLib_;
+	private double gestureScoreThreshold_;
 	final static
 	private String DEFAULT_PODCAST_LIST = "http://www.nhk.or.jp/rj/podcast/rss/english.xml"
 			+ "!http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500"
@@ -93,8 +94,6 @@ public class PodplayerActivity
 			+ "!http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml";
 	final static
 	private boolean DEFAULT_USE_GESTURE = true;
-	final static
-	private double RECOGNIZE_SCORE_THRESHOLD = 3.0;
 	
 	final static
 	private String TAG = "podplayer";
@@ -133,6 +132,7 @@ public class PodplayerActivity
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
 		gestureLib_ = null;
+		gestureScoreThreshold_ = 0.0;
 	}
 	
 	@Override
@@ -236,7 +236,7 @@ public class PodplayerActivity
 	}
 	
 	public static void showMessage(Context c, String message) {
-		Toast.makeText(c, message, Toast.LENGTH_LONG).show();
+		Toast.makeText(c, message, Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
@@ -406,7 +406,10 @@ public class PodplayerActivity
 			}
 			gestureView.setEnabled(useGesture);
 		}
-
+		if(updateAll || "gesture_score_threshold".equals(key)) {
+			gestureScoreThreshold_ =
+					Double.valueOf(pref.getString("gesture_score_threshold", "3.0"));
+		}
 	}
 	
 	@Override
@@ -676,7 +679,7 @@ public class PodplayerActivity
 		}
 		//predictions is sorted by score
 		Prediction p = predictions.get(0);
-		if(p.score < RECOGNIZE_SCORE_THRESHOLD) {
+		if(p.score < gestureScoreThreshold_) {
 			showMessage(this, "gesture with low score: " + p.score);
 			return;
 		}
