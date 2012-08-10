@@ -88,6 +88,9 @@ public class PlayerService
 	}
 
 	public boolean playNext() {
+		if(currentPlaylist_ == null || currentPlaylist_.size() == 0) {
+			return false;
+		}
 		if (isPlaying()) {
 			stopMusic();
 		}
@@ -100,7 +103,7 @@ public class PlayerService
 	}
 
 	public boolean playNth(int pos) {
-		if(currentPlaylist_.size() == 0) {
+		if(currentPlaylist_ == null || currentPlaylist_.size() == 0) {
 			return false;
 		}
 		playCursor_ = pos % currentPlaylist_.size();
