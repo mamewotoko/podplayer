@@ -85,13 +85,14 @@ public class PodplayerActivity
 	private GetEpisodeTask loadTask_;
 	private int stopMode_;
 	private GestureLibrary gestureLib_;
-	private GestureOverlayView gestureView_;
 	final static
 	private String DEFAULT_PODCAST_LIST = "http://www.nhk.or.jp/rj/podcast/rss/english.xml"
 			+ "!http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500"
 			+ "!http://computersciencepodcast.com/compucast.rss!http://www.discovery.com/radio/xml/news.xml"
 			+ "!http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml"
 			+ "!http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml";
+	final static
+	private boolean DEFAULT_USE_GESTURE = true;
 	final static
 	private double RECOGNIZE_SCORE_THRESHOLD = 3.0;
 	
@@ -131,13 +132,7 @@ public class PodplayerActivity
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
-		gestureLib_ = GestureLibraries.fromRawResource(this, R.raw.gestures);
-		//TODO: check result
-		if(! gestureLib_.load()){
-			Log.d(TAG, "gesture load failed");
-		}
-		gestureView_ = (GestureOverlayView)findViewById(R.id.gesture_view);
-		gestureView_.addOnGesturePerformedListener(this);
+		gestureLib_ = null;
 	}
 	
 	@Override
@@ -145,7 +140,7 @@ public class PodplayerActivity
 		super.onStart();
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
-		syncPreference(pref, "all");
+		syncPreference(pref, "ALL");
 		List<String> list = new ArrayList<String>();
 		list.add("All");
 		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
@@ -380,7 +375,7 @@ public class PodplayerActivity
 	// end of callback methods
 
 	private void syncPreference(SharedPreferences pref, String key){
-		boolean updateAll = "all".equals(key);
+		boolean updateAll = "ALL".equals(key);
 		if(updateAll || "podcastlist".equals(key)) {
 			String prefURLString = pref.getString("podcastlist", DEFAULT_PODCAST_LIST);
 			String[] list = prefURLString.split(MultiListPreference.SEPARATOR);
@@ -394,6 +389,24 @@ public class PodplayerActivity
 				}
 			}
 		}
+		if(updateAll || "enable_gesture".equals(key)) {
+			boolean useGesture = pref.getBoolean("enable_gesture", DEFAULT_USE_GESTURE);
+			GestureOverlayView gestureView =
+					(GestureOverlayView)findViewById(R.id.gesture_view);
+			if(useGesture) {
+				gestureLib_ = GestureLibraries.fromRawResource(this, R.raw.gestures);
+				if(! gestureLib_.load()){
+					Log.d(TAG, "gesture load failed");
+				}
+				gestureView.addOnGesturePerformedListener(this);
+			}
+			else {
+				gestureView.removeOnGesturePerformedListener(this);
+				gestureLib_ = null;
+			}
+			gestureView.setEnabled(useGesture);
+		}
+
 	}
 	
 	@Override
@@ -642,6 +655,7 @@ public class PodplayerActivity
 	class PodplayerState
 		implements Serializable
 	{
+		private static final long serialVersionUID = 1L;
 		private List<PodInfo> loadedEpisode_;
 		private List<URL> podcastURLlist_;
 		private String lastUpdated_;

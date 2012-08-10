@@ -1,11 +1,11 @@
 ===============================================================================
-podplayer - a simple android podcast player
+podplayer - An android podcast player
 ===============================================================================
 
 What?
 ----------
 <img src="https://github.com/mamewotoko/podplayer/raw/pullupdate/res/drawable-hdpi/ic_launcher.png" width="80" height="80">
-A simple podcast player android application.
+A podcast player android application.
 
 Screenshot
 ----------
@@ -65,9 +65,9 @@ TODO
 ----------
 * use database to manage loaded episodes
    * display mark which is already played, new item etc...
+* display icon of each podcast
 * add preference
-    * to disable gesture
-    * change gesture score threshold
+    * change the threshold of gesture score
 * use expandable list
 * add close button to dialog
 * add UI to add podcast URL
@@ -86,7 +86,6 @@ TODO
 * add Wifi only mode
 * acquire [wifi lock](http://developer.android.com/reference/android/net/wifi/WifiManager.WifiLock.html)
 * add error handling
-* display icon of each podcast
 * add link to episode list
 * set default value of MultiListPreference by array name not by string value
 * support video cast??
@@ -101,6 +100,10 @@ Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) 
 Copyright (c) 2011 [Johan Nilsson](http://markupartist.com) 
 https://github.com/johannilsson/android-pulltorefresh
+
+Keywords
+----------
+Android, MediaPlayer, Podcast, AsynTask, PullToUpdate, Gesture
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
