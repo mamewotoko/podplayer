@@ -33,6 +33,8 @@ public class PodplayerPreference
 	private int VERSION_DIALOG = 1;
 	static final
 	private int GESTURE_TABLE_DIALOG = 2;
+	static final
+	private int LICENSE_DIALOG = 3;
 	
 	private Preference version_;
 	private Preference license_;
@@ -61,16 +63,41 @@ public class PodplayerPreference
 	@Override
 	public boolean onPreferenceClick(Preference item) {
 		if (item == gestureTable_) {
-			//TODO: add close button
 			showDialog(GESTURE_TABLE_DIALOG);
 			return true;
 		}
 		if (item == version_) {
-			//TODO: add close button
 			showDialog(VERSION_DIALOG);
 			return true;
 		}
 		if(item == license_) {
+			showDialog(LICENSE_DIALOG);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog;
+
+		switch(id) {
+		case GESTURE_TABLE_DIALOG:
+			//TODO: add close button
+			dialog = new Dialog(this);
+			dialog.setContentView(R.layout.gesture_table);
+			dialog.setTitle("Gesture table");
+			dialog.show();
+			break;
+		case VERSION_DIALOG:
+			//TODO: add close button
+			dialog = new Dialog(this);
+			dialog.setContentView(R.layout.version_dialog);
+			dialog.setTitle("Google Play & github");
+			logo_ = dialog.findViewById(R.id.github_logo);
+			logo_.setOnClickListener(this);
+			break;
+		case LICENSE_DIALOG:
 			//TODO: Localize?
 			StringBuffer licenseText = new StringBuffer();
 			Resources res = getResources();
@@ -94,36 +121,14 @@ public class PodplayerPreference
 					
 				}
 			}
-			new AlertDialog.Builder(this)
+			dialog = new AlertDialog.Builder(this)
 			.setMessage(licenseText.toString())
 			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
 					//nop
 				}
 			})
-			.create()
-			.show();
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		Dialog dialog;
-		switch(id) {
-		case GESTURE_TABLE_DIALOG:
-			dialog = new Dialog(this);
-			dialog.setContentView(R.layout.gesture_table);
-			dialog.setTitle("Gesture table");
-			dialog.show();
-			break;
-		case VERSION_DIALOG:
-			dialog = new Dialog(this);
-			dialog.setContentView(R.layout.version_dialog);
-			dialog.setTitle("Google Play & github");
-			logo_ = dialog.findViewById(R.id.github_logo);
-			logo_.setOnClickListener(this);
+			.create();
 			break;
 		default:
 			dialog = null;
