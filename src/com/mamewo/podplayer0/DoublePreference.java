@@ -1,7 +1,5 @@
 package com.mamewo.podplayer0;
 
-import java.text.MessageFormat;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;

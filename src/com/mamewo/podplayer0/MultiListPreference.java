@@ -29,7 +29,6 @@ import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.preference.ListPreference;
 import android.util.AttributeSet;
-import android.util.Log;
 
 public class MultiListPreference
 	extends ListPreference

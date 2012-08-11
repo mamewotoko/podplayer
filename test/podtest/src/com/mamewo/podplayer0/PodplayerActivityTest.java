@@ -6,12 +6,8 @@ import junit.framework.Assert;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import asia.sonix.scirocco.SciroccoSolo;
-
-import com.mamewo.podplayer0.*;
 
 /**
  * This is a simple framework for a test of an Application.  See
