@@ -87,7 +87,7 @@ public class DoublePreference
 
 	@Override
 	public void onClick(View view) {
-		double doubleValue = 0.0;
+		double doubleValue = double_;
 		try {
 			doubleValue = Double.valueOf(editText_.getText().toString());
 		}
