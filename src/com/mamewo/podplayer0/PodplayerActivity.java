@@ -421,7 +421,7 @@ public class PodplayerActivity
 	}
 
 	enum TagName {
-		TITLE, PUBDATE, LINK, NONE
+		TITLE, PUBDATE, LINK, ITUNES_IMAGE, NONE
 	};
 	
 	private class GetEpisodeTask
@@ -438,6 +438,7 @@ public class PodplayerActivity
 				return null;
 			}
 			String[] urls = getResources().getStringArray(R.array.pref_podcastlist_urls);
+			URL[] iconURLs = new URL[urllist.length];
 			int podcastIndex = 0;
 			for(int i = 0; i < urllist.length; i++) {
 				URL url = urllist[i];
@@ -495,6 +496,9 @@ public class PodplayerActivity
 							case LINK:
 								link = parser.getText();
 								break;
+							case ITUNES_IMAGE:
+								iconURLs[i] = new URL(parser.getText());
+								break;
 							default:
 								break;
 							}
@@ -538,6 +542,7 @@ public class PodplayerActivity
 					}
 				}
 			}
+			//TODO: fetch icons
 			return null;
 		}
 		
