@@ -94,6 +94,8 @@ public class PodplayerActivity
 			+ "!http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml";
 	final static
 	private boolean DEFAULT_USE_GESTURE = true;
+	final static
+	private URL[] DUMMY_URL_LIST = new URL[0];
 	
 	final static
 	private String TAG = "podplayer";
@@ -210,7 +212,7 @@ public class PodplayerActivity
 		Log.d(TAG, "updatePodcast starts: " + loadTask_);
 		adapter_.clear();
 		loadTask_ = new GetEpisodeTask();
-		loadTask_.execute();
+		loadTask_.execute(state_.podcastURLlist_.toArray(DUMMY_URL_LIST));
 	}
 	
 	private void updatePlaylist() {
@@ -423,11 +425,10 @@ public class PodplayerActivity
 	};
 	
 	private class GetEpisodeTask
-		extends AsyncTask<Void, PodInfo, Void>
+		extends AsyncTask<URL, PodInfo, Void>
 	{
-
 		@Override
-		protected Void doInBackground(Void... arg0) {
+		protected Void doInBackground(URL... urllist) {
 			XmlPullParserFactory factory;
 			try {
 				factory = XmlPullParserFactory.newInstance();
@@ -438,10 +439,12 @@ public class PodplayerActivity
 			}
 			String[] urls = getResources().getStringArray(R.array.pref_podcastlist_urls);
 			int podcastIndex = 0;
-			for(URL url: state_.podcastURLlist_) {
+			for(int i = 0; i < urllist.length; i++) {
+				URL url = urllist[i];
 				if(isCancelled()){
 					break;
 				}
+				//get index of podcastURL to filter
 				while(! urls[podcastIndex].equals(url.toString())){
 					podcastIndex++;
 				}
@@ -481,15 +484,19 @@ public class PodplayerActivity
 							}
 						}
 						else if(eventType == XmlPullParser.TEXT) {
-							if(tagName == TagName.TITLE) {
+							switch(tagName) {
+							case TITLE:
 								title = parser.getText();
-							}
-							else if(tagName == TagName.PUBDATE) {
+								break;
+							case PUBDATE:
 								//TODO: convert time zone
 								pubdate = parser.getText();
-							}
-							else if(tagName == TagName.LINK) {
+								break;
+							case LINK:
 								link = parser.getText();
+								break;
+							default:
+								break;
 							}
 						}
 						else if(eventType == XmlPullParser.END_TAG) {
@@ -506,9 +513,8 @@ public class PodplayerActivity
 								title = null;
 								link = null;
 							}
-							else if ("title".equalsIgnoreCase(currentName)
-									|| "pubdate".equalsIgnoreCase(currentName)
-									|| "link".equalsIgnoreCase(currentName)) {
+							else {
+								//always set to NONE, because there is no nested tag for now
 								tagName = TagName.NONE;
 							}
 						}
