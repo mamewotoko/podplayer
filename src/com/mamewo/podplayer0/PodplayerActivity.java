@@ -149,8 +149,8 @@ public class PodplayerActivity
 		String[] urls = getResources().getStringArray(R.array.pref_podcastlist_urls);
 		//stop loading?
 		int j = 0;
-		for(int i = 0; i < state_.podcastURLlist_.size(); i++) {
-			String podcastURL = state_.podcastURLlist_.get(i).toString();
+		for(int i = 0; i < state_.podcastURLList_.size(); i++) {
+			String podcastURL = state_.podcastURLList_.get(i).toString();
 			for ( ; j < urls.length; j++) {
 				if(podcastURL.equals(urls[j])) {
 					list.add(titles[j++]);
@@ -212,7 +212,7 @@ public class PodplayerActivity
 		Log.d(TAG, "updatePodcast starts: " + loadTask_);
 		adapter_.clear();
 		loadTask_ = new GetEpisodeTask();
-		loadTask_.execute(state_.podcastURLlist_.toArray(DUMMY_URL_LIST));
+		loadTask_.execute(state_.podcastURLList_.toArray(DUMMY_URL_LIST));
 	}
 	
 	private void updatePlaylist() {
@@ -381,10 +381,10 @@ public class PodplayerActivity
 		if(updateAll || "podcastlist".equals(key)) {
 			String prefURLString = pref.getString("podcastlist", DEFAULT_PODCAST_LIST);
 			String[] list = prefURLString.split(MultiListPreference.SEPARATOR);
-			state_.podcastURLlist_ = new ArrayList<URL>();
+			state_.podcastURLList_.clear();
 			for (String url: list) {
 				try {
-					state_.podcastURLlist_.add(new URL(url));
+					state_.podcastURLList_.add(new URL(url));
 				}
 				catch (MalformedURLException e) {
 					e.printStackTrace();
@@ -666,12 +666,12 @@ public class PodplayerActivity
 	{
 		private static final long serialVersionUID = 1L;
 		private List<PodInfo> loadedEpisode_;
-		private List<URL> podcastURLlist_;
+		private List<URL> podcastURLList_;
 		private String lastUpdated_;
 
 		private PodplayerState() {
 			loadedEpisode_ = new ArrayList<PodInfo>();
-			podcastURLlist_ = new ArrayList<URL>();
+			podcastURLList_ = new ArrayList<URL>();
 			lastUpdated_ = "";
 		}
 	}
