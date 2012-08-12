@@ -68,7 +68,6 @@ How to test
 
 TODO
 ----------
-* add preference to disable episode icon
 * use database to manage loaded episodes
    * display mark which is already played, new item etc...
 * add UI to add podcast URL

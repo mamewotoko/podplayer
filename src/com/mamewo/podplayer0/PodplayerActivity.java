@@ -86,8 +86,8 @@ public class PodplayerActivity
 	private GestureLibrary gestureLib_;
 	private double gestureScoreThreshold_;
 	private Drawable[] iconData_;
-	private URL[] iconURL_;
-	
+	private boolean showPodcastIcon_;
+
 	final static
 	private String DEFAULT_PODCAST_LIST = "http://www.nhk.or.jp/rj/podcast/rss/english.xml"
 			+ "!http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500"
@@ -139,13 +139,31 @@ public class PodplayerActivity
 		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
 		//TODO: refactor
 		iconData_ = new Drawable[titles.length];
-		iconURL_ = new URL[titles.length];
+		state_.iconURL_ = new URL[titles.length];
+	}
+
+	@Override
+	public void onDestroy(){
+		SharedPreferences pref=
+				PreferenceManager.getDefaultSharedPreferences(this);
+		pref.unregisterOnSharedPreferenceChangeListener(this);
+		boolean playing = player_.isPlaying();
+		iconData_ = null;
+		if(finishServiceOnExit && playing) {
+			player_.stopMusic();
+		}
+		unbindService(this);
+		if (finishServiceOnExit || ! playing) {
+			Intent intent = new Intent(this, PlayerService.class);
+			stopService(intent);
+		}
+		super.onDestroy();
 	}
 
 	//TODO: fetch current playing episode to update currentPodInfo
 	@Override
-	public void onStart(){
-		super.onStart();
+	public void onResume(){
+		super.onResume();
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		syncPreference(pref, "ALL");
@@ -169,7 +187,6 @@ public class PodplayerActivity
 		//TODO: load if selected item is changed
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		selector_.setAdapter(adapter);
-		selector_.setSelection(0);
 		boolean doLoad = pref.getBoolean("load_on_start", true);
 		updateUI();
 		if(doLoad && adapter_.getCount() == 0){
@@ -178,23 +195,6 @@ public class PodplayerActivity
 		else {
 			episodeList_.onRefreshComplete(state_.lastUpdated_);
 		}
-	}
-	
-	@Override
-	public void onDestroy(){
-		SharedPreferences pref=
-				PreferenceManager.getDefaultSharedPreferences(this);
-		pref.unregisterOnSharedPreferenceChangeListener(this);
-		boolean playing = player_.isPlaying();
-		if(finishServiceOnExit && playing) {
-			player_.stopMusic();
-		}
-		unbindService(this);
-		if (finishServiceOnExit || ! playing) {
-			Intent intent = new Intent(this, PlayerService.class);
-			stopService(intent);
-		}
-		super.onDestroy();
 	}
 
 	@Override
@@ -356,8 +356,7 @@ public class PodplayerActivity
 			else {
 				stateIcon.setVisibility(View.GONE);
 			}
-			//episodeIcon.setImageURI(iconURL_[info.index_]);
-			if(null != iconData_[info.index_]){
+			if(showPodcastIcon_ && null != iconData_[info.index_]){
 				episodeIcon.setImageDrawable(iconData_[info.index_]);
 				episodeIcon.setVisibility(View.VISIBLE);
 			}
@@ -422,6 +421,10 @@ public class PodplayerActivity
 			gestureScoreThreshold_ =
 					Double.valueOf(pref.getString("gesture_score_threshold", "3.0"));
 		}
+		if(updateAll || "show_podcast_icon".equals(key)) {
+			showPodcastIcon_ = pref.getBoolean("show_podcast_icon", true);
+			Log.d(TAG, "showEpisodeIcon: " + showPodcastIcon_);
+		}
 	}
 	
 	@Override
@@ -442,6 +445,30 @@ public class PodplayerActivity
 		timeout = timeout * 1000;
 		conn.setReadTimeout(timeout);
 		return conn.getInputStream();
+	}
+
+	private BitmapDrawable downloadIcon(URL iconURL) {
+		//get data
+		InputStream is = null;
+		BitmapDrawable result = null;
+		try {
+			is = getInputStreamFromURL(iconURL);
+			result = new BitmapDrawable(getResources(), is);
+		}
+		catch(IOException e) {
+			Log.d(TAG, "cannot load icon", e);
+		}
+		finally {
+			if(null != is) {
+				try{
+					is.close();
+				}
+				catch(IOException e) {
+					//nop..
+				}
+			}
+		}
+		return result;
 	}
 	
 	private class GetEpisodeTask
@@ -498,27 +525,11 @@ public class PodplayerActivity
 								podcastURL = parser.getAttributeValue(null, "url");
 							}
 							else if("itunes:image".equalsIgnoreCase(currentName)) {
-								if(null == iconURL_[podcastIndex]) {
+								if(null == state_.iconURL_[podcastIndex]) {
 									URL iconURL = new URL(parser.getAttributeValue(null, "href"));
-									iconURL_[podcastIndex] = iconURL;
-									//get data
-									InputStream iconInputStream = null;
-									try {
-										iconInputStream = getInputStreamFromURL(iconURL);
-										iconData_[i] = new BitmapDrawable(getResources(), iconInputStream);
-									}
-									catch(IOException e) {
-										Log.d(TAG, "cannot load icon", e);
-									}
-									finally {
-										if(null != is) {
-											try{
-												iconInputStream.close();
-											}
-											catch(IOException e) {
-												//nop..
-											}
-										}
+									state_.iconURL_[podcastIndex] = iconURL;
+									if(showPodcastIcon_ && null == iconData_[podcastIndex]) {
+										iconData_[podcastIndex] = downloadIcon(iconURL);
 									}
 								}
 							}
@@ -708,11 +719,13 @@ public class PodplayerActivity
 		private List<PodInfo> loadedEpisode_;
 		private List<URL> podcastURLList_;
 		private String lastUpdated_;
+		private URL[] iconURL_;
 
 		private PodplayerState() {
 			loadedEpisode_ = new ArrayList<PodInfo>();
 			podcastURLList_ = new ArrayList<URL>();
 			lastUpdated_ = "";
+			iconURL_ = null;
 		}
 	}
 
