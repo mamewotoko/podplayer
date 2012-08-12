@@ -82,8 +82,6 @@ public class PodplayerActivity
 	//TODO: wait until player_ is not null (service is connected)
 	private PlayerService player_ = null;
 	private boolean finishServiceOnExit = false;
-	//TODO: save this information or sync in onStart
-	private PodInfo currentPodInfo_;
 	private GetEpisodeTask loadTask_;
 	private int stopMode_;
 	private GestureLibrary gestureLib_;
@@ -145,7 +143,8 @@ public class PodplayerActivity
 		iconData_ = new Drawable[titles.length];
 		iconURL_ = new URL[titles.length];
 	}
-	
+
+	//TODO: fetch current playing episode to update currentPodInfo
 	@Override
 	public void onStart(){
 		super.onStart();
@@ -268,7 +267,8 @@ public class PodplayerActivity
 	public void onListItemClick(ListView list, View view, int pos, long id) {
 		//refresh header is added....
 		PodInfo info = adapter_.getItem(pos-1);
-		if(currentPodInfo_ == info) {
+		PodInfo current = player_.getCurrentPodInfo();
+		if(current != null && current.url_.equals(info.url_)) {
 			if(player_.isPlaying()) {
 				player_.pauseMusic();
 			}
@@ -344,7 +344,8 @@ public class PodplayerActivity
 			timeView.setText(info.pubdate_);
 			ImageView stateIcon = (ImageView)view.findViewById(R.id.play_icon);
 			ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
-			if(currentPodInfo_ == info) {
+			PodInfo current = player_.getCurrentPodInfo();
+			if(current != null && current.url_.equals(info.url_)) {
 				//cache!
 				if(player_.isPlaying()) {
 					stateIcon.setImageResource(android.R.drawable.ic_media_play);
@@ -375,16 +376,12 @@ public class PodplayerActivity
 
 	@Override
 	public void onStartLoadingMusic(PodInfo info) {
-		currentPodInfo_ = info;
 		updateUI();
 	}
 
 	@Override
 	public void onStopMusic(int mode) {
 		Log.d(TAG, "onStopMusic");
-		if(mode == PlayerService.STOP) {
-			currentPodInfo_ = null;
-		}
 		stopMode_ = mode;
 		updateUI();
 	}

@@ -87,6 +87,13 @@ public class PlayerService
 		return (! abortPreparing_) && (isPreparing_ || player_.isPlaying());
 	}
 
+	public PodInfo getCurrentPodInfo(){
+		if(null == currentPlaylist_){
+			return null;
+		}
+		return currentPlaylist_.get(playCursor_);
+	}
+	
 	public boolean playNext() {
 		if(currentPlaylist_ == null || currentPlaylist_.size() == 0) {
 			return false;
