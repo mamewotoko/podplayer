@@ -359,6 +359,10 @@ public class PodplayerActivity
 			//episodeIcon.setImageURI(iconURL_[info.index_]);
 			if(null != iconData_[info.index_]){
 				episodeIcon.setImageDrawable(iconData_[info.index_]);
+				episodeIcon.setVisibility(View.VISIBLE);
+			}
+			else {
+				episodeIcon.setVisibility(View.GONE);
 			}
 			return view;
 		}
