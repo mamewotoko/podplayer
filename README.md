@@ -22,6 +22,7 @@ https://play.google.com/store/apps/details?id=com.mamewo.podplayer0
 How to build
 ------------
 1. Clone source
+
     git clone git://github.com/mamewotoko/podplayer.git
 
 ### ant
@@ -33,6 +34,7 @@ How to build
 
             android update project -p . -n pulltoupdate -t android-10
 2. Build
+
     ant debug
 A file bin/podplayer-debug.apk is created if succeed.
 
