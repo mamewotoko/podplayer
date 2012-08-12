@@ -15,21 +15,24 @@ Screenshot
 Google Play
 ------------
  [![my play page](http://www.android.com/images/brand/get_it_on_play_logo_small.png)](http://play.google.com/store/search?q=pub:mamewo)  
-<img src="https://github.com/mamewotoko/podplayer/raw/pullupdate/res/drawable/qr.png" width="86" height="86>  
+<img src="https://github.com/mamewotoko/podplayer/raw/pullupdate/res/drawable/qr.png" width="86" height="86>
+  
 https://play.google.com/store/apps/details?id=com.mamewo.podplayer0
 
 How to build
 ------------
 1. Clone source
-2. Update project
+    git clone git://github.com/mamewotoko/podplayer.git
+
+### ant
+1. Update project
     * In this directory
 
             android update project -p . -n podplayer -t android-10
     * In the libsrc/pulltorefresh/pulltorefresh directory
 
             android update project -p . -n pulltoupdate -t android-10
-
-### ant
+2. Build
     ant debug
 A file bin/podplayer-debug.apk is created if succeed.
 
