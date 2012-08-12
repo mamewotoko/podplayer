@@ -83,7 +83,6 @@ public class PodplayerActivity
 	private PlayerService player_ = null;
 	private boolean finishServiceOnExit = false;
 	private GetEpisodeTask loadTask_;
-	private int stopMode_;
 	private GestureLibrary gestureLib_;
 	private double gestureScoreThreshold_;
 	private Drawable[] iconData_;
@@ -102,7 +101,7 @@ public class PodplayerActivity
 	
 	final static
 	private String TAG = "podplayer";
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -127,7 +126,6 @@ public class PodplayerActivity
 		adapter_ = new EpisodeAdapter(this);
 		setListAdapter(adapter_);
 		episodeList_.setAdapter(adapter_);
-		stopMode_ = PlayerService.STOP;
 
 		Intent intent = new Intent(this, PlayerService.class);
 		startService(intent);
@@ -351,9 +349,7 @@ public class PodplayerActivity
 					stateIcon.setImageResource(android.R.drawable.ic_media_play);
 				}
 				else {
-					if(stopMode_ == PlayerService.PAUSE) {
-						stateIcon.setImageResource(android.R.drawable.ic_media_pause);
-					}
+					stateIcon.setImageResource(android.R.drawable.ic_media_pause);
 				}
 				stateIcon.setVisibility(View.VISIBLE);
 			}
@@ -382,7 +378,6 @@ public class PodplayerActivity
 	@Override
 	public void onStopMusic(int mode) {
 		Log.d(TAG, "onStopMusic");
-		stopMode_ = mode;
 		updateUI();
 	}
 	// end of callback methods

@@ -68,12 +68,13 @@ How to test
 
 TODO
 ----------
+* add preference to disable episode icon
 * use database to manage loaded episodes
    * display mark which is already played, new item etc...
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
-* display icon of each podcast
-* optimize initialization of podplaye
+* optimize initialization of podplayer
+    * setContentView takes long time
 * show summary of preference item
     * gesture score
     * read timeout
