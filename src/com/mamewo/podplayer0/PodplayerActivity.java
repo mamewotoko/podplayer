@@ -33,6 +33,8 @@ import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.gesture.Prediction;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -86,6 +88,9 @@ public class PodplayerActivity
 	private int stopMode_;
 	private GestureLibrary gestureLib_;
 	private double gestureScoreThreshold_;
+	private Drawable[] iconData_;
+	private URL[] iconURL_;
+	
 	final static
 	private String DEFAULT_PODCAST_LIST = "http://www.nhk.or.jp/rj/podcast/rss/english.xml"
 			+ "!http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500"
@@ -135,6 +140,10 @@ public class PodplayerActivity
 		pref.registerOnSharedPreferenceChangeListener(this);
 		gestureLib_ = null;
 		gestureScoreThreshold_ = 0.0;
+		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
+		//TODO: refactor
+		iconData_ = new Drawable[titles.length];
+		iconURL_ = new URL[titles.length];
 	}
 	
 	@Override
@@ -333,21 +342,26 @@ public class PodplayerActivity
 			TextView timeView = (TextView)view.findViewById(R.id.episode_time);
 			titleView.setText(info.title_);
 			timeView.setText(info.pubdate_);
-			ImageView icon = (ImageView)view.findViewById(R.id.play_icon);
+			ImageView stateIcon = (ImageView)view.findViewById(R.id.play_icon);
+			ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
 			if(currentPodInfo_ == info) {
 				//cache!
 				if(player_.isPlaying()) {
-					icon.setImageResource(android.R.drawable.ic_media_play);
+					stateIcon.setImageResource(android.R.drawable.ic_media_play);
 				}
 				else {
 					if(stopMode_ == PlayerService.PAUSE) {
-						icon.setImageResource(android.R.drawable.ic_media_pause);
+						stateIcon.setImageResource(android.R.drawable.ic_media_pause);
 					}
 				}
-				icon.setVisibility(View.VISIBLE);
+				stateIcon.setVisibility(View.VISIBLE);
 			}
 			else {
-				icon.setVisibility(View.GONE);
+				stateIcon.setVisibility(View.GONE);
+			}
+			//episodeIcon.setImageURI(iconURL_[info.index_]);
+			if(null != iconData_[info.index_]){
+				episodeIcon.setImageDrawable(iconData_[info.index_]);
 			}
 			return view;
 		}
@@ -421,8 +435,18 @@ public class PodplayerActivity
 	}
 
 	enum TagName {
-		TITLE, PUBDATE, LINK, ITUNES_IMAGE, NONE
+		TITLE, PUBDATE, LINK, NONE
 	};
+
+	private InputStream getInputStreamFromURL(URL url) throws IOException{
+		URLConnection conn = url.openConnection();
+		SharedPreferences pref =
+				PreferenceManager.getDefaultSharedPreferences(PodplayerActivity.this);
+		int timeout = Integer.valueOf(pref.getString("read_timeout", "30"));
+		timeout = timeout * 1000;
+		conn.setReadTimeout(timeout);
+		return conn.getInputStream();
+	}
 	
 	private class GetEpisodeTask
 		extends AsyncTask<URL, PodInfo, Void>
@@ -437,8 +461,8 @@ public class PodplayerActivity
 				Log.i(TAG, "cannot get xml parser", e1);
 				return null;
 			}
-			String[] urls = getResources().getStringArray(R.array.pref_podcastlist_urls);
-			URL[] iconURLs = new URL[urllist.length];
+			String[] allPodcastURLs = getResources().getStringArray(R.array.pref_podcastlist_urls);
+
 			int podcastIndex = 0;
 			for(int i = 0; i < urllist.length; i++) {
 				URL url = urllist[i];
@@ -446,19 +470,13 @@ public class PodplayerActivity
 					break;
 				}
 				//get index of podcastURL to filter
-				while(! urls[podcastIndex].equals(url.toString())){
+				while(! allPodcastURLs[podcastIndex].equals(url.toString())){
 					podcastIndex++;
 				}
 				Log.d(TAG, "get URL: " + podcastIndex + ": "+ url);
 				InputStream is = null;
 				try {
-					URLConnection conn = url.openConnection();
-					SharedPreferences pref =
-							PreferenceManager.getDefaultSharedPreferences(PodplayerActivity.this);
-					int timeout = Integer.valueOf(pref.getString("read_timeout", "30"));
-					timeout = timeout * 1000;
-					conn.setReadTimeout(timeout);
-					is = conn.getInputStream();
+					is = getInputStreamFromURL(url);
 					XmlPullParser parser = factory.newPullParser();
 					//TODO: use reader or give correct encoding
 					parser.setInput(is, "UTF-8");
@@ -483,6 +501,31 @@ public class PodplayerActivity
 							else if("enclosure".equalsIgnoreCase(currentName)) {
 								podcastURL = parser.getAttributeValue(null, "url");
 							}
+							else if("itunes:image".equalsIgnoreCase(currentName)) {
+								if(null == iconURL_[podcastIndex]) {
+									URL iconURL = new URL(parser.getAttributeValue(null, "href"));
+									iconURL_[podcastIndex] = iconURL;
+									//get data
+									InputStream iconInputStream = null;
+									try {
+										iconInputStream = getInputStreamFromURL(iconURL);
+										iconData_[i] = new BitmapDrawable(getResources(), iconInputStream);
+									}
+									catch(IOException e) {
+										Log.d(TAG, "cannot load icon", e);
+									}
+									finally {
+										if(null != is) {
+											try{
+												iconInputStream.close();
+											}
+											catch(IOException e) {
+												//nop..
+											}
+										}
+									}
+								}
+							}
 						}
 						else if(eventType == XmlPullParser.TEXT) {
 							switch(tagName) {
@@ -495,9 +538,6 @@ public class PodplayerActivity
 								break;
 							case LINK:
 								link = parser.getText();
-								break;
-							case ITUNES_IMAGE:
-								iconURLs[i] = new URL(parser.getText());
 								break;
 							default:
 								break;
@@ -542,7 +582,6 @@ public class PodplayerActivity
 					}
 				}
 			}
-			//TODO: fetch icons
 			return null;
 		}
 		

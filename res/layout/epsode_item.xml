@@ -4,26 +4,38 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/play_icon"
+        android:id="@+id/episode_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:focusable="false"
-        android:src="@android:drawable/ic_media_play"
-        android:tint="#9E9"
-        android:visibility="gone" />
+        android:adjustViewBounds="true"
+        android:maxHeight="50dp"
+        android:maxWidth="50dp"
+        android:layout_marginLeft="2dp"
+        android:focusable="false" />
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
-    
-    <TextView
-        android:id="@+id/episode_title"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
+    <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+          <ImageView
+                android:id="@+id/play_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:src="@android:drawable/ic_media_play"
+                android:tint="#9E9"
+                android:visibility="gone" />
+          <TextView
+                android:id="@+id/episode_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+<TextView
         android:id="@+id/episode_time"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
