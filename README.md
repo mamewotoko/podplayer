@@ -110,7 +110,7 @@ https://github.com/johannilsson/android-pulltorefresh
 
 Keywords
 ----------
-Android, MediaPlayer, Podcast, AsynTask, PullToUpdate, Gesture
+Android, MediaPlayer, Podcast, AsyncTask, PullToRefresh, Gesture
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
