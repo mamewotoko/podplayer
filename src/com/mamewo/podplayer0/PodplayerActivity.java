@@ -125,7 +125,6 @@ public class PodplayerActivity
 		episodeList_.setOnCancelListener(this);
 		adapter_ = new EpisodeAdapter(this);
 		setListAdapter(adapter_);
-		episodeList_.setAdapter(adapter_);
 
 		Intent intent = new Intent(this, PlayerService.class);
 		startService(intent);
