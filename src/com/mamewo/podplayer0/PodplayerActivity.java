@@ -270,7 +270,9 @@ public class PodplayerActivity
 				player_.pauseMusic();
 			}
 			else {
-				player_.restartMusic();
+				if(! player_.restartMusic()){
+					playByInfo(info);
+				}
 			}
 		}
 		else {
@@ -748,7 +750,6 @@ public class PodplayerActivity
 			Log.d(TAG, "play by gesture");
 			updatePlaylist();
 			if(! player_.restartMusic()) {
-				//TODO: call playMusic?
 				player_.playNth(0);
 			}
 		}
