@@ -47,12 +47,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ImageView;
 import android.widget.SimpleExpandableListAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -72,7 +70,6 @@ public class PodplayerExpActivity
 {
 	private PodplayerState state_;
 	private ToggleButton playButton_;
-	private ExpandableListView expandableList_;
 	private SimpleExpandableListAdapter expandableAdapter_;
 	//TODO: wait until player_ is not null (service is connected)
 	private PlayerService player_ = null;
