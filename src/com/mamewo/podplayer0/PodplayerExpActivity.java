@@ -11,16 +11,15 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
-import android.app.ListActivity;
-
+import android.app.ExpandableListActivity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -35,11 +34,9 @@ import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.gesture.Prediction;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -48,37 +45,35 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.SimpleExpandableListAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.mamewo.podplayer0.PlayerService.PodInfo;
-import com.markupartist.android.widget.PullToRefreshListView;
 
-public class PodplayerActivity
-	extends ListActivity
+public class PodplayerExpActivity
+	extends ExpandableListActivity
 	implements OnClickListener,
 	ServiceConnection,
-	OnItemLongClickListener,
-	OnItemSelectedListener,
+//	OnItemLongClickListener,
+//	OnItemSelectedListener,
 	PlayerService.PlayerStateListener,
 	OnSharedPreferenceChangeListener,
-	PullToRefreshListView.OnRefreshListener,
-	PullToRefreshListView.OnCancelListener,
-	OnGesturePerformedListener
+	OnGesturePerformedListener,
+	OnChildClickListener
 {
 	private PodplayerState state_;
 	private ToggleButton playButton_;
-	private Spinner selector_;
-	private PullToRefreshListView episodeList_;
-	private ArrayAdapter<PodInfo> adapter_;
+	private ExpandableListView expandableList_;
+	private SimpleExpandableListAdapter expandableAdapter_;
 	//TODO: wait until player_ is not null (service is connected)
 	private PlayerService player_ = null;
 	private boolean finishServiceOnExit = false;
@@ -98,14 +93,17 @@ public class PodplayerActivity
 	private boolean DEFAULT_USE_GESTURE = true;
 	final static
 	private URL[] DUMMY_URL_LIST = new URL[0];
-
+	
 	final static
 	private String TAG = "podplayer";
+	
+	private List<Map<String,String>> groupData_;
+	private List<List<Map<String, ?>>> childData_;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.expandable_main);
 		state_ = null;
 		if(null != savedInstanceState){
 			state_ = (PodplayerState) savedInstanceState.get("state");
@@ -117,14 +115,27 @@ public class PodplayerActivity
 		playButton_ = (ToggleButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
 		playButton_.setEnabled(false);
-		selector_ = (Spinner) findViewById(R.id.podcast_selector);
-		selector_.setOnItemSelectedListener(this);
-		episodeList_ = (PullToRefreshListView) getListView();
-		episodeList_.setOnItemLongClickListener(this);
-		episodeList_.setOnRefreshListener(this);
-		episodeList_.setOnCancelListener(this);
-		adapter_ = new EpisodeAdapter(this);
-		setListAdapter(adapter_);
+		//expandableList_.setOnItemLongClickListener(this);
+		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
+		groupData_ = new ArrayList<Map<String, String>>();
+		childData_ = new ArrayList<List<Map<String, ?>>>();
+		for (int i = 0; i < titles.length; i++) {
+			Map<String, String> groupItem = new HashMap<String, String>();
+			groupItem.put("TITLE", titles[i]);
+			groupData_.add(groupItem);
+			childData_.add(new ArrayList<Map<String, ?>>());
+		}
+		expandableAdapter_ = new ExpAdapter(
+				this,
+				groupData_,
+				android.R.layout.simple_expandable_list_item_1,
+				new String[] {"TITLE"},
+				new int[] { android.R.id.text1 },
+				childData_,
+				R.layout.episode_item,
+				new String[] {"TITLE"},
+				new int[] { R.id.episode_title });
+		setListAdapter(expandableAdapter_);
 
 		Intent intent = new Intent(this, PlayerService.class);
 		startService(intent);
@@ -135,7 +146,6 @@ public class PodplayerActivity
 		pref.registerOnSharedPreferenceChangeListener(this);
 		gestureLib_ = null;
 		gestureScoreThreshold_ = 0.0;
-		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
 		//TODO: refactor
 		iconData_ = new Drawable[titles.length];
 		state_.iconURL_ = new URL[titles.length];
@@ -181,18 +191,10 @@ public class PodplayerActivity
 				}
 			}
 		}
-		ArrayAdapter<String> adapter =
-				new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-		//TODO: load if selected item is changed
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		selector_.setAdapter(adapter);
 		boolean doLoad = pref.getBoolean("load_on_start", true);
 		updateUI();
-		if(doLoad && adapter_.getCount() == 0){
-			episodeList_.startRefresh();
-		}
-		else {
-			episodeList_.onRefreshComplete(state_.lastUpdated_);
+		if(doLoad){
+			loadPodcast();
 		}
 	}
 
@@ -205,25 +207,27 @@ public class PodplayerActivity
 		if(null == player_) {
 			return;
 		}
-		adapter_.notifyDataSetChanged();
+		expandableAdapter_.notifyDataSetChanged();
 		playButton_.setChecked(player_.isPlaying());
 	}
 
-	private void updatePodcast(){
+	private void loadPodcast(){
 		if(null != loadTask_ && loadTask_.getStatus() == AsyncTask.Status.RUNNING){
 			Log.d(TAG, "Already loading");
 			return;
 		}
 		Log.d(TAG, "updatePodcast starts: " + loadTask_);
-		adapter_.clear();
+		for (int i = 0; i < childData_.size(); i++) {
+			childData_.get(i).clear();
+		}
 		loadTask_ = new GetEpisodeTask();
 		loadTask_.execute(state_.podcastURLList_.toArray(DUMMY_URL_LIST));
 	}
-	
+
 	private void updatePlaylist() {
 		player_.setPlaylist(state_.loadedEpisode_);
 	}
-	
+
 	@Override
 	public void onClick(View v) {
 		//add option to load onStart
@@ -240,7 +244,7 @@ public class PodplayerActivity
 			playButton_.setChecked(player_.isPlaying());
 		}
 	}
-	
+
 	public static void showMessage(Context c, String message) {
 		Toast.makeText(c, message, Toast.LENGTH_SHORT).show();
 	}
@@ -260,9 +264,12 @@ public class PodplayerActivity
 	}
 
 	@Override
-	public void onListItemClick(ListView list, View view, int pos, long id) {
+	public boolean onChildClick (ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 		//refresh header is added....
-		PodInfo info = adapter_.getItem(pos-1);
+		@SuppressWarnings("unchecked")
+		HashMap<String,Object> map =
+			(HashMap<String, Object>) expandableAdapter_.getChild(groupPosition, childPosition);
+		PodInfo info = (PodInfo)map.get("DATA");
 		PodInfo current = player_.getCurrentPodInfo();
 		if(current != null && current.url_.equals(info.url_)) {
 			if(player_.isPlaying()) {
@@ -275,10 +282,10 @@ public class PodplayerActivity
 			}
 		}
 		else {
-			Log.d(TAG, "clicked: " + pos + " " + info.title_);
 			updatePlaylist();
 			playByInfo(info);
 		}
+		return true;
 	}
 
 	private void playByInfo(PodInfo info) {
@@ -322,24 +329,38 @@ public class PodplayerActivity
 		return handled;
 	}
 	
-	public class EpisodeAdapter
-		extends ArrayAdapter<PodInfo> {
+	public class ExpAdapter
+		extends SimpleExpandableListAdapter {
 
-		public EpisodeAdapter(Context context) {
-			super(context, R.layout.episode_item);
+		public ExpAdapter(Context context,
+				List<? extends Map<String, ?>> groupData,
+				int groupLayout,
+				String[] groupFrom, int[] groupTo,
+				List<? extends List<? extends Map<String, ?>>> childData,
+				int childLayout, String[] childFrom,
+				int[] childTo) {
+			super(context, groupData, groupLayout, groupFrom,
+					groupTo, childData, childLayout, childFrom, childTo);
 		}
-		
+
 		//TODO: optimize
 		@Override
-		public View getView (int position, View convertView, ViewGroup parent) {
+		public View getChildView (int groupPosition, int childPosition, boolean isLastChild,
+								View convertView, ViewGroup parent)
+		{
+			int childNum = getChildrenCount(groupPosition);
+			if(childPosition > childNum) {
+				return null;
+			}
 			View view;
 			if (null == convertView) {
-				view = View.inflate(PodplayerActivity.this, R.layout.episode_item, null);
+				view = View.inflate(PodplayerExpActivity.this, R.layout.episode_item, null);
 			}
 			else {
 				view = convertView;
 			}
-			PodInfo info = getItem(position);
+			HashMap<String, Object> map = (HashMap)getChild(groupPosition, childPosition);
+			PodInfo info = (PodInfo)map.get("DATA");
 			TextView titleView = (TextView)view.findViewById(R.id.episode_title);
 			TextView timeView = (TextView)view.findViewById(R.id.episode_time);
 			titleView.setText(info.title_);
@@ -444,7 +465,7 @@ public class PodplayerActivity
 	private InputStream getInputStreamFromURL(URL url) throws IOException{
 		URLConnection conn = url.openConnection();
 		SharedPreferences pref =
-				PreferenceManager.getDefaultSharedPreferences(PodplayerActivity.this);
+				PreferenceManager.getDefaultSharedPreferences(PodplayerExpActivity.this);
 		int timeout = Integer.valueOf(pref.getString("read_timeout", "30"));
 		timeout = timeout * 1000;
 		conn.setReadTimeout(timeout);
@@ -600,111 +621,44 @@ public class PodplayerActivity
 		protected void onProgressUpdate(PodInfo... values){
 			for (int i = 0; i < values.length; i++) {
 				PodInfo info = values[i];
+				//TODO: remove?
 				state_.loadedEpisode_.add(info);
-				int selectorPos = selector_.getSelectedItemPosition();
-				if(selectorPos == 0) {
-					adapter_.add(info);
-				}
-				else {
-					String selectedTitle = (String)selector_.getSelectedItem();
-					int index = podcastTitle2Index(selectedTitle);
-					if(index == info.index_) {
-						adapter_.add(info);
-					}
-				}
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("TITLE", info.title_);
+				map.put("DATA", info);
+				childData_.get(info.index_).add(map);
 			}
 		}
 
 		@Override
 		protected void onPostExecute(Void result) {
-			if(adapter_.isEmpty()) {
-				episodeList_.setLastUpdated("");
-			}
-			else {
-				DateFormat df = DateFormat.getDateTimeInstance();
-				state_.lastUpdated_ = df.format(new Date());
-				episodeList_.setLastUpdated("Last updated: " + state_.lastUpdated_);
-			}
-			episodeList_.onRefreshComplete();
 			loadTask_ = null;
 			//TODO: Sync playlist
 			updatePlaylist();
 		}
 	}
 
-	@Override
-	public void onRefresh() {
-		updatePodcast();
-	}
+//	@Override
+//	public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
+//		PodInfo info = expandableAdapter_.getItem(pos-1);
+//		Log.d(TAG, "onlongclick: " + info.link_ + " pos: " + pos);
+//		SharedPreferences pref=
+//				PreferenceManager.getDefaultSharedPreferences(this);
+//		boolean enableLongClick = pref.getBoolean("enable_long_click", false);
+//		if ((! enableLongClick) || null == info.link_) {
+//			return false;
+//		}
+//		//TODO: add preference to enable this 
+//		Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+//		if (vibrator != null) {
+//			vibrator.vibrate(100);
+//		}
+//		Intent i =
+//				new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
+//		startActivity(new Intent(i));
+//		return true;
+//	}
 
-	@Override
-	public void onCancel() {
-		if (null != loadTask_) {
-			loadTask_.cancel(true);
-			loadTask_ = null;
-		}
-	}
-
-	@Override
-	public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
-		PodInfo info = adapter_.getItem(pos-1);
-		Log.d(TAG, "onlongclick: " + info.link_ + " pos: " + pos);
-		SharedPreferences pref=
-				PreferenceManager.getDefaultSharedPreferences(this);
-		boolean enableLongClick = pref.getBoolean("enable_long_click", false);
-		if ((! enableLongClick) || null == info.link_) {
-			return false;
-		}
-		//TODO: add preference to enable this 
-		Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		if (vibrator != null) {
-			vibrator.vibrate(100);
-		}
-		Intent i =
-				new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
-		startActivity(new Intent(i));
-		return true;
-	}
-
-	//Filter is changed
-	@Override
-	public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
-		//0: all
-		//Log.d(TAG, "selector: pos " + pos);
-		adapter_.clear();
-		if(pos == 0){
-			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
-				PodInfo info = state_.loadedEpisode_.get(i);
-				adapter_.add(info);
-			}
-		}
-		else {
-			String selectedTitle = (String)adapter.getItemAtPosition(pos);
-			int selectedIndex = podcastTitle2Index(selectedTitle);
-			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
-				PodInfo info = state_.loadedEpisode_.get(i);
-				//Log.d(TAG, "onItemSelected: " + info.index_ + " " + info.title_);
-				if(selectedIndex == info.index_){
-					adapter_.add(info);
-				}
-				else if(selectedIndex < info.index_) {
-					break;
-				}
-			}
-		}
-		if (null == loadTask_) {
-			episodeList_.hideHeader();
-		}
-	}
-
-	@Override
-	public void onNothingSelected(AdapterView<?> adapter) {
-		for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
-			PodInfo info = state_.loadedEpisode_.get(i);
-			adapter_.add(info);
-		}
-	}
-	
 	private int podcastTitle2Index(String title){
 		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
 		for(int i = 0; i < titles.length; i++) {
