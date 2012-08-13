@@ -234,8 +234,7 @@ public class PodplayerActivity
 			else {
 				updatePlaylist();
 				if(! player_.restartMusic()) {
-					//TODO: call playMusic?
-					player_.playNth(0);
+					player_.playMusic();
 				}
 			}
 			playButton_.setChecked(player_.isPlaying());
@@ -284,11 +283,15 @@ public class PodplayerActivity
 
 	private void playByInfo(PodInfo info) {
 		//umm...
-		int playPos;
+		int playPos = -1;
 		for(playPos = 0; playPos < state_.loadedEpisode_.size(); playPos++) {
 			if(state_.loadedEpisode_.get(playPos) == info) {
 				break;
 			}
+		}
+		if (playPos < 0){
+			Log.d(TAG, "playByInfo: info is not found: " + info.url_);
+			return;
 		}
 		player_.playNth(playPos);
 	}
@@ -750,7 +753,7 @@ public class PodplayerActivity
 			Log.d(TAG, "play by gesture");
 			updatePlaylist();
 			if(! player_.restartMusic()) {
-				player_.playNth(0);
+				player_.playMusic();
 			}
 		}
 		else if("pause".equals(p.name)) {

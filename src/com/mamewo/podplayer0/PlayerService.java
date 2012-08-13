@@ -123,15 +123,11 @@ public class PlayerService
 			return false;
 		}
 		player_.start();
-		if(null != listener_){
-			//TODO: playlist may be updated. verify it.
-			PodInfo info = currentPlaylist_.get(playCursor_);
-			listener_.onStartLoadingMusic(info);
-		}
+		PodInfo info = currentPlaylist_.get(playCursor_);
+		notifyPlayingEpisode(info);
 		return true;
 	}
 
-	
 	public boolean playMusic() {
 		if (isPreparing_) {
 			return false;
@@ -149,18 +145,22 @@ public class PlayerService
 			player_.prepareAsync();
 			isPreparing_ = true;
 			isPausing_ = false;
-			if(null != listener_){
-				listener_.onStartLoadingMusic(info);
-			}
 		}
 		catch (IOException e) {
 			return false;
 		}
-		//TODO: localize
-		startForeground("Playing podcast", info.title_);
+		notifyPlayingEpisode(info);
 		return true;
 	}
 
+	public void notifyPlayingEpisode(PodInfo info) {
+		if(null != listener_){
+			listener_.onStartLoadingMusic(info);
+		}
+		//TODO: localize
+		startForeground("Playing podcast", info.title_);
+	}
+	
 	public void startForeground(String title, String description) {
 		//TODO: localize
 		String podTitle = "playing podcast";
