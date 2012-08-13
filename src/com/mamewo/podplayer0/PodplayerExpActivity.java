@@ -70,6 +70,7 @@ public class PodplayerExpActivity
 {
 	private PodplayerState state_;
 	private ToggleButton playButton_;
+	private ImageView reloadButton_;
 	private SimpleExpandableListAdapter expandableAdapter_;
 	//TODO: wait until player_ is not null (service is connected)
 	private PlayerService player_ = null;
@@ -108,6 +109,8 @@ public class PodplayerExpActivity
 		if(null == state_){
 			state_ = new PodplayerState();
 		}
+		reloadButton_ = (ImageView) findViewById(R.id.reload_button);
+		reloadButton_.setOnClickListener(this);
 		loadTask_ = null;
 		playButton_ = (ToggleButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
@@ -208,15 +211,18 @@ public class PodplayerExpActivity
 		playButton_.setChecked(player_.isPlaying());
 	}
 
+	//must be called from UI thread
 	private void loadPodcast(){
 		if(null != loadTask_ && loadTask_.getStatus() == AsyncTask.Status.RUNNING){
 			Log.d(TAG, "Already loading");
 			return;
 		}
+		reloadButton_.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
 		Log.d(TAG, "updatePodcast starts: " + loadTask_);
 		for (int i = 0; i < childData_.size(); i++) {
 			childData_.get(i).clear();
 		}
+		updateUI();
 		loadTask_ = new GetEpisodeTask();
 		loadTask_.execute(state_.podcastURLList_.toArray(DUMMY_URL_LIST));
 	}
@@ -228,6 +234,7 @@ public class PodplayerExpActivity
 	@Override
 	public void onClick(View v) {
 		//add option to load onStart
+		Log.d(TAG, "onClick");
 		if (v == playButton_) {
 			if(player_.isPlaying()) {
 				player_.pauseMusic();
@@ -239,6 +246,14 @@ public class PodplayerExpActivity
 				}
 			}
 			playButton_.setChecked(player_.isPlaying());
+		}
+		else if(v == reloadButton_) {
+			if(null != loadTask_ && loadTask_.getStatus() == AsyncTask.Status.RUNNING) {
+				loadTask_.cancel(true);
+			}
+			else {
+				loadPodcast();
+			}
 		}
 	}
 
@@ -356,7 +371,8 @@ public class PodplayerExpActivity
 			else {
 				view = convertView;
 			}
-			HashMap<String, Object> map = (HashMap)getChild(groupPosition, childPosition);
+			@SuppressWarnings("unchecked")
+			HashMap<String, Object> map = (HashMap<String, Object>)getChild(groupPosition, childPosition);
 			PodInfo info = (PodInfo)map.get("DATA");
 			TextView titleView = (TextView)view.findViewById(R.id.episode_title);
 			TextView timeView = (TextView)view.findViewById(R.id.episode_time);
@@ -632,6 +648,14 @@ public class PodplayerExpActivity
 			loadTask_ = null;
 			//TODO: Sync playlist
 			updatePlaylist();
+			reloadButton_.setImageResource(android.R.drawable.ic_popup_sync);
+		}
+		
+		@Override
+		protected void onCancelled() {
+			//TODO: show toast?
+			loadTask_ = null;
+			reloadButton_.setImageResource(android.R.drawable.ic_popup_sync);
 		}
 	}
 

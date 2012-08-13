@@ -4,31 +4,40 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
 
-    <ToggleButton
-        android:id="@+id/play_button"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:textOff="Start"
-        android:textOn="Pause" />
+        <ToggleButton
+            android:id="@+id/play_button"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textOff="Start"
+            android:textOn="Pause" />
 
-</LinearLayout>
-         <android.gesture.GestureOverlayView
-             android:id="@+id/gesture_view"
-             android:layout_width="match_parent"
-             android:layout_height="0dip"
-             android:layout_weight="1.0"
-             android:eventsInterceptionEnabled="true"
-             android:gestureStrokeType="single"
-             android:orientation="vertical" >
-         <ExpandableListView
+        <ImageView
+            android:id="@+id/reload_button"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:src="@android:drawable/ic_popup_sync" />
+    </LinearLayout>
+
+    <android.gesture.GestureOverlayView
+        android:id="@+id/gesture_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1.0"
+        android:eventsInterceptionEnabled="true"
+        android:gestureStrokeType="single"
+        android:orientation="vertical" >
+
+        <ExpandableListView
             android:id="@android:id/list"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            />
-         </android.gesture.GestureOverlayView>
+            android:layout_height="wrap_content" />
+    </android.gesture.GestureOverlayView>
+
 </LinearLayout>
