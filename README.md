@@ -24,6 +24,8 @@ How to build
 1. Clone source
 
     git clone git://github.com/mamewotoko/podplayer.git
+    git submodule init
+    git submodule update
 
 ### ant
 1. Update project
