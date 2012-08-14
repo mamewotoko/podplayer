@@ -143,6 +143,9 @@ public class PodplayerActivity
 
 	@Override
 	public void onDestroy(){
+		if (null != loadTask_) {
+			loadTask_.cancel(true);
+		}
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.unregisterOnSharedPreferenceChangeListener(this);

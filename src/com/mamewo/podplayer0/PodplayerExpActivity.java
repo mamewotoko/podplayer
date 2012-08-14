@@ -136,12 +136,15 @@ public class PodplayerExpActivity
 
 	@Override
 	public void onDestroy(){
+		if (null != loadTask_) {
+			loadTask_.cancel(true);
+		}
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.unregisterOnSharedPreferenceChangeListener(this);
 		boolean playing = player_.isPlaying();
 		iconData_ = null;
-		if(finishServiceOnExit && playing) {
+		if (finishServiceOnExit && playing) {
 			player_.stopMusic();
 		}
 		unbindService(this);
