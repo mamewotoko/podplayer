@@ -139,7 +139,6 @@ public class PodplayerExpActivity
 			return;
 		}
 		reloadButton_.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
-		Log.d(TAG, "updatePodcast starts: " + loadTask_);
 		for (int i = 0; i < childData_.size(); i++) {
 			childData_.get(i).clear();
 		}
@@ -225,7 +224,7 @@ public class PodplayerExpActivity
 			}
 		}
 		if (playPos < 0){
-			Log.d(TAG, "playByInfo: info is not found: " + info.url_);
+			Log.i(TAG, "playByInfo: info is not found: " + info.url_);
 			return;
 		}
 		player_.playNth(playPos);
@@ -404,15 +403,5 @@ public class PodplayerExpActivity
 				new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
 		startActivity(new Intent(i));
 		return true;
-	}
-
-	private int podcastTitle2Index(String title){
-		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
-		for(int i = 0; i < titles.length; i++) {
-			if(title.equals(titles[i])) {
-				return i;
-			}
-		}
-		return -1;
 	}
 }

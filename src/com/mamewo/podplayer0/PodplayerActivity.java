@@ -115,10 +115,9 @@ public class PodplayerActivity
 
 	private void loadPodcast(){
 		if (isLoading()) {
-			Log.d(TAG, "Already loading");
+			Log.i(TAG, "Already loading");
 			return;
 		}
-		Log.d(TAG, "updatePodcast starts: " + loadTask_);
 		adapter_.clear();
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(PodplayerActivity.this);
@@ -160,7 +159,6 @@ public class PodplayerActivity
 			}
 		}
 		else {
-			Log.d(TAG, "clicked: " + pos + " " + info.title_);
 			updatePlaylist();
 			playByInfo(info);
 		}
@@ -175,7 +173,7 @@ public class PodplayerActivity
 			}
 		}
 		if (playPos < 0){
-			Log.d(TAG, "playByInfo: info is not found: " + info.url_);
+			Log.i(TAG, "playByInfo: info is not found: " + info.url_);
 			return;
 		}
 		player_.playNth(playPos);
@@ -318,7 +316,6 @@ public class PodplayerActivity
 	@Override
 	public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
 		PodInfo info = adapter_.getItem(pos-1);
-		Log.d(TAG, "onlongclick: " + info.link_ + " pos: " + pos);
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		boolean enableLongClick = pref.getBoolean("enable_long_click", false);
@@ -340,7 +337,6 @@ public class PodplayerActivity
 	@Override
 	public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
 		//0: all
-		//Log.d(TAG, "selector: pos " + pos);
 		adapter_.clear();
 		if(pos == 0){
 			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
@@ -353,7 +349,6 @@ public class PodplayerActivity
 			int selectedIndex = podcastTitle2Index(selectedTitle);
 			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
 				PodInfo info = state_.loadedEpisode_.get(i);
-				//Log.d(TAG, "onItemSelected: " + info.index_ + " " + info.title_);
 				if (selectedIndex == info.index_) {
 					adapter_.add(info);
 				}

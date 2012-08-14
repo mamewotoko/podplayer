@@ -75,8 +75,8 @@ public class BasePodplayerActivity
 			state_ = new PodplayerState();
 		}
 		connection_ = conn;
-		boolean result = bindService(intent, conn, Context.BIND_AUTO_CREATE);
-		Log.d(TAG, "bindService: " + result);
+		//TODO: handle error
+		bindService(intent, conn, Context.BIND_AUTO_CREATE);
 		allTitles_ = getResources().getStringArray(R.array.pref_podcastlist_keys);
 		allURLs_ = getResources().getStringArray(R.array.pref_podcastlist_urls);
 		loadTask_ = null;
@@ -196,7 +196,7 @@ public class BasePodplayerActivity
 			if(useGesture) {
 				gestureLib_ = GestureLibraries.fromRawResource(this, R.raw.gestures);
 				if(! gestureLib_.load()){
-					Log.d(TAG, "gesture load failed");
+					Log.i(TAG, "gesture load failed");
 				}
 				gestureView.addOnGesturePerformedListener(this);
 			}
@@ -212,7 +212,6 @@ public class BasePodplayerActivity
 		}
 		if(updateAll || "show_podcast_icon".equals(key)) {
 			showPodcastIcon_ = pref.getBoolean("show_podcast_icon", true);
-			Log.d(TAG, "showEpisodeIcon: " + showPodcastIcon_);
 		}
 	}
 
@@ -233,7 +232,6 @@ public class BasePodplayerActivity
 			player_.playNext();
 		}
 		else if("play".equals(p.name)) {
-			Log.d(TAG, "play by gesture");
 			updatePlaylist();
 			if(! player_.restartMusic()) {
 				player_.playMusic();

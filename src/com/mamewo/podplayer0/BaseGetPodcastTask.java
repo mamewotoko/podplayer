@@ -12,11 +12,9 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import com.mamewo.podplayer0.PlayerService.PodInfo;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class BaseGetPodcastTask
@@ -62,7 +60,7 @@ extends AsyncTask<URL, PodInfo, Void>
 			result = new BitmapDrawable(context_.getResources(), is);
 		}
 		catch(IOException e) {
-			Log.d(TAG, "cannot load icon", e);
+			Log.i(TAG, "cannot load icon", e);
 		}
 		finally {
 			if(null != is) {
