@@ -615,8 +615,7 @@ public class PodplayerActivity
 			}
 		}
 
-		@Override
-		protected void onPostExecute(Void result) {
+		private void onFinished() {
 			if(adapter_.isEmpty()) {
 				episodeList_.setLastUpdated("");
 			}
@@ -629,6 +628,16 @@ public class PodplayerActivity
 			loadTask_ = null;
 			//TODO: Sync playlist
 			updatePlaylist();
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			onFinished();
+		}
+		
+		@Override
+		protected void onCancelled() {
+			onFinished();
 		}
 	}
 
