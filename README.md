@@ -70,7 +70,7 @@ How to test
 
 TODO
 ----------
-* separate class
+* show number of episode for each group of expandable list
 * reset playing position after podcast selection is changed
 * use database to manage loaded episodes
    * display mark which is already played, new item etc...
