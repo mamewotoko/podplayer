@@ -5,29 +5,17 @@ package com.mamewo.podplayer0;
  * http://www002.upp.so-net.ne.jp/mamewo/
  */
 
-import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.gesture.Gesture;
-import android.gesture.GestureLibraries;
-import android.gesture.GestureLibrary;
-import android.gesture.GestureOverlayView;
-import android.gesture.GestureOverlayView.OnGesturePerformedListener;
-import android.gesture.Prediction;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -44,122 +32,46 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ImageView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.mamewo.podplayer0.PlayerService.PodInfo;
 
 public class PodplayerExpActivity
-	extends Activity
+	extends BasePodplayerActivity
 	implements OnClickListener,
 	ServiceConnection,
 //	OnItemLongClickListener,
 	PlayerService.PlayerStateListener,
 	OnSharedPreferenceChangeListener,
-	OnGesturePerformedListener,
 	OnChildClickListener
 {
-	private PodplayerState state_;
 	private ToggleButton playButton_;
 	private ImageView reloadButton_;
 	private SimpleExpandableListAdapter expandableAdapter_;
-	//TODO: wait until player_ is not null (service is connected)
-	private PlayerService player_ = null;
-	private boolean finishServiceOnExit = false;
-	private GetPodcastTask loadTask_;
-	private GestureLibrary gestureLib_;
-	private double gestureScoreThreshold_;
-	private Drawable[] iconData_;
-	private boolean showPodcastIcon_;
 	private int allIndex2viewIndex_[];
-	private String[] allTitles_;
-	private String[] allURLs_;
 
-	final static
-	private String DEFAULT_PODCAST_LIST = "http://www.nhk.or.jp/rj/podcast/rss/english.xml"
-			+ "!http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500"
-			+ "!http://computersciencepodcast.com/compucast.rss!http://www.discovery.com/radio/xml/news.xml"
-			+ "!http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml"
-			+ "!http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml";
-	final static
-	private boolean DEFAULT_USE_GESTURE = true;
-	final static
-	private URL[] DUMMY_URL_LIST = new URL[0];
-	
-	final static
-	private String TAG = "podplayer";
-	
 	private List<Map<String,String>> groupData_;
 	private List<List<Map<String, Object>>> childData_;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState, this);
 		setContentView(R.layout.expandable_main);
-		state_ = null;
-		if(null != savedInstanceState){
-			state_ = (PodplayerState) savedInstanceState.get("state");
-		}
-		if(null == state_){
-			state_ = new PodplayerState();
-		}
 		reloadButton_ = (ImageView) findViewById(R.id.reload_button);
 		reloadButton_.setOnClickListener(this);
-		loadTask_ = null;
 		playButton_ = (ToggleButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
 		playButton_.setEnabled(false);
 		//expandableList_.setOnItemLongClickListener(this);
 		groupData_ = new ArrayList<Map<String, String>>();
 		childData_ = new ArrayList<List<Map<String, Object>>>();
-
-		Intent intent = new Intent(this, PlayerService.class);
-		startService(intent);
-		boolean result = bindService(intent, this, Context.BIND_AUTO_CREATE);
-		Log.d(TAG, "bindService: " + result);
-		SharedPreferences pref=
-				PreferenceManager.getDefaultSharedPreferences(this);
-		pref.registerOnSharedPreferenceChangeListener(this);
-		gestureLib_ = null;
-		gestureScoreThreshold_ = 0.0;
-		//TODO: refactor
-		allTitles_ = getResources().getStringArray(R.array.pref_podcastlist_keys);
-		allURLs_ = getResources().getStringArray(R.array.pref_podcastlist_urls);
-		iconData_ = new Drawable[allTitles_.length];
-		state_.iconURLs_ = new URL[allTitles_.length];
 		allIndex2viewIndex_ = new int[allTitles_.length];
-	}
-
-	@Override
-	public void onDestroy(){
-		if (null != loadTask_) {
-			loadTask_.cancel(true);
-		}
-		SharedPreferences pref=
-				PreferenceManager.getDefaultSharedPreferences(this);
-		pref.unregisterOnSharedPreferenceChangeListener(this);
-		boolean playing = player_.isPlaying();
-		iconData_ = null;
-		if (finishServiceOnExit && playing) {
-			player_.stopMusic();
-		}
-		unbindService(this);
-		if (finishServiceOnExit || ! playing) {
-			Intent intent = new Intent(this, PlayerService.class);
-			stopService(intent);
-		}
-		super.onDestroy();
 	}
 
 	//TODO: fetch current playing episode to update currentPodInfo
 	@Override
 	public void onResume(){
 		super.onResume();
-		SharedPreferences pref=
-				PreferenceManager.getDefaultSharedPreferences(this);
-		syncPreference(pref, "ALL");
-		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
-		String[] urls = getResources().getStringArray(R.array.pref_podcastlist_urls);
 		//stop loading?
 		for(int i = 0; i < allIndex2viewIndex_.length; i++) {
 			allIndex2viewIndex_[i] = -1;
@@ -169,11 +81,11 @@ public class PodplayerExpActivity
 		childData_.clear();
 		for (int i = 0; i < state_.podcastURLList_.size(); i++) {
 			String podcastURL = state_.podcastURLList_.get(i).toString();
-			for ( ; j < urls.length; j++) {
-				if(podcastURL.equals(urls[j])) {
+			for ( ; j < allURLs_.length; j++) {
+				if(podcastURL.equals(allURLs_[j])) {
 					Map<String, String> groupItem = new HashMap<String, String>();
 					allIndex2viewIndex_[j] = i;
-					groupItem.put("TITLE", titles[j++]);
+					groupItem.put("TITLE", allTitles_[j++]);
 					groupData_.add(groupItem);
 					childData_.add(new ArrayList<Map<String, Object>>());
 					break;
@@ -193,6 +105,8 @@ public class PodplayerExpActivity
 		ExpandableListView list = (ExpandableListView) findViewById(R.id.exp_list);
 		list.setAdapter(expandableAdapter_);
 		list.setOnChildClickListener(this);
+		SharedPreferences pref=
+				PreferenceManager.getDefaultSharedPreferences(this);
 		boolean doLoad = pref.getBoolean("load_on_start", true);
 		updateUI();
 		if(doLoad){
@@ -215,7 +129,7 @@ public class PodplayerExpActivity
 
 	//must be called from UI thread
 	private void loadPodcast(){
-		if(null != loadTask_ && loadTask_.getStatus() == AsyncTask.Status.RUNNING){
+		if (isLoading()) {
 			Log.d(TAG, "Already loading");
 			return;
 		}
@@ -231,10 +145,6 @@ public class PodplayerExpActivity
 		int timeout = Integer.valueOf(pref.getString("read_timeout", "30"));
 		loadTask_ = new GetPodcastTask(showPodcastIcon, timeout);
 		loadTask_.execute(state_.podcastURLList_.toArray(DUMMY_URL_LIST));
-	}
-
-	private void updatePlaylist() {
-		player_.setPlaylist(state_.loadedEpisode_);
 	}
 
 	@Override
@@ -254,17 +164,13 @@ public class PodplayerExpActivity
 			playButton_.setChecked(player_.isPlaying());
 		}
 		else if(v == reloadButton_) {
-			if(null != loadTask_ && loadTask_.getStatus() == AsyncTask.Status.RUNNING) {
+			if (isLoading()) {
 				loadTask_.cancel(true);
 			}
 			else {
 				loadPodcast();
 			}
 		}
-	}
-
-	public static void showMessage(Context c, String message) {
-		Toast.makeText(c, message, Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
@@ -333,7 +239,7 @@ public class PodplayerExpActivity
 		boolean handled = false;
 		switch(item.getItemId()) {
 		case R.id.exit_menu:
-			finishServiceOnExit = true;
+			finishServiceOnExit_ = true;
 			finish();
 			handled = true;
 			break;
@@ -429,54 +335,6 @@ public class PodplayerExpActivity
 	}
 	// end of callback methods
 
-	private void syncPreference(SharedPreferences pref, String key){
-		boolean updateAll = "ALL".equals(key);
-		if(updateAll || "podcastlist".equals(key)) {
-			String prefURLString = pref.getString("podcastlist", DEFAULT_PODCAST_LIST);
-			String[] list = prefURLString.split(MultiListPreference.SEPARATOR);
-			state_.podcastURLList_.clear();
-			for (String url: list) {
-				try {
-					state_.podcastURLList_.add(new URL(url));
-				}
-				catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		if(updateAll || "enable_gesture".equals(key)) {
-			boolean useGesture = pref.getBoolean("enable_gesture", DEFAULT_USE_GESTURE);
-			GestureOverlayView gestureView =
-					(GestureOverlayView)findViewById(R.id.gesture_view);
-			if(useGesture) {
-				gestureLib_ = GestureLibraries.fromRawResource(this, R.raw.gestures);
-				if(! gestureLib_.load()){
-					Log.d(TAG, "gesture load failed");
-				}
-				gestureView.addOnGesturePerformedListener(this);
-			}
-			else {
-				gestureView.removeOnGesturePerformedListener(this);
-				gestureLib_ = null;
-			}
-			gestureView.setEnabled(useGesture);
-		}
-		if(updateAll || "gesture_score_threshold".equals(key)) {
-			gestureScoreThreshold_ =
-					Double.valueOf(pref.getString("gesture_score_threshold", "3.0"));
-		}
-		if(updateAll || "show_podcast_icon".equals(key)) {
-			showPodcastIcon_ = pref.getBoolean("show_podcast_icon", true);
-			Log.d(TAG, "showEpisodeIcon: " + showPodcastIcon_);
-		}
-	}
-	
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
-		Log.d(TAG, "onSharedPreferneceChanged: " + key);
-		syncPreference(pref, key);
-	}
-
 	private class GetPodcastTask
 		extends BaseGetPodcastTask
 	{
@@ -543,55 +401,5 @@ public class PodplayerExpActivity
 			}
 		}
 		return -1;
-	}
-	
-	final public static
-	class PodplayerState
-		implements Serializable
-	{
-		private static final long serialVersionUID = 1L;
-		private List<PodInfo> loadedEpisode_;
-		private List<URL> podcastURLList_;
-		private String lastUpdated_;
-		private URL[] iconURLs_;
-
-		private PodplayerState() {
-			loadedEpisode_ = new ArrayList<PodInfo>();
-			podcastURLList_ = new ArrayList<URL>();
-			lastUpdated_ = "";
-			iconURLs_ = null;
-		}
-	}
-
-	@Override
-	public void onGesturePerformed(GestureOverlayView view, Gesture gesture) {
-		ArrayList<Prediction> predictions = gestureLib_.recognize(gesture);
-		if(predictions.size() == 0){
-			showMessage(this, "unknown gesture");
-			return;
-		}
-		//predictions is sorted by score
-		Prediction p = predictions.get(0);
-		if(p.score < gestureScoreThreshold_) {
-			showMessage(this, "gesture with low score: " + String.format("%.2f", p.score));
-			return;
-		}
-		if("next".equals(p.name)) {
-			player_.playNext();
-		}
-		else if("play".equals(p.name)) {
-			updatePlaylist();
-			if(! player_.restartMusic()) {
-				player_.playMusic();
-			}
-		}
-		else if("pause".equals(p.name)) {
-			player_.pauseMusic();
-		}
-		else if("back".equals(p.name)) {
-			player_.stopMusic();
-			player_.playMusic();
-		}
-		showMessage(this, p.name);
 	}
 }
