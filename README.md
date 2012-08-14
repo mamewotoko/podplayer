@@ -70,6 +70,7 @@ How to test
 
 TODO
 ----------
+* reset playing position after podcast selection is changed
 * use database to manage loaded episodes
    * display mark which is already played, new item etc...
 * add UI to add podcast URL

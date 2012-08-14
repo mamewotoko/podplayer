@@ -46,7 +46,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ImageView;
@@ -62,7 +61,6 @@ public class PodplayerExpActivity
 	implements OnClickListener,
 	ServiceConnection,
 //	OnItemLongClickListener,
-//	OnItemSelectedListener,
 	PlayerService.PlayerStateListener,
 	OnSharedPreferenceChangeListener,
 	OnGesturePerformedListener,
@@ -80,6 +78,7 @@ public class PodplayerExpActivity
 	private double gestureScoreThreshold_;
 	private Drawable[] iconData_;
 	private boolean showPodcastIcon_;
+	private int allIndex2viewIndex_[];
 
 	final static
 	private String DEFAULT_PODCAST_LIST = "http://www.nhk.or.jp/rj/podcast/rss/english.xml"
@@ -96,7 +95,7 @@ public class PodplayerExpActivity
 	private String TAG = "podplayer";
 	
 	private List<Map<String,String>> groupData_;
-	private List<List<Map<String, ?>>> childData_;
+	private List<List<Map<String, Object>>> childData_;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -118,24 +117,7 @@ public class PodplayerExpActivity
 		//expandableList_.setOnItemLongClickListener(this);
 		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
 		groupData_ = new ArrayList<Map<String, String>>();
-		childData_ = new ArrayList<List<Map<String, ?>>>();
-		for (int i = 0; i < titles.length; i++) {
-			Map<String, String> groupItem = new HashMap<String, String>();
-			groupItem.put("TITLE", titles[i]);
-			groupData_.add(groupItem);
-			childData_.add(new ArrayList<Map<String, ?>>());
-		}
-		expandableAdapter_ = new ExpAdapter(
-				this,
-				groupData_,
-				android.R.layout.simple_expandable_list_item_1,
-				new String[] {"TITLE"},
-				new int[] { android.R.id.text1 },
-				childData_,
-				R.layout.episode_item,
-				new String[] {"TITLE"},
-				new int[] { R.id.episode_title });
-		setListAdapter(expandableAdapter_);
+		childData_ = new ArrayList<List<Map<String, Object>>>();
 
 		Intent intent = new Intent(this, PlayerService.class);
 		startService(intent);
@@ -149,6 +131,7 @@ public class PodplayerExpActivity
 		//TODO: refactor
 		iconData_ = new Drawable[titles.length];
 		state_.iconURL_ = new URL[titles.length];
+		allIndex2viewIndex_ = new int[titles.length];
 	}
 
 	@Override
@@ -176,21 +159,39 @@ public class PodplayerExpActivity
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		syncPreference(pref, "ALL");
-		List<String> list = new ArrayList<String>();
-		list.add("All");
 		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
 		String[] urls = getResources().getStringArray(R.array.pref_podcastlist_urls);
 		//stop loading?
+		for(int i = 0; i < allIndex2viewIndex_.length; i++) {
+			allIndex2viewIndex_[i] = -1;
+		}
 		int j = 0;
-		for(int i = 0; i < state_.podcastURLList_.size(); i++) {
+		groupData_.clear();
+		childData_.clear();
+		for (int i = 0; i < state_.podcastURLList_.size(); i++) {
 			String podcastURL = state_.podcastURLList_.get(i).toString();
 			for ( ; j < urls.length; j++) {
 				if(podcastURL.equals(urls[j])) {
-					list.add(titles[j++]);
+					Map<String, String> groupItem = new HashMap<String, String>();
+					allIndex2viewIndex_[j] = i;
+					groupItem.put("TITLE", titles[j++]);
+					groupData_.add(groupItem);
+					childData_.add(new ArrayList<Map<String, Object>>());
 					break;
 				}
 			}
 		}
+		expandableAdapter_ = new ExpAdapter(
+				this,
+				groupData_,
+				android.R.layout.simple_expandable_list_item_1,
+				new String[] {"TITLE"},
+				new int[] { android.R.id.text1 },
+				childData_,
+				R.layout.episode_item,
+				new String[] {"TITLE"},
+				new int[] { R.id.episode_title });
+		setListAdapter(expandableAdapter_);
 		boolean doLoad = pref.getBoolean("load_on_start", true);
 		updateUI();
 		if(doLoad){
@@ -639,8 +640,9 @@ public class PodplayerExpActivity
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("TITLE", info.title_);
 				map.put("DATA", info);
-				childData_.get(info.index_).add(map);
+				childData_.get(allIndex2viewIndex_[info.index_]).add(map);
 			}
+			updateUI();
 		}
 
 		@Override
