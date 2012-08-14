@@ -77,7 +77,7 @@ public class PodplayerActivity
 	//TODO: wait until player_ is not null (service is connected)
 	private PlayerService player_ = null;
 	private boolean finishServiceOnExit = false;
-	private GetEpisodeTask loadTask_;
+	private GetPodcastTask loadTask_;
 	private GestureLibrary gestureLib_;
 	private double gestureScoreThreshold_;
 	private Drawable[] iconData_;
@@ -219,7 +219,7 @@ public class PodplayerActivity
 				PreferenceManager.getDefaultSharedPreferences(PodplayerActivity.this);
 		boolean showPodcastIcon = pref.getBoolean("show_episode_icon", true);
 		int timeout = Integer.valueOf(pref.getString("read_timeout", "30"));
-		loadTask_ = new GetEpisodeTask(showPodcastIcon, timeout);
+		loadTask_ = new GetPodcastTask(showPodcastIcon, timeout);
 		loadTask_.execute(state_.podcastURLList_.toArray(DUMMY_URL_LIST));
 	}
 	
@@ -454,10 +454,10 @@ public class PodplayerActivity
 		return conn.getInputStream();
 	}
 
-	private class GetEpisodeTask
-		extends BaseGetEpisodeTask
+	private class GetPodcastTask
+		extends BaseGetPodcastTask
 	{
-		public GetEpisodeTask(boolean showPodcastIcon, int timeout) {
+		public GetPodcastTask(boolean showPodcastIcon, int timeout) {
 			super(PodplayerActivity.this, allURLs_, state_.iconURLs_, iconData_, showPodcastIcon, timeout);
 		}
 

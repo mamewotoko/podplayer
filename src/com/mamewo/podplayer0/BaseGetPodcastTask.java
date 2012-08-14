@@ -19,7 +19,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-public class BaseGetEpisodeTask
+public class BaseGetPodcastTask
 extends AsyncTask<URL, PodInfo, Void>
 {
 	private Context context_;
@@ -36,7 +36,7 @@ extends AsyncTask<URL, PodInfo, Void>
 		TITLE, PUBDATE, LINK, NONE
 	};
 
-	public BaseGetEpisodeTask(Context context, String[] allPodcastURLs,
+	public BaseGetPodcastTask(Context context, String[] allPodcastURLs,
 							URL[] iconURL, Drawable[] iconData,
 							boolean showPodcastIcon, int timeout) {
 		context_ = context;
