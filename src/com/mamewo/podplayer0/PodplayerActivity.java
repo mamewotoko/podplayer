@@ -15,6 +15,8 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import android.app.Activity;
 import android.app.ListActivity;
 
 import android.content.ComponentName;
@@ -44,6 +46,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -58,9 +61,10 @@ import com.mamewo.podplayer0.PlayerService.PodInfo;
 import com.markupartist.android.widget.PullToRefreshListView;
 
 public class PodplayerActivity
-	extends ListActivity
+	extends Activity
 	implements OnClickListener,
 	ServiceConnection,
+	OnItemClickListener,
 	OnItemLongClickListener,
 	OnItemSelectedListener,
 	PlayerService.PlayerStateListener,
@@ -116,12 +120,13 @@ public class PodplayerActivity
 		playButton_.setEnabled(false);
 		selector_ = (Spinner) findViewById(R.id.podcast_selector);
 		selector_.setOnItemSelectedListener(this);
-		episodeList_ = (PullToRefreshListView) getListView();
+		episodeList_ = (PullToRefreshListView) findViewById(R.id.list);
+		episodeList_.setOnItemClickListener(this);
 		episodeList_.setOnItemLongClickListener(this);
 		episodeList_.setOnRefreshListener(this);
 		episodeList_.setOnCancelListener(this);
 		adapter_ = new EpisodeAdapter(this);
-		setListAdapter(adapter_);
+		episodeList_.setAdapter(adapter_);
 
 		Intent intent = new Intent(this, PlayerService.class);
 		startService(intent);
@@ -263,7 +268,7 @@ public class PodplayerActivity
 	}
 
 	@Override
-	public void onListItemClick(ListView list, View view, int pos, long id) {
+	public void onItemClick(AdapterView<?> list, View view, int pos, long id) {
 		//refresh header is added....
 		PodInfo info = adapter_.getItem(pos-1);
 		PodInfo current = player_.getCurrentPodInfo();

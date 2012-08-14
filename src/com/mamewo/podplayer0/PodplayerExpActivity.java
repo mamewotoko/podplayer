@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.ExpandableListActivity;
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -50,7 +50,7 @@ import android.widget.ToggleButton;
 import com.mamewo.podplayer0.PlayerService.PodInfo;
 
 public class PodplayerExpActivity
-	extends ExpandableListActivity
+	extends Activity
 	implements OnClickListener,
 	ServiceConnection,
 //	OnItemLongClickListener,
@@ -190,7 +190,9 @@ public class PodplayerExpActivity
 				R.layout.episode_item,
 				new String[] {"TITLE"},
 				new int[] { R.id.episode_title });
-		setListAdapter(expandableAdapter_);
+		ExpandableListView list = (ExpandableListView) findViewById(R.id.exp_list);
+		list.setAdapter(expandableAdapter_);
+		list.setOnChildClickListener(this);
 		boolean doLoad = pref.getBoolean("load_on_start", true);
 		updateUI();
 		if(doLoad){

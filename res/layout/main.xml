@@ -31,7 +31,7 @@
              android:gestureStrokeType="single"
              android:orientation="vertical" >
          <com.markupartist.android.widget.PullToRefreshListView
-            android:id="@android:id/list"
+            android:id="@+id/list"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             />
