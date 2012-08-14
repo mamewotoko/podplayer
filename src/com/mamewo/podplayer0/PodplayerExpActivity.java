@@ -5,20 +5,14 @@ package com.mamewo.podplayer0;
  * http://www002.upp.so-net.ne.jp/mamewo/
  */
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 import android.app.ExpandableListActivity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -32,7 +26,6 @@ import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.gesture.Prediction;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -79,6 +72,8 @@ public class PodplayerExpActivity
 	private Drawable[] iconData_;
 	private boolean showPodcastIcon_;
 	private int allIndex2viewIndex_[];
+	private String[] allTitles_;
+	private String[] allURLs_;
 
 	final static
 	private String DEFAULT_PODCAST_LIST = "http://www.nhk.or.jp/rj/podcast/rss/english.xml"
@@ -115,7 +110,6 @@ public class PodplayerExpActivity
 		playButton_.setOnClickListener(this);
 		playButton_.setEnabled(false);
 		//expandableList_.setOnItemLongClickListener(this);
-		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
 		groupData_ = new ArrayList<Map<String, String>>();
 		childData_ = new ArrayList<List<Map<String, Object>>>();
 
@@ -129,9 +123,11 @@ public class PodplayerExpActivity
 		gestureLib_ = null;
 		gestureScoreThreshold_ = 0.0;
 		//TODO: refactor
-		iconData_ = new Drawable[titles.length];
-		state_.iconURL_ = new URL[titles.length];
-		allIndex2viewIndex_ = new int[titles.length];
+		allTitles_ = getResources().getStringArray(R.array.pref_podcastlist_keys);
+		allURLs_ = getResources().getStringArray(R.array.pref_podcastlist_urls);
+		iconData_ = new Drawable[allTitles_.length];
+		state_.iconURLs_ = new URL[allTitles_.length];
+		allIndex2viewIndex_ = new int[allTitles_.length];
 	}
 
 	@Override
@@ -227,7 +223,11 @@ public class PodplayerExpActivity
 			childData_.get(i).clear();
 		}
 		updateUI();
-		loadTask_ = new GetEpisodeTask();
+		SharedPreferences pref=
+				PreferenceManager.getDefaultSharedPreferences(this);
+		boolean showPodcastIcon = pref.getBoolean("show_episode_icon", true);
+		int timeout = Integer.valueOf(pref.getString("read_timeout", "30"));
+		loadTask_ = new GetEpisodeTask(showPodcastIcon, timeout);
 		loadTask_.execute(state_.podcastURLList_.toArray(DUMMY_URL_LIST));
 	}
 
@@ -475,165 +475,13 @@ public class PodplayerExpActivity
 		syncPreference(pref, key);
 	}
 
-	enum TagName {
-		TITLE, PUBDATE, LINK, NONE
-	};
-
-	private InputStream getInputStreamFromURL(URL url) throws IOException{
-		URLConnection conn = url.openConnection();
-		SharedPreferences pref =
-				PreferenceManager.getDefaultSharedPreferences(PodplayerExpActivity.this);
-		int timeout = Integer.valueOf(pref.getString("read_timeout", "30"));
-		timeout = timeout * 1000;
-		conn.setReadTimeout(timeout);
-		return conn.getInputStream();
-	}
-
-	private BitmapDrawable downloadIcon(URL iconURL) {
-		//get data
-		InputStream is = null;
-		BitmapDrawable result = null;
-		try {
-			is = getInputStreamFromURL(iconURL);
-			result = new BitmapDrawable(getResources(), is);
-		}
-		catch(IOException e) {
-			Log.d(TAG, "cannot load icon", e);
-		}
-		finally {
-			if(null != is) {
-				try{
-					is.close();
-				}
-				catch(IOException e) {
-					//nop..
-				}
-			}
-		}
-		return result;
-	}
-	
 	private class GetEpisodeTask
-		extends AsyncTask<URL, PodInfo, Void>
+		extends BaseGetEpisodeTask
 	{
-		@Override
-		protected Void doInBackground(URL... urllist) {
-			XmlPullParserFactory factory;
-			try {
-				factory = XmlPullParserFactory.newInstance();
-			}
-			catch (XmlPullParserException e1) {
-				Log.i(TAG, "cannot get xml parser", e1);
-				return null;
-			}
-			String[] allPodcastURLs = getResources().getStringArray(R.array.pref_podcastlist_urls);
-
-			int podcastIndex = 0;
-			for(int i = 0; i < urllist.length; i++) {
-				URL url = urllist[i];
-				if(isCancelled()){
-					break;
-				}
-				//get index of podcastURL to filter
-				while(! allPodcastURLs[podcastIndex].equals(url.toString())){
-					podcastIndex++;
-				}
-				Log.d(TAG, "get URL: " + podcastIndex + ": "+ url);
-				InputStream is = null;
-				try {
-					is = getInputStreamFromURL(url);
-					XmlPullParser parser = factory.newPullParser();
-					//TODO: use reader or give correct encoding
-					parser.setInput(is, "UTF-8");
-					String title = null;
-					String podcastURL = null;
-					String pubdate = "";
-					TagName tagName = TagName.NONE;
-					int eventType;
-					String link = null;
-					while((eventType = parser.getEventType()) != XmlPullParser.END_DOCUMENT && !isCancelled()) {
-						if(eventType == XmlPullParser.START_TAG) {
-							String currentName = parser.getName();
-							if("title".equalsIgnoreCase(currentName)) {
-								tagName = TagName.TITLE;
-							}
-							else if("pubdate".equalsIgnoreCase(currentName)) {
-								tagName = TagName.PUBDATE;
-							}
-							else if("link".equalsIgnoreCase(currentName)) {
-								tagName = TagName.LINK;
-							}
-							else if("enclosure".equalsIgnoreCase(currentName)) {
-								podcastURL = parser.getAttributeValue(null, "url");
-							}
-							else if("itunes:image".equalsIgnoreCase(currentName)) {
-								if(null == state_.iconURL_[podcastIndex]) {
-									URL iconURL = new URL(parser.getAttributeValue(null, "href"));
-									state_.iconURL_[podcastIndex] = iconURL;
-									if(showPodcastIcon_ && null == iconData_[podcastIndex]) {
-										iconData_[podcastIndex] = downloadIcon(iconURL);
-									}
-								}
-							}
-						}
-						else if(eventType == XmlPullParser.TEXT) {
-							switch(tagName) {
-							case TITLE:
-								title = parser.getText();
-								break;
-							case PUBDATE:
-								//TODO: convert time zone
-								pubdate = parser.getText();
-								break;
-							case LINK:
-								link = parser.getText();
-								break;
-							default:
-								break;
-							}
-						}
-						else if(eventType == XmlPullParser.END_TAG) {
-							String currentName = parser.getName();
-							if("item".equalsIgnoreCase(currentName)) {
-								if(podcastURL != null) {
-									if(title == null) {
-										title = podcastURL;
-									}
-									PodInfo info = new PodInfo(podcastURL, title, pubdate, link, podcastIndex);
-									publishProgress(info);
-								}
-								podcastURL = null;
-								title = null;
-								link = null;
-							}
-							else {
-								//always set to NONE, because there is no nested tag for now
-								tagName = TagName.NONE;
-							}
-						}
-						eventType = parser.next();
-					}
-				}
-				catch (IOException e) {
-					Log.i(TAG, "IOException", e);
-				}
-				catch (XmlPullParserException e) {
-					Log.i(TAG, "XmlPullParserException", e);
-				}
-				finally {
-					if(null != is) {
-						try {
-							is.close();
-						}
-						catch (IOException e) {
-							Log.i(TAG, "input stream cannot be close", e);
-						}
-					}
-				}
-			}
-			return null;
+		public GetEpisodeTask(boolean showPodcastIcon, int timeout) {
+			super(PodplayerExpActivity.this, allURLs_, state_.iconURLs_, iconData_, showPodcastIcon, timeout);
 		}
-		
+
 		@Override
 		protected void onProgressUpdate(PodInfo... values){
 			for (int i = 0; i < values.length; i++) {
@@ -703,13 +551,13 @@ public class PodplayerExpActivity
 		private List<PodInfo> loadedEpisode_;
 		private List<URL> podcastURLList_;
 		private String lastUpdated_;
-		private URL[] iconURL_;
+		private URL[] iconURLs_;
 
 		private PodplayerState() {
 			loadedEpisode_ = new ArrayList<PodInfo>();
 			podcastURLList_ = new ArrayList<URL>();
 			lastUpdated_ = "";
-			iconURL_ = null;
+			iconURLs_ = null;
 		}
 	}
 
@@ -730,7 +578,6 @@ public class PodplayerExpActivity
 			player_.playNext();
 		}
 		else if("play".equals(p.name)) {
-			Log.d(TAG, "play by gesture");
 			updatePlaylist();
 			if(! player_.restartMusic()) {
 				player_.playMusic();
