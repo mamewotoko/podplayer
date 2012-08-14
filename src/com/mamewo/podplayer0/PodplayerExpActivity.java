@@ -16,8 +16,10 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -26,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
@@ -40,7 +43,7 @@ public class PodplayerExpActivity
 	extends BasePodplayerActivity
 	implements OnClickListener,
 	ServiceConnection,
-//	OnItemLongClickListener,
+	OnItemLongClickListener,
 	PlayerService.PlayerStateListener,
 	OnSharedPreferenceChangeListener,
 	OnChildClickListener
@@ -62,7 +65,9 @@ public class PodplayerExpActivity
 		playButton_ = (ToggleButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
 		playButton_.setEnabled(false);
-		//expandableList_.setOnItemLongClickListener(this);
+		ExpandableListView expandableList =
+				(ExpandableListView) findViewById(R.id.exp_list);
+		expandableList.setOnItemLongClickListener(this);
 		groupData_ = new ArrayList<Map<String, String>>();
 		childData_ = new ArrayList<List<Map<String, Object>>>();
 		allIndex2viewIndex_ = new int[allTitles_.length];
@@ -150,7 +155,6 @@ public class PodplayerExpActivity
 	@Override
 	public void onClick(View v) {
 		//add option to load onStart
-		Log.d(TAG, "onClick");
 		if (v == playButton_) {
 			if(player_.isPlaying()) {
 				player_.pauseMusic();
@@ -372,26 +376,35 @@ public class PodplayerExpActivity
 		}
 	}
 
-//	@Override
-//	public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
-//		PodInfo info = expandableAdapter_.getItem(pos-1);
-//		Log.d(TAG, "onlongclick: " + info.link_ + " pos: " + pos);
-//		SharedPreferences pref=
-//				PreferenceManager.getDefaultSharedPreferences(this);
-//		boolean enableLongClick = pref.getBoolean("enable_long_click", false);
-//		if ((! enableLongClick) || null == info.link_) {
-//			return false;
-//		}
-//		//TODO: add preference to enable this 
-//		Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-//		if (vibrator != null) {
-//			vibrator.vibrate(100);
-//		}
-//		Intent i =
-//				new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
-//		startActivity(new Intent(i));
-//		return true;
-//	}
+	@Override
+	public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
+		SharedPreferences pref=
+				PreferenceManager.getDefaultSharedPreferences(this);
+		boolean enableLongClick = pref.getBoolean("enable_long_click", false);
+		if (! enableLongClick) {
+			return false;
+		}
+		@SuppressWarnings("unchecked")
+		Map<String, Object> map =
+				(Map<String, Object>)adapter.getItemAtPosition(pos);
+		PodInfo info = (PodInfo)map.get("DATA");
+		if (null == info) {
+			//parent is long clicked
+			return false;
+		}
+		if ((! enableLongClick) || null == info.link_) {
+			return false;
+		}
+		//TODO: add preference to enable this 
+		Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		if (vibrator != null) {
+			vibrator.vibrate(100);
+		}
+		Intent i =
+				new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
+		startActivity(new Intent(i));
+		return true;
+	}
 
 	private int podcastTitle2Index(String title){
 		String[] titles = getResources().getStringArray(R.array.pref_podcastlist_keys);
