@@ -115,11 +115,15 @@ public class PodplayerExpActivity
 				R.layout.episode_item,
 				new String[] {"TITLE"},
 				new int[] { R.id.episode_title });
-		ExpandableListView list = (ExpandableListView) findViewById(R.id.exp_list);
-		list.setAdapter(expandableAdapter_);
-		list.setOnChildClickListener(this);
-		SharedPreferences pref=
+		expandableList_.setAdapter(expandableAdapter_);
+		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
+		boolean expandInDefault = pref.getBoolean("expand_in_default", true);
+		//TODO: only when start is called?
+		if (expandInDefault) { 
+			expandOrCollapseAll(true);
+		}
+		expandableList_.setOnChildClickListener(this);
 		boolean doLoad = pref.getBoolean("load_on_start", true);
 		updateUI();
 		if(doLoad){
@@ -184,16 +188,27 @@ public class PodplayerExpActivity
 		}
 		else if (v == expandButton_) {
 			for (int i = 0; i < groupData_.size(); i++) {
-				expandableList_.expandGroup(i);
+				expandOrCollapseAll(true);
 			}
 		}
 		else if (v == collapseButton_) {
 			for (int i = 0; i < groupData_.size(); i++) {
-				expandableList_.collapseGroup(i);
+				expandOrCollapseAll(false);
 			}
 		}
 	}
 
+	private void expandOrCollapseAll(boolean expand) {
+		for (int i = 0; i < groupData_.size(); i++) {
+			if (expand) {
+				expandableList_.expandGroup(i);
+			}
+			else {
+				expandableList_.collapseGroup(i);
+			}
+		}
+	}
+	
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder binder) {
 		player_ = ((PlayerService.LocalBinder)binder).getService();

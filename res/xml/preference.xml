@@ -16,7 +16,14 @@
         android:summaryOff="play after unplugged"
         android:summaryOn="pause on unplugged"
         android:title="Pause on unplagged" />
-    <CheckBoxPreference android:summaryOff="hide" android:defaultValue="false" android:key="show_podcast_icon" android:summaryOn="show" android:title="Show podcast icon"/><CheckBoxPreference
+    <CheckBoxPreference android:summaryOff="collapse" android:title="Expand list in default" android:key="expand_in_default" android:summaryOn="expand" android:defaultValue="true"/>
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="show_podcast_icon"
+        android:summaryOff="hide"
+        android:summaryOn="show"
+        android:title="Show podcast icon" />
+    <CheckBoxPreference
         android:defaultValue="false"
         android:key="enable_long_click"
         android:summaryOff="off"
@@ -66,6 +73,5 @@
             android:selectable="true"
             android:title="Version" />
     </PreferenceCategory>
-    
 
 </PreferenceScreen>
