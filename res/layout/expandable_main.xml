@@ -16,6 +16,18 @@
             android:textOff="Start"
             android:textOn="Pause" />
 
+        <Button
+            android:id="@+id/expand_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Expand" />
+
+        <Button
+            android:id="@+id/collapse_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Collapse" />
+
         <ImageView
             android:id="@+id/reload_button"
             android:layout_width="wrap_content"

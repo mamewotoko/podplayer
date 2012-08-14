@@ -30,6 +30,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ImageView;
@@ -50,6 +51,9 @@ public class PodplayerExpActivity
 {
 	private ToggleButton playButton_;
 	private ImageView reloadButton_;
+	private Button expandButton_;
+	private Button collapseButton_;
+	private ExpandableListView expandableList_;
 	private SimpleExpandableListAdapter expandableAdapter_;
 	private int allIndex2viewIndex_[];
 
@@ -65,9 +69,13 @@ public class PodplayerExpActivity
 		playButton_ = (ToggleButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
 		playButton_.setEnabled(false);
-		ExpandableListView expandableList =
+		expandableList_ =
 				(ExpandableListView) findViewById(R.id.exp_list);
-		expandableList.setOnItemLongClickListener(this);
+		expandableList_.setOnItemLongClickListener(this);
+		expandButton_ = (Button) findViewById(R.id.expand_button);
+		expandButton_.setOnClickListener(this);
+		collapseButton_ = (Button) findViewById(R.id.collapse_button);
+		collapseButton_.setOnClickListener(this);
 		groupData_ = new ArrayList<Map<String, String>>();
 		childData_ = new ArrayList<List<Map<String, Object>>>();
 		allIndex2viewIndex_ = new int[allTitles_.length];
@@ -166,12 +174,22 @@ public class PodplayerExpActivity
 			}
 			playButton_.setChecked(player_.isPlaying());
 		}
-		else if(v == reloadButton_) {
+		else if (v == reloadButton_) {
 			if (isLoading()) {
 				loadTask_.cancel(true);
 			}
 			else {
 				loadPodcast();
+			}
+		}
+		else if (v == expandButton_) {
+			for (int i = 0; i < groupData_.size(); i++) {
+				expandableList_.expandGroup(i);
+			}
+		}
+		else if (v == collapseButton_) {
+			for (int i = 0; i < groupData_.size(); i++) {
+				expandableList_.collapseGroup(i);
 			}
 		}
 	}
