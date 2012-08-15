@@ -8,8 +8,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:maxHeight="50dp"
-        android:maxWidth="50dp"
+        android:maxHeight="54dp"
+        android:maxWidth="54dp"
         android:layout_marginLeft="2dp"
         android:focusable="false" />
 

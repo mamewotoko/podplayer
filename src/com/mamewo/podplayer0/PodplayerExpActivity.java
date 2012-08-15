@@ -111,9 +111,9 @@ public class PodplayerExpActivity
 		expandableAdapter_ = new ExpAdapter(
 				this,
 				groupData_,
-				android.R.layout.simple_expandable_list_item_2,
+				R.layout.expandable_list_item2,
 				new String[] {"TITLE", "COUNT"},
-				new int[] { android.R.id.text1, android.R.id.text2 },
+				new int[] { R.id.text1, R.id.text2 },
 				childData_,
 				R.layout.episode_item,
 				null, null);
