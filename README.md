@@ -76,7 +76,6 @@ TODO
     * Web browser displays text/xml as content (I want intent...)
 * optimize initialization of podplayer
     * setContentView takes long time
-* use expandable list
 * add close button to dialog
 * add table of gestures as preference
 * fix a bug that when only one episode is registered, list is in tap to refresh mode after loaded
