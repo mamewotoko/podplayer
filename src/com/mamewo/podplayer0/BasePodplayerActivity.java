@@ -225,7 +225,7 @@ public class BasePodplayerActivity
 		//predictions is sorted by score
 		Prediction p = predictions.get(0);
 		if(p.score < gestureScoreThreshold_) {
-			showMessage("gesture with low score: " + p.score);
+			showMessage(String.format("gesture with low score: %.2f", p.score));
 			return;
 		}
 		if("next".equals(p.name)) {
