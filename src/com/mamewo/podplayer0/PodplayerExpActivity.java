@@ -101,6 +101,7 @@ public class PodplayerExpActivity
 					Map<String, String> groupItem = new HashMap<String, String>();
 					allIndex2viewIndex_[j] = i;
 					groupItem.put("TITLE", allTitles_[j++]);
+					groupItem.put("COUNT", "");
 					groupData_.add(groupItem);
 					childData_.add(new ArrayList<Map<String, Object>>());
 					break;
@@ -110,9 +111,9 @@ public class PodplayerExpActivity
 		expandableAdapter_ = new ExpAdapter(
 				this,
 				groupData_,
-				android.R.layout.simple_expandable_list_item_1,
-				new String[] {"TITLE"},
-				new int[] { android.R.id.text1 },
+				android.R.layout.simple_expandable_list_item_2,
+				new String[] {"TITLE", "COUNT"},
+				new int[] { android.R.id.text1, android.R.id.text2 },
 				childData_,
 				R.layout.episode_item,
 				null, null);
@@ -378,11 +379,14 @@ public class PodplayerExpActivity
 		extends BaseGetPodcastTask
 	{
 		public GetPodcastTask(boolean showPodcastIcon, int timeout) {
-			super(PodplayerExpActivity.this, allURLs_, state_.iconURLs_, iconData_, showPodcastIcon, timeout);
+			super(PodplayerExpActivity.this, allURLs_, state_.iconURLs_, iconData_,
+					showPodcastIcon, timeout);
 		}
 
 		@Override
 		protected void onProgressUpdate(PodInfo... values){
+			int groupMin = groupData_.size() - 1;
+			int groupMax = 0;
 			for (int i = 0; i < values.length; i++) {
 				PodInfo info = values[i];
 				//TODO: remove?
@@ -390,10 +394,27 @@ public class PodplayerExpActivity
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("TITLE", info.title_);
 				map.put("DATA", info);
-				childData_.get(allIndex2viewIndex_[info.index_]).add(map);
+				int groupIndex = allIndex2viewIndex_[info.index_];
+				childData_.get(groupIndex).add(map);
+				if (groupIndex < groupMin) {
+					groupMin = groupIndex;
+				}
+				if (groupIndex > groupMax) {
+					groupMax = groupIndex;
+				}
 			}
-			//TODO: update count of group
-			updateUI();
+			for (int i = groupMin; i <= groupMax; i++) {
+				int childNum = childData_.get(i).size();
+				String numStr;
+				if (childNum <= 1) {
+					numStr = " item";
+				}
+				else {
+					numStr = " items";
+				}
+				groupData_.get(i).put("COUNT", childNum + numStr);
+			}
+			expandableAdapter_.notifyDataSetChanged();
 		}
 
 		private void onFinished(){
