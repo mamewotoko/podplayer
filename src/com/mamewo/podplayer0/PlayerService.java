@@ -124,7 +124,10 @@ public class PlayerService
 		}
 		player_.start();
 		PodInfo info = currentPlaylist_.get(playCursor_);
-		notifyPlayingEpisode(info);
+		if(null != listener_){
+			listener_.onStartMusic(currentPlaylist_.get(playCursor_));
+		}
+		startForeground("Playing podcast", info.title_);
 		return true;
 	}
 
@@ -138,7 +141,7 @@ public class PlayerService
 		}
 		PodInfo info = currentPlaylist_.get(playCursor_);
 		//skip unsupported files filtering by filename ...
-		Log.i(TAG, "playMusic: " + info.url_);
+		Log.i(TAG, "playMusic: " + playCursor_ + ": " + info.url_);
 		try {
 			player_.reset();
 			player_.setDataSource(info.url_);
@@ -149,18 +152,14 @@ public class PlayerService
 		catch (IOException e) {
 			return false;
 		}
-		notifyPlayingEpisode(info);
-		return true;
-	}
-
-	public void notifyPlayingEpisode(PodInfo info) {
 		if(null != listener_){
 			listener_.onStartLoadingMusic(info);
 		}
 		//TODO: localize
 		startForeground("Playing podcast", info.title_);
+		return true;
 	}
-	
+
 	public void startForeground(String title, String description) {
 		//TODO: localize
 		String podTitle = "playing podcast";

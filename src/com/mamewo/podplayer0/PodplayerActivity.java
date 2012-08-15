@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -56,6 +57,7 @@ public class PodplayerActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState, this);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.main);
 		playButton_ = (ToggleButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
@@ -119,6 +121,7 @@ public class PodplayerActivity
 			return;
 		}
 		adapter_.clear();
+		setProgressBarIndeterminateVisibility(true);
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(PodplayerActivity.this);
 		int timeout = Integer.valueOf(pref.getString("read_timeout", "30"));
@@ -231,21 +234,22 @@ public class PodplayerActivity
 	//UI is updated in following callback methods
 	@Override
 	public void onStartMusic(PodInfo info) {
+		setProgressBarIndeterminateVisibility(false);
 		updateUI();
 	}
 
 	@Override
 	public void onStartLoadingMusic(PodInfo info) {
+		setProgressBarIndeterminateVisibility(true);
 		updateUI();
 	}
 
 	@Override
 	public void onStopMusic(int mode) {
-		Log.d(TAG, "onStopMusic");
+		setProgressBarIndeterminateVisibility(false);
 		updateUI();
 	}
 	// end of callback methods
-
 
 	private class GetPodcastTask
 		extends BaseGetPodcastTask
@@ -283,6 +287,7 @@ public class PodplayerActivity
 				state_.lastUpdated_ = df.format(new Date());
 				episodeListView_.setLastUpdated("Last updated: " + state_.lastUpdated_);
 			}
+			setProgressBarIndeterminateVisibility(false);
 			episodeListView_.onRefreshComplete();
 			loadTask_ = null;
 			//TODO: Sync playlist

@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
@@ -63,6 +64,7 @@ public class PodplayerExpActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState, this);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.expandable_main);
 		reloadButton_ = (ImageView) findViewById(R.id.reload_button);
 		reloadButton_.setOnClickListener(this);
@@ -154,13 +156,13 @@ public class PodplayerExpActivity
 		for (int i = 0; i < childData_.size(); i++) {
 			childData_.get(i).clear();
 		}
+		setProgressBarIndeterminateVisibility(true);
 		updateUI();
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
-		boolean showPodcastIcon = pref.getBoolean("show_episode_icon", true);
 		int timeout = Integer.valueOf(pref.getString("read_timeout", "30"));
-		loadTask_ = new GetPodcastTask(showPodcastIcon, timeout);
-		loadTask_.execute(state_.podcastURLList_.toArray(DUMMY_URL_LIST));
+		GetPodcastTask task = new GetPodcastTask(showPodcastIcon_, timeout);
+		startLoading(task);
 	}
 
 	@Override
@@ -290,8 +292,8 @@ public class PodplayerExpActivity
 	}
 	
 	public class ExpAdapter
-		extends SimpleExpandableListAdapter {
-
+		extends SimpleExpandableListAdapter
+	{
 		public ExpAdapter(Context context,
 				List<? extends Map<String, ?>> groupData,
 				int groupLayout,
@@ -356,17 +358,19 @@ public class PodplayerExpActivity
 	//UI is updated in following callback methods
 	@Override
 	public void onStartMusic(PodInfo info) {
+		setProgressBarIndeterminateVisibility(false);
 		updateUI();
 	}
 
 	@Override
 	public void onStartLoadingMusic(PodInfo info) {
+		setProgressBarIndeterminateVisibility(true);
 		updateUI();
 	}
 
 	@Override
 	public void onStopMusic(int mode) {
-		Log.d(TAG, "onStopMusic");
+		setProgressBarIndeterminateVisibility(false);
 		updateUI();
 	}
 	// end of callback methods
@@ -389,22 +393,26 @@ public class PodplayerExpActivity
 				map.put("DATA", info);
 				childData_.get(allIndex2viewIndex_[info.index_]).add(map);
 			}
+			//TODO: update count of group
 			updateUI();
 		}
 
-		@Override
-		protected void onPostExecute(Void result) {
+		private void onFinished(){
 			loadTask_ = null;
+			setProgressBarIndeterminateVisibility(false);
 			//TODO: Sync playlist
 			updatePlaylist();
 			reloadButton_.setImageResource(android.R.drawable.ic_popup_sync);
 		}
 		
 		@Override
+		protected void onPostExecute(Void result) {
+			onFinished();
+		}
+		
+		@Override
 		protected void onCancelled() {
-			//TODO: show toast?
-			loadTask_ = null;
-			reloadButton_.setImageResource(android.R.drawable.ic_popup_sync);
+			onFinished();
 		}
 	}
 

@@ -69,6 +69,7 @@ How to test
 
 TODO
 ----------
+* fix a bug that playing item and displayed item as playing sometimes differ
 * show number of episode for each group of expandable list
 * reset playing position after podcast selection is changed
 * use database to manage loaded episodes
