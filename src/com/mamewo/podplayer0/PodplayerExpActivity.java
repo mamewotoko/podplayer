@@ -27,6 +27,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -44,6 +45,7 @@ import com.mamewo.podplayer0.PlayerService.PodInfo;
 public class PodplayerExpActivity
 	extends BasePodplayerActivity
 	implements OnClickListener,
+	OnLongClickListener,
 	ServiceConnection,
 	OnItemLongClickListener,
 	PlayerService.PlayerStateListener,
@@ -70,6 +72,7 @@ public class PodplayerExpActivity
 		reloadButton_.setOnClickListener(this);
 		playButton_ = (ToggleButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
+		playButton_.setOnLongClickListener(this);
 		playButton_.setEnabled(false);
 		expandableList_ =
 				(ExpandableListView) findViewById(R.id.exp_list);
@@ -166,9 +169,9 @@ public class PodplayerExpActivity
 	}
 
 	@Override
-	public void onClick(View v) {
+	public void onClick(View view) {
 		//add option to load onStart
-		if (v == playButton_) {
+		if (view == playButton_) {
 			if(player_.isPlaying()) {
 				player_.pauseMusic();
 			}
@@ -180,7 +183,7 @@ public class PodplayerExpActivity
 			}
 			playButton_.setChecked(player_.isPlaying());
 		}
-		else if (v == reloadButton_) {
+		else if (view == reloadButton_) {
 			if (isLoading()) {
 				loadTask_.cancel(true);
 			}
@@ -188,17 +191,37 @@ public class PodplayerExpActivity
 				loadPodcast();
 			}
 		}
-		else if (v == expandButton_) {
+		else if (view == expandButton_) {
 			for (int i = 0; i < groupData_.size(); i++) {
 				expandOrCollapseAll(true);
 			}
 		}
-		else if (v == collapseButton_) {
+		else if (view == collapseButton_) {
 			for (int i = 0; i < groupData_.size(); i++) {
 				expandOrCollapseAll(false);
 			}
 		}
 	}
+
+	@Override
+	public boolean onLongClick(View view) {
+		if (view == playButton_) {
+			//TODO: add preference to enable this 
+			Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+			if (vibrator != null) {
+				vibrator.vibrate(100);
+			}
+			if (player_.isPlaying()) {
+				player_.stopMusic();
+			}
+			else {
+				player_.playMusic();
+			}
+			return true;
+		}
+		return false;
+	}
+
 
 	private void expandOrCollapseAll(boolean expand) {
 		for (int i = 0; i < groupData_.size(); i++) {

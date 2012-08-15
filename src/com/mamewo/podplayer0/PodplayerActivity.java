@@ -23,6 +23,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -41,6 +42,7 @@ import com.markupartist.android.widget.PullToRefreshListView;
 public class PodplayerActivity
 	extends BasePodplayerActivity
 	implements OnClickListener,
+	OnLongClickListener,
 	ServiceConnection,
 	OnItemClickListener,
 	OnItemLongClickListener,
@@ -61,6 +63,7 @@ public class PodplayerActivity
 		setContentView(R.layout.main);
 		playButton_ = (ToggleButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
+		playButton_.setOnLongClickListener(this);
 		playButton_.setEnabled(false);
 		selector_ = (Spinner) findViewById(R.id.podcast_selector);
 		selector_.setOnItemSelectedListener(this);
@@ -144,6 +147,25 @@ public class PodplayerActivity
 			}
 			playButton_.setChecked(player_.isPlaying());
 		}
+	}
+
+	@Override
+	public boolean onLongClick(View view) {
+		if (view == playButton_) {
+			//TODO: add preference to enable this 
+			Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+			if (vibrator != null) {
+				vibrator.vibrate(100);
+			}
+			if (player_.isPlaying()) {
+				player_.stopMusic();
+			}
+			else {
+				player_.playMusic();
+			}
+			return true;
+		}
+		return false;
 	}
 
 	@Override
