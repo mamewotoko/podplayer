@@ -59,8 +59,8 @@
 
         <PreferenceScreen
             xmlns:android="http://schemas.android.com/apk/res/android"
-            android:key="gesture_table"
-            android:title="Gesture table" >
+            android:key="gesture_list"
+            android:title="Gesture list" >
         </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory android:title="Others" >

@@ -53,7 +53,7 @@ public class PodplayerPreference
 		catch (NameNotFoundException e) {
 			version_.setSummary("unknown");
 		}
-		gestureTable_ = findPreference("gesture_table");
+		gestureTable_ = findPreference("gesture_list");
 		gestureTable_.setOnPreferenceClickListener(this);
 		version_.setOnPreferenceClickListener(this);
 		license_ = findPreference("license");
