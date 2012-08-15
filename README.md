@@ -76,9 +76,6 @@ TODO
     * Web browser displays text/xml as content (I want intent...)
 * optimize initialization of podplayer
     * setContentView takes long time
-* show summary of preference item
-    * gesture score
-    * read timeout
 * use expandable list
 * add close button to dialog
 * add table of gestures as preference

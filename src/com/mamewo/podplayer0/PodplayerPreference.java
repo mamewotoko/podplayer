@@ -8,6 +8,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
@@ -16,13 +18,15 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 
 public class PodplayerPreference
 	extends PreferenceActivity
 	implements OnPreferenceClickListener,
-	View.OnClickListener
+	View.OnClickListener,
+	OnSharedPreferenceChangeListener
 {
 	static final
 	private String GIT_URL = "https://github.com/mamewotoko/podplayer";
@@ -39,7 +43,9 @@ public class PodplayerPreference
 	private Preference version_;
 	private Preference license_;
 	private Preference gestureTable_;
-
+	private Preference readTimeout_;
+	private Preference scoreThreshold_;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -53,11 +59,25 @@ public class PodplayerPreference
 		catch (NameNotFoundException e) {
 			version_.setSummary("unknown");
 		}
+		readTimeout_ = findPreference("read_timeout");
+		scoreThreshold_ = findPreference("gesture_score_threshold");
 		gestureTable_ = findPreference("gesture_list");
 		gestureTable_.setOnPreferenceClickListener(this);
 		version_.setOnPreferenceClickListener(this);
 		license_ = findPreference("license");
 		license_.setOnPreferenceClickListener(this);
+		SharedPreferences pref =
+				PreferenceManager.getDefaultSharedPreferences(this);
+		pref.registerOnSharedPreferenceChangeListener(this);
+		updateSummary(pref, "ALL");
+	}
+	
+	@Override
+	public void onDestroy() {
+		SharedPreferences pref =
+				PreferenceManager.getDefaultSharedPreferences(this);
+		pref.unregisterOnSharedPreferenceChangeListener(this);
+		super.onDestroy();
 	}
 
 	@Override
@@ -144,5 +164,31 @@ public class PodplayerPreference
 					new Intent(Intent.ACTION_VIEW, Uri.parse(GIT_URL));
 			startActivity(new Intent(i));
 		}
+	}
+
+	public void updateSummary(SharedPreferences pref, String key) {
+		Log.d(TAG,"updateSummary: " + key);
+		boolean updateAll = "ALL".equals(key);
+		if (updateAll || "read_timeout".equals(key)) {
+			Log.d(TAG, "set readtime summary");
+			String strValue = pref.getString("read_timeout", "30");
+			if ("0".equals(strValue)) {
+				strValue = "None";
+			}
+			else {
+				strValue = strValue + " sec";
+			}
+			readTimeout_.setSummary(strValue);
+		}
+		if (updateAll || "gesture_score_threshold".equals(key)) {
+			Log.d(TAG, "set threshold summary");
+			double threshold = Double.valueOf(pref.getString("gesture_score_threshold", "3.0"));
+			scoreThreshold_.setSummary(String.format("%.2f", threshold));
+		}
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
+		updateSummary(pref, key);
 	}
 }
