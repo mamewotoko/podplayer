@@ -115,8 +115,7 @@ public class PodplayerExpActivity
 				new int[] { android.R.id.text1 },
 				childData_,
 				R.layout.episode_item,
-				new String[] {"TITLE"},
-				new int[] { R.id.episode_title });
+				null, null);
 		expandableList_.setAdapter(expandableAdapter_);
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
