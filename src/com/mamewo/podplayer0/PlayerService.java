@@ -56,7 +56,8 @@ public class PlayerService
 	private boolean isPreparing_;
 	private boolean abortPreparing_;
 	private boolean isPausing_;
-	
+
+	//TODO: check
 	static
 	public boolean isNetworkConnected(Context context) {
 		ConnectivityManager connMgr =
@@ -64,7 +65,11 @@ public class PlayerService
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		return (networkInfo != null && networkInfo.isConnected());
 	}
-	
+
+	public void setPlaylist(List<PodInfo> playlist) {
+		currentPlaylist_ = playlist;
+	}
+
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
 		String action = intent.getAction();
@@ -87,6 +92,10 @@ public class PlayerService
 		return (! abortPreparing_) && (isPreparing_ || player_.isPlaying());
 	}
 
+	/**
+	 * get current playing or pausing music
+	 * @return current music info
+	 */
 	public PodInfo getCurrentPodInfo(){
 		if(null == currentPlaylist_){
 			return null;
@@ -105,20 +114,26 @@ public class PlayerService
 		return playMusic();
 	}
 
-	public void setPlaylist(List<PodInfo> playlist) {
-		currentPlaylist_ = playlist;
-	}
-
+	/**
+	 * plays music of given index
+	 * @param pos index on currentPlayList_
+	 * @return true if succeed
+	 */
 	public boolean playNth(int pos) {
 		if(currentPlaylist_ == null || currentPlaylist_.size() == 0) {
 			return false;
 		}
+		isPausing_ = false;
 		playCursor_ = pos % currentPlaylist_.size();
 		return playMusic();
 	}
 
+	/**
+	 * start music from paused position
+	 * @return true if succeed
+	 */
 	public boolean restartMusic() {
-		Log.d(TAG, "restartMusic: isPausing: " + isPausing_);
+		Log.d(TAG, "restartMusic: isPausing: " + isPausing_ + " current: " + playCursor_);
 		if(! isPausing_) {
 			return false;
 		}
@@ -131,6 +146,10 @@ public class PlayerService
 		return true;
 	}
 
+	/**
+	 * play current music from beginning
+	 * @return true if succeed
+	 */
 	public boolean playMusic() {
 		if (isPreparing_) {
 			return false;
@@ -158,18 +177,6 @@ public class PlayerService
 		//TODO: localize
 		startForeground("Playing podcast", info.title_);
 		return true;
-	}
-
-	public void startForeground(String title, String description) {
-		//TODO: localize
-		String podTitle = "playing podcast";
-		Notification note =
-				new Notification(R.drawable.ic_launcher, podTitle, 0);
-		Intent ni = new Intent(this, userClass_);
-		PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
-		//TODO: localize
-		note.setLatestEventInfo(this, title, description, npi);
-		startForeground(NOTIFY_PLAYING_ID, note);
 	}
 	
 	public void stopMusic() {
@@ -242,6 +249,18 @@ public class PlayerService
 	@Override
 	public IBinder onBind(Intent intent) {
 		return binder_;
+	}
+
+	private void startForeground(String title, String description) {
+		//TODO: localize
+		String podTitle = "playing podcast";
+		Notification note =
+				new Notification(R.drawable.ic_launcher, podTitle, 0);
+		Intent ni = new Intent(this, userClass_);
+		PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
+		//TODO: localize
+		note.setLatestEventInfo(this, title, description, npi);
+		startForeground(NOTIFY_PLAYING_ID, note);
 	}
 
 	static

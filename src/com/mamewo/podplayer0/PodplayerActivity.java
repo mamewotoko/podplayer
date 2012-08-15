@@ -167,7 +167,7 @@ public class PodplayerActivity
 		}
 	}
 
-	private void playByInfo(PodInfo info) {
+	private boolean playByInfo(PodInfo info) {
 		//umm...
 		int playPos = -1;
 		for(playPos = 0; playPos < state_.loadedEpisode_.size(); playPos++) {
@@ -177,9 +177,9 @@ public class PodplayerActivity
 		}
 		if (playPos < 0){
 			Log.i(TAG, "playByInfo: info is not found: " + info.url_);
-			return;
+			return false;
 		}
-		player_.playNth(playPos);
+		return player_.playNth(playPos);
 	}
 
 	public class EpisodeAdapter
