@@ -34,6 +34,7 @@ extends ActivityInstrumentationTestCase2<PodplayerActivity>
 
 	public boolean selectPreference(String targetTitle) {
 		TextView view = null;
+		solo_.waitForActivity("PodplayerPrefrence");
 		do {
 			ArrayList<TextView> list = solo_.getCurrentTextViews(null);
 			for (TextView listText : list) {
@@ -73,6 +74,7 @@ extends ActivityInstrumentationTestCase2<PodplayerActivity>
 		solo_.sleep(500);
 		View playButton = solo_.getView(R.id.play_button);
 		solo_.clickOnView(playButton);
+		solo_.sleep(500);
 		solo_.takeScreenShot();
 		solo_.sleep(10000);
 	}
@@ -90,12 +92,14 @@ extends ActivityInstrumentationTestCase2<PodplayerActivity>
 	}
 
 	public void testSelectPodcast() throws Exception {
-		solo_.sleep(500);
+		solo_.sleep(1000);
 		solo_.clickOnMenuItem("Preference");
 		selectPreference("Podcast list");
+		solo_.sleep(500);
 		solo_.clickInList(1);
 		solo_.clickInList(3);
 		solo_.clickInList(5);
+		solo_.sleep(500);
 		solo_.takeScreenShot();
 		solo_.clickOnButton("OK");
 	}

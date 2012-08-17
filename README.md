@@ -71,7 +71,9 @@ TODO
 ----------
 * reset playing position after podcast selection is changed
 * use database to manage loaded episodes
-   * display mark which is already played, new item etc...
+    * display mark which is already played, new item etc...
+    * to reduce reload of podcast
+* save podcast list and updated time as state
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
 * optimize initialization of podplayer
@@ -79,7 +81,6 @@ TODO
 * add close button to dialog
 * add table of gestures as preference
 * fix a bug that when only one episode is registered, list is in tap to refresh mode after loaded
-* save podcast list and updated time as state
 * use Google Reader or some other service to manage listened episode
 * add confirm dialog to open web site
 * play episode which is clicked while preparing other item
