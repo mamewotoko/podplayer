@@ -48,8 +48,8 @@ A file bin/podplayer-debug.apk is created if succeed.
     3. check pulltorefresh. 
 4. Run podplayer project as Android Application
 
-How to test
------------
+How to run Scirocco test
+-------------------------
 1. Download robotium and scirocco jars
  
         cd test/podtest/libs
@@ -74,6 +74,10 @@ TODO
     * display mark which is already played, new item etc...
     * to reduce reload of podcast
 * save podcast list and updated time as state
+* add test
+    * preference
+    * gesture?
+    * landscape UI
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
 * optimize initialization of podplayer
