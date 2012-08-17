@@ -62,9 +62,10 @@ public class BasePodplayerActivity
 	final static
 	public String TAG = "podplayer";
 
-	public void onCreate(Bundle savedInstanceState, ServiceConnection conn) {
+	public void onCreate(Bundle savedInstanceState, ServiceConnection conn, Class<?> userClass) {
 		super.onCreate(savedInstanceState);
 		Intent intent = new Intent(this, PlayerService.class);
+		intent.putExtra("class", userClass);
 		startService(intent);
 		finishServiceOnExit_ = false;
 		state_ = null;

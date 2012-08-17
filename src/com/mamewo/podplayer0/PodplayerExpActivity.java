@@ -65,7 +65,7 @@ public class PodplayerExpActivity
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState, this);
+		super.onCreate(savedInstanceState, this, PodplayerExpActivity.class);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.expandable_main);
 		reloadButton_ = (ImageView) findViewById(R.id.reload_button);
