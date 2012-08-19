@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import com.jayway.android.robotium.solo.Solo;
 import com.mamewo.podplayer0.PodplayerActivity;
 import com.mamewo.podplayer0.R;
-import com.mamewo.podplayer0.R.id;
 
 import junit.framework.Assert;
 import android.test.ActivityInstrumentationTestCase2;

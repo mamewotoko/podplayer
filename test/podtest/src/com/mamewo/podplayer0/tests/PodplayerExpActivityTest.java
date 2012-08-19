@@ -1,11 +1,8 @@
 package com.mamewo.podplayer0.tests;
 
-import java.util.ArrayList;
-
 import com.jayway.android.robotium.solo.Solo;
 import com.mamewo.podplayer0.PodplayerExpActivity;
 import com.mamewo.podplayer0.R;
-import com.mamewo.podplayer0.R.id;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
