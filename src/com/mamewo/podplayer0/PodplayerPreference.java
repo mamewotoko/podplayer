@@ -167,10 +167,8 @@ public class PodplayerPreference
 	}
 
 	public void updateSummary(SharedPreferences pref, String key) {
-		Log.d(TAG,"updateSummary: " + key);
 		boolean updateAll = "ALL".equals(key);
 		if (updateAll || "read_timeout".equals(key)) {
-			Log.d(TAG, "set readtime summary");
 			String strValue = pref.getString("read_timeout", "30");
 			if ("0".equals(strValue)) {
 				strValue = "None";
@@ -181,7 +179,6 @@ public class PodplayerPreference
 			readTimeout_.setSummary(strValue);
 		}
 		if (updateAll || "gesture_score_threshold".equals(key)) {
-			Log.d(TAG, "set threshold summary");
 			double threshold = Double.valueOf(pref.getString("gesture_score_threshold", "3.0"));
 			scoreThreshold_.setSummary(String.format("%.2f", threshold));
 		}
