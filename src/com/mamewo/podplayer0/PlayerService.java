@@ -239,6 +239,9 @@ public class PlayerService
 	public void onDestroy() {
 		unregisterReceiver(receiver_);
 		stopForeground(false);
+		player_.setOnCompletionListener(null);
+		player_.setOnErrorListener(null);
+		player_.setOnPreparedListener(null);
 		player_ = null;
 		listener_ = null;
 		currentPlaylist_ = null;
