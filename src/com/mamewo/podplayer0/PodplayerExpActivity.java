@@ -86,56 +86,6 @@ public class PodplayerExpActivity
 		allIndex2viewIndex_ = new int[allTitles_.length];
 	}
 
-	//TODO: fetch current playing episode to update currentPodInfo
-	@Override
-	public void onResume(){
-		super.onResume();
-		//stop loading?
-		for(int i = 0; i < allIndex2viewIndex_.length; i++) {
-			allIndex2viewIndex_[i] = -1;
-		}
-		int j = 0;
-		groupData_.clear();
-		childData_.clear();
-		for (int i = 0; i < state_.podcastURLList_.size(); i++) {
-			String podcastURL = state_.podcastURLList_.get(i).toString();
-			for ( ; j < allURLs_.length; j++) {
-				if(podcastURL.equals(allURLs_[j])) {
-					Map<String, String> groupItem = new HashMap<String, String>();
-					allIndex2viewIndex_[j] = i;
-					groupItem.put("TITLE", allTitles_[j++]);
-					groupItem.put("COUNT", "");
-					groupData_.add(groupItem);
-					childData_.add(new ArrayList<Map<String, Object>>());
-					break;
-				}
-			}
-		}
-		expandableAdapter_ = new ExpAdapter(
-				this,
-				groupData_,
-				R.layout.expandable_list_item2,
-				new String[] {"TITLE", "COUNT"},
-				new int[] { R.id.text1, R.id.text2 },
-				childData_,
-				R.layout.episode_item,
-				null, null);
-		expandableList_.setAdapter(expandableAdapter_);
-		SharedPreferences pref =
-				PreferenceManager.getDefaultSharedPreferences(this);
-		boolean expandInDefault = pref.getBoolean("expand_in_default", true);
-		//TODO: only when start is called?
-		if (expandInDefault) { 
-			expandOrCollapseAll(true);
-		}
-		expandableList_.setOnChildClickListener(this);
-		boolean doLoad = pref.getBoolean("load_on_start", true);
-		updateUI();
-		if(doLoad){
-			loadPodcast();
-		}
-	}
-
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putSerializable("state", state_);
@@ -239,7 +189,9 @@ public class PodplayerExpActivity
 		player_ = ((PlayerService.LocalBinder)binder).getService();
 		player_.setOnStartMusicListener(this);
 		playButton_.setEnabled(true);
-		updateUI();
+		SharedPreferences pref =
+				PreferenceManager.getDefaultSharedPreferences(this);
+		syncPreference(pref, "ALL");
 	}
 
 	@Override
@@ -249,7 +201,7 @@ public class PodplayerExpActivity
 	}
 
 	@Override
-	public boolean onChildClick (ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+	public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 		//refresh header is added....
 		@SuppressWarnings("unchecked")
 		HashMap<String,Object> map =
@@ -443,7 +395,7 @@ public class PodplayerExpActivity
 		private void onFinished(){
 			loadTask_ = null;
 			setProgressBarIndeterminateVisibility(false);
-			//TODO: Sync playlist
+			//TODO: merge playlist
 			updatePlaylist();
 			reloadButton_.setImageResource(android.R.drawable.ic_popup_sync);
 		}
@@ -487,5 +439,52 @@ public class PodplayerExpActivity
 				new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
 		startActivity(new Intent(i));
 		return true;
+	}
+
+	//TODO: fetch current playing episode to update currentPodInfo
+	@Override
+	protected void onPodcastListChanged() {
+		for(int i = 0; i < allIndex2viewIndex_.length; i++) {
+			allIndex2viewIndex_[i] = -1;
+		}
+		int j = 0;
+		groupData_.clear();
+		childData_.clear();
+		for (int i = 0; i < state_.podcastURLList_.size(); i++) {
+			String podcastURL = state_.podcastURLList_.get(i).toString();
+			for ( ; j < allURLs_.length; j++) {
+				if(podcastURL.equals(allURLs_[j])) {
+					Map<String, String> groupItem = new HashMap<String, String>();
+					allIndex2viewIndex_[j] = i;
+					groupItem.put("TITLE", allTitles_[j++]);
+					groupItem.put("COUNT", "");
+					groupData_.add(groupItem);
+					childData_.add(new ArrayList<Map<String, Object>>());
+					break;
+				}
+			}
+		}
+		expandableAdapter_ = new ExpAdapter(
+				this,
+				groupData_,
+				R.layout.expandable_list_item2,
+				new String[] {"TITLE", "COUNT"},
+				new int[] { R.id.text1, R.id.text2 },
+				childData_,
+				R.layout.episode_item,
+				null, null);
+		expandableList_.setAdapter(expandableAdapter_);
+		SharedPreferences pref =
+				PreferenceManager.getDefaultSharedPreferences(this);
+		boolean expandInDefault = pref.getBoolean("expand_in_default", true);
+		if (expandInDefault) { 
+			expandOrCollapseAll(true);
+		}
+		expandableList_.setOnChildClickListener(this);
+		boolean doLoad = pref.getBoolean("load_on_start", true);
+		updateUI();
+		if(doLoad){
+			loadPodcast();
+		}
 	}
 }

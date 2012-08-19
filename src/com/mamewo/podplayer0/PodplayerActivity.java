@@ -76,40 +76,6 @@ public class PodplayerActivity
 		episodeListView_.setAdapter(adapter_);
 	}
 
-	//TODO: fetch current playing episode to update currentPodInfo
-	@Override
-	public void onResume(){
-		super.onResume();
-		List<String> list = new ArrayList<String>();
-		list.add("All");
-		//stop loading?
-		int j = 0;
-		for(int i = 0; i < state_.podcastURLList_.size(); i++) {
-			String podcastURL = state_.podcastURLList_.get(i).toString();
-			for ( ; j < allURLs_.length; j++) {
-				if(podcastURL.equals(allURLs_[j])) {
-					list.add(allTitles_[j++]);
-					break;
-				}
-			}
-		}
-		ArrayAdapter<String> adapter =
-				new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-		//TODO: load if selected item is changed
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		selector_.setAdapter(adapter);
-		SharedPreferences pref=
-				PreferenceManager.getDefaultSharedPreferences(this);
-		boolean doLoad = pref.getBoolean("load_on_start", true);
-		updateUI();
-		if(doLoad && adapter_.getCount() == 0){
-			episodeListView_.startRefresh();
-		}
-		else {
-			episodeListView_.onRefreshComplete(state_.lastUpdated_);
-		}
-	}
-
 	private void updateUI() {
 		if(null == player_) {
 			return;
@@ -118,7 +84,7 @@ public class PodplayerActivity
 		playButton_.setChecked(player_.isPlaying());
 	}
 
-	private void loadPodcast(){
+	private void loadPodcast() {
 		if (isLoading()) {
 			Log.i(TAG, "Already loading");
 			return;
@@ -411,12 +377,47 @@ public class PodplayerActivity
 		player_ = ((PlayerService.LocalBinder)binder).getService();
 		player_.setOnStartMusicListener(this);
 		playButton_.setEnabled(true);
-		updateUI();
+		SharedPreferences pref =
+				PreferenceManager.getDefaultSharedPreferences(this);
+		syncPreference(pref, "ALL");
 	}
 
 	@Override
 	public void onServiceDisconnected(ComponentName name) {
 		player_.clearOnStartMusicListener();
 		player_ = null;
+	}
+
+	@Override
+	protected void onPodcastListChanged() {
+		Log.d(TAG, "onPodcastListChanged");
+		SharedPreferences pref=
+				PreferenceManager.getDefaultSharedPreferences(this);
+		List<String> list = new ArrayList<String>();
+		list.add("All");
+		//stop loading?
+		int j = 0;
+		for(int i = 0; i < state_.podcastURLList_.size(); i++) {
+			String podcastURL = state_.podcastURLList_.get(i).toString();
+			for ( ; j < allURLs_.length; j++) {
+				if(podcastURL.equals(allURLs_[j])) {
+					list.add(allTitles_[j++]);
+					break;
+				}
+			}
+		}
+		ArrayAdapter<String> adapter =
+				new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
+		//TODO: load if selected item is changed
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		selector_.setAdapter(adapter);
+		boolean doLoad = pref.getBoolean("load_on_start", true);
+		if (doLoad) {
+			episodeListView_.startRefresh();
+		}
+		else {
+			episodeListView_.onRefreshComplete(state_.lastUpdated_);
+		}
+		updateUI();
 	}
 }

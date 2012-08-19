@@ -96,7 +96,7 @@ public class PlayerService
 	 * @return current music info
 	 */
 	public PodInfo getCurrentPodInfo(){
-		if(null == currentPlaylist_){
+		if(null == currentPlaylist_ || playCursor_ >= currentPlaylist_.size()){
 			return null;
 		}
 		return currentPlaylist_.get(playCursor_);
@@ -132,7 +132,6 @@ public class PlayerService
 	 * @return true if succeed
 	 */
 	public boolean restartMusic() {
-		Log.d(TAG, "restartMusic: isPausing: " + isPausing_ + " current: " + playCursor_);
 		if(! isPausing_) {
 			return false;
 		}
@@ -328,6 +327,7 @@ public class PlayerService
 	public void setOnStartMusicListener(PlayerStateListener listener) {
 		listener_ = listener;
 	}
+
 	public void clearOnStartMusicListener() {
 		listener_ = null;
 	}
@@ -337,7 +337,7 @@ public class PlayerService
 		public void onStartMusic(PodInfo info);
 		public void onStopMusic(int mode);
 	}
-	
+
 	final static
 	public class Receiver
 		extends BroadcastReceiver

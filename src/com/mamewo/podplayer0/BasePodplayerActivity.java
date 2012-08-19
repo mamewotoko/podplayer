@@ -31,7 +31,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
 //common activity + gesture
-public class BasePodplayerActivity
+abstract public class BasePodplayerActivity
 	extends Activity
 	implements OnSharedPreferenceChangeListener,
 	OnGesturePerformedListener
@@ -110,14 +110,6 @@ public class BasePodplayerActivity
 	}
 
 	@Override
-	public void onStart() {
-		super.onStart();
-		SharedPreferences pref=
-				PreferenceManager.getDefaultSharedPreferences(this);
-		syncPreference(pref, "ALL");
-	}
-
-	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putSerializable("state", state_);
 	}
@@ -135,6 +127,7 @@ public class BasePodplayerActivity
 			Log.d(TAG, "startLoading: already loading");
 			return;
 		}
+		state_.loadedEpisode_.clear();
 		loadTask_ = task;
 		loadTask_.execute(state_.podcastURLList_.toArray(DUMMY_URL_LIST));
 	}
@@ -174,23 +167,13 @@ public class BasePodplayerActivity
 		Log.d(TAG, "onSharedPreferneceChanged: " + key);
 		syncPreference(pref, key);
 	}
-
-	private void syncPreference(SharedPreferences pref, String key){
+	
+	abstract protected void onPodcastListChanged();
+	
+	//should be called from onServiceConnected
+	protected void syncPreference(SharedPreferences pref, String key){
 		boolean updateAll = "ALL".equals(key);
-		if(updateAll || "podcastlist".equals(key)) {
-			String prefURLString = pref.getString("podcastlist", DEFAULT_PODCAST_LIST);
-			String[] list = prefURLString.split(MultiListPreference.SEPARATOR);
-			state_.podcastURLList_.clear();
-			for (String url: list) {
-				try {
-					state_.podcastURLList_.add(new URL(url));
-				}
-				catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		if(updateAll || "enable_gesture".equals(key)) {
+		if (updateAll || "enable_gesture".equals(key)) {
 			boolean useGesture = pref.getBoolean("enable_gesture", DEFAULT_USE_GESTURE);
 			GestureOverlayView gestureView =
 					(GestureOverlayView)findViewById(R.id.gesture_view);
@@ -207,12 +190,27 @@ public class BasePodplayerActivity
 			}
 			gestureView.setEnabled(useGesture);
 		}
-		if(updateAll || "gesture_score_threshold".equals(key)) {
+		if (updateAll || "gesture_score_threshold".equals(key)) {
 			gestureScoreThreshold_ =
 					Double.valueOf(pref.getString("gesture_score_threshold", "3.0"));
 		}
-		if(updateAll || "show_podcast_icon".equals(key)) {
+		if (updateAll || "show_podcast_icon".equals(key)) {
 			showPodcastIcon_ = pref.getBoolean("show_podcast_icon", true);
+		}
+		//umm. folowing block should be last
+		if (updateAll || "podcastlist".equals(key)) {
+			String prefURLString = pref.getString("podcastlist", DEFAULT_PODCAST_LIST);
+			String[] list = prefURLString.split(MultiListPreference.SEPARATOR);
+			state_.podcastURLList_.clear();
+			for (String url: list) {
+				try {
+					state_.podcastURLList_.add(new URL(url));
+				}
+				catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+			}
+			onPodcastListChanged();
 		}
 	}
 

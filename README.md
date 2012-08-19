@@ -69,10 +69,13 @@ How to run Scirocco test
 
 TODO
 ----------
+* define init Activity which forwards to main activity to switch main UI
 * reset playing position after podcast selection is changed
+* use restored loadedEpisode
 * use database to manage loaded episodes
     * display mark which is already played, new item etc...
     * to reduce reload of podcast
+    * show description of playing episode
 * save podcast list and updated time as state
 * add test
     * preference
@@ -90,7 +93,6 @@ TODO
 * play episode which is clicked while preparing other item
 * sort episode by date
 * add episode search UI
-* show description of playing episode
 * add cool widget to play episode
 * add slider to show current playing position
 * add Wifi only mode
