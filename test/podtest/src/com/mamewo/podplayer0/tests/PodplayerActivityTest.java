@@ -1,8 +1,11 @@
-package com.mamewo.podplayer0;
+package com.mamewo.podplayer0.tests;
 
 import java.util.ArrayList;
 
 import com.jayway.android.robotium.solo.Solo;
+import com.mamewo.podplayer0.PodplayerActivity;
+import com.mamewo.podplayer0.R;
+import com.mamewo.podplayer0.R.id;
 
 import junit.framework.Assert;
 import android.test.ActivityInstrumentationTestCase2;
@@ -61,6 +64,7 @@ extends ActivityInstrumentationTestCase2<PodplayerActivity>
 	@Override
 	public void tearDown() throws Exception {
 		try {
+			solo_.takeScreenShot();
 			solo_.finalize();
 		}
 		catch(Throwable e) {

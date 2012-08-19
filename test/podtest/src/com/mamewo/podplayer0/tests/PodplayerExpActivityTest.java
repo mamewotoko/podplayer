@@ -1,8 +1,11 @@
-package com.mamewo.podplayer0;
+package com.mamewo.podplayer0.tests;
 
 import java.util.ArrayList;
 
 import com.jayway.android.robotium.solo.Solo;
+import com.mamewo.podplayer0.PodplayerExpActivity;
+import com.mamewo.podplayer0.R;
+import com.mamewo.podplayer0.R.id;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
@@ -63,7 +66,7 @@ extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
 	}
 
 	public void testAbortReload() throws Exception {
-		solo_.sleep(500);
+		solo_.sleep(5000);
 		solo_.takeScreenShot();
 		View reloadButton = solo_.getView(R.id.reload_button);
 		//TODO: check image source
