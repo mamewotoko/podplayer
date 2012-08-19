@@ -70,6 +70,7 @@ How to run Scirocco test
 TODO
 ----------
 * define init Activity which forwards to main activity to switch main UI
+* display playing icon in group of expandable list
 * reset playing position after podcast selection is changed
 * use restored loadedEpisode
 * use database to manage loaded episodes
