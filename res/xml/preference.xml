@@ -18,24 +18,6 @@
         android:title="Pause on unplagged" />
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="use_expandable_ui"
-        android:summaryOff="pull to update UI"
-        android:summaryOn="expandable list UI"
-        android:title="Use expandable list UI" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="expand_in_default"
-        android:summaryOff="collapse"
-        android:summaryOn="expand"
-        android:title="Expand list in default" android:dependency="use_expandable_ui"/>
-<CheckBoxPreference
-        android:defaultValue="false"
-        android:key="show_podcast_icon"
-        android:summaryOff="hide"
-        android:summaryOn="show"
-        android:title="Show podcast icon" />
-    <CheckBoxPreference
-        android:defaultValue="false"
         android:key="enable_long_click"
         android:summaryOff="off"
         android:summaryOn="on"
@@ -54,7 +36,27 @@
         android:entryValues="@array/pref_timeout_values"
         android:key="read_timeout"
         android:title="Read timeout" />
-
+    <PreferenceCategory android:title="Appearance" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="use_expandable_ui"
+            android:summaryOff="pull to update UI"
+            android:summaryOn="expandable list UI"
+            android:title="Use expandable list UI" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="use_expandable_ui"
+            android:key="expand_in_default"
+            android:summaryOff="collapse"
+            android:summaryOn="expand"
+            android:title="Expand list in default" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="show_podcast_icon"
+            android:summaryOff="hide"
+            android:summaryOn="show"
+            android:title="Show podcast icon" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="Gesture" >
         <CheckBoxPreference
             android:defaultValue="true"
@@ -62,7 +64,6 @@
             android:summaryOff="gesture off"
             android:summaryOn="gesture on"
             android:title="Use gesture" />
-
         <com.mamewo.podplayer0.DoublePreference
             android:defaultValue="3.0"
             android:key="gesture_score_threshold"
