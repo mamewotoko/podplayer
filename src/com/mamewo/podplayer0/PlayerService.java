@@ -41,7 +41,8 @@ public class PlayerService
 	public int STOP = 1;
 	final static
 	public int PAUSE = 2;
-	private Class<?> userClass_ = PodplayerActivity.class;
+	final static
+	private Class<?> userClass_ = MainActivity.class;
 	final static
 	private String TAG = "podplayer";
 	final static
@@ -249,10 +250,6 @@ public class PlayerService
 	
 	@Override
 	public IBinder onBind(Intent intent) {
-		Object clazz = intent.getSerializableExtra("class");
-		if (null != clazz) {
-			userClass_ = (Class<?>)clazz;
-		}
 		return binder_;
 	}
 

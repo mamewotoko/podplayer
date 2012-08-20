@@ -58,17 +58,19 @@ abstract public class BasePodplayerActivity
 	protected boolean finishServiceOnExit_;
 	protected ServiceConnection connection_;
 	protected boolean showPodcastIcon_;
-	
+	private boolean uiSettingChanged_;
+
 	final static
 	public String TAG = "podplayer";
 
 	public void onCreate(Bundle savedInstanceState, ServiceConnection conn, Class<?> userClass) {
 		super.onCreate(savedInstanceState);
 		Intent intent = new Intent(this, PlayerService.class);
-		intent.putExtra("class", userClass);
 		startService(intent);
 		finishServiceOnExit_ = false;
 		state_ = null;
+		uiSettingChanged_ = false;
+		
 		if(null != savedInstanceState){
 			state_ = (PodplayerState) savedInstanceState.get("state");
 		}
@@ -90,7 +92,7 @@ abstract public class BasePodplayerActivity
 	
 	@Override
 	public void onDestroy() {
-		SharedPreferences pref=
+		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.unregisterOnSharedPreferenceChangeListener(this);
 		if (null != loadTask_) {
@@ -109,6 +111,18 @@ abstract public class BasePodplayerActivity
 		super.onDestroy();
 	}
 
+	@Override
+	protected void onStart() {
+		super.onStart();
+		//TODO: check current activity and prefernce
+		if (uiSettingChanged_) {
+			finish();
+			//TODO: show toast?
+			Intent intent = new Intent(this, MainActivity.class);
+			startActivity(intent);
+		}
+	}
+	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putSerializable("state", state_);
@@ -173,6 +187,9 @@ abstract public class BasePodplayerActivity
 	//should be called from onServiceConnected
 	protected void syncPreference(SharedPreferences pref, String key){
 		boolean updateAll = "ALL".equals(key);
+		if ("use_expandable_ui".equals(key)) {
+			uiSettingChanged_ = true;
+		}
 		if (updateAll || "enable_gesture".equals(key)) {
 			boolean useGesture = pref.getBoolean("enable_gesture", DEFAULT_USE_GESTURE);
 			GestureOverlayView gestureView =

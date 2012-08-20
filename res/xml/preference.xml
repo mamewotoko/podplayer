@@ -16,8 +16,19 @@
         android:summaryOff="play after unplugged"
         android:summaryOn="pause on unplugged"
         android:title="Pause on unplagged" />
-    <CheckBoxPreference android:summaryOff="collapse" android:title="Expand list in default" android:key="expand_in_default" android:summaryOn="expand" android:defaultValue="true"/>
     <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="use_expandable_ui"
+        android:summaryOff="pull to update UI"
+        android:summaryOn="expandable list UI"
+        android:title="Use expandable list UI" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="expand_in_default"
+        android:summaryOff="collapse"
+        android:summaryOn="expand"
+        android:title="Expand list in default" android:dependency="use_expandable_ui"/>
+<CheckBoxPreference
         android:defaultValue="false"
         android:key="show_podcast_icon"
         android:summaryOff="hide"

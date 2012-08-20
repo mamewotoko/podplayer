@@ -60,7 +60,7 @@ public class DoublePreference
 	protected Object onGetDefaultValue(TypedArray a, int index) {
 		return a.getString(index);
 	}
-	
+
 	private void setDoubleValue(double v) {
 		double value = v;
 		if (value < 0.0) {
