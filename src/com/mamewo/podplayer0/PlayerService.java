@@ -42,7 +42,7 @@ public class PlayerService
 	final static
 	public int PAUSE = 2;
 	final static
-	private Class<?> userClass_ = MainActivity.class;
+	private Class<MainActivity> USER_CLASS = MainActivity.class;
 	final static
 	private String TAG = "podplayer";
 	final static
@@ -92,6 +92,11 @@ public class PlayerService
 		return (! abortPreparing_) && (isPreparing_ || player_.isPlaying());
 	}
 
+	//TODO: clone?
+	public List<PodInfo> getCurrentPlaylist() {
+		return currentPlaylist_;
+	}
+	
 	/**
 	 * get current playing or pausing music
 	 * @return current music info
@@ -258,7 +263,7 @@ public class PlayerService
 		String podTitle = "playing podcast";
 		Notification note =
 				new Notification(R.drawable.ic_launcher, podTitle, 0);
-		Intent ni = new Intent(this, userClass_);
+		Intent ni = new Intent(this, USER_CLASS);
 		PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
 		//TODO: localize
 		note.setLatestEventInfo(this, title, description, npi);

@@ -239,6 +239,25 @@ public class PodplayerActivity
 	}
 	// end of callback methods
 
+	private void addEpisodeItems(PodInfo[] values) {
+		for (int i = 0; i < values.length; i++) {
+			PodInfo info = values[i];
+			state_.loadedEpisode_.add(info);
+			int selectorPos = selector_.getSelectedItemPosition();
+			if(selectorPos == 0) {
+				//ALL is selected
+				adapter_.add(info);
+			}
+			else {
+				String selectedTitle = (String)selector_.getSelectedItem();
+				int index = podcastTitle2Index(selectedTitle);
+				if(index == info.index_) {
+					adapter_.add(info);
+				}
+			}
+		}
+	}
+	
 	private class GetPodcastTask
 		extends BaseGetPodcastTask
 	{
@@ -248,22 +267,7 @@ public class PodplayerActivity
 
 		@Override
 		protected void onProgressUpdate(PodInfo... values){
-			for (int i = 0; i < values.length; i++) {
-				PodInfo info = values[i];
-				state_.loadedEpisode_.add(info);
-				int selectorPos = selector_.getSelectedItemPosition();
-				if(selectorPos == 0) {
-					//ALL is selected
-					adapter_.add(info);
-				}
-				else {
-					String selectedTitle = (String)selector_.getSelectedItem();
-					int index = podcastTitle2Index(selectedTitle);
-					if(index == info.index_) {
-						adapter_.add(info);
-					}
-				}
-			}
+			addEpisodeItems(values);
 		}
 
 		private void onFinished() {
@@ -379,6 +383,11 @@ public class PodplayerActivity
 		playButton_.setEnabled(true);
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
+		//TODO: move to base?
+		List<PodInfo> playlist = player_.getCurrentPlaylist();
+		if (null != playlist) {
+			state_.loadedEpisode_ = playlist;
+		}
 		syncPreference(pref, "ALL");
 	}
 
@@ -412,10 +421,12 @@ public class PodplayerActivity
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		selector_.setAdapter(adapter);
 		boolean doLoad = pref.getBoolean("load_on_start", true);
+		List<PodInfo> playlist = state_.loadedEpisode_;
 		if (doLoad) {
 			episodeListView_.startRefresh();
 		}
-		else {
+		else if (playlist != null && ! playlist.isEmpty()) {
+			addEpisodeItems(playlist.toArray(new PodInfo[0]));
 			episodeListView_.onRefreshComplete(state_.lastUpdated_);
 		}
 		updateUI();

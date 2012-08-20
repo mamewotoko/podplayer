@@ -189,6 +189,10 @@ public class PodplayerExpActivity
 		player_ = ((PlayerService.LocalBinder)binder).getService();
 		player_.setOnStartMusicListener(this);
 		playButton_.setEnabled(true);
+		List<PodInfo> playlist = player_.getCurrentPlaylist();
+		if (null != playlist) {
+			state_.loadedEpisode_ = playlist;
+		}
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
 		syncPreference(pref, "ALL");
@@ -201,12 +205,13 @@ public class PodplayerExpActivity
 	}
 
 	@Override
-	public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+	public boolean onChildClick(ExpandableListView parent, View v,
+								int groupPosition, int childPosition, long id) {
 		//refresh header is added....
 		@SuppressWarnings("unchecked")
 		HashMap<String,Object> map =
 			(HashMap<String, Object>) expandableAdapter_.getChild(groupPosition, childPosition);
-		PodInfo info = (PodInfo)map.get("DATA");
+		PodInfo info = (PodInfo) map.get("DATA");
 		PodInfo current = player_.getCurrentPodInfo();
 		if(current != null && current.url_.equals(info.url_)) {
 			if(player_.isPlaying()) {
@@ -350,6 +355,39 @@ public class PodplayerExpActivity
 	}
 	// end of callback methods
 
+	private void addEpisodeItems(PodInfo[] values) {
+		int groupMin = groupData_.size() - 1;
+		int groupMax = 0;
+		for (int i = 0; i < values.length; i++) {
+			PodInfo info = values[i];
+			//TODO: remove?
+			state_.loadedEpisode_.add(info);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("TITLE", info.title_);
+			map.put("DATA", info);
+			int groupIndex = allIndex2viewIndex_[info.index_];
+			childData_.get(groupIndex).add(map);
+			if (groupIndex < groupMin) {
+				groupMin = groupIndex;
+			}
+			if (groupIndex > groupMax) {
+				groupMax = groupIndex;
+			}
+		}
+		for (int i = groupMin; i <= groupMax; i++) {
+			int childNum = childData_.get(i).size();
+			String numStr;
+			if (childNum <= 1) {
+				numStr = " item";
+			}
+			else {
+				numStr = " items";
+			}
+			groupData_.get(i).put("COUNT", childNum + numStr);
+		}
+		expandableAdapter_.notifyDataSetChanged();
+	}
+	
 	private class GetPodcastTask
 		extends BaseGetPodcastTask
 	{
@@ -360,36 +398,7 @@ public class PodplayerExpActivity
 
 		@Override
 		protected void onProgressUpdate(PodInfo... values){
-			int groupMin = groupData_.size() - 1;
-			int groupMax = 0;
-			for (int i = 0; i < values.length; i++) {
-				PodInfo info = values[i];
-				//TODO: remove?
-				state_.loadedEpisode_.add(info);
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("TITLE", info.title_);
-				map.put("DATA", info);
-				int groupIndex = allIndex2viewIndex_[info.index_];
-				childData_.get(groupIndex).add(map);
-				if (groupIndex < groupMin) {
-					groupMin = groupIndex;
-				}
-				if (groupIndex > groupMax) {
-					groupMax = groupIndex;
-				}
-			}
-			for (int i = groupMin; i <= groupMax; i++) {
-				int childNum = childData_.get(i).size();
-				String numStr;
-				if (childNum <= 1) {
-					numStr = " item";
-				}
-				else {
-					numStr = " items";
-				}
-				groupData_.get(i).put("COUNT", childNum + numStr);
-			}
-			expandableAdapter_.notifyDataSetChanged();
+			addEpisodeItems(values);
 		}
 
 		private void onFinished(){
@@ -483,8 +492,13 @@ public class PodplayerExpActivity
 		expandableList_.setOnChildClickListener(this);
 		boolean doLoad = pref.getBoolean("load_on_start", true);
 		updateUI();
+		List<PodInfo> playlist = state_.loadedEpisode_;
 		if(doLoad){
 			loadPodcast();
+		}
+		else if (null != playlist && ! playlist.isEmpty()) {
+			//use list
+			addEpisodeItems(playlist.toArray(new PodInfo[0]));
 		}
 	}
 }

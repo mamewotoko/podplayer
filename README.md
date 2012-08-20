@@ -69,10 +69,9 @@ How to run Scirocco test
 
 TODO
 ----------
-* define init Activity which forwards to main activity to switch main UI
+* Autoload: load on create & when podcast list setting is changed
 * display playing icon in group of expandable list
 * reset playing position after podcast selection is changed
-* use restored loadedEpisode
 * use database to manage loaded episodes
     * display mark which is already played, new item etc...
     * to reduce reload of podcast
