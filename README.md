@@ -69,28 +69,29 @@ How to run Scirocco test
 
 TODO
 ----------
-* Autoload: load on create & when podcast list setting is changed
+* add UI to add podcast URL
+    * Web browser displays text/xml as content (I want intent...)
 * display playing icon in group of expandable list
 * reset playing position after podcast selection is changed
 * use database to manage loaded episodes
     * display mark which is already played, new item etc...
     * to reduce reload of podcast
     * show description of playing episode
-* save podcast list and updated time as state
+    * cache podcast icon
+    * save podcast list and updated time as state
 * add test
     * preference
     * gesture?
+    * switch UI
     * landscape UI
-* add UI to add podcast URL
-    * Web browser displays text/xml as content (I want intent...)
 * optimize initialization of podplayer
     * setContentView takes long time
+* Autoload: load on create & when podcast list setting is changed
 * add close button to dialog
-* add table of gestures as preference
 * fix a bug that when only one episode is registered, list is in tap to refresh mode after loaded
 * use Google Reader or some other service to manage listened episode
 * add confirm dialog to open web site
-* play episode which is clicked while preparing other item
+* play episode which is clicked while preparing other episode
 * sort episode by date
 * add episode search UI
 * add cool widget to play episode
@@ -100,7 +101,6 @@ TODO
 * add error handling
 * set default value of MultiListPreference by array name not by string value
 * support video cast??
-* support native player?
 * write user guide?
 * check apk size
 
