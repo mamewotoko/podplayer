@@ -116,10 +116,10 @@ abstract public class BasePodplayerActivity
 		super.onStart();
 		//TODO: check current activity and prefernce
 		if (uiSettingChanged_) {
-			finish();
-			//TODO: show toast?
 			Intent intent = new Intent(this, MainActivity.class);
 			startActivity(intent);
+			finish();
+			//TODO: show toast like "switching activity"?
 		}
 	}
 	
