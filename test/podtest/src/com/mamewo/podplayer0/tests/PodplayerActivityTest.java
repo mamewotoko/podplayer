@@ -40,7 +40,7 @@ extends ActivityInstrumentationTestCase2<PodplayerActivity>
 		do {
 			ArrayList<TextView> list = solo_.getCurrentTextViews(null);
 			for (TextView listText : list) {
-				Log.i(TAG, "listtext: " + listText.getText());
+				//Log.i(TAG, "listtext: " + listText.getText());
 				if(targetTitle.equals(listText.getText())){
 					view = listText;
 					break;
