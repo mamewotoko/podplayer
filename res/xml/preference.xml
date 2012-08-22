@@ -51,7 +51,7 @@
             android:summaryOn="expand"
             android:title="Expand list in default" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="show_podcast_icon"
             android:summaryOff="hide"
             android:summaryOn="show"
