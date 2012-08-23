@@ -1,3 +1,5 @@
+package com.mamewo.podplayer0;
+
 /**
  * 
  * @author declanshanaghy
@@ -15,7 +17,6 @@
  *
  */
 
-package com.mamewo.podplayer0;
 //modified by Takashi Masuyama <mamewotoko@gmail.com>
 
 import java.util.ArrayList;
