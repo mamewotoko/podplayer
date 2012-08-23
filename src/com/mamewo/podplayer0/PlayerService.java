@@ -109,11 +109,12 @@ public class PlayerService
 	}
 	
 	public boolean playNext() {
+		Log.d(TAG, "playNext");
 		if(currentPlaylist_ == null || currentPlaylist_.size() == 0) {
 			return false;
 		}
-		if (isPlaying()) {
-			stopMusic();
+		if (player_.isPlaying()) {
+			player_.pause();
 		}
 		playCursor_ = (playCursor_ + 1) % currentPlaylist_.size();
 		return playMusic();
@@ -316,10 +317,8 @@ public class PlayerService
 		//TODO: show error message to GUI
 		PodInfo info = currentPlaylist_.get(playCursor_);
 		Log.i(TAG, "onError: what: " + what + " extra: " + extra + " url: " + info.url_);
-		if(info.url_.startsWith("http:") && ! isNetworkConnected(this)) {
-			stopMusic();
-		}
-		else {
+		stopMusic();
+		if (isNetworkConnected(this)) {
 			playNext();
 		}
 		return true;
