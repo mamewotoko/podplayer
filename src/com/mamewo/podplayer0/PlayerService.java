@@ -47,6 +47,8 @@ public class PlayerService
 	final static
 	public int PAUSE = 2;
 	final static
+	private int PREV_INTERVAL_MILLIS = 3000;
+	final static
 	private Class<MainActivity> USER_CLASS = MainActivity.class;
 	final static
 	private String TAG = "podplayer";
@@ -62,6 +64,7 @@ public class PlayerService
 	private boolean abortPreparing_;
 	private boolean isPausing_;
 	private ComponentName mediaButtonReceiver_;
+	private long previousPrevKeyTime_;
 	
 	//TODO: check
 	static
@@ -112,8 +115,22 @@ public class PlayerService
 				}
 				break;
 			case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-				//rewind...
-				playMusic();
+				long currentTime = System.currentTimeMillis();
+				Log.d(TAG, "Interval: " + (currentTime - previousPrevKeyTime_));
+				if ((currentTime - previousPrevKeyTime_) <= PREV_INTERVAL_MILLIS) {
+					if(0 == playCursor_){
+						playCursor_ = currentPlaylist_.size() - 1;
+					}
+					else {
+						playCursor_--;
+					}
+					playNth(playCursor_);
+				}
+				else {
+					//rewind
+					playMusic();
+				}
+				previousPrevKeyTime_ = currentTime;
 				break;
 			default:
 				break;
@@ -272,6 +289,7 @@ public class PlayerService
 		abortPreparing_ = false;
 		isPausing_ = false;
 		playCursor_ = 0;
+		previousPrevKeyTime_ = 0;
 		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		mediaButtonReceiver_ = new ComponentName(getPackageName(), Receiver.class.getName());
 		manager.registerMediaButtonEventReceiver(mediaButtonReceiver_);
