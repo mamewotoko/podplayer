@@ -9,10 +9,12 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -20,6 +22,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.KeyEvent;
 
 /**
  * @author Takashi Masuyama <mamewotoko@gmail.com>
@@ -37,6 +40,8 @@ public class PlayerService
 	public String STOP_MUSIC_ACTION = PACKAGE_NAME + ".STOP_MUSIC_ACTION";
 	final static
 	public String JACK_UNPLUGGED_ACTION = PACKAGE_NAME + ".JUCK_UNPLUGGED_ACTION";
+	final static
+	public String MEDIA_BUTTON_ACTION = PACKAGE_NAME + ".MEDIA_BUTTON_ACTION";
 	final static
 	public int STOP = 1;
 	final static
@@ -56,7 +61,8 @@ public class PlayerService
 	private boolean isPreparing_;
 	private boolean abortPreparing_;
 	private boolean isPausing_;
-
+	private ComponentName mediaButtonReceiver_;
+	
 	//TODO: check
 	static
 	public boolean isNetworkConnected(Context context) {
@@ -77,12 +83,40 @@ public class PlayerService
 		if (STOP_MUSIC_ACTION.equals(action)) {
 			stopMusic();
 		}
-		else if(JACK_UNPLUGGED_ACTION.equals(action)) {
+		else if (JACK_UNPLUGGED_ACTION.equals(action)) {
 			SharedPreferences pref =
 					PreferenceManager.getDefaultSharedPreferences(this);
 			boolean pause = pref.getBoolean("pause_on_unplugged", true);
 			if (pause && player_.isPlaying()) {
 				pauseMusic();
+			}
+		}
+		else if (MEDIA_BUTTON_ACTION.equals(action)) {
+			KeyEvent event = intent.getParcelableExtra("event");
+			Log.d(TAG, "SERVICE: Received media button: " + event.getKeyCode());
+			if (event.getAction() != KeyEvent.ACTION_UP) {
+				return START_STICKY;
+			}
+			switch(event.getKeyCode()) {
+			case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+				if (player_.isPlaying()){
+					pauseMusic();
+				}
+				else {
+					playMusic();
+				}
+				break;
+			case KeyEvent.KEYCODE_MEDIA_NEXT:
+				if (player_.isPlaying()) {
+					playNext();
+				}
+				break;
+			case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+				//rewind...
+				playMusic();
+				break;
+			default:
+				break;
 			}
 		}
 		return START_STICKY;
@@ -233,16 +267,20 @@ public class PlayerService
 		player_.setOnErrorListener(this);
 		player_.setOnPreparedListener(this);
 		receiver_ = new Receiver();
-		registerReceiver(receiver_,
-						new IntentFilter(Intent.ACTION_HEADSET_PLUG));
+		registerReceiver(receiver_, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
 		isPreparing_ = false;
 		abortPreparing_ = false;
 		isPausing_ = false;
 		playCursor_ = 0;
+		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		mediaButtonReceiver_ = new ComponentName(getPackageName(), Receiver.class.getName());
+		manager.registerMediaButtonEventReceiver(mediaButtonReceiver_);
 	}
 	
 	@Override
 	public void onDestroy() {
+		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		manager.unregisterMediaButtonEventReceiver(mediaButtonReceiver_);
 		unregisterReceiver(receiver_);
 		stopForeground(false);
 		player_.setOnCompletionListener(null);
@@ -352,12 +390,18 @@ public class PlayerService
 			}
 			if(Intent.ACTION_HEADSET_PLUG.equals(action)) {
 				if(intent.getIntExtra("state", 1) == 0) {
-					Log.d(TAG, "unplugged");
 					//unplugged
 					Intent i = new Intent(context, PlayerService.class);
 					i.setAction(JACK_UNPLUGGED_ACTION);
 					context.startService(i);
 				}
+			}
+			else if(Intent.ACTION_MEDIA_BUTTON.equals(action)) {
+				Log.d(TAG, "media button");
+				Intent i = new Intent(context, PlayerService.class);
+				i.setAction(MEDIA_BUTTON_ACTION);
+				i.putExtra("event", intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT));
+				context.startService(i);
 			}
 		}
 	}

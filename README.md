@@ -71,6 +71,8 @@ TODO
 ----------
 * add UI to add podcast URL
     * Web browser displays text/xml as content (I want intent...)
+* fix a bug that when prepare error occurs, cursor moves to next episode
+    * show network error message
 * display playing icon in group of expandable list
 * reset playing position after podcast selection is changed
 * use database to manage loaded episodes
@@ -79,6 +81,7 @@ TODO
     * show description of playing episode
     * cache podcast icon
     * save podcast list and updated time as state
+* support play previous item when KEYCODE_MEDIA_PREVIOUS button is pressed
 * add test
     * preference
     * gesture?

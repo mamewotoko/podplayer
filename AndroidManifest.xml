@@ -30,6 +30,7 @@
             android:launchMode="singleTask"
             android:name="PodplayerActivity" />
         <activity android:name="PodplayerPreference" />
+        <receiver android:name="PlayerService$Receiver" />
         <service android:name="PlayerService" />
    </application>
 </manifest>
