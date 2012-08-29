@@ -55,7 +55,7 @@ public class PlayerService
 	final static
 	private int NOTIFY_PLAYING_ID = 1;
 	private final IBinder binder_ = new LocalBinder();
-	private List<PodInfo> currentPlaylist_;
+	private List<MusicInfo> currentPlaylist_;
 	private int playCursor_;
 	private MediaPlayer player_;
 	private PlayerStateListener listener_;
@@ -75,7 +75,7 @@ public class PlayerService
 		return (networkInfo != null && networkInfo.isConnected());
 	}
 
-	public void setPlaylist(List<PodInfo> playlist) {
+	public void setPlaylist(List<MusicInfo> playlist) {
 		currentPlaylist_ = playlist;
 	}
 
@@ -144,7 +144,7 @@ public class PlayerService
 	}
 
 	//TODO: clone?
-	public List<PodInfo> getCurrentPlaylist() {
+	public List<MusicInfo> getCurrentPlaylist() {
 		return currentPlaylist_;
 	}
 	
@@ -152,7 +152,7 @@ public class PlayerService
 	 * get current playing or pausing music
 	 * @return current music info
 	 */
-	public PodInfo getCurrentPodInfo(){
+	public MusicInfo getCurrentPodInfo(){
 		if(null == currentPlaylist_ || playCursor_ >= currentPlaylist_.size()){
 			return null;
 		}
@@ -194,7 +194,7 @@ public class PlayerService
 			return false;
 		}
 		player_.start();
-		PodInfo info = currentPlaylist_.get(playCursor_);
+		MusicInfo info = currentPlaylist_.get(playCursor_);
 		if(null != listener_){
 			listener_.onStartMusic(currentPlaylist_.get(playCursor_));
 		}
@@ -214,7 +214,7 @@ public class PlayerService
 			Log.i(TAG, "playMusic: playlist is null");
 			return false;
 		}
-		PodInfo info = currentPlaylist_.get(playCursor_);
+		MusicInfo info = currentPlaylist_.get(playCursor_);
 		//skip unsupported files filtering by filename ...
 		Log.i(TAG, "playMusic: " + playCursor_ + ": " + info.url_);
 		try {
@@ -327,26 +327,6 @@ public class PlayerService
 		startForeground(NOTIFY_PLAYING_ID, note);
 	}
 
-	static
-	public class PodInfo
-		implements Serializable
-	{
-		private static final long serialVersionUID = 1L;
-		final public String url_;
-		final public String title_;
-		final public String pubdate_;
-		final public String link_;
-		final public int index_;
-
-		public PodInfo(String url, String title, String pubdate, String link, int index) {
-			url_ = url;
-			title_ = title;
-			pubdate_ = pubdate;
-			link_ = link;
-			index_ = index;
-		}
-	}
-
 	@Override
 	public void onPrepared(MediaPlayer player) {
 		Log.d(TAG, "onPrepared");
@@ -371,7 +351,7 @@ public class PlayerService
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 		//TODO: show error message to GUI
-		PodInfo info = currentPlaylist_.get(playCursor_);
+		MusicInfo info = currentPlaylist_.get(playCursor_);
 		Log.i(TAG, "onError: what: " + what + " extra: " + extra + " url: " + info.url_);
 		stopMusic();
 		if (isNetworkConnected(this)) {
@@ -390,8 +370,8 @@ public class PlayerService
 	}
 	
 	public interface PlayerStateListener {
-		public void onStartLoadingMusic(PodInfo info);
-		public void onStartMusic(PodInfo info);
+		public void onStartLoadingMusic(MusicInfo info);
+		public void onStartMusic(MusicInfo info);
 		public void onStopMusic(int mode);
 	}
 
@@ -421,6 +401,26 @@ public class PlayerService
 				i.putExtra("event", intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT));
 				context.startService(i);
 			}
+		}
+	}
+
+	static
+	public class MusicInfo
+		implements Serializable
+	{
+		private static final long serialVersionUID = 1L;
+		final public String url_;
+		final public String title_;
+		final public String pubdate_;
+		final public String link_;
+		final public int index_;
+
+		public MusicInfo(String url, String title, String pubdate, String link, int index) {
+			url_ = url;
+			title_ = title;
+			pubdate_ = pubdate;
+			link_ = link;
+			index_ = index;
 		}
 	}
 }

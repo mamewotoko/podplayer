@@ -9,7 +9,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import com.mamewo.podplayer0.PlayerService.PodInfo;
+import com.mamewo.podplayer0.PlayerService.MusicInfo;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
@@ -18,7 +18,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 public class BaseGetPodcastTask
-extends AsyncTask<URL, PodInfo, Void>
+	extends AsyncTask<URL, MusicInfo, Void>
 {
 	private Context context_;
 	private String[] allPodcastURLs_;
@@ -45,19 +45,23 @@ extends AsyncTask<URL, PodInfo, Void>
 		timeoutSec_ = timeout;
 	}
 
-	private InputStream getInputStreamFromURL(URL url) throws IOException{
+	static
+	protected InputStream getInputStreamFromURL(URL url, int timeout)
+		throws IOException
+	{
 		URLConnection conn = url.openConnection();
-		conn.setReadTimeout(timeoutSec_ * 1000);
+		conn.setReadTimeout(timeout * 1000);
 		return conn.getInputStream();
 	}
 
-	private BitmapDrawable downloadIcon(URL iconURL) {
+	static
+	protected BitmapDrawable downloadIcon(Context context, URL iconURL, int timeout) {
 		//get data
 		InputStream is = null;
 		BitmapDrawable result = null;
 		try {
-			is = getInputStreamFromURL(iconURL);
-			result = new BitmapDrawable(context_.getResources(), is);
+			is = getInputStreamFromURL(iconURL, timeout);
+			result = new BitmapDrawable(context.getResources(), is);
 		}
 		catch(IOException e) {
 			Log.i(TAG, "cannot load icon", e);
@@ -99,7 +103,7 @@ extends AsyncTask<URL, PodInfo, Void>
 			Log.d(TAG, "get URL: " + podcastIndex + ": "+ url);
 			InputStream is = null;
 			try {
-				is = getInputStreamFromURL(url);
+				is = getInputStreamFromURL(url, timeoutSec_);
 				XmlPullParser parser = factory.newPullParser();
 				//TODO: use reader or give correct encoding
 				parser.setInput(is, "UTF-8");
@@ -129,7 +133,7 @@ extends AsyncTask<URL, PodInfo, Void>
 								URL iconURL = new URL(parser.getAttributeValue(null, "href"));
 								iconURL_[podcastIndex] = iconURL;
 								if(showPodcastIcon_ && null == iconData_[podcastIndex]) {
-									iconData_[podcastIndex] = downloadIcon(iconURL);
+									iconData_[podcastIndex] = downloadIcon(context_, iconURL, timeoutSec_);
 								}
 							}
 						}
@@ -157,7 +161,7 @@ extends AsyncTask<URL, PodInfo, Void>
 								if(title == null) {
 									title = podcastURL;
 								}
-								PodInfo info = new PodInfo(podcastURL, title, pubdate, link, podcastIndex);
+								MusicInfo info = new MusicInfo(podcastURL, title, pubdate, link, podcastIndex);
 								publishProgress(info);
 							}
 							podcastURL = null;

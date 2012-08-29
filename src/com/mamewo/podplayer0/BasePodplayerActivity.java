@@ -6,7 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mamewo.podplayer0.PlayerService.PodInfo;
+import com.mamewo.podplayer0.PlayerService.MusicInfo;
 
 import android.app.Activity;
 import android.content.Context;
@@ -268,13 +268,13 @@ abstract public class BasePodplayerActivity
 		implements Serializable
 	{
 		private static final long serialVersionUID = 1L;
-		protected List<PodInfo> loadedEpisode_;
+		protected List<MusicInfo> loadedEpisode_;
 		protected List<URL> podcastURLList_;
 		protected String lastUpdated_;
 		protected URL[] iconURLs_;
 
 		private PodplayerState() {
-			loadedEpisode_ = new ArrayList<PodInfo>();
+			loadedEpisode_ = new ArrayList<MusicInfo>();
 			podcastURLList_ = new ArrayList<URL>();
 			lastUpdated_ = "";
 			iconURLs_ = null;

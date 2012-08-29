@@ -36,7 +36,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.mamewo.podplayer0.PlayerService.PodInfo;
+import com.mamewo.podplayer0.PlayerService.MusicInfo;
 import com.markupartist.android.widget.PullToRefreshListView;
 
 public class PodplayerActivity
@@ -54,7 +54,7 @@ public class PodplayerActivity
 	private ToggleButton playButton_;
 	private Spinner selector_;
 	private PullToRefreshListView episodeListView_;
-	private ArrayAdapter<PodInfo> adapter_;
+	private ArrayAdapter<MusicInfo> adapter_;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -137,8 +137,8 @@ public class PodplayerActivity
 	@Override
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id) {
 		//refresh header is added....
-		PodInfo info = adapter_.getItem(pos-1);
-		PodInfo current = player_.getCurrentPodInfo();
+		MusicInfo info = adapter_.getItem(pos-1);
+		MusicInfo current = player_.getCurrentPodInfo();
 		if(current != null && current.url_.equals(info.url_)) {
 			if(player_.isPlaying()) {
 				player_.pauseMusic();
@@ -155,7 +155,7 @@ public class PodplayerActivity
 		}
 	}
 
-	private boolean playByInfo(PodInfo info) {
+	private boolean playByInfo(MusicInfo info) {
 		//umm...
 		int playPos = -1;
 		for(playPos = 0; playPos < state_.loadedEpisode_.size(); playPos++) {
@@ -171,7 +171,7 @@ public class PodplayerActivity
 	}
 
 	public class EpisodeAdapter
-		extends ArrayAdapter<PodInfo>
+		extends ArrayAdapter<MusicInfo>
 	{
 		public EpisodeAdapter(Context context) {
 			super(context, R.layout.episode_item);
@@ -187,14 +187,14 @@ public class PodplayerActivity
 			else {
 				view = convertView;
 			}
-			PodInfo info = getItem(position);
+			MusicInfo info = getItem(position);
 			TextView titleView = (TextView)view.findViewById(R.id.episode_title);
 			TextView timeView = (TextView)view.findViewById(R.id.episode_time);
 			titleView.setText(info.title_);
 			timeView.setText(info.pubdate_);
 			ImageView stateIcon = (ImageView)view.findViewById(R.id.play_icon);
 			ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
-			PodInfo current = player_.getCurrentPodInfo();
+			MusicInfo current = player_.getCurrentPodInfo();
 			if(current != null && current.url_.equals(info.url_)) {
 				//cache!
 				if(player_.isPlaying()) {
@@ -221,13 +221,13 @@ public class PodplayerActivity
 
 	//UI is updated in following callback methods
 	@Override
-	public void onStartMusic(PodInfo info) {
+	public void onStartMusic(MusicInfo info) {
 		setProgressBarIndeterminateVisibility(false);
 		updateUI();
 	}
 
 	@Override
-	public void onStartLoadingMusic(PodInfo info) {
+	public void onStartLoadingMusic(MusicInfo info) {
 		setProgressBarIndeterminateVisibility(true);
 		updateUI();
 	}
@@ -239,9 +239,9 @@ public class PodplayerActivity
 	}
 	// end of callback methods
 
-	private void addEpisodeItems(PodInfo[] values) {
+	private void addEpisodeItems(MusicInfo[] values) {
 		for (int i = 0; i < values.length; i++) {
-			PodInfo info = values[i];
+			MusicInfo info = values[i];
 			state_.loadedEpisode_.add(info);
 			int selectorPos = selector_.getSelectedItemPosition();
 			if(selectorPos == 0) {
@@ -266,7 +266,7 @@ public class PodplayerActivity
 		}
 
 		@Override
-		protected void onProgressUpdate(PodInfo... values){
+		protected void onProgressUpdate(MusicInfo... values){
 			addEpisodeItems(values);
 		}
 
@@ -312,7 +312,7 @@ public class PodplayerActivity
 
 	@Override
 	public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
-		PodInfo info = adapter_.getItem(pos-1);
+		MusicInfo info = adapter_.getItem(pos-1);
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		boolean enableLongClick = pref.getBoolean("enable_long_click", false);
@@ -337,7 +337,7 @@ public class PodplayerActivity
 		adapter_.clear();
 		if(pos == 0){
 			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
-				PodInfo info = state_.loadedEpisode_.get(i);
+				MusicInfo info = state_.loadedEpisode_.get(i);
 				adapter_.add(info);
 			}
 		}
@@ -345,7 +345,7 @@ public class PodplayerActivity
 			String selectedTitle = (String)adapter.getItemAtPosition(pos);
 			int selectedIndex = podcastTitle2Index(selectedTitle);
 			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
-				PodInfo info = state_.loadedEpisode_.get(i);
+				MusicInfo info = state_.loadedEpisode_.get(i);
 				if (selectedIndex == info.index_) {
 					adapter_.add(info);
 				}
@@ -362,7 +362,7 @@ public class PodplayerActivity
 	@Override
 	public void onNothingSelected(AdapterView<?> adapter) {
 		for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
-			PodInfo info = state_.loadedEpisode_.get(i);
+			MusicInfo info = state_.loadedEpisode_.get(i);
 			adapter_.add(info);
 		}
 	}
@@ -384,7 +384,7 @@ public class PodplayerActivity
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
 		//TODO: move to base?
-		List<PodInfo> playlist = player_.getCurrentPlaylist();
+		List<MusicInfo> playlist = player_.getCurrentPlaylist();
 		if (null != playlist) {
 			state_.loadedEpisode_ = playlist;
 		}
@@ -421,12 +421,12 @@ public class PodplayerActivity
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		selector_.setAdapter(adapter);
 		boolean doLoad = pref.getBoolean("load_on_start", true);
-		List<PodInfo> playlist = state_.loadedEpisode_;
+		List<MusicInfo> playlist = state_.loadedEpisode_;
 		if (doLoad) {
 			episodeListView_.startRefresh();
 		}
 		else if (playlist != null && ! playlist.isEmpty()) {
-			addEpisodeItems(playlist.toArray(new PodInfo[0]));
+			addEpisodeItems(playlist.toArray(new MusicInfo[0]));
 			episodeListView_.onRefreshComplete(state_.lastUpdated_);
 		}
 		updateUI();

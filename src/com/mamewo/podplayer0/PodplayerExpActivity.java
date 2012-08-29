@@ -40,7 +40,7 @@ import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.mamewo.podplayer0.PlayerService.PodInfo;
+import com.mamewo.podplayer0.PlayerService.MusicInfo;
 
 public class PodplayerExpActivity
 	extends BasePodplayerActivity
@@ -189,7 +189,7 @@ public class PodplayerExpActivity
 		player_ = ((PlayerService.LocalBinder)binder).getService();
 		player_.setOnStartMusicListener(this);
 		playButton_.setEnabled(true);
-		List<PodInfo> playlist = player_.getCurrentPlaylist();
+		List<MusicInfo> playlist = player_.getCurrentPlaylist();
 		if (null != playlist) {
 			state_.loadedEpisode_ = playlist;
 		}
@@ -211,8 +211,8 @@ public class PodplayerExpActivity
 		@SuppressWarnings("unchecked")
 		HashMap<String,Object> map =
 			(HashMap<String, Object>) expandableAdapter_.getChild(groupPosition, childPosition);
-		PodInfo info = (PodInfo) map.get("DATA");
-		PodInfo current = player_.getCurrentPodInfo();
+		MusicInfo info = (MusicInfo) map.get("DATA");
+		MusicInfo current = player_.getCurrentPodInfo();
 		if(current != null && current.url_.equals(info.url_)) {
 			if(player_.isPlaying()) {
 				player_.pauseMusic();
@@ -230,7 +230,7 @@ public class PodplayerExpActivity
 		return true;
 	}
 
-	private void playByInfo(PodInfo info) {
+	private void playByInfo(MusicInfo info) {
 		//umm...
 		int playPos = -1;
 		for(playPos = 0; playPos < state_.loadedEpisode_.size(); playPos++) {
@@ -303,14 +303,14 @@ public class PodplayerExpActivity
 			}
 			@SuppressWarnings("unchecked")
 			HashMap<String, Object> map = (HashMap<String, Object>)getChild(groupPosition, childPosition);
-			PodInfo info = (PodInfo)map.get("DATA");
+			MusicInfo info = (MusicInfo)map.get("DATA");
 			TextView titleView = (TextView)view.findViewById(R.id.episode_title);
 			TextView timeView = (TextView)view.findViewById(R.id.episode_time);
 			titleView.setText(info.title_);
 			timeView.setText(info.pubdate_);
 			ImageView stateIcon = (ImageView)view.findViewById(R.id.play_icon);
 			ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
-			PodInfo current = player_.getCurrentPodInfo();
+			MusicInfo current = player_.getCurrentPodInfo();
 			if(current != null && current.url_.equals(info.url_)) {
 				//cache!
 				if(player_.isPlaying()) {
@@ -337,13 +337,13 @@ public class PodplayerExpActivity
 
 	//UI is updated in following callback methods
 	@Override
-	public void onStartMusic(PodInfo info) {
+	public void onStartMusic(MusicInfo info) {
 		setProgressBarIndeterminateVisibility(false);
 		updateUI();
 	}
 
 	@Override
-	public void onStartLoadingMusic(PodInfo info) {
+	public void onStartLoadingMusic(MusicInfo info) {
 		setProgressBarIndeterminateVisibility(true);
 		updateUI();
 	}
@@ -355,11 +355,11 @@ public class PodplayerExpActivity
 	}
 	// end of callback methods
 
-	private void addEpisodeItems(PodInfo[] values) {
+	private void addEpisodeItems(MusicInfo[] values) {
 		int groupMin = groupData_.size() - 1;
 		int groupMax = 0;
 		for (int i = 0; i < values.length; i++) {
-			PodInfo info = values[i];
+			MusicInfo info = values[i];
 			//TODO: remove?
 			state_.loadedEpisode_.add(info);
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -397,7 +397,7 @@ public class PodplayerExpActivity
 		}
 
 		@Override
-		protected void onProgressUpdate(PodInfo... values){
+		protected void onProgressUpdate(MusicInfo... values){
 			addEpisodeItems(values);
 		}
 
@@ -431,7 +431,7 @@ public class PodplayerExpActivity
 		@SuppressWarnings("unchecked")
 		Map<String, Object> map =
 				(Map<String, Object>)adapter.getItemAtPosition(pos);
-		PodInfo info = (PodInfo)map.get("DATA");
+		MusicInfo info = (MusicInfo)map.get("DATA");
 		if (null == info) {
 			//parent is long clicked
 			return false;
@@ -492,13 +492,13 @@ public class PodplayerExpActivity
 		expandableList_.setOnChildClickListener(this);
 		boolean doLoad = pref.getBoolean("load_on_start", true);
 		updateUI();
-		List<PodInfo> playlist = state_.loadedEpisode_;
+		List<MusicInfo> playlist = state_.loadedEpisode_;
 		if(doLoad){
 			loadPodcast();
 		}
 		else if (null != playlist && ! playlist.isEmpty()) {
 			//use list
-			addEpisodeItems(playlist.toArray(new PodInfo[0]));
+			addEpisodeItems(playlist.toArray(new MusicInfo[0]));
 		}
 	}
 }
