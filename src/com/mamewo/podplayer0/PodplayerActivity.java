@@ -208,8 +208,8 @@ public class PodplayerActivity
 			else {
 				stateIcon.setVisibility(View.GONE);
 			}
-			if(showPodcastIcon_ && null != iconData_[info.index_]){
-				episodeIcon.setImageDrawable(iconData_[info.index_]);
+			if(showPodcastIcon_ && null != state_.podcastList_.get(info.index_).icon_){
+				episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
 				episodeIcon.setVisibility(View.VISIBLE);
 			}
 			else {
@@ -262,7 +262,7 @@ public class PodplayerActivity
 		extends BaseGetPodcastTask
 	{
 		public GetPodcastTask(boolean showPodcastIcon, int timeout) {
-			super(PodplayerActivity.this, allURLs_, state_.iconURLs_, iconData_, showPodcastIcon, timeout);
+			super(PodplayerActivity.this, showPodcastIcon, timeout);
 		}
 
 		@Override
@@ -406,13 +406,10 @@ public class PodplayerActivity
 		list.add("All");
 		//stop loading?
 		int j = 0;
-		for(int i = 0; i < state_.podcastURLList_.size(); i++) {
-			String podcastURL = state_.podcastURLList_.get(i).toString();
-			for ( ; j < allURLs_.length; j++) {
-				if(podcastURL.equals(allURLs_[j])) {
-					list.add(allTitles_[j++]);
-					break;
-				}
+		for(int i = 0; i < state_.podcastList_.size(); i++) {
+			PodcastInfo info = state_.podcastList_.get(i);
+			if (info.enabled_) {
+				list.add(info.title_);
 			}
 		}
 		ArrayAdapter<String> adapter =

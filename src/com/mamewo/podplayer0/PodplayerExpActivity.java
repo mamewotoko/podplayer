@@ -324,8 +324,8 @@ public class PodplayerExpActivity
 			else {
 				stateIcon.setVisibility(View.GONE);
 			}
-			if(showPodcastIcon_ && null != iconData_[info.index_]){
-				episodeIcon.setImageDrawable(iconData_[info.index_]);
+			if(showPodcastIcon_ && null != state_.podcastList_.get(info.index_).icon_){
+				episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
 				episodeIcon.setVisibility(View.VISIBLE);
 			}
 			else {
@@ -392,8 +392,7 @@ public class PodplayerExpActivity
 		extends BaseGetPodcastTask
 	{
 		public GetPodcastTask(boolean showPodcastIcon, int timeout) {
-			super(PodplayerExpActivity.this, allURLs_, state_.iconURLs_, iconData_,
-					showPodcastIcon, timeout);
+			super(PodplayerExpActivity.this, showPodcastIcon, timeout);
 		}
 
 		@Override
@@ -459,19 +458,17 @@ public class PodplayerExpActivity
 		int j = 0;
 		groupData_.clear();
 		childData_.clear();
-		for (int i = 0; i < state_.podcastURLList_.size(); i++) {
-			String podcastURL = state_.podcastURLList_.get(i).toString();
-			for ( ; j < allURLs_.length; j++) {
-				if(podcastURL.equals(allURLs_[j])) {
-					Map<String, String> groupItem = new HashMap<String, String>();
-					allIndex2viewIndex_[j] = i;
-					groupItem.put("TITLE", allTitles_[j++]);
-					groupItem.put("COUNT", "");
-					groupData_.add(groupItem);
-					childData_.add(new ArrayList<Map<String, Object>>());
-					break;
-				}
+		for (int i = 0; i < state_.podcastList_.size(); i++) {
+			PodcastInfo info = state_.podcastList_.get(i);
+			if (!info.enabled_) {
+				continue;
 			}
+			Map<String, String> groupItem = new HashMap<String, String>();
+			allIndex2viewIndex_[j] = i;
+			groupItem.put("TITLE", info.title_);
+			groupItem.put("COUNT", "");
+			groupData_.add(groupItem);
+			childData_.add(new ArrayList<Map<String, Object>>());
 		}
 		expandableAdapter_ = new ExpAdapter(
 				this,

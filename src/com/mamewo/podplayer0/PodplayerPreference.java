@@ -40,6 +40,7 @@ public class PodplayerPreference
 	static final
 	private int LICENSE_DIALOG = 3;
 	
+	private Preference podcastList_;
 	private Preference version_;
 	private Preference license_;
 	private Preference gestureTable_;
@@ -59,6 +60,8 @@ public class PodplayerPreference
 		catch (NameNotFoundException e) {
 			version_.setSummary("unknown");
 		}
+		podcastList_ = findPreference("podcastlist");
+		podcastList_.setOnPreferenceClickListener(this);
 		readTimeout_ = findPreference("read_timeout");
 		scoreThreshold_ = findPreference("gesture_score_threshold");
 		gestureTable_ = findPreference("gesture_list");
@@ -82,6 +85,12 @@ public class PodplayerPreference
 
 	@Override
 	public boolean onPreferenceClick(Preference item) {
+		if (item == podcastList_) {
+			Log.d(TAG, "podcastList is clicked");
+			Intent i = new Intent(this, PodcastListEditorActivity.class);
+			startActivity(i);
+			return true;
+		}
 		if (item == gestureTable_) {
 			showDialog(GESTURE_TABLE_DIALOG);
 			return true;

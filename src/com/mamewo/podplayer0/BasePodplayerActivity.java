@@ -1,11 +1,9 @@
 package com.mamewo.podplayer0;
 
 import java.io.Serializable;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.mamewo.podplayer0.PlayerService.MusicInfo;
 
 import android.app.Activity;
@@ -45,7 +43,7 @@ abstract public class BasePodplayerActivity
 	final static
 	protected boolean DEFAULT_USE_GESTURE = true;
 	final static
-	protected URL[] DUMMY_URL_LIST = new URL[0];
+	protected PodcastInfo[] DUMMY_INFO_LIST = new PodcastInfo[0];
 	protected String[] allTitles_;
 	protected String[] allURLs_;
 	//TODO: wait until player_ is not null (service is connected)
@@ -54,7 +52,6 @@ abstract public class BasePodplayerActivity
 	protected double gestureScoreThreshold_;
 	protected BaseGetPodcastTask loadTask_;
 	protected PodplayerState state_;
-	protected Drawable[] iconData_;
 	protected boolean finishServiceOnExit_;
 	protected ServiceConnection connection_;
 	protected boolean showPodcastIcon_;
@@ -83,8 +80,6 @@ abstract public class BasePodplayerActivity
 		allTitles_ = getResources().getStringArray(R.array.pref_podcastlist_keys);
 		allURLs_ = getResources().getStringArray(R.array.pref_podcastlist_urls);
 		loadTask_ = null;
-		state_.iconURLs_ = new URL[allTitles_.length];
-		iconData_ = new Drawable[allTitles_.length];
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
@@ -98,7 +93,6 @@ abstract public class BasePodplayerActivity
 		if (null != loadTask_) {
 			loadTask_.cancel(true);
 		}
-		iconData_ = null;
 		boolean playing = player_.isPlaying();
 		if(finishServiceOnExit_ && playing) {
 			player_.stopMusic();
@@ -143,7 +137,7 @@ abstract public class BasePodplayerActivity
 		}
 		state_.loadedEpisode_.clear();
 		loadTask_ = task;
-		loadTask_.execute(state_.podcastURLList_.toArray(DUMMY_URL_LIST));
+		loadTask_.execute(state_.podcastList_.toArray(DUMMY_INFO_LIST));
 	}
 
 	public void showMessage(String message) {
@@ -216,17 +210,8 @@ abstract public class BasePodplayerActivity
 		}
 		//umm. folowing block should be last
 		if (updateAll || "podcastlist".equals(key)) {
-			String prefURLString = pref.getString("podcastlist", DEFAULT_PODCAST_LIST);
-			String[] list = prefURLString.split(MultiListPreference.SEPARATOR);
-			state_.podcastURLList_.clear();
-			for (String url: list) {
-				try {
-					state_.podcastURLList_.add(new URL(url));
-				}
-				catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-			}
+			//TODO: refactor
+			state_.podcastList_ = PodcastListEditorActivity.loadSetting(this);
 			onPodcastListChanged();
 		}
 	}
@@ -269,15 +254,13 @@ abstract public class BasePodplayerActivity
 	{
 		private static final long serialVersionUID = 1L;
 		protected List<MusicInfo> loadedEpisode_;
-		protected List<URL> podcastURLList_;
+		protected List<PodcastInfo> podcastList_;
 		protected String lastUpdated_;
-		protected URL[] iconURLs_;
 
 		private PodplayerState() {
 			loadedEpisode_ = new ArrayList<MusicInfo>();
-			podcastURLList_ = new ArrayList<URL>();
+			podcastList_ = new ArrayList<PodcastInfo>();
 			lastUpdated_ = "";
-			iconURLs_ = null;
 		}
 	}
 }

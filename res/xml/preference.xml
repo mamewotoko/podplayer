@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <com.mamewo.podplayer0.MultiListPreference
-        android:defaultValue="http://www.nhk.or.jp/rj/podcast/rss/english.xml!http://feeds.voanews.com/ps/getRSS?client=Standard&amp;PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&amp;startIndex=1&amp;endIndex=500!http://computersciencepodcast.com/compucast.rss!http://www.discovery.com/radio/xml/news.xml!http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml!http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml"
-        android:entries="@array/pref_podcastlist_keys"
-        android:entryValues="@array/pref_podcastlist_urls"
+    <Preference
         android:key="podcastlist"
         android:title="@string/pref_podcastlist_title" />
 

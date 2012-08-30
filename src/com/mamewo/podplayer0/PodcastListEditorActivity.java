@@ -3,16 +3,15 @@ package com.mamewo.podplayer0;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +22,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
@@ -57,6 +57,8 @@ public class PodcastListEditorActivity
 	private ListView podcastListView_;
 	static final
 	private String CONFIG_FILENAME = "podcast.json";
+	static final
+	private int CHECKING_DIALOG = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -65,44 +67,30 @@ public class PodcastListEditorActivity
 		checkButton_ = (Button) findViewById(R.id.check_url_button);
 		checkButton_.setOnClickListener(this);
 		urlEdit_ = (EditText) findViewById(R.id.url_edit);
-		dialog_ = new ProgressDialog(this);
-		dialog_.setOnCancelListener(this);
-		dialog_.setCancelable(true);
-		dialog_.setCanceledOnTouchOutside(true);
-		dialog_.setTitle("Checking URL...");
-		dialog_.setMessage("Checking that given url refers to a podcast");
-		adapter_ = new PodcastInfoAdapter(this);
-		File configFile = getFileStreamPath(CONFIG_FILENAME);
-		if (configFile.exists()) {
-			try {
-				loadSetting();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		else {
-			String[] allTitles = getResources().getStringArray(R.array.pref_podcastlist_keys);
-			String[] allURLs = getResources().getStringArray(R.array.pref_podcastlist_urls);
-
-			for (int i = 0; i < allTitles.length; i++) {
-				String title = allTitles[i];
-				URL url = null;
-				try {
-					url = new URL(allURLs[i]);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-				//TODO: get config
-				PodcastInfo info = new PodcastInfo(title, url, null, true);
-				adapter_.add(info);
-			}
-		}
+		List<PodcastInfo> list = loadSetting(this);
+		adapter_ = new PodcastInfoAdapter(this, list);
 		podcastListView_ = (ListView) findViewById(R.id.podlist);
 		podcastListView_.setAdapter(adapter_);
+	}
+	
+	static
+	private List<PodcastInfo> defaultPodcastInfoList(Context context) {
+		String[] allTitles = context.getResources().getStringArray(R.array.pref_podcastlist_keys);
+		String[] allURLs = context.getResources().getStringArray(R.array.pref_podcastlist_urls);
+		List<PodcastInfo> list = new ArrayList<PodcastInfo>();
+		for (int i = 0; i < allTitles.length; i++) {
+			String title = allTitles[i];
+			URL url = null;
+			try {
+				url = new URL(allURLs[i]);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			//TODO: get config
+			PodcastInfo info = new PodcastInfo(title, url, null, true);
+			list.add(info);
+		}
+		return list;
 	}
 
 	@Override
@@ -110,10 +98,12 @@ public class PodcastListEditorActivity
 		super.onStop();
 		try {
 			saveSetting();
-		} catch (JSONException e) {
+		}
+		catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -133,25 +123,45 @@ public class PodcastListEditorActivity
 				return;
 			}
 			URL[] urlList = new URL[] { url };
-			dialog_.show();
+			showDialog(CHECKING_DIALOG);
 			task_ = new CheckTask();
 			task_.execute(urlList);
 		}
 	}
 
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog = null;
+		switch (id) {
+		case CHECKING_DIALOG:
+			dialog_ = new ProgressDialog(this);
+			dialog_.setOnCancelListener(this);
+			dialog_.setCancelable(true);
+			dialog_.setCanceledOnTouchOutside(true);
+			dialog_.setTitle("Checking podcast URL...");
+			dialog_.setMessage("To cancel, please touch outside of this dialog or press back button");
+			dialog = dialog_;
+			break;
+		default:
+			break;
+		}
+		return dialog;
+	}
+	
 	public class CheckTask
-		extends AsyncTask<URL, PodcastInfo, Void>
+		extends AsyncTask<URL, PodcastInfo, Boolean>
 	{
 		@Override
-		protected Void doInBackground(URL... urllist) {
+		protected Boolean doInBackground(URL... urllist) {
 			XmlPullParserFactory factory;
 			try {
 				factory = XmlPullParserFactory.newInstance();
 			}
 			catch (XmlPullParserException e1) {
 				Log.i(TAG, "cannot get xml parser", e1);
-				return null;
+				return false;
 			}
+			boolean result = false;
 			for(int i = 0; i < urllist.length; i++) {
 				URL url = urllist[i];
 				if(isCancelled()){
@@ -198,13 +208,16 @@ public class PodcastListEditorActivity
 					if (numItems > 0 && null != title) {
 						Log.d(TAG, "publish: " + title);
 						publishProgress(new PodcastInfo(title, url, bitmap, true));
+						result = true;
 					}
 				}
 				catch (IOException e) {
 					Log.i(TAG, "IOException", e);
+					//continue
 				}
 				catch (XmlPullParserException e) {
 					Log.i(TAG, "XmlPullParserException", e);
+					//continue
 				}
 				finally {
 					if(null != is) {
@@ -217,7 +230,7 @@ public class PodcastListEditorActivity
 					}
 				}
 			}
-			return null;
+			return result;
 		}
 		
 		@Override
@@ -228,10 +241,12 @@ public class PodcastListEditorActivity
 		}
 		
 		@Override
-		protected void onPostExecute(Void result) {
-			showMessage("finished");
+		protected void onPostExecute(Boolean result) {
 			task_ = null;
 			dialog_.hide();
+			if (!result.booleanValue()) {
+				showMessage("failed");
+			}
 		}
 		
 		@Override
@@ -248,6 +263,10 @@ public class PodcastListEditorActivity
 		public PodcastInfoAdapter(Context context) {
 			super(context, R.layout.podcast_select_item);
 		}
+
+		public PodcastInfoAdapter(Context context, List<PodcastInfo> list) {
+			super(context, R.layout.podcast_select_item, list);
+		}
 		
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
@@ -260,7 +279,6 @@ public class PodcastListEditorActivity
 			}
 			PodcastInfo info = getItem(position);
 			CheckBox check = (CheckBox) view.findViewById(R.id.checkbox);
-			Log.d(TAG, "checkbox: " + check);
 			//add check
 			String title = info.title_;
 			if (null == title) {
@@ -284,7 +302,7 @@ public class PodcastListEditorActivity
 					.accumulate("enabled", info.enabled_);
 			array.put(jsonValue);
 		}
-		String json = array.toString(2);
+		String json = array.toString();
 		Log.d(TAG, "JSON: " + json);
 		FileOutputStream fos = openFileOutput(CONFIG_FILENAME, MODE_PRIVATE);
 		try{
@@ -295,10 +313,34 @@ public class PodcastListEditorActivity
 		}
 	}
 	
-	private void loadSetting()
-		throws IOException, JSONException
+	static
+	public List<PodcastInfo> loadSetting(Context context) {
+		List<PodcastInfo> list;
+		File configFile = context.getFileStreamPath(CONFIG_FILENAME);
+		if (configFile.exists()) {
+			try {
+				list = loadSettingFromJSONFile(context);
+			}
+			catch (IOException e) {
+				Log.d(TAG, "IOException", e);
+				list = defaultPodcastInfoList(context);
+			}
+			catch (JSONException e) {
+				Log.d(TAG, "JSONException", e);
+				list = defaultPodcastInfoList(context);
+			}
+		}
+		else {
+			list = defaultPodcastInfoList(context);
+		}
+		return list;
+	}
+	
+	static
+	private List<PodcastInfo> loadSettingFromJSONFile(Context context)
+			throws IOException, JSONException
 	{
-		FileInputStream fis = openFileInput(CONFIG_FILENAME);
+		FileInputStream fis = context.openFileInput(CONFIG_FILENAME);
 		StringBuffer sb = new StringBuffer();
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
@@ -311,6 +353,8 @@ public class PodcastListEditorActivity
 			fis.close();
 		}
 		String json = sb.toString();
+		List<PodcastInfo> list = new ArrayList<PodcastInfo>();
+		Log.d(TAG, "JSON size: " + json.length());
 		JSONTokener tokener = new JSONTokener(json);
 		JSONArray jsonArray = (JSONArray) tokener.nextValue();
 		for (int i = 0; i < jsonArray.length(); i++) {
@@ -319,25 +363,11 @@ public class PodcastListEditorActivity
 			URL url = new URL(value.getString("url"));
 			boolean enabled = value.getBoolean("enabled");
 			PodcastInfo info = new PodcastInfo(title, url, null, enabled);
-			adapter_.add(info);
+			list.add(info);
 		}
+		return list;
 	}
 	
-	static
-	public class PodcastInfo {
-		public String title_;
-		public URL url_;
-		public BitmapDrawable bitmap_;
-		public boolean enabled_;
-
-		public PodcastInfo(String title, URL url, BitmapDrawable bitmap, boolean enabled) {
-			title_ = title;
-			url_ = url;
-			bitmap_ = bitmap;
-			enabled_ = enabled;
-		}
-	}
-
 	public void showMessage(String message) {
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 	}

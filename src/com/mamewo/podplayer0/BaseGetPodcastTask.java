@@ -20,13 +20,12 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 public class BaseGetPodcastTask
-	extends AsyncTask<URL, MusicInfo, Void>
+	extends AsyncTask<PodcastInfo, MusicInfo, Void>
 {
 	private Context context_;
-	private String[] allPodcastURLs_;
 	private URL[] iconURL_;
-	private Drawable[] iconData_;
 	private boolean showPodcastIcon_;
+	private List<PodcastInfo> list_;
 	private List<MusicInfo> buffer_;
 	int timeoutSec_;
 	final static
@@ -41,13 +40,9 @@ public class BaseGetPodcastTask
 		TITLE, PUBDATE, LINK, NONE
 	};
 
-	public BaseGetPodcastTask(Context context, String[] allPodcastURLs,
-							URL[] iconURL, Drawable[] iconData,
-							boolean showPodcastIcon, int timeout) {
+	//TODO refactor to cache icon
+	public BaseGetPodcastTask(Context context, boolean showPodcastIcon, int timeout) {
 		context_ = context;
-		allPodcastURLs_ = allPodcastURLs;
-		iconURL_ = iconURL;
-		iconData_ = iconData;
 		showPodcastIcon_ = showPodcastIcon;
 		timeoutSec_ = timeout;
 		buffer_ = new ArrayList<MusicInfo>();
@@ -88,7 +83,7 @@ public class BaseGetPodcastTask
 	}
 
 	@Override
-	protected Void doInBackground(URL... urllist) {
+	protected Void doInBackground(PodcastInfo... podcastInfo) {
 		XmlPullParserFactory factory;
 		try {
 			factory = XmlPullParserFactory.newInstance();
@@ -97,18 +92,17 @@ public class BaseGetPodcastTask
 			Log.i(TAG, "cannot get xml parser", e1);
 			return null;
 		}
-
-		int podcastIndex = 0;
-		for(int i = 0; i < urllist.length; i++) {
-			URL url = urllist[i];
+		iconURL_ = new URL[podcastInfo.length];
+		for(int i = 0; i < podcastInfo.length; i++) {
+			PodcastInfo pinfo = podcastInfo[i];
 			if(isCancelled()){
 				break;
 			}
-			//get index of podcastURL to filter
-			while(! allPodcastURLs_[podcastIndex].equals(url.toString())){
-				podcastIndex++;
+			if (!pinfo.enabled_) {
+				continue;
 			}
-			Log.d(TAG, "get URL: " + podcastIndex + ": "+ url);
+			URL url = pinfo.url_;
+			Log.d(TAG, "get URL: " + ": "+ pinfo.url_);
 			InputStream is = null;
 			try {
 				is = getInputStreamFromURL(url, timeoutSec_);
@@ -137,11 +131,11 @@ public class BaseGetPodcastTask
 							podcastURL = parser.getAttributeValue(null, "url");
 						}
 						else if("itunes:image".equalsIgnoreCase(currentName)) {
-							if(null == iconURL_[podcastIndex]) {
+							if(null == iconURL_[i]) {
 								URL iconURL = new URL(parser.getAttributeValue(null, "href"));
-								iconURL_[podcastIndex] = iconURL;
-								if(showPodcastIcon_ && null == iconData_[podcastIndex]) {
-									iconData_[podcastIndex] = downloadIcon(context_, iconURL, timeoutSec_);
+								iconURL_[i] = iconURL;
+								if(showPodcastIcon_ && null == pinfo.icon_) {
+									pinfo.icon_ = downloadIcon(context_, iconURL, timeoutSec_);
 								}
 							}
 						}
@@ -169,7 +163,7 @@ public class BaseGetPodcastTask
 								if(title == null) {
 									title = podcastURL;
 								}
-								MusicInfo info = new MusicInfo(podcastURL, title, pubdate, link, podcastIndex);
+								MusicInfo info = new MusicInfo(podcastURL, title, pubdate, link, i);
 								buffer_.add(info);
 								if (buffer_.size() >= BUFFER_SIZE) {
 									publish();
