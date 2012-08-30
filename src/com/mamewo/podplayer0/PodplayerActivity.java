@@ -326,7 +326,7 @@ public class PodplayerActivity
 		}
 		Intent i =
 				new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
-		startActivity(new Intent(i));
+		startActivity(i);
 		return true;
 	}
 
