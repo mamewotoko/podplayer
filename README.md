@@ -69,8 +69,10 @@ How to run Scirocco test
 
 TODO
 ----------
-* add UI to add podcast URL
-    * Web browser displays text/xml as content (I want intent...)
+* improve UI to add podcast URL
+    * save state of check box
+    * update main activity when setting is changed
+    * add swap order function?
 * fix a bug that when prepare error occurs, cursor moves to next episode
     * show network error message
 * display playing icon in group of expandable list
