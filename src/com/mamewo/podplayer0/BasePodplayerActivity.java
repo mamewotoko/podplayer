@@ -114,7 +114,7 @@ abstract public class BasePodplayerActivity
 	@Override
 	protected void onStart() {
 		super.onStart();
-		//TODO: check current activity and prefernce
+		//TODO: check current activity and preference
 		if (uiSettingChanged_) {
 			Intent intent = new Intent(this, MainActivity.class);
 			startActivity(intent);

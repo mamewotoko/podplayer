@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -25,7 +27,12 @@ public class BaseGetPodcastTask
 	private URL[] iconURL_;
 	private Drawable[] iconData_;
 	private boolean showPodcastIcon_;
+	private List<MusicInfo> buffer_;
 	int timeoutSec_;
+	final static
+	private int BUFFER_SIZE = 10;
+	final static
+	MusicInfo[] DUMMY_ARRAY = new MusicInfo[0];
 	
 	final static
 	private String TAG = "podplayer";
@@ -43,6 +50,7 @@ public class BaseGetPodcastTask
 		iconData_ = iconData;
 		showPodcastIcon_ = showPodcastIcon;
 		timeoutSec_ = timeout;
+		buffer_ = new ArrayList<MusicInfo>();
 	}
 
 	static
@@ -162,7 +170,10 @@ public class BaseGetPodcastTask
 									title = podcastURL;
 								}
 								MusicInfo info = new MusicInfo(podcastURL, title, pubdate, link, podcastIndex);
-								publishProgress(info);
+								buffer_.add(info);
+								if (buffer_.size() >= BUFFER_SIZE) {
+									publish();
+								}
 							}
 							podcastURL = null;
 							title = null;
@@ -175,6 +186,7 @@ public class BaseGetPodcastTask
 					}
 					eventType = parser.next();
 				}
+				publish();
 			}
 			catch (IOException e) {
 				Log.i(TAG, "IOException", e);
@@ -194,5 +206,13 @@ public class BaseGetPodcastTask
 			}
 		}
 		return null;
+	}
+	
+	private void publish() {
+		if (buffer_.isEmpty()) {
+			return;
+		}
+		publishProgress(buffer_.toArray(DUMMY_ARRAY));
+		buffer_.clear();
 	}
 }
