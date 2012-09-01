@@ -17,16 +17,15 @@
             android:id="@+id/url_edit"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:text="http://www.tfm.co.jp/podcasts/avanti/podcast.xml"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_weight="1"
             android:lines="2" />
 
         <Button
-            android:id="@+id/check_url_button"
+            android:id="@+id/add_podcast_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Check" />
+            android:text="Add" />
         
 </LinearLayout>
 

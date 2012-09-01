@@ -109,6 +109,18 @@ public class PodplayerActivityTest
 	}
 	
 	//TODO: add testAddPodcast
+	public void testAddPodcast() throws Exception {
+	    String url = "http://www.tfm.co.jp/podcasts/avanti/podcast.xml";
+		solo_.sleep(1000);
+		solo_.clickOnMenuItem("Preference");
+		selectPreference("Podcast list");
+		solo_.waitForActivity(PodcastListPreference.class.getName(), 3000);
+		solo_.enterText(0, url);
+		View addButton = solo_.getView(R.id.add_podcast_button);
+		solo_.clickOnView(addButton);
+		//TOOD: add assert
+		solo_.sleep(5000);
+	}
 
 	public void testAbortReload() {
 		solo_.sleep(500);

@@ -69,7 +69,7 @@ public class PodcastListPreference
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.podlist_editor);
-		checkButton_ = (Button) findViewById(R.id.check_url_button);
+		checkButton_ = (Button) findViewById(R.id.add_podcast_button);
 		checkButton_.setOnClickListener(this);
 		urlEdit_ = (EditText) findViewById(R.id.url_edit);
 		List<PodcastInfo> list = loadSetting(this);
@@ -88,12 +88,13 @@ public class PodcastListPreference
 			URL url = null;
 			try {
 				url = new URL(allURLs[i]);
-			} catch (MalformedURLException e) {
+				//TODO: get config
+				PodcastInfo info = new PodcastInfo(title, url, null, true);
+				list.add(info);
+			}
+			catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
-			//TODO: get config
-			PodcastInfo info = new PodcastInfo(title, url, null, true);
-			list.add(info);
 		}
 		return list;
 	}
