@@ -69,6 +69,8 @@ How to run Scirocco test
 
 TODO
 ----------
+* fix memory leak (bitmap problem)
+    * check heap size and class histogram
 * improve UI to add podcast URL
     * save state of check box
     * update main activity when setting is changed
