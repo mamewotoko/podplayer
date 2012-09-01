@@ -110,7 +110,7 @@ public class PodplayerActivityTest
 	
 	//TODO: add testAddPodcast
 	public void testAddPodcast() throws Exception {
-	    String url = "http://www.tfm.co.jp/podcasts/avanti/podcast.xml";
+		String url = "http://www.tfm.co.jp/podcasts/avanti/podcast.xml";
 		solo_.sleep(1000);
 		solo_.clickOnMenuItem("Preference");
 		selectPreference("Podcast list");
