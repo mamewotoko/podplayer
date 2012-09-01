@@ -86,8 +86,7 @@ public class PodplayerPreference
 	@Override
 	public boolean onPreferenceClick(Preference item) {
 		if (item == podcastList_) {
-			Log.d(TAG, "podcastList is clicked");
-			Intent i = new Intent(this, PodcastListEditorActivity.class);
+			Intent i = new Intent(this, PodcastListPreference.class);
 			startActivity(i);
 			return true;
 		}

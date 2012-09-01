@@ -1,7 +1,6 @@
 package com.mamewo.podplayer0;
 
 import java.io.Serializable;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import com.mamewo.podplayer0.PlayerService.MusicInfo;
@@ -18,7 +17,6 @@ import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.Prediction;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -35,17 +33,9 @@ abstract public class BasePodplayerActivity
 	OnGesturePerformedListener
 {
 	final static
-	protected String DEFAULT_PODCAST_LIST = "http://www.nhk.or.jp/rj/podcast/rss/english.xml"
-			+ "!http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500"
-			+ "!http://computersciencepodcast.com/compucast.rss!http://www.discovery.com/radio/xml/news.xml"
-			+ "!http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml"
-			+ "!http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml";
-	final static
 	protected boolean DEFAULT_USE_GESTURE = true;
 	final static
 	protected PodcastInfo[] DUMMY_INFO_LIST = new PodcastInfo[0];
-	protected String[] allTitles_;
-	protected String[] allURLs_;
 	//TODO: wait until player_ is not null (service is connected)
 	protected PlayerService player_ = null;
 	protected GestureLibrary gestureLib_;
@@ -77,8 +67,6 @@ abstract public class BasePodplayerActivity
 		connection_ = conn;
 		//TODO: handle error
 		bindService(intent, conn, Context.BIND_AUTO_CREATE);
-		allTitles_ = getResources().getStringArray(R.array.pref_podcastlist_keys);
-		allURLs_ = getResources().getStringArray(R.array.pref_podcastlist_urls);
 		loadTask_ = null;
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
@@ -208,10 +196,9 @@ abstract public class BasePodplayerActivity
 		if (updateAll || "show_podcast_icon".equals(key)) {
 			showPodcastIcon_ = pref.getBoolean("show_podcast_icon", true);
 		}
-		//umm. folowing block should be last
+		//folowing block should be last one of this function
 		if (updateAll || "podcastlist".equals(key)) {
-			//TODO: refactor
-			state_.podcastList_ = PodcastListEditorActivity.loadSetting(this);
+			state_.podcastList_ = PodcastListPreference.loadSetting(this);
 			onPodcastListChanged();
 		}
 	}

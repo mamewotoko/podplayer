@@ -24,16 +24,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PodcastListEditorActivity"
-            android:label="@string/app_name"
+            android:name="PodplayerExpActivity"
             android:launchMode="singleTask" />
         <activity
-            android:launchMode="singleTask"
-            android:name="PodplayerExpActivity" />
-        <activity
-            android:launchMode="singleTask"
-            android:name="PodplayerActivity" />
+            android:name="PodplayerActivity"
+            android:launchMode="singleTask" />
         <activity android:name="PodplayerPreference" />
+        <activity android:name="PodcastListPreference" />
         <receiver android:name="PlayerService$Receiver" />
         <service android:name="PlayerService" />
    </application>

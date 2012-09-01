@@ -58,8 +58,7 @@ public class PodplayerExpActivity
 	private Button collapseButton_;
 	private ExpandableListView expandableList_;
 	private SimpleExpandableListAdapter expandableAdapter_;
-	private int allIndex2viewIndex_[];
-
+	private int[] filteredItemIndex_;
 	private List<Map<String,String>> groupData_;
 	private List<List<Map<String, Object>>> childData_;
 
@@ -83,7 +82,7 @@ public class PodplayerExpActivity
 		collapseButton_.setOnClickListener(this);
 		groupData_ = new ArrayList<Map<String, String>>();
 		childData_ = new ArrayList<List<Map<String, Object>>>();
-		allIndex2viewIndex_ = new int[allTitles_.length];
+		filteredItemIndex_ = null;
 	}
 
 	@Override
@@ -365,7 +364,7 @@ public class PodplayerExpActivity
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("TITLE", info.title_);
 			map.put("DATA", info);
-			int groupIndex = allIndex2viewIndex_[info.index_];
+			int groupIndex = filteredItemIndex_[info.index_];
 			childData_.get(groupIndex).add(map);
 			if (groupIndex < groupMin) {
 				groupMin = groupIndex;
@@ -452,8 +451,11 @@ public class PodplayerExpActivity
 	//TODO: fetch current playing episode to update currentPodInfo
 	@Override
 	protected void onPodcastListChanged() {
-		for(int i = 0; i < allIndex2viewIndex_.length; i++) {
-			allIndex2viewIndex_[i] = -1;
+		if (null == filteredItemIndex_ || filteredItemIndex_.length != state_.podcastList_.size()) {
+			filteredItemIndex_ = new int[state_.podcastList_.size()];
+		}
+		for(int i = 0; i < filteredItemIndex_.length; i++) {
+			filteredItemIndex_[i] = -1;
 		}
 		int j = 0;
 		groupData_.clear();
@@ -464,7 +466,8 @@ public class PodplayerExpActivity
 				continue;
 			}
 			Map<String, String> groupItem = new HashMap<String, String>();
-			allIndex2viewIndex_[j] = i;
+			filteredItemIndex_[i] = j;
+			j++;
 			groupItem.put("TITLE", info.title_);
 			groupItem.put("COUNT", "");
 			groupData_.add(groupItem);

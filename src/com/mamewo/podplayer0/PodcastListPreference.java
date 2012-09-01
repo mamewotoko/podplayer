@@ -27,10 +27,14 @@ import android.app.ProgressDialog;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,9 +43,10 @@ import android.widget.Toast;
 import android.widget.CheckBox;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 
-public class PodcastListEditorActivity
+public class PodcastListPreference
 	extends Activity
 	implements OnClickListener,
 	OnCancelListener
@@ -61,7 +66,7 @@ public class PodcastListEditorActivity
 	private int CHECKING_DIALOG = 0;
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState){
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.podlist_editor);
 		checkButton_ = (Button) findViewById(R.id.check_url_button);
@@ -100,13 +105,15 @@ public class PodcastListEditorActivity
 			saveSetting();
 		}
 		catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.d(TAG, "failed to save podcast list setting");
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.d(TAG, "failed to save podcast list setting");
 		}
+		//Ummm..: to call preference listener
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean prevValue = pref.getBoolean("podcastlist", true);
+		pref.edit().putBoolean("podcastlist", !prevValue).commit();
 	}
 	
 	@Override
@@ -126,6 +133,14 @@ public class PodcastListEditorActivity
 			showDialog(CHECKING_DIALOG);
 			task_ = new CheckTask();
 			task_.execute(urlList);
+		}
+		else if (view.getId() == R.id.checkbox) {
+			//umm...
+			CheckBox checkbox = (CheckBox) view;
+			Log.d(TAG, "checkbox is clicked: " + checkbox.isChecked());
+			PodcastInfo info = (PodcastInfo) checkbox.getTag();
+			info.enabled_ = !info.enabled_;
+			checkbox.setChecked(info.enabled_);
 		}
 	}
 
@@ -190,7 +205,7 @@ public class PodcastListEditorActivity
 							else if("itunes:image".equalsIgnoreCase(currentName)) {
 								if (null == bitmap) {
 									URL iconURL = new URL(parser.getAttributeValue(null, "href"));
-									bitmap = BaseGetPodcastTask.downloadIcon(PodcastListEditorActivity.this, iconURL, 60);
+									bitmap = BaseGetPodcastTask.downloadIcon(PodcastListPreference.this, iconURL, 60);
 								}
 							}
 							else {
@@ -272,13 +287,15 @@ public class PodcastListEditorActivity
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view;
 			if (null == convertView) {
-				view = View.inflate(PodcastListEditorActivity.this, R.layout.podcast_select_item, null);
+				view = View.inflate(PodcastListPreference.this, R.layout.podcast_select_item, null);
 			}
 			else {
 				view = convertView;
 			}
 			PodcastInfo info = getItem(position);
 			CheckBox check = (CheckBox) view.findViewById(R.id.checkbox);
+			check.setOnClickListener(PodcastListPreference.this);
+			check.setTag(info);
 			//add check
 			String title = info.title_;
 			if (null == title) {

@@ -368,8 +368,10 @@ public class PodplayerActivity
 	}
 	
 	private int podcastTitle2Index(String title){
-		for(int i = 0; i < allTitles_.length; i++) {
-			if(title.equals(allTitles_[i])) {
+		List<PodcastInfo> list = state_.podcastList_;
+		for(int i = 0; i < list.size(); i++) {
+			PodcastInfo info = list.get(i);
+			if(title.equals(info.title_)) {
 				return i;
 			}
 		}

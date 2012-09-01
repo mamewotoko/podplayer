@@ -82,5 +82,4 @@
             android:selectable="true"
             android:title="Version" />
     </PreferenceCategory>
-
 </PreferenceScreen>

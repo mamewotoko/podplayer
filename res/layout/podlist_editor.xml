@@ -15,7 +15,7 @@
 
         <EditText
             android:id="@+id/url_edit"
-            android:layout_width="match_parent"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:text="http://www.tfm.co.jp/podcasts/avanti/podcast.xml"
             android:textAppearance="?android:attr/textAppearanceSmall"
