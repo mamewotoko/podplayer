@@ -3,6 +3,7 @@ package com.mamewo.podplayer0.tests;
 import java.util.ArrayList;
 
 import com.jayway.android.robotium.solo.Solo;
+import com.mamewo.podplayer0.PodcastListPreference;
 import com.mamewo.podplayer0.PodplayerActivity;
 import com.mamewo.podplayer0.R;
 
@@ -24,7 +25,7 @@ import asia.sonix.scirocco.SciroccoSolo;
  * com.mamewo.podplayer0.tests/android.test.InstrumentationTestRunner
  */
 public class PodplayerActivityTest
-extends ActivityInstrumentationTestCase2<PodplayerActivity>
+	extends ActivityInstrumentationTestCase2<PodplayerActivity>
 {
 	protected SciroccoSolo solo_;
 	final static
@@ -98,14 +99,16 @@ extends ActivityInstrumentationTestCase2<PodplayerActivity>
 		solo_.sleep(1000);
 		solo_.clickOnMenuItem("Preference");
 		selectPreference("Podcast list");
-		solo_.sleep(500);
+		solo_.waitForActivity(PodcastListPreference.class.getName(), 3000);
+		solo_.takeScreenShot();
 		solo_.clickInList(1);
 		solo_.clickInList(3);
 		solo_.clickInList(5);
 		solo_.sleep(500);
 		solo_.takeScreenShot();
-		solo_.clickOnButton("OK");
 	}
+	
+	//TODO: add testAddPodcast
 
 	public void testAbortReload() {
 		solo_.sleep(500);
