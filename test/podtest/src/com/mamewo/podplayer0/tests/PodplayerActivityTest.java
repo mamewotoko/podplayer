@@ -11,6 +11,7 @@ import junit.framework.Assert;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import asia.sonix.scirocco.SciroccoSolo;
 
@@ -133,6 +134,34 @@ public class PodplayerActivityTest
 		//TODO: this does not work...
 		solo_.scrollUpList(0);
 		solo_.sleep(10000);
+	}
+
+	public void testGestureScoreUp() throws Exception {
+		solo_.sleep(500);
+		solo_.clickOnMenuItem("Preference");
+		selectPreference("Threshold of score");
+		solo_.sleep(500);
+		EditText edit = solo_.getEditText(0);
+		String beforeString = edit.getText().toString();
+		View plusButton = solo_.getView(R.id.double_plus_button);
+		solo_.clickOnView(plusButton);
+		String afterString = edit.getText().toString();
+		double diff = Double.valueOf(afterString) - Double.valueOf(beforeString) - 0.1;
+		assertTrue(diff >= 0.0 && diff < 0.0001);
+	}
+
+	public void testGestureScoreDown() throws Exception {
+		solo_.sleep(500);
+		solo_.clickOnMenuItem("Preference");
+		selectPreference("Threshold of score");
+		solo_.sleep(500);
+		EditText edit = solo_.getEditText(0);
+		String beforeString = edit.getText().toString();
+		View minusButton = solo_.getView(R.id.double_minus_button);
+		solo_.clickOnView(minusButton);
+		String afterString = edit.getText().toString();
+		double diff = Double.valueOf(beforeString) - Double.valueOf(afterString) - 0.1;
+		assertTrue(diff >= 0.0 && diff < 0.0001);
 	}
 
 	public void testGestureDialog() throws Exception {
