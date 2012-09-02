@@ -43,7 +43,9 @@ extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
 		catch(Throwable e) {
 			Log.i(TAG, "tearDown error", e);
 		}
-		getActivity().finish();
+		if (! getActivity().isFinishing()) {
+			getActivity().finish();
+		}
 		super.tearDown();
 	}
 

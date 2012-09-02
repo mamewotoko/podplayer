@@ -37,7 +37,7 @@ public class PodplayerActivityTest
 
 	public boolean selectPreference(String targetTitle) {
 		TextView view = null;
-		solo_.waitForActivity("PodplayerPrefrence");
+		solo_.waitForActivity("PodplayerPrefrence", 3000);
 		do {
 			ArrayList<TextView> list = solo_.getCurrentTextViews(null);
 			for (TextView listText : list) {
@@ -70,7 +70,9 @@ public class PodplayerActivityTest
 		catch(Throwable e) {
 			Log.i(TAG, "tearDown error", e);
 		}
-		getActivity().finish();
+		if (! getActivity().isFinishing()) {
+			getActivity().finish();
+		}
 		super.tearDown();
 	}
 
