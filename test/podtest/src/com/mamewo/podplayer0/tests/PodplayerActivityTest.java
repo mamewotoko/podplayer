@@ -65,8 +65,9 @@ public class PodplayerActivityTest
 	@Override
 	public void tearDown() throws Exception {
 		try {
-			solo_.takeScreenShot();
+//			solo_.takeScreenShot();
 			solo_.finalize();
+			solo_ = null;
 		}
 		catch(Throwable e) {
 			Log.i(TAG, "tearDown error", e);
@@ -78,12 +79,15 @@ public class PodplayerActivityTest
 	}
 
 	public void testPlay() throws Exception {
-		solo_.sleep(500);
+		Log.d(TAG, "testPlay starts");
+		solo_.sleep(5000);
 		View playButton = solo_.getView(R.id.play_button);
+		Log.d(TAG, "testPlay: click play button");
 		solo_.clickOnView(playButton);
 		solo_.sleep(500);
-		solo_.takeScreenShot();
+		//		solo_.takeScreenShot();
 		solo_.sleep(10000);
+		assertTrue(solo_.isToggleButtonChecked(0));
 	}
 
 	public void testFilter() {
@@ -103,12 +107,12 @@ public class PodplayerActivityTest
 		solo_.clickOnMenuItem("Preference");
 		selectPreference("Podcast list");
 		solo_.waitForActivity(PodcastListPreference.class.getName(), 3000);
-		solo_.takeScreenShot();
+//		solo_.takeScreenShot();
 		solo_.clickInList(1);
 		solo_.clickInList(3);
 		solo_.clickInList(5);
 		solo_.sleep(500);
-		solo_.takeScreenShot();
+//		solo_.takeScreenShot();
 	}
 	
 	//TODO: add testAddPodcast
@@ -148,6 +152,8 @@ public class PodplayerActivityTest
 		String afterString = edit.getText().toString();
 		double diff = Double.valueOf(afterString) - Double.valueOf(beforeString) - 0.1;
 		assertTrue(diff >= 0.0 && diff < 0.0001);
+		solo_.clickOnButton("OK");
+		//TODO: check summary and pref value
 	}
 
 	public void testGestureScoreDown() throws Exception {
@@ -162,6 +168,8 @@ public class PodplayerActivityTest
 		String afterString = edit.getText().toString();
 		double diff = Double.valueOf(beforeString) - Double.valueOf(afterString) - 0.1;
 		assertTrue(diff >= 0.0 && diff < 0.0001);
+		solo_.clickOnButton("Cancel");
+		//TODO: check summary and pref value
 	}
 
 	public void testGestureDialog() throws Exception {
@@ -169,14 +177,17 @@ public class PodplayerActivityTest
 		solo_.clickOnMenuItem("Preference");
 		selectPreference("Gesture list");
 		solo_.sleep(1000);
-		solo_.takeScreenShot();
+//		solo_.takeScreenShot();
 		//TODO: check that gesture list dialog is displayed
 	}
 	
 	public void testLicence() {
 		solo_.clickOnMenuItem("Preference");
 		selectPreference("License");
-		//screen shot
+		//TODO: screen shot
+		solo_.sleep(2000);
+		//click ok button
+		solo_.clickOnButton(0);
 	}
 
 	public void testVersion() {
@@ -196,7 +207,7 @@ public class PodplayerActivityTest
 		View playButton = solo_.getView(R.id.play_button);
 		solo_.clickOnView(playButton);
 		solo_.sleep(1000);
-		solo_.takeScreenShot();
+//		solo_.takeScreenShot();
 	}
 	
 	public void testMainScreenshot() throws Exception {
@@ -205,16 +216,16 @@ public class PodplayerActivityTest
 		solo_.clickOnView(playButton);
 		solo_.sendKey(Solo.MENU);
 		solo_.sleep(500);
-		solo_.takeScreenShot();
+//		solo_.takeScreenShot();
 	}
 	
 	public void testPreferenceScreenshot() throws Exception {
 		solo_.sleep(500);
 		solo_.clickOnMenuItem("Preference");
 		solo_.sleep(1000);
-		solo_.takeScreenShot();
+//		solo_.takeScreenShot();
 		solo_.scrollDown();
 		solo_.sleep(500);
-		solo_.takeScreenShot();
+//		solo_.takeScreenShot();
 	}
 }

@@ -30,7 +30,7 @@ extends ActivityInstrumentationTestCase2<MainActivity>
 	@Override
 	public void tearDown() throws Exception {
 		try {
-			solo_.takeScreenShot();
+//			solo_.takeScreenShot();
 			solo_.finalize();
 		}
 		catch(Throwable e) {
