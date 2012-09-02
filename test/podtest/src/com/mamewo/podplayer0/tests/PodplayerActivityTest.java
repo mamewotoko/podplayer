@@ -135,6 +135,15 @@ public class PodplayerActivityTest
 		solo_.sleep(10000);
 	}
 
+	public void testGestureDialog() throws Exception {
+		solo_.sleep(500);
+		solo_.clickOnMenuItem("Preference");
+		selectPreference("Gesture list");
+		solo_.sleep(1000);
+		solo_.takeScreenShot();
+		//TODO: check that gesture list dialog is displayed
+	}
+	
 	public void testLicence() {
 		solo_.clickOnMenuItem("Preference");
 		selectPreference("License");
