@@ -75,8 +75,10 @@ TODO
     * save state of check box
     * update main activity when setting is changed
     * add swap order function?
-* fix a bug that when prepare error occurs, cursor moves to next episode
-    * show network error message
+* fix bugs
+    * when prepare error occurs, cursor moves to next episode
+        * show network error message
+    * play icon is displayed incorrectly when one item is clicked while other item is being prepared
 * display playing icon in group of expandable list
 * reset playing position after podcast selection is changed
 * use database to manage loaded episodes
