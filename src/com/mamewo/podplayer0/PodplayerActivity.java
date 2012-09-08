@@ -106,6 +106,9 @@ public class PodplayerActivity
 				player_.pauseMusic();
 			}
 			else {
+				if (null == state_.loadedEpisode_ || state_.loadedEpisode_.isEmpty()) {
+					return;
+				}
 				updatePlaylist();
 				if(! player_.restartMusic()) {
 					player_.playMusic();

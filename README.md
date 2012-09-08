@@ -110,6 +110,7 @@ TODO
 * support video cast??
 * write user guide?
 * check apk size
+* MainActivityTest, PodcastActivity then testAbortReload blocks...
 
 License
 ----------

@@ -321,7 +321,7 @@ public class PodcastListPreference
 			array.put(jsonValue);
 		}
 		String json = array.toString();
-		Log.d(TAG, "JSON: " + json);
+		//Log.d(TAG, "JSON: " + json);
 		FileOutputStream fos = openFileOutput(CONFIG_FILENAME, MODE_PRIVATE);
 		try{
 			fos.write(json.getBytes());
@@ -372,7 +372,7 @@ public class PodcastListPreference
 		}
 		String json = sb.toString();
 		List<PodcastInfo> list = new ArrayList<PodcastInfo>();
-		Log.d(TAG, "JSON size: " + json.length());
+		//Log.d(TAG, "JSON size: " + json.length());
 		JSONTokener tokener = new JSONTokener(json);
 		JSONArray jsonArray = (JSONArray) tokener.nextValue();
 		for (int i = 0; i < jsonArray.length(); i++) {

@@ -17,6 +17,7 @@ import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.Prediction;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -75,6 +76,12 @@ abstract public class BasePodplayerActivity
 	
 	@Override
 	public void onDestroy() {
+		for (PodcastInfo info : state_.podcastList_) {
+			if (null != info.icon_) {
+				Bitmap bitmap = info.icon_.getBitmap();
+				bitmap.recycle();
+			}
+		}
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.unregisterOnSharedPreferenceChangeListener(this);

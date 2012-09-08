@@ -215,8 +215,7 @@ public class PlayerService
 			return false;
 		}
 		MusicInfo info = currentPlaylist_.get(playCursor_);
-		//skip unsupported files filtering by filename ...
-		Log.i(TAG, "playMusic: " + playCursor_ + ": " + info.url_);
+		Log.d(TAG, "playMusic: " + playCursor_ + ": " + info.url_);
 		try {
 			player_.reset();
 			player_.setDataSource(info.url_);

@@ -25,7 +25,6 @@ public class BaseGetPodcastTask
 	private Context context_;
 	private URL[] iconURL_;
 	private boolean showPodcastIcon_;
-	private List<PodcastInfo> list_;
 	private List<MusicInfo> buffer_;
 	int timeoutSec_;
 	final static
