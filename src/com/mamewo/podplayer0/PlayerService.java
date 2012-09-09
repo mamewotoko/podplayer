@@ -229,8 +229,7 @@ public class PlayerService
 		if(null != listener_){
 			listener_.onStartLoadingMusic(info);
 		}
-		//TODO: localize
-		startForeground("Playing podcast", info.title_);
+		startForeground(getString(R.string.notify_playing_podcast), info.title_);
 		return true;
 	}
 	
@@ -315,8 +314,7 @@ public class PlayerService
 	}
 
 	private void startForeground(String title, String description) {
-		//TODO: localize
-		String podTitle = "playing podcast";
+		String podTitle = getString(R.string.notify_playing_podcast);
 		Notification note =
 				new Notification(R.drawable.ic_launcher, podTitle, 0);
 		Intent ni = new Intent(this, USER_CLASS);

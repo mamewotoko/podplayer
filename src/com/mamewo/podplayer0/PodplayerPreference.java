@@ -114,14 +114,14 @@ public class PodplayerPreference
 			//TODO: add close button
 			dialog = new Dialog(this);
 			dialog.setContentView(R.layout.gesture_table);
-			dialog.setTitle("Gesture table");
+			dialog.setTitle(R.string.pref_gesture_list);
 			dialog.show();
 			break;
 		case VERSION_DIALOG:
 			//TODO: add close button
 			dialog = new Dialog(this);
 			dialog.setContentView(R.layout.version_dialog);
-			dialog.setTitle("Google Play & github");
+			dialog.setTitle(R.string.google_play_and_github);
 			logo_ = dialog.findViewById(R.id.github_logo);
 			logo_.setOnClickListener(this);
 			break;

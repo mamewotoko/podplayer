@@ -280,6 +280,7 @@ public class PodplayerActivity
 			else {
 				DateFormat df = DateFormat.getDateTimeInstance();
 				state_.lastUpdated_ = df.format(new Date());
+				//TODO: localize
 				episodeListView_.setLastUpdated("Last updated: " + state_.lastUpdated_);
 			}
 			setProgressBarIndeterminateVisibility(false);
@@ -408,7 +409,7 @@ public class PodplayerActivity
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		List<String> list = new ArrayList<String>();
-		list.add("All");
+		list.add(getString(R.string.selector_all));
 		//stop loading?
 		for(int i = 0; i < state_.podcastList_.size(); i++) {
 			PodcastInfo info = state_.podcastList_.get(i);

@@ -124,7 +124,7 @@ public class PodcastListPreference
 				url = new URL(urlStr);
 			}
 			catch (MalformedURLException e) {
-				showMessage("Malformed URL");
+				showMessage(getString(R.string.error_malformed_url));
 				return;
 			}
 			URL[] urlList = new URL[] { url };
@@ -151,8 +151,8 @@ public class PodcastListPreference
 			dialog_.setOnCancelListener(this);
 			dialog_.setCancelable(true);
 			dialog_.setCanceledOnTouchOutside(true);
-			dialog_.setTitle("Checking podcast URL...");
-			dialog_.setMessage("To cancel, please touch outside of this dialog or press back button");
+			dialog_.setTitle(R.string.dialog_checking_podcast_url);
+			dialog_.setMessage(getString(R.string.dialog_checking_podcast_url_body));
 			dialog = dialog_;
 			break;
 		default:
@@ -250,6 +250,7 @@ public class PodcastListPreference
 		protected void onProgressUpdate(PodcastInfo... values){
 			PodcastInfo info = values[0];
 			adapter_.add(info);
+			//TODO: localize
 			showMessage("add " + info.title_);
 		}
 		
@@ -258,13 +259,13 @@ public class PodcastListPreference
 			task_ = null;
 			dialog_.hide();
 			if (!result.booleanValue()) {
-				showMessage("failed");
+				showMessage(getString(R.string.msg_add_podcast_failed));
 			}
 		}
 		
 		@Override
 		protected void onCancelled() {
-			showMessage("cancelled");
+			showMessage(getString(R.string.msg_add_podcast_cancelled));
 			task_ = null;
 			dialog_.hide();
 		}

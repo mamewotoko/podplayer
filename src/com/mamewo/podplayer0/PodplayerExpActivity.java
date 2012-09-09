@@ -378,6 +378,7 @@ public class PodplayerExpActivity
 			int childNum = childData_.get(i).size();
 			String numStr;
 			if (childNum <= 1) {
+				//TODO: localize
 				numStr = " item";
 			}
 			else {
