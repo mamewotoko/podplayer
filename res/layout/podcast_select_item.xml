@@ -8,7 +8,7 @@
         android:id="@+id/checkbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-            android:lines="2"
+        android:lines="2"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout>

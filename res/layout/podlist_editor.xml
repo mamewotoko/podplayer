@@ -17,9 +17,10 @@
             android:id="@+id/url_edit"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_weight="1"
-            android:lines="2" />
+            android:inputType="textUri"
+            android:lines="2"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <Button
             android:id="@+id/add_podcast_button"
