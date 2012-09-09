@@ -8,6 +8,10 @@ import android.graphics.drawable.BitmapDrawable;
 public class PodcastInfo 
 	implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7613791894671950703L;
 	public String title_;
 	public URL url_;
 	public boolean enabled_;

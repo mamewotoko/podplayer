@@ -410,7 +410,6 @@ public class PodplayerActivity
 		List<String> list = new ArrayList<String>();
 		list.add("All");
 		//stop loading?
-		int j = 0;
 		for(int i = 0; i < state_.podcastList_.size(); i++) {
 			PodcastInfo info = state_.podcastList_.get(i);
 			if (info.enabled_) {

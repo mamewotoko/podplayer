@@ -15,7 +15,6 @@ import com.mamewo.podplayer0.PlayerService.MusicInfo;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 

@@ -16,7 +16,7 @@ public class MainActivity
 				PreferenceManager.getDefaultSharedPreferences(this);
 		boolean useExpandableList =
 				pref.getBoolean("use_expandable_ui", false);
-		Class targetClass;
+		Class<?> targetClass;
 		if (useExpandableList) {
 			targetClass = PodplayerExpActivity.class;
 		}
