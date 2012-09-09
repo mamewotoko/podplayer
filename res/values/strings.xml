@@ -21,12 +21,14 @@
     <string name="pref_collapse">collapse</string>
     <string name="pref_expand_list_in_default">Expand list in default</string>
     <string name="pref_show_podcast_icon">Show podcast icon</string>
+    <string name="pref_gesture_category">Gesture</string>
     <string name="pref_icon_hide">hide</string>
     <string name="pref_icon_show">show</string>
     <string name="pref_use_gesture">Use gesture</string>
     <string name="pref_gesture_off">gesture off</string>
     <string name="pref_gesture_on">gesture on</string>
     <string name="pref_threshold_of_gesture_score">Threshold of score</string>
+    <string name="pref_threshold_body">Set threshold of gesture score. 3.0 is recommended value.</string>
     <string name="pref_gesture_list">Gesture list</string>
     <string name="pref_other_category">Others</string>
     <string name="pref_license">License</string>
