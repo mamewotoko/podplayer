@@ -143,18 +143,23 @@ public class PodplayerActivity
 		MusicInfo info = adapter_.getItem(pos-1);
 		MusicInfo current = player_.getCurrentPodInfo();
 		if(current != null && current.url_.equals(info.url_)) {
+			Log.d(TAG, "onItemClick: URL: " + current.url_);
 			if(player_.isPlaying()) {
+				Log.d(TAG, "onItemClick1");
 				player_.pauseMusic();
 			}
 			else {
+				Log.d(TAG, "onItemClick2");
 				if(! player_.restartMusic()){
+					Log.d(TAG, "onItemClick3");
 					playByInfo(info);
 				}
 			}
 		}
 		else {
 			updatePlaylist();
-			playByInfo(info);
+			boolean result = playByInfo(info);
+			Log.d(TAG, "onItemClick4: " + result);
 		}
 	}
 

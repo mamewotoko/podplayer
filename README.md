@@ -78,7 +78,6 @@ TODO
 * fix bugs
     * when prepare error occurs, cursor moves to next episode
         * show network error message
-    * play icon is displayed incorrectly when one item is clicked while other item is being prepared
 * display playing icon in group of expandable list
 * reset playing position after podcast selection is changed
 * use database to manage loaded episodes

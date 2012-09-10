@@ -61,11 +61,11 @@ public class PlayerService
 	private PlayerStateListener listener_;
 	private Receiver receiver_;
 	private boolean isPreparing_;
-	private boolean abortPreparing_;
+	private boolean stopOnPrepared_;
 	private boolean isPausing_;
 	private ComponentName mediaButtonReceiver_;
 	private long previousPrevKeyTime_;
-	
+
 	//TODO: check
 	static
 	public boolean isNetworkConnected(Context context) {
@@ -140,10 +140,9 @@ public class PlayerService
 	}
 	
 	public boolean isPlaying() {
-		return (! abortPreparing_) && (isPreparing_ || player_.isPlaying());
+		return (! stopOnPrepared_) && (isPreparing_ || player_.isPlaying());
 	}
 
-	//TODO: clone?
 	public List<MusicInfo> getCurrentPlaylist() {
 		return currentPlaylist_;
 	}
@@ -177,7 +176,10 @@ public class PlayerService
 	 * @return true if succeed
 	 */
 	public boolean playNth(int pos) {
-		if(currentPlaylist_ == null || currentPlaylist_.size() == 0) {
+		if(currentPlaylist_ == null || currentPlaylist_.size() == 0){
+			return false;
+		}
+		if(isPreparing_){
 			return false;
 		}
 		isPausing_ = false;
@@ -190,8 +192,13 @@ public class PlayerService
 	 * @return true if succeed
 	 */
 	public boolean restartMusic() {
+		Log.d(TAG, "restartMusic: " + isPausing_);
 		if(! isPausing_) {
 			return false;
+		}
+		if(isPreparing_) {
+			stopOnPrepared_ = false;
+			return true;
 		}
 		player_.start();
 		MusicInfo info = currentPlaylist_.get(playCursor_);
@@ -208,6 +215,8 @@ public class PlayerService
 	 */
 	public boolean playMusic() {
 		if (isPreparing_) {
+			Log.d(TAG, "playMusic: preparing");
+			stopOnPrepared_ = false;
 			return false;
 		}
 		if (null == currentPlaylist_ || currentPlaylist_.isEmpty()) {
@@ -235,7 +244,7 @@ public class PlayerService
 	
 	public void stopMusic() {
 		if (isPreparing_) {
-			abortPreparing_ = true;
+			stopOnPrepared_ = true;
 		}
 		else if(player_.isPlaying()){
 			player_.stop();
@@ -250,9 +259,9 @@ public class PlayerService
 
 	//TODO: correct paused state
 	public void pauseMusic() {
-		Log.d(TAG, "pauseMusic");
+		Log.d(TAG, "pauseMusic: " + player_.isPlaying());
 		if (isPreparing_) {
-			abortPreparing_ = true;
+			stopOnPrepared_ = true;
 		}
 		else if(player_.isPlaying()){
 			player_.pause();
@@ -284,7 +293,7 @@ public class PlayerService
 		receiver_ = new Receiver();
 		registerReceiver(receiver_, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
 		isPreparing_ = false;
-		abortPreparing_ = false;
+		stopOnPrepared_ = false;
 		isPausing_ = false;
 		playCursor_ = 0;
 		previousPrevKeyTime_ = 0;
@@ -319,7 +328,6 @@ public class PlayerService
 				new Notification(R.drawable.ic_launcher, podTitle, 0);
 		Intent ni = new Intent(this, USER_CLASS);
 		PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
-		//TODO: localize
 		note.setLatestEventInfo(this, title, description, npi);
 		startForeground(NOTIFY_PLAYING_ID, note);
 	}
@@ -328,9 +336,9 @@ public class PlayerService
 	public void onPrepared(MediaPlayer player) {
 		Log.d(TAG, "onPrepared");
 		isPreparing_ = false;
-		if(abortPreparing_) {
+		if(stopOnPrepared_) {
 			Log.d(TAG, "onPrepared aborted");
-			abortPreparing_ = false;
+			stopOnPrepared_ = false;
 			return;
 		}
 		player_.start();
