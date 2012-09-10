@@ -1,12 +1,9 @@
 package com.mamewo.podplayer0;
 
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.mamewo.podplayer0.PlayerService.PodInfo;
+import com.mamewo.podplayer0.PlayerService.MusicInfo;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,7 +17,7 @@ import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.Prediction;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -37,24 +34,15 @@ abstract public class BasePodplayerActivity
 	OnGesturePerformedListener
 {
 	final static
-	protected String DEFAULT_PODCAST_LIST = "http://www.nhk.or.jp/rj/podcast/rss/english.xml"
-			+ "!http://feeds.voanews.com/ps/getRSS?client=Standard&PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&startIndex=1&endIndex=500"
-			+ "!http://computersciencepodcast.com/compucast.rss!http://www.discovery.com/radio/xml/news.xml"
-			+ "!http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml"
-			+ "!http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml";
-	final static
 	protected boolean DEFAULT_USE_GESTURE = true;
 	final static
-	protected URL[] DUMMY_URL_LIST = new URL[0];
-	protected String[] allTitles_;
-	protected String[] allURLs_;
+	protected PodcastInfo[] DUMMY_INFO_LIST = new PodcastInfo[0];
 	//TODO: wait until player_ is not null (service is connected)
 	protected PlayerService player_ = null;
 	protected GestureLibrary gestureLib_;
 	protected double gestureScoreThreshold_;
 	protected BaseGetPodcastTask loadTask_;
 	protected PodplayerState state_;
-	protected Drawable[] iconData_;
 	protected boolean finishServiceOnExit_;
 	protected ServiceConnection connection_;
 	protected boolean showPodcastIcon_;
@@ -80,11 +68,7 @@ abstract public class BasePodplayerActivity
 		connection_ = conn;
 		//TODO: handle error
 		bindService(intent, conn, Context.BIND_AUTO_CREATE);
-		allTitles_ = getResources().getStringArray(R.array.pref_podcastlist_keys);
-		allURLs_ = getResources().getStringArray(R.array.pref_podcastlist_urls);
 		loadTask_ = null;
-		state_.iconURLs_ = new URL[allTitles_.length];
-		iconData_ = new Drawable[allTitles_.length];
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
@@ -92,13 +76,18 @@ abstract public class BasePodplayerActivity
 	
 	@Override
 	public void onDestroy() {
+		for (PodcastInfo info : state_.podcastList_) {
+			if (null != info.icon_) {
+				Bitmap bitmap = info.icon_.getBitmap();
+				bitmap.recycle();
+			}
+		}
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.unregisterOnSharedPreferenceChangeListener(this);
 		if (null != loadTask_) {
 			loadTask_.cancel(true);
 		}
-		iconData_ = null;
 		boolean playing = player_.isPlaying();
 		if(finishServiceOnExit_ && playing) {
 			player_.stopMusic();
@@ -114,7 +103,7 @@ abstract public class BasePodplayerActivity
 	@Override
 	protected void onStart() {
 		super.onStart();
-		//TODO: check current activity and prefernce
+		//TODO: check current activity and preference
 		if (uiSettingChanged_) {
 			Intent intent = new Intent(this, MainActivity.class);
 			startActivity(intent);
@@ -143,7 +132,7 @@ abstract public class BasePodplayerActivity
 		}
 		state_.loadedEpisode_.clear();
 		loadTask_ = task;
-		loadTask_.execute(state_.podcastURLList_.toArray(DUMMY_URL_LIST));
+		loadTask_.execute(state_.podcastList_.toArray(DUMMY_INFO_LIST));
 	}
 
 	public void showMessage(String message) {
@@ -214,19 +203,9 @@ abstract public class BasePodplayerActivity
 		if (updateAll || "show_podcast_icon".equals(key)) {
 			showPodcastIcon_ = pref.getBoolean("show_podcast_icon", true);
 		}
-		//umm. folowing block should be last
+		//folowing block should be last one of this function
 		if (updateAll || "podcastlist".equals(key)) {
-			String prefURLString = pref.getString("podcastlist", DEFAULT_PODCAST_LIST);
-			String[] list = prefURLString.split(MultiListPreference.SEPARATOR);
-			state_.podcastURLList_.clear();
-			for (String url: list) {
-				try {
-					state_.podcastURLList_.add(new URL(url));
-				}
-				catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-			}
+			state_.podcastList_ = PodcastListPreference.loadSetting(this);
 			onPodcastListChanged();
 		}
 	}
@@ -268,16 +247,14 @@ abstract public class BasePodplayerActivity
 		implements Serializable
 	{
 		private static final long serialVersionUID = 1L;
-		protected List<PodInfo> loadedEpisode_;
-		protected List<URL> podcastURLList_;
+		protected List<MusicInfo> loadedEpisode_;
+		protected List<PodcastInfo> podcastList_;
 		protected String lastUpdated_;
-		protected URL[] iconURLs_;
 
 		private PodplayerState() {
-			loadedEpisode_ = new ArrayList<PodInfo>();
-			podcastURLList_ = new ArrayList<URL>();
+			loadedEpisode_ = new ArrayList<MusicInfo>();
+			podcastList_ = new ArrayList<PodcastInfo>();
 			lastUpdated_ = "";
-			iconURLs_ = null;
 		}
 	}
 }

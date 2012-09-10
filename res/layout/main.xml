@@ -13,15 +13,14 @@
         android:id="@+id/play_button"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:textOff="Start"
-        android:textOn="Pause" />
+        android:textOff="@string/play"
+        android:textOn="@string/pause" />
     <Spinner
         android:id="@+id/podcast_selector"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
-
-</LinearLayout>
+    </LinearLayout>
          <android.gesture.GestureOverlayView
              android:id="@+id/gesture_view"
              android:layout_width="match_parent"
@@ -35,6 +34,5 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             />
-             
          </android.gesture.GestureOverlayView>
 </LinearLayout>

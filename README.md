@@ -69,8 +69,16 @@ How to run Scirocco test
 
 TODO
 ----------
-* add UI to add podcast URL
-    * Web browser displays text/xml as content (I want intent...)
+* fix memory leak (bitmap problem)
+    * check heap size and class histogram
+* improve UI to add podcast URL
+    * save state of check box
+    * update main activity when setting is changed
+    * add swap order function?
+* add robotium, scirocco jar files and apache 2.0 license file
+* fix bugs
+    * when prepare error occurs, cursor moves to next episode
+        * show network error message
 * display playing icon in group of expandable list
 * reset playing position after podcast selection is changed
 * use database to manage loaded episodes
@@ -79,6 +87,7 @@ TODO
     * show description of playing episode
     * cache podcast icon
     * save podcast list and updated time as state
+* support play previous item when KEYCODE_MEDIA_PREVIOUS button is pressed
 * add test
     * preference
     * gesture?
@@ -103,6 +112,7 @@ TODO
 * support video cast??
 * write user guide?
 * check apk size
+* MainActivityTest, PodcastActivity then testAbortReload blocks...
 
 License
 ----------
@@ -120,3 +130,4 @@ Android, MediaPlayer, Podcast, AsyncTask, PullToRefresh, Gesture
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
 http://www002.upp.so-net.ne.jp/mamewo/
+

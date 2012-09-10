@@ -39,21 +39,28 @@ extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
 	public void tearDown() throws Exception {
 		try {
 			solo_.finalize();
+			solo_ = null;
 		}
 		catch(Throwable e) {
 			Log.i(TAG, "tearDown error", e);
 		}
-		getActivity().finish();
+		if (! getActivity().isFinishing()) {
+			getActivity().finish();
+		}
+		solo_ = null;
 		super.tearDown();
 	}
 
 	public void testPlay() throws Exception {
-		solo_.sleep(500);
+		Log.d(TAG, "testPlay starts");
+		solo_.sleep(5000);
 		View playButton = solo_.getView(R.id.play_button);
+		Log.d(TAG, "testPlay: click play button");
 		solo_.clickOnView(playButton);
 		solo_.sleep(500);
-		solo_.takeScreenShot();
+		//		solo_.takeScreenShot();
 		solo_.sleep(10000);
+		assertTrue(solo_.isToggleButtonChecked(0));
 	}
 
 	public void testFinish() {
@@ -64,13 +71,13 @@ extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
 
 	public void testAbortReload() throws Exception {
 		solo_.sleep(5000);
-		solo_.takeScreenShot();
+//		solo_.takeScreenShot();
 		View reloadButton = solo_.getView(R.id.reload_button);
 		//TODO: check image source
 		solo_.clickOnView(reloadButton);
 		//TODO: check image source
 		solo_.sleep(500);
-		solo_.takeScreenShot();
+//		solo_.takeScreenShot();
 		//TODO: this does not work...
 		solo_.scrollUpList(0);
 		solo_.sleep(10000);
@@ -81,11 +88,11 @@ extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
 		View expandButton = solo_.getView(R.id.expand_button);
 		solo_.clickOnView(expandButton);
 		solo_.sleep(500);
-		solo_.takeScreenShot();
+//		solo_.takeScreenShot();
 		View collapseButton = solo_.getView(R.id.collapse_button);
 		solo_.clickOnView(collapseButton);
 		solo_.sleep(500);
-		solo_.takeScreenShot();
+//		solo_.takeScreenShot();
 	}
 	//TODO: expand/collapse prefrence test
 	
@@ -95,7 +102,7 @@ extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
 		View playButton = solo_.getView(R.id.play_button);
 		solo_.clickOnView(playButton);
 		solo_.sleep(1000);
-		solo_.takeScreenShot();
+//		solo_.takeScreenShot();
 	}
 	
 	public void testMainScreenshot() throws Exception {
@@ -104,6 +111,6 @@ extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
 		solo_.clickOnView(playButton);
 		solo_.sendKey(Solo.MENU);
 		solo_.sleep(500);
-		solo_.takeScreenShot();
+//		solo_.takeScreenShot();
 	}
 }

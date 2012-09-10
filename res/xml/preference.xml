@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <com.mamewo.podplayer0.MultiListPreference
-        android:defaultValue="http://www.nhk.or.jp/rj/podcast/rss/english.xml!http://feeds.voanews.com/ps/getRSS?client=Standard&amp;PID=_veJ_N_q3IUpwj2Z5GBO2DYqWDEodojd&amp;startIndex=1&amp;endIndex=500!http://computersciencepodcast.com/compucast.rss!http://www.discovery.com/radio/xml/news.xml!http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml!http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml"
-        android:entries="@array/pref_podcastlist_keys"
-        android:entryValues="@array/pref_podcastlist_urls"
+    <Preference
         android:key="podcastlist"
         android:title="@string/pref_podcastlist_title" />
 
@@ -13,77 +10,76 @@
         android:enabled="true"
         android:key="pause_on_unplugged"
         android:selectable="true"
-        android:summaryOff="play after unplugged"
-        android:summaryOn="pause on unplugged"
-        android:title="Pause on unplagged" />
+        android:summaryOff="@string/pref_play_after_unplugged"
+        android:summaryOn="@string/pref_pause_on_unplugged"
+        android:title="@string/pref_pause_on_unplugged_title" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="enable_long_click"
-        android:summaryOff="off"
-        android:summaryOn="on"
-        android:title="Open link on long click" />
+        android:summaryOff="@string/pref_long_click_off"
+        android:summaryOn="@string/pref_long_click_on"
+        android:title="@string/pref_enable_long_click" />
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="load_on_start"
-        android:summaryOff="Do not load automatically"
-        android:summaryOn="Load podcasts when app starts."
-        android:title="Autoload podcast" />
+        android:summaryOff="@string/pref_do_not_load_automatically"
+        android:summaryOn="@string/pref_load_podcasts_when_app_starts"
+        android:title="@string/pref_autoload_podcast" />
 
     <ListPreference
         android:defaultValue="30"
-        android:dialogTitle="Read timeout"
+        android:dialogTitle="@string/pref_read_timeout"
         android:entries="@array/pref_timeout_titles"
         android:entryValues="@array/pref_timeout_values"
         android:key="read_timeout"
-        android:title="Read timeout" />
-    <PreferenceCategory android:title="Appearance" >
+        android:title="@string/pref_read_timeout" />
+    <PreferenceCategory android:title="@string/pref_appearance" >
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="use_expandable_ui"
-            android:summaryOff="pull to update UI"
-            android:summaryOn="expandable list UI"
-            android:title="Use expandable list UI" />
+            android:summaryOff="@string/pref_pull_to_update_ui"
+            android:summaryOn="@string/pref_expandable_list_ui"
+            android:title="@string/pref_use_expandable_list_ui" />
         <CheckBoxPreference
             android:defaultValue="true"
             android:dependency="use_expandable_ui"
             android:key="expand_in_default"
-            android:summaryOff="collapse"
-            android:summaryOn="expand"
-            android:title="Expand list in default" />
+            android:summaryOff="@string/pref_collapse"
+            android:summaryOn="@string/pref_expand"
+            android:title="@string/pref_expand_list_in_default" />
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="show_podcast_icon"
-            android:summaryOff="hide"
-            android:summaryOn="show"
-            android:title="Show podcast icon" />
+            android:summaryOff="@string/pref_icon_hide"
+            android:summaryOn="@string/pref_icon_show"
+            android:title="@string/pref_show_podcast_icon" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Gesture" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="enable_gesture"
-            android:summaryOff="gesture off"
-            android:summaryOn="gesture on"
-            android:title="Use gesture" />
+            android:summaryOff="@string/pref_gesture_off"
+            android:summaryOn="@string/pref_gesture_on"
+            android:title="@string/pref_use_gesture" />
         <com.mamewo.podplayer0.DoublePreference
             android:defaultValue="3.0"
             android:key="gesture_score_threshold"
-            android:title="Threshold of score" />
+            android:title="@string/pref_threshold_of_gesture_score" />
 
         <PreferenceScreen
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:key="gesture_list"
-            android:title="Gesture list" >
+            android:title="@string/pref_gesture_list" >
         </PreferenceScreen>
     </PreferenceCategory>
-    <PreferenceCategory android:title="Others" >
+    <PreferenceCategory android:title="@string/pref_other_category" >
         <Preference
             android:key="license"
             android:selectable="true"
-            android:title="License" />
+            android:title="@string/pref_license" />
         <Preference
             android:key="version"
             android:selectable="true"
-            android:title="Version" />
+            android:title="@string/pref_version" />
     </PreferenceCategory>
-
 </PreferenceScreen>

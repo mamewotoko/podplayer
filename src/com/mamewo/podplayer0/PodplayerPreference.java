@@ -40,6 +40,7 @@ public class PodplayerPreference
 	static final
 	private int LICENSE_DIALOG = 3;
 	
+	private Preference podcastList_;
 	private Preference version_;
 	private Preference license_;
 	private Preference gestureTable_;
@@ -59,6 +60,8 @@ public class PodplayerPreference
 		catch (NameNotFoundException e) {
 			version_.setSummary("unknown");
 		}
+		podcastList_ = findPreference("podcastlist");
+		podcastList_.setOnPreferenceClickListener(this);
 		readTimeout_ = findPreference("read_timeout");
 		scoreThreshold_ = findPreference("gesture_score_threshold");
 		gestureTable_ = findPreference("gesture_list");
@@ -82,6 +85,11 @@ public class PodplayerPreference
 
 	@Override
 	public boolean onPreferenceClick(Preference item) {
+		if (item == podcastList_) {
+			Intent i = new Intent(this, PodcastListPreference.class);
+			startActivity(i);
+			return true;
+		}
 		if (item == gestureTable_) {
 			showDialog(GESTURE_TABLE_DIALOG);
 			return true;
@@ -106,14 +114,14 @@ public class PodplayerPreference
 			//TODO: add close button
 			dialog = new Dialog(this);
 			dialog.setContentView(R.layout.gesture_table);
-			dialog.setTitle("Gesture table");
+			dialog.setTitle(R.string.pref_gesture_list);
 			dialog.show();
 			break;
 		case VERSION_DIALOG:
 			//TODO: add close button
 			dialog = new Dialog(this);
 			dialog.setContentView(R.layout.version_dialog);
-			dialog.setTitle("Google Play & github");
+			dialog.setTitle(R.string.google_play_and_github);
 			logo_ = dialog.findViewById(R.id.github_logo);
 			logo_.setOnClickListener(this);
 			break;

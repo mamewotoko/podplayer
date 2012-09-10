@@ -34,7 +34,7 @@ public class DoublePreference
 		editText_ = (EditText) view.findViewById(R.id.double_pref_value);
 		//TODO: add attribute to preference.xml
 		dialogText_ = (TextView) view.findViewById(R.id.double_pref_text);
-		dialogText_.setText("Set threshold of gesture score. 3.0 is recommended value.");
+		dialogText_.setText(R.string.pref_threshold_body);
 		minusButton_ = (Button) view.findViewById(R.id.double_minus_button);
 		minusButton_.setOnClickListener(this);
 		plusButton_ = (Button) view.findViewById(R.id.double_plus_button);
