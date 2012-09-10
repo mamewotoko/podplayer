@@ -75,6 +75,7 @@ TODO
     * save state of check box
     * update main activity when setting is changed
     * add swap order function?
+* add robotium, scirocco jar files and apache 2.0 license file
 * fix bugs
     * when prepare error occurs, cursor moves to next episode
         * show network error message
