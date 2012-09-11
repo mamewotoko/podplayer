@@ -22,6 +22,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.graphics.drawable.BitmapDrawable;
@@ -32,10 +33,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.CheckBox;
 import android.content.Context;
@@ -46,12 +51,14 @@ import android.content.DialogInterface.OnCancelListener;
 public class PodcastListPreference
 	extends Activity
 	implements OnClickListener,
+	OnItemLongClickListener,
+	DialogInterface.OnClickListener,
 	OnCancelListener
 {
 	final static
-	private String TAG = "podcast";
+	private String TAG = "podplayer";
 	
-	private Button checkButton_;
+	private Button addButton_;
 	private EditText urlEdit_;
 	private CheckTask task_;
 	private ProgressDialog dialog_;
@@ -61,18 +68,31 @@ public class PodcastListPreference
 	private String CONFIG_FILENAME = "podcast.json";
 	static final
 	private int CHECKING_DIALOG = 0;
+	static final
+	private int DIALOG_REMOVE_PODCAST = 1;
+	//position on dialog
+	static final
+	private int REMOVE_OPERATION = 0;
+//	static final
+//	private int UP_OPERATION = 1;
+//	static final
+//	private int DOWN_OPERATION = 2;
+	private Bundle bundle_;
 	
+	//TODO: change window title
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.podlist_editor);
-		checkButton_ = (Button) findViewById(R.id.add_podcast_button);
-		checkButton_.setOnClickListener(this);
+		addButton_ = (Button) findViewById(R.id.add_podcast_button);
+		addButton_.setOnClickListener(this);
 		urlEdit_ = (EditText) findViewById(R.id.url_edit);
 		List<PodcastInfo> list = loadSetting(this);
 		adapter_ = new PodcastInfoAdapter(this, list);
 		podcastListView_ = (ListView) findViewById(R.id.podlist);
 		podcastListView_.setAdapter(adapter_);
+		podcastListView_.setOnItemLongClickListener(this);
+		bundle_ = null;
 	}
 	
 	static
@@ -116,7 +136,7 @@ public class PodcastListPreference
 	
 	@Override
 	public void onClick(View view) {
-		if (view == checkButton_) {
+		if (view == addButton_) {
 			String urlStr = urlEdit_.getText().toString();
 			//check url
 			URL url = null;
@@ -145,6 +165,7 @@ public class PodcastListPreference
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		Dialog dialog = null;
+		Log.d(TAG, "onCreateDialog: " + id);
 		switch (id) {
 		case CHECKING_DIALOG:
 			dialog_ = new ProgressDialog(this);
@@ -154,6 +175,39 @@ public class PodcastListPreference
 			dialog_.setTitle(R.string.dialog_checking_podcast_url);
 			dialog_.setMessage(getString(R.string.dialog_checking_podcast_url_body));
 			dialog = dialog_;
+			break;
+		default:
+			break;
+		}
+		return dialog;
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id, Bundle bundle) {
+		Log.d(TAG, "onCreateDialog(bundle): " + id);
+		Dialog dialog = null;
+		switch(id){
+		case DIALOG_REMOVE_PODCAST:
+			bundle_ = bundle;
+			List<String> items = new ArrayList();
+			//TODO: localize
+			items.add("remove");
+//			items.add("up");
+//			items.add("down");
+			ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, items);
+			final int pos = bundle.getInt("position");
+			PodcastInfo info = (PodcastInfo) bundle.getSerializable("info");
+			dialog = new AlertDialog.Builder(this)
+			.setTitle(info.title_)
+			.setCancelable(true)
+			.setAdapter(adapter, this)
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					showMessage("remove " + pos);
+				}})
+			.create();
 			break;
 		default:
 			break;
@@ -295,12 +349,13 @@ public class PodcastListPreference
 			CheckBox check = (CheckBox) view.findViewById(R.id.checkbox);
 			check.setOnClickListener(PodcastListPreference.this);
 			check.setTag(info);
+			TextView label = (TextView) view.findViewById(R.id.podcast_title_label);
 			//add check
 			String title = info.title_;
 			if (null == title) {
 				title = info.url_.toString();
 			}
-			check.setText(title);
+			label.setText(title);
 			check.setChecked(info.enabled_);
 			return view;
 		}
@@ -393,5 +448,52 @@ public class PodcastListPreference
 		if (null != task_) {
 			task_.cancel(true);
 		}
+	}
+
+	@Override
+	public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos,
+			long id) {
+		Log.d(TAG, "onLongItemClick: " + pos);
+		Bundle bundle = new Bundle();
+		bundle.putSerializable("info", (PodcastInfo)adapter.getItemAtPosition(pos));
+		bundle.putInt("position", pos);
+		showDialog(DIALOG_REMOVE_PODCAST, bundle);
+		return true;
+	}
+
+	@Override
+	public void onClick(DialogInterface dialog, int which) {
+		Log.d(TAG, "DialogInterface: " + which);
+		switch(which) {
+		case REMOVE_OPERATION:
+			if (null == bundle_) {
+				Log.d(TAG, "onClick bundle is null!");
+				break;
+			}
+			int pos = bundle_.getInt("position");
+			PodcastInfo info = adapter_.getItem(pos);
+			Log.d(TAG, "onClick REMOVE: " + pos + " " + info.title_);
+			adapter_.remove(info);
+			adapter_.notifyDataSetChanged();
+			try {
+				saveSetting();
+			}
+			catch (JSONException e) {
+				Log.d(TAG, "failed to save podcast list setting");
+			}
+			catch (IOException e) {
+				Log.d(TAG, "failed to save podcast list setting");
+			}
+			break;
+//		case UP_OPERATION:
+//			Log.d(TAG, "dialog.onClick UP");
+//			break;
+//		case DOWN_OPERATION:
+//			Log.d(TAG, "dialog.onClick DOWN");
+//			break;
+		default:
+			break;
+		}
+		bundle_ = null;
 	}
 }

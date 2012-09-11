@@ -64,11 +64,12 @@ How to run Scirocco test
     ant test
 
 ### Eclipse
-1. Import the test/podtest directory
+1. Import the test/podtest directory as an Eclipse projct
 2. Run as "Android JUnit Test" or "Scirocco JUnit Test"
 
 TODO
 ----------
+* add up / down operation of podcast list editor
 * fix memory leak (bitmap problem)
     * check heap size and class histogram
 * improve UI to add podcast URL
