@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -51,6 +52,7 @@ import android.content.DialogInterface.OnCancelListener;
 public class PodcastListPreference
 	extends Activity
 	implements OnClickListener,
+	OnItemClickListener,
 	OnItemLongClickListener,
 	DialogInterface.OnClickListener,
 	OnCancelListener
@@ -92,6 +94,7 @@ public class PodcastListPreference
 		podcastListView_ = (ListView) findViewById(R.id.podlist);
 		podcastListView_.setAdapter(adapter_);
 		podcastListView_.setOnItemLongClickListener(this);
+		podcastListView_.setOnItemClickListener(this);
 		bundle_ = null;
 	}
 	
@@ -131,7 +134,7 @@ public class PodcastListPreference
 		//Ummm..: to call preference listener
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		boolean prevValue = pref.getBoolean("podcastlist2", true);
-		pref.edit().putBoolean("podcastlist", !prevValue).commit();
+		pref.edit().putBoolean("podcastlist2", !prevValue).commit();
 	}
 	
 	@Override
@@ -504,14 +507,13 @@ public class PodcastListPreference
 			break;
 		}
 		bundle_ = null;
-		try {
-			saveSetting();
-		}
-		catch (JSONException e) {
-			Log.d(TAG, "failed to save podcast list setting");
-		}
-		catch (IOException e) {
-			Log.d(TAG, "failed to save podcast list setting");
-		}
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> adapter, View parent, int pos, long id) {
+		CheckBox checkbox = (CheckBox) parent.findViewById(R.id.checkbox);
+		PodcastInfo info = (PodcastInfo) adapter.getItemAtPosition(pos);
+		info.enabled_ = !info.enabled_;
+		checkbox.setChecked(info.enabled_);
 	}
 }

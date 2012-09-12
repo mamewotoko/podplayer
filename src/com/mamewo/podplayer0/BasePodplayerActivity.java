@@ -204,7 +204,7 @@ abstract public class BasePodplayerActivity
 			showPodcastIcon_ = pref.getBoolean("show_podcast_icon", true);
 		}
 		//folowing block should be last one of this function
-		if (updateAll || "podcastlist".equals(key)) {
+		if (updateAll || "podcastlist2".equals(key)) {
 			state_.podcastList_ = PodcastListPreference.loadSetting(this);
 			onPodcastListChanged();
 		}
