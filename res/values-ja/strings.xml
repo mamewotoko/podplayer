@@ -33,7 +33,7 @@
     <string name="pref_version">バージョン</string>
     <string name="google_play_and_github">Google Play &amp; Github</string>
     <string name="play">再生</string>
-    <string name="pause">一時停止</string>
+    <string name="pause">停止</string>
     <string name="expand">広げる</string>
     <string name="collapse">たたむ</string>
     <string name="add">追加</string>
