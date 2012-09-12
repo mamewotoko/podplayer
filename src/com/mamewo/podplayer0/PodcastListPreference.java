@@ -464,7 +464,6 @@ public class PodcastListPreference
 			long id) {
 		Log.d(TAG, "onLongItemClick: " + pos);
 		Bundle bundle = new Bundle();
-		bundle.putSerializable("info", (PodcastInfo)adapter.getItemAtPosition(pos));
 		bundle.putInt("position", pos);
 		showDialog(DIALOG_REMOVE_PODCAST, bundle);
 		return true;
