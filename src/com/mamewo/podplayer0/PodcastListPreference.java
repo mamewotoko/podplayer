@@ -72,11 +72,11 @@ public class PodcastListPreference
 	private int DIALOG_REMOVE_PODCAST = 1;
 	//position on dialog
 	static final
-	private int REMOVE_OPERATION = 0;
-//	static final
-//	private int UP_OPERATION = 1;
-//	static final
-//	private int DOWN_OPERATION = 2;
+	public int REMOVE_OPERATION = 0;
+	static final
+	public int UP_OPERATION = 1;
+	static final
+	public int DOWN_OPERATION = 2;
 	private Bundle bundle_;
 	
 	//TODO: change window title
@@ -188,31 +188,37 @@ public class PodcastListPreference
 		Dialog dialog = null;
 		switch(id){
 		case DIALOG_REMOVE_PODCAST:
-			bundle_ = bundle;
-			List<String> items = new ArrayList();
-			//TODO: localize
-			items.add("remove");
-//			items.add("up");
-//			items.add("down");
+			List<String> items = new ArrayList<String>();
+			items.add(getString(R.string.remove_operation));
+			items.add(getString(R.string.up_operation));
+			items.add(getString(R.string.down_operation));
 			ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, items);
-			final int pos = bundle.getInt("position");
-			PodcastInfo info = (PodcastInfo) bundle.getSerializable("info");
 			dialog = new AlertDialog.Builder(this)
-			.setTitle(info.title_)
+			.setTitle("xxx")
 			.setCancelable(true)
 			.setAdapter(adapter, this)
-			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
-					showMessage("remove " + pos);
-				}})
 			.create();
 			break;
 		default:
 			break;
 		}
 		return dialog;
+	}
+	
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
+		Log.d(TAG, "onPrepareDialog(bundle): " + args.getInt("position"));
+		bundle_ = args;
+		switch(id){
+		case DIALOG_REMOVE_PODCAST:
+			int pos = args.getInt("position");
+			PodcastInfo info = adapter_.getItem(pos);
+			dialog.setTitle(info.title_);
+			//TODO: disable up/down?
+			break;
+		default:
+			break;
+		}
 	}
 	
 	public class CheckTask
@@ -463,37 +469,49 @@ public class PodcastListPreference
 
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
-		Log.d(TAG, "DialogInterface: " + which);
+		if (null == bundle_) {
+			Log.d(TAG, "onClick bundle is null!");
+			return;
+		}
+		int pos = bundle_.getInt("position");
+		PodcastInfo info = adapter_.getItem(pos);
+		Log.d(TAG, "DialogInterface: " + which + " pos: " + pos + " " + info.title_);
 		switch(which) {
 		case REMOVE_OPERATION:
-			if (null == bundle_) {
-				Log.d(TAG, "onClick bundle is null!");
-				break;
-			}
-			int pos = bundle_.getInt("position");
-			PodcastInfo info = adapter_.getItem(pos);
 			Log.d(TAG, "onClick REMOVE: " + pos + " " + info.title_);
 			adapter_.remove(info);
 			adapter_.notifyDataSetChanged();
-			try {
-				saveSetting();
-			}
-			catch (JSONException e) {
-				Log.d(TAG, "failed to save podcast list setting");
-			}
-			catch (IOException e) {
-				Log.d(TAG, "failed to save podcast list setting");
-			}
 			break;
-//		case UP_OPERATION:
-//			Log.d(TAG, "dialog.onClick UP");
-//			break;
-//		case DOWN_OPERATION:
-//			Log.d(TAG, "dialog.onClick DOWN");
-//			break;
+		case UP_OPERATION:
+			Log.d(TAG, "dialog.onClick UP");
+			if(pos == 0){
+				break;
+			}
+			adapter_.remove(info);
+			adapter_.insert(info, pos - 1);
+			adapter_.notifyDataSetChanged();
+			break;
+		case DOWN_OPERATION:
+			Log.d(TAG, "dialog.onClick DOWN");
+			if(pos == adapter_.getCount() - 1){
+				break;
+			}
+			adapter_.remove(info);
+			adapter_.insert(info, pos + 1);
+			adapter_.notifyDataSetChanged();
+			break;
 		default:
 			break;
 		}
 		bundle_ = null;
+		try {
+			saveSetting();
+		}
+		catch (JSONException e) {
+			Log.d(TAG, "failed to save podcast list setting");
+		}
+		catch (IOException e) {
+			Log.d(TAG, "failed to save podcast list setting");
+		}
 	}
 }

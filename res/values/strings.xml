@@ -48,4 +48,7 @@
     <string name="preference_menu">Preference</string>
     <string name="exit_menu">Exit</string>
     <string name="selector_all">All</string>
+    <string name="remove_operation">Remove</string>
+    <string name="up_operation">Move up</string>
+    <string name="down_operation">Move down</string>
 </resources>

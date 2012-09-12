@@ -54,7 +54,7 @@
             android:summaryOn="@string/pref_icon_show"
             android:title="@string/pref_show_podcast_icon" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Gesture" >
+    <PreferenceCategory android:title="@string/pref_gesture_category" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="enable_gesture"

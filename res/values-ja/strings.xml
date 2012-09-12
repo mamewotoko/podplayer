@@ -46,4 +46,7 @@
     <string name="preference_menu">設定</string>
     <string name="exit_menu">終了</string>
     <string name="selector_all">すべて</string>
+    <string name="remove_operation">削除</string>
+    <string name="up_operation">上に移動</string>
+    <string name="down_operation">下に移動</string>
 </resources>
