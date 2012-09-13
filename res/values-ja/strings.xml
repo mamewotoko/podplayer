@@ -49,4 +49,6 @@
     <string name="remove_operation">削除</string>
     <string name="up_operation">上に移動</string>
     <string name="down_operation">下に移動</string>
+    <string name="app_podcastlist_title">Podcastリストを編集</string>
+    <string name="app_podcastpref_title">Podplayer設定</string>
 </resources>

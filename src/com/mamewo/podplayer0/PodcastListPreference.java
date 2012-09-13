@@ -81,11 +81,11 @@ public class PodcastListPreference
 	public int DOWN_OPERATION = 2;
 	private Bundle bundle_;
 	
-	//TODO: change window title
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.podlist_editor);
+		setTitle(R.string.app_podcastlist_title);
 		addButton_ = (Button) findViewById(R.id.add_podcast_button);
 		addButton_.setOnClickListener(this);
 		urlEdit_ = (EditText) findViewById(R.id.url_edit);

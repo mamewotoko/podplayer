@@ -50,6 +50,7 @@ public class PodplayerPreference
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setTitle(R.string.app_podcastpref_title);
 		addPreferencesFromResource(R.xml.preference);
 		version_ = findPreference("version");
 		PackageInfo pi;
