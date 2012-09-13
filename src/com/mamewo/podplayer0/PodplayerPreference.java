@@ -112,14 +112,12 @@ public class PodplayerPreference
 
 		switch(id) {
 		case GESTURE_TABLE_DIALOG:
-			//TODO: add close button
 			dialog = new Dialog(this);
 			dialog.setContentView(R.layout.gesture_table);
 			dialog.setTitle(R.string.pref_gesture_list);
 			dialog.show();
 			break;
 		case VERSION_DIALOG:
-			//TODO: add close button
 			dialog = new Dialog(this);
 			dialog.setContentView(R.layout.version_dialog);
 			dialog.setTitle(R.string.google_play_and_github);
@@ -127,7 +125,6 @@ public class PodplayerPreference
 			logo_.setOnClickListener(this);
 			break;
 		case LICENSE_DIALOG:
-			//TODO: Localize?
 			StringBuffer licenseText = new StringBuffer();
 			Resources res = getResources();
 			InputStream is = res.openRawResource(R.raw.apache20);
@@ -180,9 +177,11 @@ public class PodplayerPreference
 		if (updateAll || "read_timeout".equals(key)) {
 			String strValue = pref.getString("read_timeout", "30");
 			if ("0".equals(strValue)) {
+				//TODO: localize
 				strValue = "None";
 			}
 			else {
+				//TODO: localize
 				strValue = strValue + " sec";
 			}
 			readTimeout_.setSummary(strValue);
