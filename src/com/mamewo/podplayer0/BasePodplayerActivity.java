@@ -37,7 +37,6 @@ abstract public class BasePodplayerActivity
 	protected boolean DEFAULT_USE_GESTURE = true;
 	final static
 	protected PodcastInfo[] DUMMY_INFO_LIST = new PodcastInfo[0];
-	//TODO: wait until player_ is not null (service is connected)
 	protected PlayerService player_ = null;
 	protected GestureLibrary gestureLib_;
 	protected double gestureScoreThreshold_;
@@ -50,6 +49,8 @@ abstract public class BasePodplayerActivity
 
 	final static
 	public String TAG = "podplayer";
+
+	abstract protected void onPodcastListChanged();
 
 	public void onCreate(Bundle savedInstanceState, ServiceConnection conn, Class<?> userClass) {
 		super.onCreate(savedInstanceState);
@@ -106,6 +107,7 @@ abstract public class BasePodplayerActivity
 		//TODO: check current activity and preference
 		if (uiSettingChanged_) {
 			Intent intent = new Intent(this, MainActivity.class);
+			//TODO: add flag of restart
 			startActivity(intent);
 			finish();
 			//TODO: show toast like "switching activity"?
@@ -170,8 +172,6 @@ abstract public class BasePodplayerActivity
 		Log.d(TAG, "onSharedPreferneceChanged: " + key);
 		syncPreference(pref, key);
 	}
-	
-	abstract protected void onPodcastListChanged();
 	
 	//should be called from onServiceConnected
 	protected void syncPreference(SharedPreferences pref, String key){

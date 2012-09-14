@@ -27,6 +27,7 @@
     <string name="pref_gesture_off">無効</string>
     <string name="pref_gesture_on">有効</string>
     <string name="pref_threshold_of_gesture_score">スコアのしきい値</string>
+    <string name="pref_threshold_body">ジェスチャとして認識するスコアの下限値を指定してください。3.0が推奨値です。</string>
     <string name="pref_gesture_list">ジェスチャリスト</string>
     <string name="pref_other_category">その他</string>
     <string name="pref_license">ライセンス</string>
