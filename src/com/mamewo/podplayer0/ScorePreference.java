@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class DoublePreference
+public class ScorePreference
 	extends DialogPreference
 	implements OnClickListener
 {
@@ -22,7 +22,7 @@ public class DoublePreference
 	static final
 	private double STEP = 0.1;
 	
-	public DoublePreference(Context context, AttributeSet attrs) {
+	public ScorePreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		double_ = 0.0;
 		setDialogLayoutResource(R.layout.double_preference);

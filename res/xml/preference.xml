@@ -61,7 +61,7 @@
             android:summaryOff="@string/pref_gesture_off"
             android:summaryOn="@string/pref_gesture_on"
             android:title="@string/pref_use_gesture" />
-        <com.mamewo.podplayer0.DoublePreference
+        <com.mamewo.podplayer0.ScorePreference
             android:defaultValue="3.0"
             android:key="gesture_score_threshold"
             android:title="@string/pref_threshold_of_gesture_score" />
