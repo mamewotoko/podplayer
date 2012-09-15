@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class PodcastListPreference
 	private Button addButton_;
 	private EditText urlEdit_;
 	private CheckTask task_;
-	private ProgressDialog dialog_;
+	private Dialog dialog_;
 	private PodcastInfoAdapter adapter_;
 	private ListView podcastListView_;
 	static final
@@ -108,7 +109,7 @@ public class PodcastListPreference
 			URL url = null;
 			try {
 				url = new URL(allURLs[i]);
-				//TODO: get config
+				//TODO: get config and fetch icon
 				PodcastInfo info = new PodcastInfo(title, url, null, true);
 				list.add(info);
 			}
@@ -166,30 +167,20 @@ public class PodcastListPreference
 	}
 
 	@Override
-	protected Dialog onCreateDialog(int id) {
-		Dialog dialog = null;
-		Log.d(TAG, "onCreateDialog: " + id);
-		switch (id) {
-		case CHECKING_DIALOG:
-			dialog_ = new ProgressDialog(this);
-			dialog_.setOnCancelListener(this);
-			dialog_.setCancelable(true);
-			dialog_.setCanceledOnTouchOutside(true);
-			dialog_.setTitle(R.string.dialog_checking_podcast_url);
-			dialog_.setMessage(getString(R.string.dialog_checking_podcast_url_body));
-			dialog = dialog_;
-			break;
-		default:
-			break;
-		}
-		return dialog;
-	}
-	
-	@Override
 	protected Dialog onCreateDialog(int id, Bundle bundle) {
 		Log.d(TAG, "onCreateDialog(bundle): " + id);
 		Dialog dialog = null;
 		switch(id){
+		case CHECKING_DIALOG:
+			ProgressDialog progressDialog = new ProgressDialog(this);
+			progressDialog.setOnCancelListener(this);
+			progressDialog.setCancelable(true);
+			progressDialog.setCanceledOnTouchOutside(true);
+			progressDialog.setTitle(R.string.dialog_checking_podcast_url);
+			progressDialog.setMessage(getString(R.string.dialog_checking_podcast_url_body));
+			dialog = progressDialog;
+			dialog_ = progressDialog;
+			break;
 		case DIALOG_REMOVE_PODCAST:
 			List<String> items = new ArrayList<String>();
 			items.add(getString(R.string.remove_operation));
@@ -210,10 +201,13 @@ public class PodcastListPreference
 	
 	@Override
 	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
-		Log.d(TAG, "onPrepareDialog(bundle): " + args.getInt("position"));
 		bundle_ = args;
 		switch(id){
+		case CHECKING_DIALOG:
+			dialog_ = dialog;
+			break;
 		case DIALOG_REMOVE_PODCAST:
+			Log.d(TAG, "onPrepareDialog(bundle): " + args.getInt("position"));
 			int pos = args.getInt("position");
 			PodcastInfo info = adapter_.getItem(pos);
 			dialog.setTitle(info.title_);
@@ -313,14 +307,16 @@ public class PodcastListPreference
 		protected void onProgressUpdate(PodcastInfo... values){
 			PodcastInfo info = values[0];
 			adapter_.add(info);
-			//TODO: localize
-			showMessage("add " + info.title_);
+			String msg =
+					MessageFormat.format(getString(R.string.podcast_added), info.title_);
+			showMessage(msg);
 		}
 		
 		@Override
 		protected void onPostExecute(Boolean result) {
 			task_ = null;
 			dialog_.hide();
+			dialog_ = null;
 			if (!result.booleanValue()) {
 				showMessage(getString(R.string.msg_add_podcast_failed));
 			}
@@ -331,6 +327,7 @@ public class PodcastListPreference
 			showMessage(getString(R.string.msg_add_podcast_cancelled));
 			task_ = null;
 			dialog_.hide();
+			dialog_ = null;
 		}
 	}
 	
