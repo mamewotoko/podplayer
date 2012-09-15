@@ -90,6 +90,7 @@ TODO
     * save podcast list and updated time as state
 * support play previous item when KEYCODE_MEDIA_PREVIOUS button is pressed
 * add test
+    * add podcast, edit podcast (up, down, remove)
     * preference
     * gesture?
     * switch UI
