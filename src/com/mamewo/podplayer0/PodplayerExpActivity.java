@@ -110,10 +110,7 @@ public class PodplayerExpActivity
 		}
 		setProgressBarIndeterminateVisibility(true);
 		updateUI();
-		SharedPreferences pref=
-				PreferenceManager.getDefaultSharedPreferences(this);
-		int timeout = Integer.valueOf(pref.getString("read_timeout", "30"));
-		GetPodcastTask task = new GetPodcastTask(showPodcastIcon_, timeout);
+		GetPodcastTask task = new GetPodcastTask();
 		startLoading(task);
 	}
 
@@ -392,8 +389,8 @@ public class PodplayerExpActivity
 	private class GetPodcastTask
 		extends BaseGetPodcastTask
 	{
-		public GetPodcastTask(boolean showPodcastIcon, int timeout) {
-			super(PodplayerExpActivity.this, showPodcastIcon, timeout);
+		public GetPodcastTask() {
+			super(PodplayerExpActivity.this);
 		}
 
 		@Override

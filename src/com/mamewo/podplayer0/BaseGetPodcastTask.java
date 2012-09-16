@@ -14,8 +14,10 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import com.mamewo.podplayer0.PlayerService.MusicInfo;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class BaseGetPodcastTask
@@ -39,10 +41,11 @@ public class BaseGetPodcastTask
 	};
 
 	//TODO refactor to cache icon
-	public BaseGetPodcastTask(Context context, boolean showPodcastIcon, int timeout) {
+	public BaseGetPodcastTask(Context context) {
 		context_ = context;
-		showPodcastIcon_ = showPodcastIcon;
-		timeoutSec_ = timeout;
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+		timeoutSec_ = Integer.valueOf(pref.getString("read_timeout", "30"));
+		showPodcastIcon_ = pref.getBoolean("show_podcast_icon", true);
 		buffer_ = new ArrayList<MusicInfo>();
 	}
 
