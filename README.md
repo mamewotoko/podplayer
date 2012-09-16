@@ -23,8 +23,8 @@ How to build
 ------------
 1. Clone source
 
-    git clone git://github.com/mamewotoko/podplayer.git
-    git submodule update --init
+        git clone git://github.com/mamewotoko/podplayer.git
+        git submodule update --init
 
 ### ant
 1. Update project
@@ -36,7 +36,7 @@ How to build
             android update project -p . -n pulltoupdate -t android-10
 2. Build
 
-    ant debug
+        ant debug
 A file bin/podplayer-debug.apk is created if succeed.
 
 ### Eclipse
