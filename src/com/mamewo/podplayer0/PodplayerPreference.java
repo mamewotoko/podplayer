@@ -40,6 +40,25 @@ public class PodplayerPreference
 	private int GESTURE_TABLE_DIALOG = 2;
 	static final
 	private int LICENSE_DIALOG = 3;
+	//add key
+	static final
+	public String DEFAULT_READ_TIMEOUT = "30";
+	static final
+	public String DEFAULT_GESTURE_SCORE = "3.0";
+	final static
+	public boolean DEFAULT_USE_GESTURE = true;
+	final static
+	public boolean DEFAULT_SHOW_ICON = true;
+	final static
+	public boolean DEFAULT_USE_EXPANDABLE_LIST = false;
+	final static
+	public boolean DEFAULT_PAUSE_ON_UNPLUGGED = true;
+	final static
+	public boolean DEFAULT_LOAD_ON_START = true;
+	final static
+	public boolean DEFAULT_ENABLE_LONG_CLICK = true;
+	final static
+	public boolean DEFAULT_EXPAND_IN_DEFAULT = true;
 	
 	private Preference podcastList_;
 	private Preference version_;
@@ -179,7 +198,7 @@ public class PodplayerPreference
 			readTimeout_.setSummary(readTimeout_.getEntry());
 		}
 		if (updateAll || "gesture_score_threshold".equals(key)) {
-			double threshold = Double.valueOf(pref.getString("gesture_score_threshold", "3.0"));
+			double threshold = Double.valueOf(pref.getString("gesture_score_threshold", PodplayerPreference.DEFAULT_GESTURE_SCORE));
 			scoreThreshold_.setSummary(String.format("%.2f", threshold));
 		}
 	}

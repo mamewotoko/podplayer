@@ -34,8 +34,6 @@ abstract public class BasePodplayerActivity
 	OnGesturePerformedListener
 {
 	final static
-	protected boolean DEFAULT_USE_GESTURE = true;
-	final static
 	protected PodcastInfo[] DUMMY_INFO_LIST = new PodcastInfo[0];
 	protected PlayerService player_ = null;
 	protected GestureLibrary gestureLib_;
@@ -180,7 +178,7 @@ abstract public class BasePodplayerActivity
 			uiSettingChanged_ = true;
 		}
 		if (updateAll || "enable_gesture".equals(key)) {
-			boolean useGesture = pref.getBoolean("enable_gesture", DEFAULT_USE_GESTURE);
+			boolean useGesture = pref.getBoolean("enable_gesture", PodplayerPreference.DEFAULT_USE_GESTURE);
 			GestureOverlayView gestureView =
 					(GestureOverlayView)findViewById(R.id.gesture_view);
 			if(useGesture) {
@@ -198,10 +196,10 @@ abstract public class BasePodplayerActivity
 		}
 		if (updateAll || "gesture_score_threshold".equals(key)) {
 			gestureScoreThreshold_ =
-					Double.valueOf(pref.getString("gesture_score_threshold", "3.0"));
+					Double.valueOf(pref.getString("gesture_score_threshold", PodplayerPreference.DEFAULT_GESTURE_SCORE));
 		}
 		if (updateAll || "show_podcast_icon".equals(key)) {
-			showPodcastIcon_ = pref.getBoolean("show_podcast_icon", true);
+			showPodcastIcon_ = pref.getBoolean("show_podcast_icon", PodplayerPreference.DEFAULT_SHOW_ICON);
 		}
 		//folowing block should be last one of this function
 		if (updateAll || "podcastlist2".equals(key)) {

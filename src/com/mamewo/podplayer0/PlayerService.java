@@ -89,7 +89,7 @@ public class PlayerService
 		else if (JACK_UNPLUGGED_ACTION.equals(action)) {
 			SharedPreferences pref =
 					PreferenceManager.getDefaultSharedPreferences(this);
-			boolean pause = pref.getBoolean("pause_on_unplugged", true);
+			boolean pause = pref.getBoolean("pause_on_unplugged", PodplayerPreference.DEFAULT_PAUSE_ON_UNPLUGGED);
 			if (pause && player_.isPlaying()) {
 				pauseMusic();
 			}

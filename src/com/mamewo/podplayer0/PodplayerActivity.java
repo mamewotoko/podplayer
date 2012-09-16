@@ -320,7 +320,7 @@ public class PodplayerActivity
 		MusicInfo info = adapter_.getItem(pos-1);
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
-		boolean enableLongClick = pref.getBoolean("enable_long_click", false);
+		boolean enableLongClick = pref.getBoolean("enable_long_click", PodplayerPreference.DEFAULT_ENABLE_LONG_CLICK);
 		if ((! enableLongClick) || null == info.link_) {
 			return false;
 		}
@@ -423,7 +423,7 @@ public class PodplayerActivity
 		//TODO: load if selected item is changed
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		selector_.setAdapter(adapter);
-		boolean doLoad = pref.getBoolean("load_on_start", true);
+		boolean doLoad = pref.getBoolean("load_on_start", PodplayerPreference.DEFAULT_LOAD_ON_START);
 		List<MusicInfo> playlist = state_.loadedEpisode_;
 		if (doLoad) {
 			episodeListView_.startRefresh();

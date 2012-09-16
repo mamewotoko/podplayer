@@ -44,8 +44,8 @@ public class BaseGetPodcastTask
 	public BaseGetPodcastTask(Context context) {
 		context_ = context;
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-		timeoutSec_ = Integer.valueOf(pref.getString("read_timeout", "30"));
-		showPodcastIcon_ = pref.getBoolean("show_podcast_icon", true);
+		timeoutSec_ = Integer.valueOf(pref.getString("read_timeout", PodplayerPreference.DEFAULT_READ_TIMEOUT));
+		showPodcastIcon_ = pref.getBoolean("show_podcast_icon", PodplayerPreference.DEFAULT_SHOW_ICON);
 		buffer_ = new ArrayList<MusicInfo>();
 	}
 

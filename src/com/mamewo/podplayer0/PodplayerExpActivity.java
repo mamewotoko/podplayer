@@ -420,7 +420,7 @@ public class PodplayerExpActivity
 	public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
-		boolean enableLongClick = pref.getBoolean("enable_long_click", false);
+		boolean enableLongClick = pref.getBoolean("enable_long_click", PodplayerPreference.DEFAULT_ENABLE_LONG_CLICK);
 		if (! enableLongClick) {
 			return false;
 		}
@@ -483,12 +483,12 @@ public class PodplayerExpActivity
 		expandableList_.setAdapter(expandableAdapter_);
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
-		boolean expandInDefault = pref.getBoolean("expand_in_default", true);
+		boolean expandInDefault = pref.getBoolean("expand_in_default", PodplayerPreference.DEFAULT_EXPAND_IN_DEFAULT);
 		if (expandInDefault) { 
 			expandOrCollapseAll(true);
 		}
 		expandableList_.setOnChildClickListener(this);
-		boolean doLoad = pref.getBoolean("load_on_start", true);
+		boolean doLoad = pref.getBoolean("load_on_start", PodplayerPreference.DEFAULT_LOAD_ON_START);
 		updateUI();
 		List<MusicInfo> playlist = state_.loadedEpisode_;
 		if(doLoad){

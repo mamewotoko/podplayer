@@ -69,19 +69,21 @@ How to run Scirocco test
 
 TODO
 ----------
-* add up / down operation of podcast list editor
 * fix memory leak (bitmap problem)
     * check heap size and class histogram
+* display playing icon in group of expandable list
 * improve UI to add podcast URL
-    * save state of check box
     * update main activity when setting is changed
-    * add swap order function?
 * add robotium, scirocco jar files and apache 2.0 license file
-* define default value of preference as constant
+* add / update test
+    * add podcast, edit podcast (up, down, remove)
+    * preference
+    * gesture?
+    * switch UI
+    * landscape UI
 * fix bugs
     * when prepare error occurs, cursor moves to next episode
         * show network error message
-* display playing icon in group of expandable list
 * reset playing position after podcast selection is changed
 * use database to manage loaded episodes
     * display mark which is already played, new item etc...
@@ -90,12 +92,6 @@ TODO
     * cache podcast icon
     * save podcast list and updated time as state
 * support play previous item when KEYCODE_MEDIA_PREVIOUS button is pressed
-* add test
-    * add podcast, edit podcast (up, down, remove)
-    * preference
-    * gesture?
-    * switch UI
-    * landscape UI
 * optimize initialization of podplayer
     * setContentView takes long time
 * Autoload: load on create & when podcast list setting is changed
@@ -111,7 +107,6 @@ TODO
 * add Wifi only mode
 * acquire [wifi lock](http://developer.android.com/reference/android/net/wifi/WifiManager.WifiLock.html)
 * add error handling
-* set default value of MultiListPreference by array name not by string value
 * support video cast??
 * write user guide?
 * check apk size
