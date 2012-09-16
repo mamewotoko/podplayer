@@ -54,4 +54,5 @@
     <string name="app_podcastlist_title">Podcast List Editor</string>
     <string name="app_podcastpref_title">Podplayer Preferences</string>
     <string name="podcast_added">Podcast: {0} is added</string>
+    <string name="header_lastupdated">Last updated: </string>
 </resources>

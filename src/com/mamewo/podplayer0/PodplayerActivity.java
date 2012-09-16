@@ -182,7 +182,6 @@ public class PodplayerActivity
 			super(context, R.layout.episode_item);
 		}
 		
-		//TODO: optimize
 		@Override
 		public View getView (int position, View convertView, ViewGroup parent) {
 			View view;
@@ -281,9 +280,9 @@ public class PodplayerActivity
 			}
 			else {
 				DateFormat df = DateFormat.getDateTimeInstance();
+				//TODO: change format of date
 				state_.lastUpdated_ = df.format(new Date());
-				//TODO: localize
-				episodeListView_.setLastUpdated("Last updated: " + state_.lastUpdated_);
+				episodeListView_.setLastUpdated(getString(R.string.header_lastupdated) + state_.lastUpdated_);
 			}
 			setProgressBarIndeterminateVisibility(false);
 			episodeListView_.onRefreshComplete();

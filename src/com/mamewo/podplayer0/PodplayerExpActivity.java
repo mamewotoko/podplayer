@@ -282,7 +282,6 @@ public class PodplayerExpActivity
 					groupTo, childData, childLayout, childFrom, childTo);
 		}
 
-		//TODO: optimize
 		@Override
 		public View getChildView (int groupPosition, int childPosition, boolean isLastChild,
 								View convertView, ViewGroup parent)
