@@ -32,7 +32,6 @@ public class ScorePreference
 	protected void onBindDialogView(View view) {
 		super.onBindDialogView(view);
 		editText_ = (EditText) view.findViewById(R.id.double_pref_value);
-		//TODO: add attribute to preference.xml
 		dialogText_ = (TextView) view.findViewById(R.id.double_pref_text);
 		dialogText_.setText(R.string.pref_threshold_body);
 		minusButton_ = (Button) view.findViewById(R.id.double_minus_button);

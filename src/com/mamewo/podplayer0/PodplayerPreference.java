@@ -15,6 +15,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -44,7 +45,7 @@ public class PodplayerPreference
 	private Preference version_;
 	private Preference license_;
 	private Preference gestureTable_;
-	private Preference readTimeout_;
+	private ListPreference readTimeout_;
 	private Preference scoreThreshold_;
 	
 	@Override
@@ -63,7 +64,7 @@ public class PodplayerPreference
 		}
 		podcastList_ = findPreference("podcastlist");
 		podcastList_.setOnPreferenceClickListener(this);
-		readTimeout_ = findPreference("read_timeout");
+		readTimeout_ = (ListPreference)findPreference("read_timeout");
 		scoreThreshold_ = findPreference("gesture_score_threshold");
 		gestureTable_ = findPreference("gesture_list");
 		gestureTable_.setOnPreferenceClickListener(this);
@@ -175,16 +176,7 @@ public class PodplayerPreference
 	public void updateSummary(SharedPreferences pref, String key) {
 		boolean updateAll = "ALL".equals(key);
 		if (updateAll || "read_timeout".equals(key)) {
-			String strValue = pref.getString("read_timeout", "30");
-			if ("0".equals(strValue)) {
-				//TODO: localize
-				strValue = "None";
-			}
-			else {
-				//TODO: localize
-				strValue = strValue + " sec";
-			}
-			readTimeout_.setSummary(strValue);
+			readTimeout_.setSummary(readTimeout_.getEntry());
 		}
 		if (updateAll || "gesture_score_threshold".equals(key)) {
 			double threshold = Double.valueOf(pref.getString("gesture_score_threshold", "3.0"));
