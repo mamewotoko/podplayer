@@ -69,18 +69,18 @@ How to run Scirocco test
 
 TODO
 ----------
-* fix memory leak (bitmap problem)
-    * check heap size and class histogram
-* display playing icon in group of expandable list
-* improve UI to add podcast URL
-    * update main activity when setting is changed
-* add robotium, scirocco jar files and apache 2.0 license file
 * add / update test
     * add podcast, edit podcast (up, down, remove)
     * preference
     * gesture?
     * switch UI
     * landscape UI
+* fix memory leak (bitmap problem)
+    * check heap size and class histogram
+* display playing icon in group of expandable list
+* improve UI to add podcast URL
+    * update main activity when setting is changed
+* add robotium, scirocco jar files and apache 2.0 license file
 * fix bugs
     * when prepare error occurs, cursor moves to next episode
         * show network error message
@@ -94,8 +94,7 @@ TODO
 * support play previous item when KEYCODE_MEDIA_PREVIOUS button is pressed
 * optimize initialization of podplayer
     * setContentView takes long time
-* Autoload: load on create & when podcast list setting is changed
-* add close button to dialog
+* Autoload: load when create activity or when podcast list setting is changed
 * fix a bug that when only one episode is registered, list is in tap to refresh mode after loaded
 * use Google Reader or some other service to manage listened episode
 * add confirm dialog to open web site
