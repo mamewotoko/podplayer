@@ -41,7 +41,7 @@
     <string name="add">Add</string>
     <string name="notify_playing_podcast">Playing podcast</string>
     <string name="error_malformed_url">Malformed URL</string>
-    <string name="dialog_checking_podcast_url">Checking podcast URL ...</string>
+    <string name="dialog_checking_podcast_url">Checking podcast URL &#8230;</string>
     <string name="dialog_checking_podcast_url_body">To cancel, please touch outside of this dialog or press back button</string>
     <string name="msg_add_podcast_failed">failed</string>
     <string name="msg_add_podcast_cancelled">cancelled</string>
