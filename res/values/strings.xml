@@ -3,7 +3,7 @@
     <string name="app_name">Podplayer</string>
     <string name="pref_podcastlist_title">Podcast list</string>
     <string name="pref_pause_on_unplugged_title">Pause on unplugged</string>
-    <string name="pref_play_after_unplugged">Play after unplugged</string>
+    <string name="pref_play_after_unplugged">Continue playing after unplugged</string>
     <string name="pref_pause_on_unplugged">Pause on unplugged</string>
     <string name="pref_long_click_on">on</string>
     <string name="pref_long_click_off">off</string>
@@ -14,13 +14,13 @@
     <string name="pref_read_timeout">Read timeout</string>
     <string name="pref_appearance">Appearance</string>
     <string name="pref_use_expandable_list_ui">Use expandable list UI</string>
-    <string name="pref_pull_to_update_ui">pull to udpate UI</string>
+    <string name="pref_pull_to_update_ui">pull to update UI</string>
     <string name="pref_expandable_list_ui">expandable list UI</string>
     <string name="pref_use_expandable_list_ui">Use expandable list UI</string>
     <string name="pref_expand">expand</string>
     <string name="pref_collapse">collapse</string>
     <string name="pref_expand_list_in_default">Expand list in default</string>
-    <string name="pref_show_podcast_icon">Show podcast icon</string>
+    <string name="pref_show_podcast_icon">Display podcast icon</string>
     <string name="pref_gesture_category">Gesture</string>
     <string name="pref_icon_hide">hide</string>
     <string name="pref_icon_show">show</string>

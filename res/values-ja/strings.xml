@@ -9,7 +9,7 @@
     <string name="pref_long_click_off">無効</string>
     <string name="pref_enable_long_click">長押しで関連サイトを開く</string>
     <string name="pref_autoload_podcast">Podcastの自動読み込み</string>
-    <string name="pref_do_not_load_automatically">自動的に読み込まなない</string>
+    <string name="pref_do_not_load_automatically">自動的に読み込まない</string>
     <string name="pref_load_podcasts_when_app_starts">アプリ起動時に読み込む</string>
     <string name="pref_read_timeout">読み込みのタイムアウト</string>
     <string name="pref_appearance">UI</string>
