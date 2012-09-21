@@ -448,7 +448,7 @@ public class PodplayerExpActivity
 
 	//TODO: fetch current playing episode to update currentPodInfo
 	@Override
-	protected void onPodcastListChanged() {
+	protected void onPodcastListChanged(boolean start) {
 		if (null == filteredItemIndex_ || filteredItemIndex_.length != state_.podcastList_.size()) {
 			filteredItemIndex_ = new int[state_.podcastList_.size()];
 		}
@@ -491,7 +491,7 @@ public class PodplayerExpActivity
 		boolean doLoad = pref.getBoolean("load_on_start", PodplayerPreference.DEFAULT_LOAD_ON_START);
 		updateUI();
 		List<MusicInfo> playlist = state_.loadedEpisode_;
-		if(doLoad){
+		if(start && doLoad && playlist.isEmpty()) {
 			loadPodcast();
 		}
 		else if (null != playlist && ! playlist.isEmpty()) {

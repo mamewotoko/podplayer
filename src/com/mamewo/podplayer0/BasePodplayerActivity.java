@@ -48,7 +48,7 @@ abstract public class BasePodplayerActivity
 	final static
 	public String TAG = "podplayer";
 
-	abstract protected void onPodcastListChanged();
+	abstract protected void onPodcastListChanged(boolean start);
 
 	public void onCreate(Bundle savedInstanceState, ServiceConnection conn, Class<?> userClass) {
 		super.onCreate(savedInstanceState);
@@ -108,7 +108,6 @@ abstract public class BasePodplayerActivity
 			//TODO: add flag of restart
 			startActivity(intent);
 			finish();
-			//TODO: show toast like "switching activity"?
 		}
 	}
 	
@@ -171,7 +170,6 @@ abstract public class BasePodplayerActivity
 		syncPreference(pref, key);
 	}
 	
-	//should be called from onServiceConnected
 	protected void syncPreference(SharedPreferences pref, String key){
 		boolean updateAll = "ALL".equals(key);
 		if ("use_expandable_ui".equals(key)) {
@@ -201,10 +199,10 @@ abstract public class BasePodplayerActivity
 		if (updateAll || "show_podcast_icon".equals(key)) {
 			showPodcastIcon_ = pref.getBoolean("show_podcast_icon", PodplayerPreference.DEFAULT_SHOW_ICON);
 		}
-		//folowing block should be last one of this function
+		//following block should be last one of this function
 		if (updateAll || "podcastlist2".equals(key)) {
 			state_.podcastList_ = PodcastListPreference.loadSetting(this);
-			onPodcastListChanged();
+			onPodcastListChanged(updateAll);
 		}
 	}
 

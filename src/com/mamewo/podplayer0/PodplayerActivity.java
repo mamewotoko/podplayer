@@ -388,13 +388,13 @@ public class PodplayerActivity
 		player_ = ((PlayerService.LocalBinder)binder).getService();
 		player_.setOnStartMusicListener(this);
 		playButton_.setEnabled(true);
-		SharedPreferences pref =
-				PreferenceManager.getDefaultSharedPreferences(this);
 		//TODO: move to base?
 		List<MusicInfo> playlist = player_.getCurrentPlaylist();
 		if (null != playlist) {
 			state_.loadedEpisode_ = playlist;
 		}
+		SharedPreferences pref=
+				PreferenceManager.getDefaultSharedPreferences(this);
 		syncPreference(pref, "ALL");
 	}
 
@@ -405,7 +405,7 @@ public class PodplayerActivity
 	}
 
 	@Override
-	protected void onPodcastListChanged() {
+	protected void onPodcastListChanged(boolean start) {
 		Log.d(TAG, "onPodcastListChanged");
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
@@ -425,10 +425,12 @@ public class PodplayerActivity
 		selector_.setAdapter(adapter);
 		boolean doLoad = pref.getBoolean("load_on_start", PodplayerPreference.DEFAULT_LOAD_ON_START);
 		List<MusicInfo> playlist = state_.loadedEpisode_;
-		if (doLoad) {
+		if (start && doLoad && playlist.isEmpty()) {
+			//reload
 			episodeListView_.startRefresh();
 		}
 		else if (playlist != null && ! playlist.isEmpty()) {
+			//update list by loaded items
 			addEpisodeItems(playlist.toArray(new MusicInfo[0]));
 			episodeListView_.onRefreshComplete(state_.lastUpdated_);
 		}

@@ -96,7 +96,7 @@ TODO
     * setContentView takes long time
 * Autoload: load when create activity or when podcast list setting is changed
 * fix a bug that when only one episode is registered, list is in tap to refresh mode after loaded
-* use Google Reader or some other service to manage listened episode
+* add listened item list
 * add confirm dialog to open web site
 * play episode which is clicked while preparing other episode
 * sort episode by date
@@ -104,7 +104,7 @@ TODO
 * add cool widget to play episode
 * add slider to show current playing position
 * add Wifi only mode
-* acquire [wifi lock](http://developer.android.com/reference/android/net/wifi/WifiManager.WifiLock.html)
+    * acquire [wifi lock](http://developer.android.com/reference/android/net/wifi/WifiManager.WifiLock.html)
 * add error handling
 * support video cast??
 * write user guide?
