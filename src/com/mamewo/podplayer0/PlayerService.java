@@ -177,9 +177,11 @@ public class PlayerService
 	 */
 	public boolean playNth(int pos) {
 		if(currentPlaylist_ == null || currentPlaylist_.size() == 0){
+			Log.d(TAG, "playNth: currentPlaylist_: " + currentPlaylist_);
 			return false;
 		}
 		if(isPreparing_){
+			Log.d(TAG, "playNth: preparing");
 			return false;
 		}
 		isPausing_ = false;
@@ -357,6 +359,7 @@ public class PlayerService
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 		//TODO: show error message to GUI
 		MusicInfo info = currentPlaylist_.get(playCursor_);
+		isPreparing_ = false;
 		Log.i(TAG, "onError: what: " + what + " extra: " + extra + " url: " + info.url_);
 		stopMusic();
 		if (isNetworkConnected(this)) {
