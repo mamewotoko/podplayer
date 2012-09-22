@@ -351,13 +351,11 @@ public class PodplayerExpActivity
 	}
 	// end of callback methods
 
-	private void addEpisodeItems(MusicInfo[] values) {
+	private void addEpisodeItemsToAdapter(MusicInfo[] values) {
 		int groupMin = groupData_.size() - 1;
 		int groupMax = 0;
 		for (int i = 0; i < values.length; i++) {
 			MusicInfo info = values[i];
-			//TODO: remove?
-			state_.loadedEpisode_.add(info);
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("TITLE", info.title_);
 			map.put("DATA", info);
@@ -394,7 +392,10 @@ public class PodplayerExpActivity
 
 		@Override
 		protected void onProgressUpdate(MusicInfo... values){
-			addEpisodeItems(values);
+			for (MusicInfo info: values) {
+				state_.loadedEpisode_.add(info);
+			}
+			addEpisodeItemsToAdapter(values);
 		}
 
 		private void onFinished(){
@@ -496,7 +497,7 @@ public class PodplayerExpActivity
 		}
 		else if (null != playlist && ! playlist.isEmpty()) {
 			//use list
-			addEpisodeItems(playlist.toArray(new MusicInfo[0]));
+			addEpisodeItemsToAdapter(playlist.toArray(new MusicInfo[0]));
 		}
 	}
 }

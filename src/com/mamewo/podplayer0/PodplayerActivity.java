@@ -243,20 +243,21 @@ public class PodplayerActivity
 	}
 	// end of callback methods
 
-	private void addEpisodeItems(MusicInfo[] values) {
+	private void addEpisodeItemsToAdapter(MusicInfo[] values) {
 		for (int i = 0; i < values.length; i++) {
 			MusicInfo info = values[i];
-			state_.loadedEpisode_.add(info);
 			int selectorPos = selector_.getSelectedItemPosition();
 			if(selectorPos == 0) {
 				//ALL is selected
 				adapter_.add(info);
+				adapter_.notifyDataSetChanged();
 			}
 			else {
 				String selectedTitle = (String)selector_.getSelectedItem();
 				int index = podcastTitle2Index(selectedTitle);
 				if(index == info.index_) {
 					adapter_.add(info);
+					adapter_.notifyDataSetChanged();
 				}
 			}
 		}
@@ -271,7 +272,10 @@ public class PodplayerActivity
 
 		@Override
 		protected void onProgressUpdate(MusicInfo... values){
-			addEpisodeItems(values);
+			for (int i = 0; i < values.length; i++) {
+				state_.loadedEpisode_.add(values[i]);
+			}
+			addEpisodeItemsToAdapter(values);
 		}
 
 		private void onFinished() {
@@ -425,13 +429,15 @@ public class PodplayerActivity
 		selector_.setAdapter(adapter);
 		boolean doLoad = pref.getBoolean("load_on_start", PodplayerPreference.DEFAULT_LOAD_ON_START);
 		List<MusicInfo> playlist = state_.loadedEpisode_;
+		Log.d(TAG, "podcastListChanged: " + state_.loadedEpisode_.size());
 		if (start && doLoad && playlist.isEmpty()) {
 			//reload
 			episodeListView_.startRefresh();
 		}
 		else if (playlist != null && ! playlist.isEmpty()) {
 			//update list by loaded items
-			addEpisodeItems(playlist.toArray(new MusicInfo[0]));
+			adapter_.clear();
+			addEpisodeItemsToAdapter(playlist.toArray(new MusicInfo[0]));
 			episodeListView_.onRefreshComplete(state_.lastUpdated_);
 		}
 		updateUI();
