@@ -40,8 +40,8 @@
     <string name="add">追加</string>
     <string name="notify_playing_podcast">Podcast再生中</string>
     <string name="error_malformed_url">不正なURL</string>
-    <string name="dialog_checking_podcast_url">Podcast URLをチェックしています</string>
-    <string name="dialog_checking_podcast_url_body">中止するには、Backボタンを押すか、このダイアログの外をタッチしてください。</string>
+    <string name="dialog_checking_podcast_url">URLを検証中</string>
+    <string name="dialog_checking_podcast_url_body">中止するには、Backボタンを押すか、ダイアログの外をタッチしてください。</string>
     <string name="msg_add_podcast_failed">追加失敗しました</string>
     <string name="msg_add_podcast_cancelled">キャンセルされました</string>
     <string name="preference_menu">設定</string>
