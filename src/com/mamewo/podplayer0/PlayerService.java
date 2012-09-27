@@ -1,6 +1,7 @@
 package com.mamewo.podplayer0;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.widget.Toast;
 
 /**
  * @author Takashi Masuyama <mamewotoko@gmail.com>
@@ -65,6 +67,38 @@ public class PlayerService
 	private boolean isPausing_;
 	private ComponentName mediaButtonReceiver_;
 	private long previousPrevKeyTime_;
+
+	//error code
+	//error code from base/include/media/stagefright/MediaErrors.h
+	final static
+	private int MEDIA_ERROR_BASE = -1000;
+	final static
+	private int ERROR_ALREADY_CONNECTED = MEDIA_ERROR_BASE;
+	final static
+	private int ERROR_NOT_CONNECTED = MEDIA_ERROR_BASE - 1;
+	final static
+	private int ERROR_UNKNOWN_HOST = MEDIA_ERROR_BASE - 2;
+	final static
+	private int ERROR_CANNOT_CONNECT = MEDIA_ERROR_BASE - 3;
+	final static
+	private int ERROR_IO = MEDIA_ERROR_BASE - 4;
+	final static
+	private int ERROR_CONNECTION_LOST = MEDIA_ERROR_BASE - 5;
+	final static
+	private int ERROR_MALFORMED = MEDIA_ERROR_BASE - 7;
+	final static
+	private int ERROR_OUT_OF_RANGE = MEDIA_ERROR_BASE - 8;
+	final static
+	private int ERROR_BUFFER_TOO_SMALL = MEDIA_ERROR_BASE - 9;
+	final static
+	private int ERROR_UNSUPPORTED = MEDIA_ERROR_BASE - 10;
+	final static
+	private int ERROR_END_OF_STREAM = MEDIA_ERROR_BASE - 11;
+	// Not technically an error.
+	final static
+	private int INFO_FORMAT_CHANGED = MEDIA_ERROR_BASE - 12;
+	final static
+	private int INFO_DISCONTINUITY = MEDIA_ERROR_BASE - 13;
 
 	//TODO: check
 	static
@@ -354,13 +388,64 @@ public class PlayerService
 		playNext();
 	}
 
+	private String ErrorCode2String(int err) {
+		String result;
+		switch(err){
+		//TODO: localize?
+		case ERROR_ALREADY_CONNECTED:
+			result = "Already Connected";
+			break;
+		case ERROR_NOT_CONNECTED:
+			result = "Not Connected";
+			break;
+		case ERROR_UNKNOWN_HOST:
+			result = "Unknown Host";
+			break;
+		case ERROR_CANNOT_CONNECT:
+			result = "Cannot Connect";
+			break;
+		case ERROR_IO:
+			result = "I/O Error";
+			break;
+		case ERROR_CONNECTION_LOST:
+			result = "Connection Lost";
+			break;
+		case ERROR_MALFORMED:
+			result = "Malformed Media";
+			break;
+		case ERROR_OUT_OF_RANGE:
+			result = "Out of Range";
+			break;
+		case ERROR_BUFFER_TOO_SMALL:
+			result = "Buffer too Small";
+			break;
+		case ERROR_UNSUPPORTED:
+			result = "Unsupported Media";
+			break;
+		case ERROR_END_OF_STREAM:
+			result = "End of Stream";
+			break;
+		case INFO_FORMAT_CHANGED:
+			result = "Format Changed";
+			break;
+		case INFO_DISCONTINUITY:
+			result = "Info Discontinuity";
+			break;
+		default:
+			result = "Unknown error: " + err;
+			break;
+		}
+		return result;
+	}
+
 	// This method is not called when DRM error occurs
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 		//TODO: show error message to GUI
 		MusicInfo info = currentPlaylist_.get(playCursor_);
 		isPreparing_ = false;
-		Log.i(TAG, "onError: what: " + what + " extra: " + extra + " url: " + info.url_);
+		Log.i(TAG, "onError: what: " + what + " error code: " + ErrorCode2String(extra) + " url: " + info.url_);
+		showMessage(ErrorCode2String(extra));
 		stopMusic();
 		if (isNetworkConnected(this)) {
 			playNext();
@@ -430,5 +515,9 @@ public class PlayerService
 			link_ = link;
 			index_ = index;
 		}
+	}
+	
+	public void showMessage(String message) {
+		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 	}
 }

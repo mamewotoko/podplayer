@@ -342,9 +342,9 @@ public class PodplayerActivity
 	//Filter is changed
 	@Override
 	public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
-		//0: all
 		adapter_.clear();
 		if(pos == 0){
+			//0: all
 			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
 				MusicInfo info = state_.loadedEpisode_.get(i);
 				adapter_.add(info);
