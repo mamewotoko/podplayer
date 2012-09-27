@@ -70,10 +70,9 @@ How to run Scirocco test
 TODO
 ----------
 * add / update test
-    * add podcast, edit podcast (up, down, remove)
+    * edit podcast order (up, down, remove)
     * preference
     * gesture?
-    * switch UI
     * landscape UI
 * fix memory leak (bitmap problem)
     * check heap size and class histogram
