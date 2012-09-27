@@ -12,7 +12,7 @@ import android.util.Log;
 import asia.sonix.scirocco.SciroccoSolo;
 
 public class MainActivityTest
-extends ActivityInstrumentationTestCase2<MainActivity>
+	extends ActivityInstrumentationTestCase2<MainActivity>
 {
 	private SciroccoSolo solo_;
 	static final
