@@ -27,10 +27,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -47,6 +51,7 @@ import android.widget.Toast;
 import android.widget.CheckBox;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 
@@ -81,6 +86,8 @@ public class PodcastListPreference
 	static final
 	public int DOWN_OPERATION = 2;
 	private Bundle bundle_;
+	final static
+	private String PODCAST_SITE_URL = "http://www002.upp.so-net.ne.jp/mamewo/podcast.html";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -136,6 +143,29 @@ public class PodcastListPreference
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		boolean prevValue = pref.getBoolean("podcastlist2", true);
 		pref.edit().putBoolean("podcastlist2", !prevValue).commit();
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.podcastlistmenu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		boolean handled = false;
+		switch(item.getItemId()) {
+		case R.id.podcast_page_menu:
+			Intent i =
+				new Intent(Intent.ACTION_VIEW, Uri.parse(PODCAST_SITE_URL));
+			startActivity(new Intent(i));
+			handled = true;
+			break;
+		default:
+			break;
+		}
+		return handled;
 	}
 	
 	@Override

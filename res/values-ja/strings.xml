@@ -54,4 +54,5 @@
     <string name="app_podcastpref_title">Podplayer設定</string>
     <string name="podcast_added">{0} を追加しました</string>
     <string name="header_lastupdated">最終更新: </string>
+    <string name="podcast_webpage_menu">Podcastサイトを開く</string>
 </resources>

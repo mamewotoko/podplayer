@@ -57,12 +57,15 @@ public class PodcastListPreferenceTest
 		solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
 		solo_.waitForDialogToClose(20000);
 		Assert.assertEquals(prevCount+1, adapter.getCount());
-//		PodcastInfo info = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
-//		Log.d(TAG, "add succ: " + info.title_);
-//		Assert.assertEquals("check url", url, info.url_);
+		PodcastInfo info = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
+		Log.d(TAG, "add succ: " + info.title_);
+		Assert.assertEquals("check url", url, info.url_.toString());
 	}
 	
 //	public void testDelete() {
-//		
+//	}
+//	public void testUp() {
+//	}
+//	public void testDown() {
 //	}
 }

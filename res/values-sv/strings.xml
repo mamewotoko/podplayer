@@ -54,4 +54,5 @@
     <string name="app_podcastpref_title">Podplayer föredrar</string>
     <string name="podcast_added">Podcast: {0} läggs</string>
     <string name="header_lastupdated">Senast uppdaterad: </string>
+    <string name="podcast_webpage_menu">Öppna podcast webbplats</string>
 </resources>
