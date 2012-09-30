@@ -15,7 +15,7 @@
     the package of com.mamewo.podplayer0.  To run the tests use the command:
     "adb shell am instrument -w com.mamewo.podplayer0.tests/android.test.InstrumentationTestRunner"
     -->
-    <instrumentation android:name="android.test.InstrumentationTestRunner"
+    <instrumentation android:name="com.neenbedankt.android.test.InstrumentationTestRunner"
                      android:targetPackage="com.mamewo.podplayer0"
                      android:label="Tests for com.mamewo.podplayer0"/>
 </manifest>

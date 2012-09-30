@@ -43,10 +43,15 @@ public class PodcastListPreferenceTest
 	
 	public void testAddFail() {
 		ListAdapter adapter = solo_.getCurrentListViews().get(0).getAdapter();
+		PodcastInfo prevInfo = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
+		String url = "http://www.google.co.jp/";
 		int prevCount = adapter.getCount();
-		solo_.getEditText(0).setText("http://www.google.co.jp/");
-		solo_.sleep(6000);
+		solo_.enterText(solo_.getEditText(0), url);
+		solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
+		solo_.waitForDialogToClose(10000);
 		Assert.assertEquals(prevCount, adapter.getCount());
+		PodcastInfo info = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
+		Assert.assertEquals("check url", prevInfo, info);
 	}
 
 	public void testAddSuccess() {

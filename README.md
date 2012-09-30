@@ -79,7 +79,6 @@ TODO
 * display playing icon in group of expandable list
 * improve UI to add podcast URL
     * update main activity when setting is changed
-* add robotium, scirocco jar files and apache 2.0 license file
 * fix bugs
     * when prepare error occurs, cursor moves to next episode
         * show network error message
@@ -114,16 +113,19 @@ License
 ----------
 * podplayer: Copyright (c) 2012 Takashi Masuyama. All rights reserved. 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
+
 * podplayer uses the following software which is licensed under the 
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) 
 Copyright (c) 2011 [Johan Nilsson](http://markupartist.com) 
 https://github.com/johannilsson/android-pulltorefresh
 
+* podtest uses nbandroid-utils to save JUnit test result as XML
+http://code.google.com/p/nbandroid-utils/wiki/InstrumentationTestRunner
+
 Keywords
 ----------
-Android, MediaPlayer, Podcast, AsyncTask, PullToRefresh, Gesture
+Android, MediaPlayer, Podcast, AsyncTask, PullToRefresh, Gesture, JUnit, Robotium
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
 http://www002.upp.so-net.ne.jp/mamewo/
-
