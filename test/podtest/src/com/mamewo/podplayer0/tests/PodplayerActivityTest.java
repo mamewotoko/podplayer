@@ -85,8 +85,8 @@ public class PodplayerActivityTest
 		Log.d(TAG, "testPlay: click play button");
 		solo_.clickOnView(playButton);
 		solo_.sleep(500);
-		//		solo_.takeScreenShot();
 		solo_.sleep(10000);
+		solo_.takeScreenShot();
 		assertTrue(solo_.isToggleButtonChecked(0));
 	}
 
