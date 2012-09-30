@@ -16,7 +16,7 @@ $ADB shell am instrument -w \
   com.mamewo.podplayer0.tests/$RUNNER
 
 $ADB pull $COVERAGE_FILE bin/coverage.ec
-$ADB pull $REPORT_FILE .
+$ADB pull $REPORT_FILE TEST-all.xml
 java -cp $ANDROID_HOME/tools/lib/emma.jar emma report -r html -in ../../bin/coverage.em,bin/coverage.ec -sp ../../src
 rm -rf bin/coverage
 if [ -d coverage ]; then
