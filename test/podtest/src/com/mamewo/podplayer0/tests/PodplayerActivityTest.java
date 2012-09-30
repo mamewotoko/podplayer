@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 import asia.sonix.scirocco.SciroccoSolo;
 
 /**
@@ -84,10 +85,20 @@ public class PodplayerActivityTest
 		View playButton = solo_.getView(R.id.play_button);
 		Log.d(TAG, "testPlay: click play button");
 		solo_.clickOnView(playButton);
-		solo_.sleep(500);
 		solo_.sleep(10000);
 		solo_.takeScreenShot();
-		assertTrue(solo_.isToggleButtonChecked(0));
+		assertTrue(((ToggleButton)playButton).isChecked());
+		//TODO: check play icon
+	}
+	
+	public void testPlayItem() throws Exception {
+		solo_.sleep(4000);
+		solo_.clickInList(2);
+		solo_.sleep(10000);
+		solo_.takeScreenShot();
+		View playButton = solo_.getView(R.id.play_button);
+		//umm: solo_.isToggled does not work... why?
+		assertTrue(((ToggleButton)playButton).isChecked());
 	}
 
 	public void testFilter() {
@@ -151,7 +162,8 @@ public class PodplayerActivityTest
 		solo_.clickOnView(plusButton);
 		String afterString = edit.getText().toString();
 		double diff = Double.valueOf(afterString) - Double.valueOf(beforeString) - 0.1;
-		assertTrue(diff >= 0.0 && diff < 0.0001);
+		Log.d(TAG, "diff:  " + diff);
+		assertTrue(Math.abs(diff) < 0.0001);
 		solo_.clickOnButton("OK");
 		//TODO: check summary and pref value
 	}
@@ -167,7 +179,7 @@ public class PodplayerActivityTest
 		solo_.clickOnView(minusButton);
 		String afterString = edit.getText().toString();
 		double diff = Double.valueOf(beforeString) - Double.valueOf(afterString) - 0.1;
-		assertTrue(diff >= 0.0 && diff < 0.0001);
+		assertTrue(Math.abs(diff) < 0.0001);
 		solo_.clickOnButton("Cancel");
 		//TODO: check summary and pref value
 	}

@@ -7,6 +7,7 @@ import com.mamewo.podplayer0.R;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.view.View;
+import android.widget.ToggleButton;
 import asia.sonix.scirocco.SciroccoSolo;
 
 /**
@@ -57,10 +58,9 @@ extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
 		View playButton = solo_.getView(R.id.play_button);
 		Log.d(TAG, "testPlay: click play button");
 		solo_.clickOnView(playButton);
-		solo_.sleep(500);
-		//		solo_.takeScreenShot();
 		solo_.sleep(10000);
-		assertTrue(solo_.isToggleButtonChecked(0));
+		solo_.takeScreenShot();
+		assertTrue(((ToggleButton)playButton).isChecked());
 	}
 
 	public void testFinish() {
