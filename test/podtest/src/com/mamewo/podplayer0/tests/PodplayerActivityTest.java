@@ -86,19 +86,21 @@ public class PodplayerActivityTest
 		Log.d(TAG, "testPlay: click play button");
 		solo_.clickOnView(playButton);
 		solo_.sleep(10000);
-		solo_.takeScreenShot();
+		//solo_.takeScreenShot();
 		assertTrue(((ToggleButton)playButton).isChecked());
-		//TODO: check play icon
+		solo_.clickOnView(playButton);
 	}
 	
 	public void testPlayItem() throws Exception {
 		solo_.sleep(4000);
 		solo_.clickInList(2);
 		solo_.sleep(10000);
-		solo_.takeScreenShot();
+		//solo_.takeScreenShot();
 		View playButton = solo_.getView(R.id.play_button);
 		//umm: solo_.isToggled does not work... why?
 		assertTrue(((ToggleButton)playButton).isChecked());
+		solo_.clickOnView(playButton);
+		solo_.sleep(500);
 	}
 
 	public void testFilter() {
@@ -214,30 +216,27 @@ public class PodplayerActivityTest
 	}
 
 	//-----------------------
-	public void testPlayingScreenshot() throws Exception {
-		solo_.sleep(500);
-		View playButton = solo_.getView(R.id.play_button);
-		solo_.clickOnView(playButton);
-		solo_.sleep(1000);
-//		solo_.takeScreenShot();
-	}
-	
 	public void testMainScreenshot() throws Exception {
 		solo_.sleep(500);
 		View playButton = solo_.getView(R.id.play_button);
 		solo_.clickOnView(playButton);
 		solo_.sendKey(Solo.MENU);
-		solo_.sleep(500);
-//		solo_.takeScreenShot();
+		solo_.sleep(1000);
+		//solo_.takeScreenShot();
+		solo_.sendKey(Solo.MENU);
+		solo_.sleep(300);
+		solo_.clickOnView(playButton);
+		solo_.sleep(300);
+		assertFalse(((ToggleButton)playButton).isChecked());
 	}
 	
 	public void testPreferenceScreenshot() throws Exception {
 		solo_.sleep(500);
 		solo_.clickOnMenuItem("Preference");
 		solo_.sleep(1000);
-//		solo_.takeScreenShot();
+		//solo_.takeScreenShot();
 		solo_.scrollDown();
 		solo_.sleep(500);
-//		solo_.takeScreenShot();
+		//solo_.takeScreenShot();
 	}
 }

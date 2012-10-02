@@ -21,7 +21,7 @@ import asia.sonix.scirocco.SciroccoSolo;
  * com.mamewo.podplayer0.tests/android.test.InstrumentationTestRunner
  */
 public class PodplayerExpActivityTest
-extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
+	extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
 {
 	protected SciroccoSolo solo_;
 	final static
@@ -58,9 +58,12 @@ extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
 		View playButton = solo_.getView(R.id.play_button);
 		Log.d(TAG, "testPlay: click play button");
 		solo_.clickOnView(playButton);
-		solo_.sleep(10000);
-		solo_.takeScreenShot();
+		solo_.sleep(5000);
+		//solo_.takeScreenShot();
 		assertTrue(((ToggleButton)playButton).isChecked());
+		//pause for next test
+		solo_.clickOnView(playButton);
+		solo_.sleep(1000);
 	}
 
 	public void testFinish() {
@@ -97,20 +100,16 @@ extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
 	//TODO: expand/collapse prefrence test
 	
 	//-----------------------
-	public void testPlayingScreenshot() throws Exception {
-		solo_.sleep(500);
-		View playButton = solo_.getView(R.id.play_button);
-		solo_.clickOnView(playButton);
-		solo_.sleep(1000);
-//		solo_.takeScreenShot();
-	}
 	
 	public void testMainScreenshot() throws Exception {
 		solo_.sleep(500);
 		View playButton = solo_.getView(R.id.play_button);
 		solo_.clickOnView(playButton);
 		solo_.sendKey(Solo.MENU);
-		solo_.sleep(500);
-//		solo_.takeScreenShot();
+		solo_.sleep(200);
+		//solo_.takeScreenShot();
+		solo_.sendKey(Solo.MENU);
+		solo_.sleep(200);
+		solo_.clickOnView(playButton);
 	}
 }
