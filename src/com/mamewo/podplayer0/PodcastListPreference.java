@@ -72,6 +72,8 @@ public class PodcastListPreference
 	private Dialog dialog_;
 	private PodcastInfoAdapter adapter_;
 	private ListView podcastListView_;
+	private Bundle bundle_;
+	private boolean isChanged_ = false;
 	static final
 	private String CONFIG_FILENAME = "podcast.json";
 	static final
@@ -85,7 +87,6 @@ public class PodcastListPreference
 	public int UP_OPERATION = 1;
 	static final
 	public int DOWN_OPERATION = 2;
-	private Bundle bundle_;
 	final static
 	private String PODCAST_SITE_URL = "http://www002.upp.so-net.ne.jp/mamewo/podcast.html";
 	
@@ -128,6 +129,12 @@ public class PodcastListPreference
 	}
 
 	@Override
+	public void onStart() {
+		super.onStart();
+		isChanged_ = false;
+	}
+	
+	@Override
 	public void onStop() {
 		super.onStop();
 		try {
@@ -140,9 +147,11 @@ public class PodcastListPreference
 			Log.d(TAG, "failed to save podcast list setting");
 		}
 		//Ummm..: to call preference listener
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean prevValue = pref.getBoolean("podcastlist2", true);
-		pref.edit().putBoolean("podcastlist2", !prevValue).commit();
+		if (isChanged_) {
+			SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+			boolean prevValue = pref.getBoolean("podcastlist2", true);
+			pref.edit().putBoolean("podcastlist2", !prevValue).commit();
+		}
 	}
 	
 	@Override
@@ -510,6 +519,7 @@ public class PodcastListPreference
 			Log.d(TAG, "onClick REMOVE: " + pos + " " + info.title_);
 			adapter_.remove(info);
 			adapter_.notifyDataSetChanged();
+			isChanged_ = true;
 			break;
 		case UP_OPERATION:
 			Log.d(TAG, "dialog.onClick UP");
@@ -519,6 +529,7 @@ public class PodcastListPreference
 			adapter_.remove(info);
 			adapter_.insert(info, pos - 1);
 			adapter_.notifyDataSetChanged();
+			isChanged_ = true;
 			break;
 		case DOWN_OPERATION:
 			Log.d(TAG, "dialog.onClick DOWN");
@@ -528,6 +539,7 @@ public class PodcastListPreference
 			adapter_.remove(info);
 			adapter_.insert(info, pos + 1);
 			adapter_.notifyDataSetChanged();
+			isChanged_ = true;
 			break;
 		default:
 			break;
@@ -541,5 +553,7 @@ public class PodcastListPreference
 		PodcastInfo info = (PodcastInfo) adapter.getItemAtPosition(pos);
 		info.enabled_ = !info.enabled_;
 		checkbox.setChecked(info.enabled_);
+		//TODO: check total state
+		isChanged_ = true;
 	}
 }

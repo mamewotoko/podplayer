@@ -492,7 +492,7 @@ public class PodplayerExpActivity
 		boolean doLoad = pref.getBoolean("load_on_start", PodplayerPreference.DEFAULT_LOAD_ON_START);
 		updateUI();
 		List<MusicInfo> playlist = state_.loadedEpisode_;
-		if(start && doLoad && playlist.isEmpty()) {
+		if (!start || doLoad) {
 			loadPodcast();
 		}
 		else if (null != playlist && ! playlist.isEmpty()) {

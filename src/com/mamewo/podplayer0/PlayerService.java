@@ -3,8 +3,6 @@ package com.mamewo.podplayer0;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
-
-
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -66,7 +64,8 @@ public class PlayerService
 	private boolean isPausing_;
 	private ComponentName mediaButtonReceiver_;
 	private long previousPrevKeyTime_;
-
+	private MusicInfo currentPlaying_;
+	
 	//error code
 	//error code from base/include/media/stagefright/MediaErrors.h
 	final static
@@ -185,10 +184,10 @@ public class PlayerService
 	 * @return current music info
 	 */
 	public MusicInfo getCurrentPodInfo(){
-		if(null == currentPlaylist_ || playCursor_ >= currentPlaylist_.size()){
-			return null;
+		if (null != currentPlaylist_) {
+			return currentPlaying_;
 		}
-		return currentPlaylist_.get(playCursor_);
+		return null;
 	}
 	
 	public boolean playNext() {
@@ -258,11 +257,11 @@ public class PlayerService
 			Log.i(TAG, "playMusic: playlist is null");
 			return false;
 		}
-		MusicInfo info = currentPlaylist_.get(playCursor_);
-		Log.d(TAG, "playMusic: " + playCursor_ + ": " + info.url_);
+		currentPlaying_ = currentPlaylist_.get(playCursor_);
+		Log.d(TAG, "playMusic: " + playCursor_ + ": " + currentPlaying_.url_);
 		try {
 			player_.reset();
-			player_.setDataSource(info.url_);
+			player_.setDataSource(currentPlaying_.url_);
 			player_.prepareAsync();
 			isPreparing_ = true;
 			isPausing_ = false;
@@ -271,9 +270,9 @@ public class PlayerService
 			return false;
 		}
 		if(null != listener_){
-			listener_.onStartLoadingMusic(info);
+			listener_.onStartLoadingMusic(currentPlaying_);
 		}
-		startForeground(getString(R.string.notify_playing_podcast), info.title_);
+		startForeground(getString(R.string.notify_playing_podcast), currentPlaying_.title_);
 		return true;
 	}
 	
@@ -320,6 +319,7 @@ public class PlayerService
 	public void onCreate(){
 		super.onCreate();
 		currentPlaylist_ = null;
+		currentPlaying_ = null;
 		listener_ = null;
 		player_ = new MediaPlayer();
 		player_.setOnCompletionListener(this);
@@ -441,7 +441,7 @@ public class PlayerService
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 		//TODO: show error message to GUI
-		MusicInfo info = currentPlaylist_.get(playCursor_);
+		MusicInfo info = currentPlaying_;
 		isPreparing_ = false;
 		Log.i(TAG, "onError: what: " + what + " error code: " + ErrorCode2String(extra) + " url: " + info.url_);
 		showMessage(ErrorCode2String(extra));

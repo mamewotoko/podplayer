@@ -430,7 +430,7 @@ public class PodplayerActivity
 		boolean doLoad = pref.getBoolean("load_on_start", PodplayerPreference.DEFAULT_LOAD_ON_START);
 		List<MusicInfo> playlist = state_.loadedEpisode_;
 		Log.d(TAG, "podcastListChanged: " + state_.loadedEpisode_.size());
-		if (start && doLoad && playlist.isEmpty()) {
+		if (!start || doLoad) {
 			//reload
 			episodeListView_.startRefresh();
 		}
