@@ -88,6 +88,7 @@ TODO
     * to reduce reload of podcast
     * show description of playing episode
     * cache podcast icon
+        * avoid loading podcast when UI is switched 
     * save podcast list and updated time as state
 * support play previous item when KEYCODE_MEDIA_PREVIOUS button is pressed
 * optimize initialization of podplayer
@@ -104,7 +105,6 @@ TODO
 * add Wifi only mode
     * acquire [wifi lock](http://developer.android.com/reference/android/net/wifi/WifiManager.WifiLock.html)
 * add error handling
-* support video cast??
 * write user guide?
 * check apk size
 * MainActivityTest, PodcastActivity then testAbortReload blocks...
