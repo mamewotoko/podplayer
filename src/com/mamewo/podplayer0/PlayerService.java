@@ -122,7 +122,7 @@ public class PlayerService
 			SharedPreferences pref =
 					PreferenceManager.getDefaultSharedPreferences(this);
 			boolean pause = pref.getBoolean("pause_on_unplugged", PodplayerPreference.DEFAULT_PAUSE_ON_UNPLUGGED);
-			if (pause && player_.isPlaying()) {
+			if (pause && null != player_ && player_.isPlaying()) {
 				pauseMusic();
 			}
 		}
