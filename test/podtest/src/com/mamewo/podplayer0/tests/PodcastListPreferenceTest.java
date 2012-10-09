@@ -67,10 +67,33 @@ public class PodcastListPreferenceTest
 		Assert.assertEquals("check url", url, info.url_.toString());
 	}
 	
-//	public void testDelete() {
-//	}
-//	public void testUp() {
-//	}
-//	public void testDown() {
-//	}
+	public void testDelete3() {
+		ListAdapter adapter = solo_.getCurrentListViews().get(0).getAdapter();
+		int count = adapter.getCount();
+		solo_.clickLongInList(3);
+		solo_.sleep(200);
+		solo_.clickInList(PodcastListPreference.REMOVE_OPERATION+1);
+		solo_.sleep(200);
+		Assert.assertEquals(count-1, adapter.getCount());
+	}
+	
+	public void testUp() {
+		ListAdapter adapter = solo_.getCurrentListViews().get(0).getAdapter();
+		PodcastInfo info = (PodcastInfo)adapter.getItem(1);
+		solo_.clickLongInList(2);
+		solo_.sleep(200);
+		solo_.clickInList(PodcastListPreference.UP_OPERATION+1);
+		solo_.sleep(200);
+		Assert.assertEquals(info, adapter.getItem(0));
+	}
+	
+	public void testDown() {
+		ListAdapter adapter = solo_.getCurrentListViews().get(0).getAdapter();
+		PodcastInfo info = (PodcastInfo)adapter.getItem(0);
+		solo_.clickLongInList(1);
+		solo_.sleep(200);
+		solo_.clickInList(PodcastListPreference.DOWN_OPERATION+1);
+		solo_.sleep(200);
+		Assert.assertEquals(info, adapter.getItem(1));
+	}
 }

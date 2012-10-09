@@ -70,7 +70,6 @@ How to run Scirocco test
 TODO
 ----------
 * add / update test
-    * edit podcast order (up, down, remove)
     * preference
     * gesture?
     * landscape UI
