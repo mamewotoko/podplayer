@@ -115,6 +115,9 @@ public class PlayerService
 	public int onStartCommand(Intent intent, int flags, int startId){
 		String action = intent.getAction();
 		Log.d(TAG, "onStartCommand: " + action);
+		if (null == action) {
+			return START_STICKY;
+		}
 		if (STOP_MUSIC_ACTION.equals(action)) {
 			stopMusic();
 		}
