@@ -80,6 +80,7 @@ TODO
     * update main activity when setting is changed
 * fix bugs
     * when prepare error occurs, cursor moves to next episode
+        * stop playing
         * show network error message
 * reset playing position after podcast selection is changed
 * use database to manage loaded episodes
