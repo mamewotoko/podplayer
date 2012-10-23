@@ -65,6 +65,14 @@ public class PlayerService
 	private ComponentName mediaButtonReceiver_;
 	private long previousPrevKeyTime_;
 	private MusicInfo currentPlaying_;
+	private long lastErrorTime_;
+	private long lastErrorCount_;
+	
+	//msec
+	final static
+	private int LAST_ERROR_TIME_LIMIT = 10000;
+	final static
+	private int LAST_ERROR_COUNT_LIMIT = 5;
 	
 	//error code
 	//error code from base/include/media/stagefright/MediaErrors.h
@@ -97,7 +105,7 @@ public class PlayerService
 	private int INFO_FORMAT_CHANGED = MEDIA_ERROR_BASE - 12;
 	final static
 	private int INFO_DISCONTINUITY = MEDIA_ERROR_BASE - 13;
-
+	
 	//TODO: check
 	static
 	public boolean isNetworkConnected(Context context) {
@@ -111,6 +119,11 @@ public class PlayerService
 		currentPlaylist_ = playlist;
 	}
 
+	private void resetErrorCount() {
+		lastErrorTime_ = 0;
+		lastErrorCount_ = 0;
+	}
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
 		String action = intent.getAction();
@@ -321,6 +334,9 @@ public class PlayerService
 	@Override
 	public void onCreate(){
 		super.onCreate();
+		lastErrorTime_ = 0;
+		lastErrorCount_ = 0;
+
 		currentPlaylist_ = null;
 		currentPlaying_ = null;
 		listener_ = null;
@@ -379,6 +395,7 @@ public class PlayerService
 			stopOnPrepared_ = false;
 			return;
 		}
+		resetErrorCount();
 		player_.start();
 		if(null != listener_){
 			listener_.onStartMusic(currentPlaylist_.get(playCursor_));
@@ -443,13 +460,23 @@ public class PlayerService
 	// This method is not called when DRM error occurs
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra) {
-		//TODO: show error message to GUI
+		String code = ErrorCode2String(extra);
 		MusicInfo info = currentPlaying_;
+		Log.i(TAG, "onError: what: " + what + " error code: " + code + " url: " + info.url_ + " errorCount: " + lastErrorCount_);
+		//TODO: show error message to GUI
+		if (lastErrorCount_ >= LAST_ERROR_COUNT_LIMIT) {
+			return true;
+		}
 		isPreparing_ = false;
-		Log.i(TAG, "onError: what: " + what + " error code: " + ErrorCode2String(extra) + " url: " + info.url_);
-		showMessage(ErrorCode2String(extra));
+		//TODO: localize
+		showMessage("Network error: " + code);
 		stopMusic();
-		if (isNetworkConnected(this)) {
+		long current = System.currentTimeMillis();
+		//10 sec
+		if (current - lastErrorTime_ < LAST_ERROR_TIME_LIMIT) {
+			lastErrorCount_++;
+		}
+		if (lastErrorCount_ < LAST_ERROR_COUNT_LIMIT && isNetworkConnected(this)) {
 			playNext();
 		}
 		return true;
