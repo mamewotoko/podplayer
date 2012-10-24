@@ -195,7 +195,7 @@ public class PodplayerActivity
 			TextView titleView = (TextView)view.findViewById(R.id.episode_title);
 			TextView timeView = (TextView)view.findViewById(R.id.episode_time);
 			titleView.setText(info.title_);
-			timeView.setText(info.pubdate_);
+			timeView.setText(info.getPubdateString());
 			ImageView stateIcon = (ImageView)view.findViewById(R.id.play_icon);
 			ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
 			MusicInfo current = player_.getCurrentPodInfo();

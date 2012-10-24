@@ -73,6 +73,7 @@ TODO
     * preference
     * gesture?
     * landscape UI
+* define smoke test and full test. smoke test can be run with SmokeTestSuiteBuilder.
 * fix memory leak (bitmap problem)
     * check heap size and class histogram
 * display playing icon in group of expandable list
@@ -81,7 +82,6 @@ TODO
 * fix bugs
     * when prepare error occurs, cursor moves to next episode
         * stop playing
-        * show network error message
 * reset playing position after podcast selection is changed
 * use database to manage loaded episodes
     * display mark which is already played, new item etc...
@@ -102,12 +102,12 @@ TODO
 * add episode search UI
 * add cool widget to play episode
 * add slider to show current playing position
-* add Wifi only mode
-    * acquire [wifi lock](http://developer.android.com/reference/android/net/wifi/WifiManager.WifiLock.html)
 * add error handling
 * write user guide?
 * check apk size
 * MainActivityTest, PodcastActivity then testAbortReload blocks...
+* add Wifi only mode
+    * acquire [wifi lock](http://developer.android.com/reference/android/net/wifi/WifiManager.WifiLock.html)
 
 License
 ----------
