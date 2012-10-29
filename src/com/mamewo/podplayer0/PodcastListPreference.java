@@ -349,6 +349,8 @@ public class PodcastListPreference
 			String msg =
 					MessageFormat.format(getString(R.string.podcast_added), info.title_);
 			showMessage(msg);
+			urlEdit_.setText("");
+			urlEdit_.clearFocus();
 		}
 		
 		@Override
