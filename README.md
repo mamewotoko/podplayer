@@ -69,6 +69,8 @@ How to run Scirocco test
 
 TODO
 ----------
+* cache podcast icon
+    * avoid loading podcast when UI is switched 
 * add / update test
     * preference
     * gesture?
@@ -87,8 +89,6 @@ TODO
     * display mark which is already played, new item etc...
     * to reduce reload of podcast
     * show description of playing episode
-    * cache podcast icon
-        * avoid loading podcast when UI is switched 
     * save podcast list and updated time as state
 * support play previous item when KEYCODE_MEDIA_PREVIOUS button is pressed
 * optimize initialization of podplayer

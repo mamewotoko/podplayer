@@ -131,6 +131,11 @@ public class PlayerService
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
+		//null intent is passed when service is restarted after killed on Android 4.0
+		if (null == intent) {
+			Log.d(TAG, "onStartCommand: intent is null");
+			return START_STICKY;
+		}
 		String action = intent.getAction();
 		Log.d(TAG, "onStartCommand: " + action);
 		if (null == action) {
