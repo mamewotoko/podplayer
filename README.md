@@ -71,6 +71,7 @@ TODO
 ----------
 * cache podcast icon
     * avoid loading podcast when UI is switched 
+* change notification icon for Android4.0
 * add / update test
     * preference
     * gesture?
