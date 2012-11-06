@@ -408,7 +408,7 @@ public class PlayerService
 		resetErrorCount();
 		player_.start();
 		if(null != listener_){
-			listener_.onStartMusic(currentPlaylist_.get(playCursor_));
+			listener_.onStartMusic(currentPlaying_);
 		}
 	}
 
