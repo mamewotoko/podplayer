@@ -389,7 +389,7 @@ public class PlayerService
 	private void startForeground(String title, String description) {
 		String podTitle = getString(R.string.notify_playing_podcast);
 		Notification note =
-				new Notification(R.drawable.ic_launcher, podTitle, 0);
+				new Notification(R.drawable.ic_status, podTitle, 0);
 		Intent ni = new Intent(this, USER_CLASS);
 		PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
 		note.setLatestEventInfo(this, title, description, npi);
