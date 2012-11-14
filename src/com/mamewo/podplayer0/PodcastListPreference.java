@@ -22,6 +22,13 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import android.database.Cursor;
+
+import com.mamewo.podplayer0.db.Podcast;
+import com.mamewo.podplayer0.db.Podcast.PodcastColumns;
+import com.mamewo.podplayer0.db.PodcastProvider;
+import android.widget.SimpleCursorAdapter;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -60,8 +67,8 @@ public class PodcastListPreference
 	implements OnClickListener,
 	OnItemClickListener,
 	OnItemLongClickListener,
-	DialogInterface.OnClickListener,
-	OnCancelListener
+			   DialogInterface.OnClickListener,
+			   OnCancelListener
 {
 	final static
 	private String TAG = "podplayer";
@@ -70,7 +77,8 @@ public class PodcastListPreference
 	private EditText urlEdit_;
 	private CheckTask task_;
 	private Dialog dialog_;
-	private PodcastInfoAdapter adapter_;
+	//private PodcastInfoAdapter adapter_;
+	public SimpleCursorAdapter adapter_;
 	private ListView podcastListView_;
 	private Bundle bundle_;
 	private boolean isChanged_ = false;
@@ -89,7 +97,9 @@ public class PodcastListPreference
 	public int DOWN_OPERATION = 2;
 	final static
 	private String PODCAST_SITE_URL = "http://www002.upp.so-net.ne.jp/mamewo/podcast.html";
-	
+	final static
+		private String[] PROJECTION = new String[] { PodcastColumns._ID, PodcastColumns.TITLE };
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -99,11 +109,19 @@ public class PodcastListPreference
 		addButton_.setOnClickListener(this);
 		urlEdit_ = (EditText) findViewById(R.id.url_edit);
 		List<PodcastInfo> list = loadSetting(this);
-		adapter_ = new PodcastInfoAdapter(this, list);
 		podcastListView_ = (ListView) findViewById(R.id.podlist);
+		
+		//adapter_ = new PodcastInfoAdapter(this, list);
+		// podcastListView_.setAdapter(adapter_);
+		// podcastListView_.setOnItemLongClickListener(this);
+		// podcastListView_.setOnItemClickListener(this);
+		//TODO: 
+		Cursor cursor = managedQuery(Podcast.PodcastColumns.AUTHORITY_URI,
+									 PROJECTION, null, null, null);
+		adapter_ = new SimpleCursorAdapter(this, R.layout.podcast_select_item, cursor,
+										   new String[] { Podcast.PodcastColumns.TITLE },
+										   new int[] { R.id.podcast_title_label });
 		podcastListView_.setAdapter(adapter_);
-		podcastListView_.setOnItemLongClickListener(this);
-		podcastListView_.setOnItemClickListener(this);
 		bundle_ = null;
 	}
 	
@@ -248,8 +266,8 @@ public class PodcastListPreference
 		case DIALOG_REMOVE_PODCAST:
 			Log.d(TAG, "onPrepareDialog(bundle): " + args.getInt("position"));
 			int pos = args.getInt("position");
-			PodcastInfo info = adapter_.getItem(pos);
-			dialog.setTitle(info.title_);
+			//PodcastInfo info = adapter_.getItem(pos);
+			//dialog.setTitle(info.title_);
 			//TODO: disable up/down?
 			break;
 		default:
@@ -345,7 +363,7 @@ public class PodcastListPreference
 		@Override
 		protected void onProgressUpdate(PodcastInfo... values){
 			PodcastInfo info = values[0];
-			adapter_.add(info);
+			//adapter_.add(info);
 			String msg =
 					MessageFormat.format(getString(R.string.podcast_added), info.title_);
 			showMessage(msg);
@@ -412,14 +430,14 @@ public class PodcastListPreference
 		JSONException, IOException
 	{
 		JSONArray array = new JSONArray();
-		for (int i = 0; i < adapter_.getCount(); i++) {
-			PodcastInfo info = adapter_.getItem(i);
-			JSONObject jsonValue = (new JSONObject())
-					.accumulate("title", info.title_)
-					.accumulate("url", info.url_.toString())
-					.accumulate("enabled", info.enabled_);
-			array.put(jsonValue);
-		}
+		// for (int i = 0; i < adapter_.getCount(); i++) {
+		// 	PodcastInfo info = adapter_.getItem(i);
+		// 	JSONObject jsonValue = (new JSONObject())
+		// 			.accumulate("title", info.title_)
+		// 			.accumulate("url", info.url_.toString())
+		// 			.accumulate("enabled", info.enabled_);
+		// 	array.put(jsonValue);
+		//}
 		String json = array.toString();
 		//Log.d(TAG, "JSON: " + json);
 		FileOutputStream fos = openFileOutput(CONFIG_FILENAME, MODE_PRIVATE);
@@ -514,13 +532,13 @@ public class PodcastListPreference
 			return;
 		}
 		int pos = bundle_.getInt("position");
-		PodcastInfo info = adapter_.getItem(pos);
-		Log.d(TAG, "DialogInterface: " + which + " pos: " + pos + " " + info.title_);
+		//PodcastInfo info = adapter_.getItem(pos);
+		//Log.d(TAG, "DialogInterface: " + which + " pos: " + pos + " " + info.title_);
 		switch(which) {
 		case REMOVE_OPERATION:
-			Log.d(TAG, "onClick REMOVE: " + pos + " " + info.title_);
-			adapter_.remove(info);
-			adapter_.notifyDataSetChanged();
+			//Log.d(TAG, "onClick REMOVE: " + pos + " " + info.title_);
+			//adapter_.remove(info);
+			//adapter_.notifyDataSetChanged();
 			isChanged_ = true;
 			break;
 		case UP_OPERATION:
@@ -528,20 +546,20 @@ public class PodcastListPreference
 			if(pos == 0){
 				break;
 			}
-			adapter_.remove(info);
-			adapter_.insert(info, pos - 1);
-			adapter_.notifyDataSetChanged();
+			//adapter_.remove(info);
+			// adapter_.insert(info, pos - 1);
+			//adapter_.notifyDataSetChanged();
 			isChanged_ = true;
 			break;
 		case DOWN_OPERATION:
 			Log.d(TAG, "dialog.onClick DOWN");
-			if(pos == adapter_.getCount() - 1){
-				break;
-			}
-			adapter_.remove(info);
-			adapter_.insert(info, pos + 1);
-			adapter_.notifyDataSetChanged();
-			isChanged_ = true;
+			// if(pos == adapter_.getCount() - 1){
+			// 	break;
+			// }
+			// adapter_.remove(info);
+			// adapter_.insert(info, pos + 1);
+			// adapter_.notifyDataSetChanged();
+			// isChanged_ = true;
 			break;
 		default:
 			break;
