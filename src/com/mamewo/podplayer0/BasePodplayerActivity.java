@@ -3,6 +3,7 @@ package com.mamewo.podplayer0;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
 import com.mamewo.podplayer0.PlayerService.MusicInfo;
 
 import android.app.Activity;
@@ -45,6 +46,12 @@ abstract public class BasePodplayerActivity
 	protected boolean showPodcastIcon_;
 	private boolean uiSettingChanged_;
 
+	//TODO: add preference
+	// 10 Mbyteq
+	static final
+	private long HTTP_CACHE_SIZE = 10 * 1024 * 1024;
+	private File httpCacheDir_;
+
 	final static
 	public String TAG = "podplayer";
 
@@ -71,6 +78,21 @@ abstract public class BasePodplayerActivity
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
+		httpCacheDir_ = new File(getCacheDir(), "http");
+		boolean cacheSet = enableHttpResponseCache(httpCacheDir_);
+		Log.d(TAG, "cache set: " + cacheSet);
+	}
+
+	private boolean enableHttpResponseCache(File cacheDir) {
+		try {
+			Class.forName("android.net.http.HttpResponseCache")
+				.getMethod("install", File.class, long.class)
+				.invoke(null, cacheDir, HTTP_CACHE_SIZE);
+			return true;
+		} catch (Exception e) {
+			//nop
+		}
+		return false;
 	}
 	
 	@Override
