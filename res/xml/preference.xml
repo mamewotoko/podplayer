@@ -24,7 +24,7 @@
         android:key="load_on_start"
         android:summaryOff="@string/pref_do_not_load_automatically"
         android:summaryOn="@string/pref_load_podcasts_when_app_starts"
-        android:title="@string/pref_autoload_podcast" />
+        android:title="@string/pref_autoload_podcast" /><CheckBoxPreference android:defaultValue="true" android:key="use_response_cache" android:summary="@string/use_response_cache_summary" android:summaryOff="do not cache" android:summaryOn="cache" android:title="@string/use_response_cache_title" />
 
     <ListPreference
         android:defaultValue="30"
@@ -82,4 +82,5 @@
             android:selectable="true"
             android:title="@string/pref_version" />
     </PreferenceCategory>
+
 </PreferenceScreen>

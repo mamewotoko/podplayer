@@ -59,6 +59,8 @@ public class PodplayerPreference
 	public boolean DEFAULT_ENABLE_LONG_CLICK = true;
 	final static
 	public boolean DEFAULT_EXPAND_IN_DEFAULT = true;
+	final static
+	public boolean DEFAULT_USE_RESPONSE_CACHE = true;
 	
 	private Preference podcastList_;
 	private Preference version_;
