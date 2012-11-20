@@ -56,5 +56,7 @@
     <string name="podcast_added">Podcast: {0} läggs</string>
     <string name="header_lastupdated">Senast uppdaterad: </string>
     <string name="podcast_webpage_menu">Öppna podcast webbplats</string>
+    <string name="use_response_cache_summary_on">använd cache</string>
+    <string name="use_response_cache_summary_off">Använd inte cache (tillgänglig om API-nivå &gt;= 13)</string>
     <string name="use_response_cache_title">Cache HTTP-svar</string>
 </resources>

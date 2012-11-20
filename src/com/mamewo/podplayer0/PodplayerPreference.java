@@ -17,11 +17,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.os.Build;
 
 public class PodplayerPreference
 	extends PreferenceActivity
@@ -92,6 +94,13 @@ public class PodplayerPreference
 		version_.setOnPreferenceClickListener(this);
 		license_ = findPreference("license");
 		license_.setOnPreferenceClickListener(this);
+		CheckBoxPreference cachePreference = (CheckBoxPreference)findPreference("use_response_cache");
+		//Build.VERSION_CODES.HONEYCOMB_MR2;
+		boolean cacheSupported = Build.VERSION.SDK_INT >= 13;
+		cachePreference.setEnabled(cacheSupported);
+		if(!cacheSupported){
+			cachePreference.setChecked(false);
+		}
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
