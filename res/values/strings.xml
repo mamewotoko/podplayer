@@ -60,4 +60,5 @@
     <string name="use_response_cache_summary_on">use cache</string>
     <string name="use_response_cache_summary_off">do not use cache (available if API level &gt;= 13)</string>
     <string name="use_response_cache_title">Cache HTTP response</string>
+    <string name="clear_response_cache_title">Clear HTTP response cache</string>
 </resources>

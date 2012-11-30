@@ -70,6 +70,7 @@ public class PodplayerPreference
 	private Preference gestureTable_;
 	private ListPreference readTimeout_;
 	private Preference scoreThreshold_;
+	private Preference clearCache_;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -96,10 +97,16 @@ public class PodplayerPreference
 		license_.setOnPreferenceClickListener(this);
 		CheckBoxPreference cachePreference = (CheckBoxPreference)findPreference("use_response_cache");
 		//Build.VERSION_CODES.HONEYCOMB_MR2;
+		clearCache_ = findPreference("clear_response_cache");
+
 		boolean cacheSupported = Build.VERSION.SDK_INT >= 13;
 		cachePreference.setEnabled(cacheSupported);
+		clearCache_.setEnabled(cacheSupported);
 		if(!cacheSupported){
 			cachePreference.setChecked(false);
+		}
+		else {
+			clearCache_.setOnPreferenceClickListener(this);
 		}
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
@@ -120,6 +127,16 @@ public class PodplayerPreference
 		if (item == podcastList_) {
 			Intent i = new Intent(this, PodcastListPreference.class);
 			startActivity(i);
+			return true;
+		}
+		if (item == clearCache_){
+			SharedPreferences pref =
+				PreferenceManager.getDefaultSharedPreferences(this);
+			//dummy field....
+			boolean flag = pref.getBoolean("clear_response_cache", true);
+			pref.edit()
+				.putBoolean("clear_response_cache", !flag)
+				.commit();
 			return true;
 		}
 		if (item == gestureTable_) {

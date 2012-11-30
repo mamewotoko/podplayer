@@ -31,6 +31,9 @@
         android:summaryOff="@string/use_response_cache_summary_off"
         android:summaryOn="@string/use_response_cache_summary_on"
         android:title="@string/use_response_cache_title" />
+    <Preference
+       android:key="clear_response_cache"
+       android:title="@string/clear_response_cache_title" />
 <ListPreference
         android:defaultValue="30"
         android:dialogTitle="@string/pref_read_timeout"

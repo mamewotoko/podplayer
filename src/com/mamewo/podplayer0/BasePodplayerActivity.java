@@ -249,12 +249,24 @@ abstract public class BasePodplayerActivity
 				disableHttpResponseCache(cacheObject_);
 			}
 		}
+		if("clear_response_cache".equals(key)){
+			if(null != cacheObject_){
+				try{
+					Log.d(TAG, "clear cache");
+					Class.forName("android.net.http.HttpResponseCache")
+						.getMethod("delete")
+						.invoke(cacheObject_);
+				}
+				catch(Exception e){
+					Log.d(TAG, "cache delete method", e);
+				}
+			}
+		}
 		//following block should be last one of this function
 		if (updateAll || "podcastlist2".equals(key)) {
 			state_.podcastList_ = PodcastListPreference.loadSetting(this);
 			onPodcastListChanged(updateAll);
 		}
-		
 	}
 
 	@Override
