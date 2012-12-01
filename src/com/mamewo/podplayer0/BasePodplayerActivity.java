@@ -6,6 +6,7 @@ import java.util.List;
 import java.io.File;
 import com.mamewo.podplayer0.PlayerService.MusicInfo;
 
+import android.media.AudioManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -139,6 +140,7 @@ abstract public class BasePodplayerActivity
 	@Override
 	protected void onStart() {
 		super.onStart();
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		//TODO: check current activity and preference
 		if (uiSettingChanged_) {
 			Intent intent = new Intent(this, MainActivity.class);
