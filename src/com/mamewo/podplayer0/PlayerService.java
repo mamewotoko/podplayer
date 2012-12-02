@@ -36,7 +36,8 @@ public class PlayerService
 	extends Service
 	implements MediaPlayer.OnCompletionListener,
 	MediaPlayer.OnErrorListener,
-	MediaPlayer.OnPreparedListener
+    MediaPlayer.OnPreparedListener,
+	AudioManager.OnAudioFocusChangeListener
 {
 	final static
 	public String PACKAGE_NAME = PlayerService.class.getPackage().getName();
@@ -258,7 +259,13 @@ public class PlayerService
 		}
 		if(isPreparing_) {
 			stopOnPrepared_ = false;
+			//TODO: is this correct? false?
 			return true;
+		}
+		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		int result = manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+		if (result == AudioManager.AUDIOFOCUS_REQUEST_FAILED){
+			return false;
 		}
 		player_.start();
 		MusicInfo info = currentPlaylist_.get(playCursor_);
@@ -307,6 +314,8 @@ public class PlayerService
 			stopOnPrepared_ = true;
 		}
 		else if(player_.isPlaying()){
+			AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+			manager.abandonAudioFocus(this);
 			player_.stop();
 		}
 		isPausing_ = false;
@@ -324,6 +333,8 @@ public class PlayerService
 			stopOnPrepared_ = true;
 		}
 		else if(player_.isPlaying()){
+			AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+			manager.abandonAudioFocus(this);
 			player_.pause();
 		}
 		isPausing_ = true;
@@ -406,6 +417,11 @@ public class PlayerService
 			return;
 		}
 		resetErrorCount();
+		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		int result = manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+		if (result == AudioManager.AUDIOFOCUS_REQUEST_FAILED){
+			return;
+		}
 		player_.start();
 		if(null != listener_){
 			listener_.onStartMusic(currentPlaying_);
@@ -490,6 +506,22 @@ public class PlayerService
 			playNext();
 		}
 		return true;
+	}
+
+	@Override
+	public void onAudioFocusChange(int focusChange){
+		switch(focusChange){
+		case AudioManager.AUDIOFOCUS_GAIN:
+			//TODO: test stop -> gain / plaing -> gain
+			restartMusic();
+			break;
+		case AudioManager.AUDIOFOCUS_LOSS:
+			pauseMusic();
+			//TODO: flag?
+			break;
+		default:
+			break;
+		}
 	}
 
 	//use intent instead?
