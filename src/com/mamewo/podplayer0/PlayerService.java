@@ -510,14 +510,19 @@ public class PlayerService
 
 	@Override
 	public void onAudioFocusChange(int focusChange){
+		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
 		switch(focusChange){
 		case AudioManager.AUDIOFOCUS_GAIN:
+			Log.d(TAG, "AUDIOFOCUS_GAIN");
 			//TODO: test stop -> gain / plaing -> gain
+			manager.registerMediaButtonEventReceiver(mediaButtonReceiver_);
 			restartMusic();
 			break;
 		case AudioManager.AUDIOFOCUS_LOSS:
+			Log.d(TAG, "AUDIOFOCUS_LOSS");
 			pauseMusic();
-			//TODO: flag?
+			manager.unregisterMediaButtonEventReceiver(mediaButtonReceiver_);
 			break;
 		default:
 			break;
