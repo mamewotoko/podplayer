@@ -60,4 +60,5 @@
     <string name="use_response_cache_summary_off">Använd inte cache (tillgänglig om API-nivå &gt;= 13)</string>
     <string name="use_response_cache_title">Cache HTTP-svar</string>
     <string name="clear_response_cache_title">Klar HTTP-svar cache</string>
+    <string name="hint_podcast_url">URL podcast XML</string>
 </resources>

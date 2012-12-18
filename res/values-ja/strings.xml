@@ -59,4 +59,5 @@
     <string name="use_response_cache_summary_off">キャッシュしない (APIレベル13以上で利用可能)</string>
     <string name="use_response_cache_title">HTTP Responseをキャッシュする</string>
     <string name="clear_response_cache_title">キャッシュを削除する</string>
+    <string name="hint_podcast_url">Podcast(XML)のURL</string>
 </resources>
