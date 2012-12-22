@@ -71,8 +71,6 @@ public class PlayerService
 	private ComponentName mediaButtonReceiver_;
 	private long previousPrevKeyTime_;
 	private MusicInfo currentPlaying_;
-	private long lastErrorTime_;
-	private long lastErrorCount_;
 	
 	//msec
 	final static
@@ -123,11 +121,6 @@ public class PlayerService
 
 	public void setPlaylist(List<MusicInfo> playlist) {
 		currentPlaylist_ = playlist;
-	}
-
-	private void resetErrorCount() {
-		lastErrorTime_ = 0;
-		lastErrorCount_ = 0;
 	}
 	
 	@Override
@@ -355,8 +348,6 @@ public class PlayerService
 	@Override
 	public void onCreate(){
 		super.onCreate();
-		lastErrorTime_ = 0;
-		lastErrorCount_ = 0;
 
 		currentPlaylist_ = null;
 		currentPlaying_ = null;
@@ -416,7 +407,6 @@ public class PlayerService
 			stopOnPrepared_ = false;
 			return;
 		}
-		resetErrorCount();
 		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		int result = manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 		if (result == AudioManager.AUDIOFOCUS_REQUEST_FAILED){
@@ -488,23 +478,12 @@ public class PlayerService
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 		String code = ErrorCode2String(extra);
 		MusicInfo info = currentPlaying_;
-		Log.i(TAG, "onError: what: " + what + " error code: " + code + " url: " + info.url_ + " errorCount: " + lastErrorCount_);
+		Log.i(TAG, "onError: what: " + what + " error code: " + code + " url: " + info.url_);
 		//TODO: show error message to GUI
-		if (lastErrorCount_ >= LAST_ERROR_COUNT_LIMIT) {
-			return true;
-		}
 		isPreparing_ = false;
 		//TODO: localize
 		showMessage("Network error: " + code);
 		stopMusic();
-		long current = System.currentTimeMillis();
-		//10 sec
-		if (current - lastErrorTime_ < LAST_ERROR_TIME_LIMIT) {
-			lastErrorCount_++;
-		}
-		if (lastErrorCount_ < LAST_ERROR_COUNT_LIMIT && isNetworkConnected(this)) {
-			playNext();
-		}
 		return true;
 	}
 
