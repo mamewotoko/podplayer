@@ -17,11 +17,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.os.Build;
 
 public class PodplayerPreference
 	extends PreferenceActivity
@@ -59,6 +61,8 @@ public class PodplayerPreference
 	public boolean DEFAULT_ENABLE_LONG_CLICK = true;
 	final static
 	public boolean DEFAULT_EXPAND_IN_DEFAULT = true;
+	final static
+	public boolean DEFAULT_USE_RESPONSE_CACHE = true;
 	
 	private Preference podcastList_;
 	private Preference version_;
@@ -66,6 +70,7 @@ public class PodplayerPreference
 	private Preference gestureTable_;
 	private ListPreference readTimeout_;
 	private Preference scoreThreshold_;
+	private Preference clearCache_;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -90,6 +95,19 @@ public class PodplayerPreference
 		version_.setOnPreferenceClickListener(this);
 		license_ = findPreference("license");
 		license_.setOnPreferenceClickListener(this);
+		CheckBoxPreference cachePreference = (CheckBoxPreference)findPreference("use_response_cache");
+		//Build.VERSION_CODES.HONEYCOMB_MR2;
+		clearCache_ = findPreference("clear_response_cache");
+
+		boolean cacheSupported = Build.VERSION.SDK_INT >= 13;
+		cachePreference.setEnabled(cacheSupported);
+		clearCache_.setEnabled(cacheSupported);
+		if(!cacheSupported){
+			cachePreference.setChecked(false);
+		}
+		else {
+			clearCache_.setOnPreferenceClickListener(this);
+		}
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
@@ -109,6 +127,16 @@ public class PodplayerPreference
 		if (item == podcastList_) {
 			Intent i = new Intent(this, PodcastListPreference.class);
 			startActivity(i);
+			return true;
+		}
+		if (item == clearCache_){
+			SharedPreferences pref =
+				PreferenceManager.getDefaultSharedPreferences(this);
+			//dummy field....
+			boolean flag = pref.getBoolean("clear_response_cache", true);
+			pref.edit()
+				.putBoolean("clear_response_cache", !flag)
+				.commit();
 			return true;
 		}
 		if (item == gestureTable_) {

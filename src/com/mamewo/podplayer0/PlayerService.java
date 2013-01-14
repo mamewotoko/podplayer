@@ -36,7 +36,8 @@ public class PlayerService
 	extends Service
 	implements MediaPlayer.OnCompletionListener,
 	MediaPlayer.OnErrorListener,
-	MediaPlayer.OnPreparedListener
+    MediaPlayer.OnPreparedListener,
+	AudioManager.OnAudioFocusChangeListener
 {
 	final static
 	public String PACKAGE_NAME = PlayerService.class.getPackage().getName();
@@ -70,8 +71,6 @@ public class PlayerService
 	private ComponentName mediaButtonReceiver_;
 	private long previousPrevKeyTime_;
 	private MusicInfo currentPlaying_;
-	private long lastErrorTime_;
-	private long lastErrorCount_;
 	
 	//msec
 	final static
@@ -122,11 +121,6 @@ public class PlayerService
 
 	public void setPlaylist(List<MusicInfo> playlist) {
 		currentPlaylist_ = playlist;
-	}
-
-	private void resetErrorCount() {
-		lastErrorTime_ = 0;
-		lastErrorCount_ = 0;
 	}
 	
 	@Override
@@ -258,7 +252,13 @@ public class PlayerService
 		}
 		if(isPreparing_) {
 			stopOnPrepared_ = false;
+			//TODO: is this correct? false?
 			return true;
+		}
+		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		int result = manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+		if (result == AudioManager.AUDIOFOCUS_REQUEST_FAILED){
+			return false;
 		}
 		player_.start();
 		MusicInfo info = currentPlaylist_.get(playCursor_);
@@ -307,6 +307,8 @@ public class PlayerService
 			stopOnPrepared_ = true;
 		}
 		else if(player_.isPlaying()){
+			AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+			manager.abandonAudioFocus(this);
 			player_.stop();
 		}
 		isPausing_ = false;
@@ -324,6 +326,8 @@ public class PlayerService
 			stopOnPrepared_ = true;
 		}
 		else if(player_.isPlaying()){
+			AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+			manager.abandonAudioFocus(this);
 			player_.pause();
 		}
 		isPausing_ = true;
@@ -344,8 +348,6 @@ public class PlayerService
 	@Override
 	public void onCreate(){
 		super.onCreate();
-		lastErrorTime_ = 0;
-		lastErrorCount_ = 0;
 
 		currentPlaylist_ = null;
 		currentPlaying_ = null;
@@ -405,7 +407,11 @@ public class PlayerService
 			stopOnPrepared_ = false;
 			return;
 		}
-		resetErrorCount();
+		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		int result = manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+		if (result == AudioManager.AUDIOFOCUS_REQUEST_FAILED){
+			return;
+		}
 		player_.start();
 		if(null != listener_){
 			listener_.onStartMusic(currentPlaying_);
@@ -472,24 +478,34 @@ public class PlayerService
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 		String code = ErrorCode2String(extra);
 		MusicInfo info = currentPlaying_;
-		Log.i(TAG, "onError: what: " + what + " error code: " + code + " url: " + info.url_ + " errorCount: " + lastErrorCount_);
+		Log.i(TAG, "onError: what: " + what + " error code: " + code + " url: " + info.url_);
 		//TODO: show error message to GUI
-		if (lastErrorCount_ >= LAST_ERROR_COUNT_LIMIT) {
-			return true;
-		}
 		isPreparing_ = false;
 		//TODO: localize
 		showMessage("Network error: " + code);
 		stopMusic();
-		long current = System.currentTimeMillis();
-		//10 sec
-		if (current - lastErrorTime_ < LAST_ERROR_TIME_LIMIT) {
-			lastErrorCount_++;
-		}
-		if (lastErrorCount_ < LAST_ERROR_COUNT_LIMIT && isNetworkConnected(this)) {
-			playNext();
-		}
 		return true;
+	}
+
+	@Override
+	public void onAudioFocusChange(int focusChange){
+		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+		switch(focusChange){
+		case AudioManager.AUDIOFOCUS_GAIN:
+			Log.d(TAG, "AUDIOFOCUS_GAIN");
+			//TODO: test stop -> gain / plaing -> gain
+			manager.registerMediaButtonEventReceiver(mediaButtonReceiver_);
+			restartMusic();
+			break;
+		case AudioManager.AUDIOFOCUS_LOSS:
+			Log.d(TAG, "AUDIOFOCUS_LOSS");
+			pauseMusic();
+			manager.unregisterMediaButtonEventReceiver(mediaButtonReceiver_);
+			break;
+		default:
+			break;
+		}
 	}
 
 	//use intent instead?

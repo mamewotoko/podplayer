@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- swedish resource -->
 <resources>
     <string name="app_name">Podplayer</string>
     <string name="pref_podcastlist_title">Podcast list</string>
@@ -55,4 +56,9 @@
     <string name="podcast_added">Podcast: {0} läggs</string>
     <string name="header_lastupdated">Senast uppdaterad: </string>
     <string name="podcast_webpage_menu">Öppna podcast webbplats</string>
+    <string name="use_response_cache_summary_on">använd cache</string>
+    <string name="use_response_cache_summary_off">Använd inte cache (tillgänglig om API-nivå &gt;= 13)</string>
+    <string name="use_response_cache_title">Cache HTTP-svar</string>
+    <string name="clear_response_cache_title">Klar HTTP-svar cache</string>
+    <string name="hint_podcast_url">URL podcast XML</string>
 </resources>

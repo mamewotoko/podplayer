@@ -3,8 +3,10 @@ package com.mamewo.podplayer0;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
 import com.mamewo.podplayer0.PlayerService.MusicInfo;
 
+import android.media.AudioManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -45,10 +47,18 @@ abstract public class BasePodplayerActivity
 	protected boolean showPodcastIcon_;
 	private boolean uiSettingChanged_;
 
+	//TODO: add preference
+	// 10 Mbyteq
+	static final
+	private long HTTP_CACHE_SIZE = 10 * 1024 * 1024;
+	private File httpCacheDir_;
+
 	final static
 	public String TAG = "podplayer";
 
 	abstract protected void onPodcastListChanged(boolean start);
+	Object cacheObject_ = null;
+	static final public int CACHERESPONSE_API_LEVEL = 13;
 
 	public void onCreate(Bundle savedInstanceState, ServiceConnection conn, Class<?> userClass) {
 		super.onCreate(savedInstanceState);
@@ -71,8 +81,36 @@ abstract public class BasePodplayerActivity
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
+		httpCacheDir_ = null;
+		cacheObject_ = null;
+	}
+
+	private Object enableHttpResponseCache(File cacheDir) {
+		try {
+			return Class.forName("android.net.http.HttpResponseCache")
+				.getMethod("install", File.class, long.class)
+				.invoke(null, cacheDir, HTTP_CACHE_SIZE);
+		} catch (Exception e) {
+			//nop
+		}
+		return null;
 	}
 	
+	private boolean disableHttpResponseCache(Object cacheObj){
+		if(null == cacheObj){
+			return false;
+		}
+		try {
+			Class.forName("android.net.http.HttpResponseCache")
+				.getMethod("close")
+				.invoke(cacheObj);
+			return true;
+		} catch (Exception e) {
+			//nop
+		}
+		return false;
+	}
+
 	@Override
 	public void onDestroy() {
 		for (PodcastInfo info : state_.podcastList_) {
@@ -102,6 +140,7 @@ abstract public class BasePodplayerActivity
 	@Override
 	protected void onStart() {
 		super.onStart();
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		//TODO: check current activity and preference
 		if (uiSettingChanged_) {
 			Intent intent = new Intent(this, MainActivity.class);
@@ -171,6 +210,7 @@ abstract public class BasePodplayerActivity
 	}
 	
 	protected void syncPreference(SharedPreferences pref, String key){
+		Log.d(TAG, "syncPreference: " + key);
 		boolean updateAll = "ALL".equals(key);
 		if ("use_expandable_ui".equals(key)) {
 			uiSettingChanged_ = true;
@@ -198,6 +238,31 @@ abstract public class BasePodplayerActivity
 		}
 		if (updateAll || "show_podcast_icon".equals(key)) {
 			showPodcastIcon_ = pref.getBoolean("show_podcast_icon", PodplayerPreference.DEFAULT_SHOW_ICON);
+		}
+		if (updateAll || "use_reponse_cache".equals(key)){
+			boolean useCache = pref.getBoolean("use_reponse_cache", PodplayerPreference.DEFAULT_USE_RESPONSE_CACHE);
+			if(useCache){
+				if(null == httpCacheDir_){
+					httpCacheDir_ = new File(getCacheDir(), "http");
+				}
+				cacheObject_ = enableHttpResponseCache(httpCacheDir_);
+			}
+			else {
+				disableHttpResponseCache(cacheObject_);
+			}
+		}
+		if("clear_response_cache".equals(key)){
+			if(null != cacheObject_){
+				try{
+					Log.d(TAG, "clear cache");
+					Class.forName("android.net.http.HttpResponseCache")
+						.getMethod("delete")
+						.invoke(cacheObject_);
+				}
+				catch(Exception e){
+					Log.d(TAG, "cache delete method", e);
+				}
+			}
 		}
 		//following block should be last one of this function
 		if (updateAll || "podcastlist2".equals(key)) {
