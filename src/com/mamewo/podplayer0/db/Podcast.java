@@ -4,12 +4,17 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 public class Podcast {
-	static final public String AUTHORITY = "com.mamewo.podplayer0.provider.Podcast";
-	
-	public static final class PodcastColumns implements BaseColumns {
+	public static final String AUTHORITY = "com.mamewo.podplayer0.provider.Podcast";
+	public static final String PODCAST_TABLE_NAME = "podcast";
+	public static final String EPISODE_TABLE_NAME = "episode";
+	public static final String PLAY_HISTORY_TABLE_NAME = "play_history";
+
+	public static final class PodcastColumns
+		implements BaseColumns
+	{
 		private PodcastColumns(){}
-		public static final Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY + "/podcasts");
-        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/xml+rss";
+		public static final String PATH = "/podcasts";
+		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/xml+rss";
 
 		//TEXT
 		public static final String TITLE = "title";
@@ -23,6 +28,32 @@ public class Podcast {
 		public static final String ORD = "ord";
 	}
 
-	public static final class EpisodeColumns implements BaseColumns {
+	public static final class EpisodeColumns
+		implements BaseColumns
+	{
+		private EpisodeColumns(){}
+		public static final String PATH = "episode";
+		public static final String ADD_PATH = "add_episode";
+		//TEXT
+		public static final String TITLE = "title";
+		//TEXT
+		public static final String URL = "url";
+		//TEXT
+		public static final String PUBDATE = "pubdate";
+		//TEXT
+		public static final String LINK_URL = "link_url";
+	}
+
+	public static final class PlayHistoryColumns
+		implements BaseColumns
+	{
+		private PlayHistoryColumns() {}
+		public static final String PATH = "play_history";
+		public static final String ADD_PATH = "add_play_history";
+		
+		//int
+		public static final String EPISODE_ID = "episode_id";
+		//String
+		public static final String PLAYED_DATE = "played_date";
 	}
 }
