@@ -76,7 +76,6 @@ TODO
         * check heap size and class histogram
     * when prepare error occurs, cursor moves to next episode
         * stop playing
-    * podcast selection is not applied immediately
 * add / update test
     * preference
     * gesture?

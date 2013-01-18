@@ -147,6 +147,7 @@ public class PodcastListPreference
 			Log.d(TAG, "failed to save podcast list setting");
 		}
 		//Ummm..: to call preference listener
+		Log.d(TAG, "onStop.isChanged?; " + isChanged_);
 		if (isChanged_) {
 			SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 			boolean prevValue = pref.getBoolean("podcastlist2", true);
@@ -196,15 +197,20 @@ public class PodcastListPreference
 			task_.execute(urlList);
 		}
 		else if (view.getId() == R.id.checkbox) {
-			//umm...
 			CheckBox checkbox = (CheckBox) view;
-			Log.d(TAG, "checkbox is clicked: " + checkbox.isChecked());
-			PodcastInfo info = (PodcastInfo) checkbox.getTag();
-			info.enabled_ = !info.enabled_;
-			checkbox.setChecked(info.enabled_);
+			onCheckboxClicked(checkbox);
 		}
 	}
 
+	private void onCheckboxClicked(CheckBox checkbox) {
+		Log.d(TAG, "checkbox is clicked: " + checkbox.isChecked());
+		//umm...
+		isChanged_ = true;
+		PodcastInfo info = (PodcastInfo) checkbox.getTag();
+		info.enabled_ = !info.enabled_;
+		checkbox.setChecked(info.enabled_);
+	}
+	
 	@Override
 	protected Dialog onCreateDialog(int id, Bundle bundle) {
 		Log.d(TAG, "onCreateDialog(bundle): " + id);
@@ -552,10 +558,6 @@ public class PodcastListPreference
 	@Override
 	public void onItemClick(AdapterView<?> adapter, View parent, int pos, long id) {
 		CheckBox checkbox = (CheckBox) parent.findViewById(R.id.checkbox);
-		PodcastInfo info = (PodcastInfo) adapter.getItemAtPosition(pos);
-		info.enabled_ = !info.enabled_;
-		checkbox.setChecked(info.enabled_);
-		//TODO: check total state
-		isChanged_ = true;
+		onCheckboxClicked(checkbox);
 	}
 }
