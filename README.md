@@ -71,21 +71,21 @@ TODO
 ----------
 * cache podcast icon
     * avoid loading podcast when UI is switched 
-* change notification icon for Android4.0
+* fix bugs
+    * fix memory leak (bitmap problem)
+        * check heap size and class histogram
+    * when prepare error occurs, cursor moves to next episode
+        * stop playing
+    * podcast selection is not applied immediately
 * add / update test
     * preference
     * gesture?
     * landscape UI
 * define smoke test and full test. smoke test can be run with SmokeTestSuiteBuilder.
-* fix memory leak (bitmap problem)
-    * check heap size and class histogram
 * display playing icon in group of expandable list
 * improve UI to add podcast URL
     * update main activity when setting is changed
-* fix bugs
-    * when prepare error occurs, cursor moves to next episode
-        * stop playing
-    * podcast selection is not applied immediately
+* change notification icon for Android4.0
 * reset playing position after podcast selection is changed
 * use database to manage loaded episodes
     * display mark which is already played, new item etc...
