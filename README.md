@@ -86,6 +86,7 @@ TODO
     * when prepare error occurs, cursor moves to next episode
         * stop playing
     * podcast selection is not applied immediately
+    * header of pull down list is not hidden after loading episodes
 * reset playing position after podcast selection is changed
 * use database to manage loaded episodes
     * display mark which is already played, new item etc...

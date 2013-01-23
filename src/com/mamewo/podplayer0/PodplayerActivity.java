@@ -272,6 +272,7 @@ public class PodplayerActivity
 
 		@Override
 		protected void onProgressUpdate(MusicInfo... values){
+			Intent insertIntent = new Intent();
 			for (int i = 0; i < values.length; i++) {
 				state_.loadedEpisode_.add(values[i]);
 			}

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
 import com.mamewo.podplayer0.PlayerService.MusicInfo;
+import com.mamewo.podplayer0.db.Podcast.EpisodeColumns;
 
 import android.media.AudioManager;
 import android.app.Activity;
@@ -62,6 +63,10 @@ abstract public class BasePodplayerActivity
 
 	public void onCreate(Bundle savedInstanceState, ServiceConnection conn, Class<?> userClass) {
 		super.onCreate(savedInstanceState);
+		Intent myIntent = getIntent();
+		if(null == myIntent.getData()){
+			myIntent.setData(EpisodeColumns.CONTENT_URI);
+		}
 		Intent intent = new Intent(this, PlayerService.class);
 		startService(intent);
 		finishServiceOnExit_ = false;
@@ -83,6 +88,9 @@ abstract public class BasePodplayerActivity
 		pref.registerOnSharedPreferenceChangeListener(this);
 		httpCacheDir_ = null;
 		cacheObject_ = null;
+
+		//Cursor cursor = getContentResolver().query(PodcastColumns.CONTENT_URI, null, null, null);
+		//do something
 	}
 
 	private Object enableHttpResponseCache(File cacheDir) {

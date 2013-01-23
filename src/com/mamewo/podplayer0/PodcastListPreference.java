@@ -116,7 +116,7 @@ public class PodcastListPreference
 		// podcastListView_.setOnItemLongClickListener(this);
 		// podcastListView_.setOnItemClickListener(this);
 		//TODO: 
-		Cursor cursor = managedQuery(Podcast.PodcastColumns.AUTHORITY_URI,
+		Cursor cursor = managedQuery(Podcast.PodcastColumns.CONTENT_URI,
 									 PROJECTION, null, null, null);
 		adapter_ = new SimpleCursorAdapter(this, R.layout.podcast_select_item, cursor,
 										   new String[] { Podcast.PodcastColumns.TITLE },

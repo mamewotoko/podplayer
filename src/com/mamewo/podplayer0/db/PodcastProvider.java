@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import com.mamewo.podplayer0.db.Podcast.EpisodeColumns;
 import com.mamewo.podplayer0.db.Podcast.PlayHistoryColumns;
 import com.mamewo.podplayer0.db.Podcast.PodcastColumns;
+import com.mamewo.podplayer0.R;
+
 import android.net.Uri;
 import android.util.Log;
 import android.content.ContentProvider;
@@ -25,18 +27,23 @@ public class PodcastProvider extends ContentProvider {
 	private static final int DATABASE_VERSION = 1;
 	private static UriMatcher uriMatcher_ = null;
 
+	private static final int PODCAST = 1;
+	private static final int EPISODE = 2;
+	
 	static {
 		uriMatcher_ = new UriMatcher(UriMatcher.NO_MATCH);
-		uriMatcher_.addURI(Podcast.AUTHORITY, "notes", NOTES);
-		uriMatcher_.addURI(Podcast.AUTHORITY, "notes/#", NOTE_ID);
-		uriMatcher_.addURI(Podcast.AUTHORITY, "live_folders/notes", LIVE_FOLDER_NOTES);
+		uriMatcher_.addURI(Podcast.AUTHORITY, PodcastColumns.PATH, PODCAST);
+		uriMatcher_.addURI(Podcast.AUTHORITY, EpisodeColumns.PATH, EPISODE);
 	}
 	
-	private static class DatabaseHelper
+	private class DatabaseHelper
 		extends SQLiteOpenHelper
 	{
+		Context context_;
+
 		public DatabaseHelper(Context context){
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
+			context_ = context;
 		}
 		
 		@Override
@@ -58,16 +65,23 @@ public class PodcastProvider extends ContentProvider {
 						+ PlayHistoryColumns._ID + " INTEGER PRIMARY KEY,"
 						+ PlayHistoryColumns.EPISODE_ID + " INTEGER,"
 						+ PlayHistoryColumns.PLAYED_DATE + " TEXT)");
-			//TODO: migrate podcast data from json
+			//TODO: migrate podcast data from JSON
+			String[] allTitles = context_.getResources().getStringArray(R.array.pref_podcastlist_keys);
+			String[] allURLs = context_.getResources().getStringArray(R.array.pref_podcastlist_urls);
+			for(int i = 0; i < allTitles.length; i++){
+				String title = allTitles[i];
+				String url = allURLs[i];
+				ContentValues values = new ContentValues();
+				values.put(PodcastColumns.TITLE, title);
+				values.put(PodcastColumns.URL, url);
+				values.put(PodcastColumns.ICON_URL, "");
+				values.put(PodcastColumns.ENABLED, Integer.valueOf(1));
+				values.put(PodcastColumns.ORD, Integer.valueOf(i));
+				//TODO: check result of insert
+				db.insert(Podcast.PODCAST_TABLE_NAME, null, values);
+			}
 			//TODO: cache icon data
-			ContentValues values = new ContentValues();
-			values.put(PodcastColumns.TITLE, "test");
-			values.put(PodcastColumns.URL, "http://podcast.1242.com/ningendoc/index.xml");
-			values.put(PodcastColumns.ICON_URL, "http://podcast.1242.com/image/ningendoc.jpg");
-			values.put(PodcastColumns.ENABLED, Integer.valueOf(1));
-			values.put(PodcastColumns.ORD, Integer.valueOf(1));
-			long result = db.insert(Podcast.PODCAST_TABLE_NAME, null, values);
-			Log.i(TAG, "db insert: " + result);
+// 			Log.i(TAG, "db insert: " + result);
 		}
 
 		@Override
@@ -88,8 +102,10 @@ public class PodcastProvider extends ContentProvider {
             String sortOrder) {
 		Log.d(TAG, "query: uri " + uri.toString());
 		Cursor c = null;
-		if (Podcast.PodcastColumns.AUTHORITY_URI.equals(uri)) {
-			SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+		SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+
+		switch(uriMatcher_.match(uri)){
+		case PODCAST:
 			builder.setTables(Podcast.PODCAST_TABLE_NAME);
 			Map<String, String> map = new HashMap<String, String>();
 			map.put(PodcastColumns._ID, PodcastColumns._ID);
@@ -99,6 +115,12 @@ public class PodcastProvider extends ContentProvider {
 			builder.setProjectionMap(map);
 			SQLiteDatabase db = helper_.getReadableDatabase();
 			c = builder.query(db, projection, selection, selectionArgs, null, null, null);
+			break;
+		case EPISODE:
+			//fall through
+		default:
+			Log.d(TAG, "query: not handled uri " + uri);
+			break;
 		}
 		return c;
 	}
@@ -114,7 +136,17 @@ public class PodcastProvider extends ContentProvider {
 	}
 
     @Override
-    public Uri insert(Uri uri, ContentValues initialValues) {
+    public Uri insert(Uri uri, ContentValues values) {
+		switch(uriMatcher_.match(uri)){
+		case PODCAST:
+			SQLiteDatabase db = helper_.getWritableDatabase();
+			long id = db.insert(Podcast.PODCAST_TABLE_NAME, null, values);
+			break;
+		default:
+			Log.d(TAG, "insert: not handled: " + uri);
+			break;
+		}
+
 		return null;
 	}
 

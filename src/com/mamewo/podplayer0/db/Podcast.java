@@ -12,8 +12,10 @@ public class Podcast {
 	public static final class PodcastColumns
 		implements BaseColumns
 	{
+		public static final String PATH = "podcasts";
+		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + PATH);
+
 		private PodcastColumns(){}
-		public static final String PATH = "/podcasts";
 		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/xml+rss";
 
 		//TEXT
@@ -31,9 +33,10 @@ public class Podcast {
 	public static final class EpisodeColumns
 		implements BaseColumns
 	{
-		private EpisodeColumns(){}
 		public static final String PATH = "episode";
-		public static final String ADD_PATH = "add_episode";
+		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + PATH);
+
+		private EpisodeColumns(){}
 		//TEXT
 		public static final String TITLE = "title";
 		//TEXT
@@ -49,7 +52,6 @@ public class Podcast {
 	{
 		private PlayHistoryColumns() {}
 		public static final String PATH = "play_history";
-		public static final String ADD_PATH = "add_play_history";
 		
 		//int
 		public static final String EPISODE_ID = "episode_id";

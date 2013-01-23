@@ -24,6 +24,7 @@ public class MainActivity
 			targetClass = PodplayerActivity.class;
 		}
 		Intent intent = new Intent(this, targetClass);
+		intent.setData(intent.getData());
 		startActivity(intent);
 		finish();
 	}
