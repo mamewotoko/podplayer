@@ -97,8 +97,37 @@ public class PodcastListPreference
 	public int DOWN_OPERATION = 2;
 	final static
 	private String PODCAST_SITE_URL = "http://www002.upp.so-net.ne.jp/mamewo/podcast.html";
+	//umm
+	static final
+	private int ID_INDEX = 0;
+	static final
+	private int TITLE_INDEX = 1;
+	static final
+	private int ENABLED_INDEX = 2;
+
 	final static
-		private String[] PROJECTION = new String[] { PodcastColumns._ID, PodcastColumns.TITLE };
+	private String[] PROJECTION =
+		new String[] { PodcastColumns._ID,
+					   PodcastColumns.TITLE,
+					   PodcastColumns.ENABLED };
+
+	static
+	public class PodcastViewBinder
+		implements SimpleCursorAdapter.ViewBinder
+	{
+		public PodcastViewBinder(){}
+
+		@Override
+		public boolean setViewValue(View view, Cursor cursor, int columnIndex){
+			boolean handled = false;
+			if(columnIndex == ENABLED_INDEX){
+				boolean enabled = cursor.getInt(ENABLED_INDEX) == 1;
+				((CheckBox)view).setChecked(enabled);
+				handled = true;
+			}
+			return handled;
+		}
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -119,8 +148,11 @@ public class PodcastListPreference
 		Cursor cursor = managedQuery(Podcast.PodcastColumns.CONTENT_URI,
 									 PROJECTION, null, null, null);
 		adapter_ = new SimpleCursorAdapter(this, R.layout.podcast_select_item, cursor,
-										   new String[] { Podcast.PodcastColumns.TITLE },
-										   new int[] { R.id.podcast_title_label });
+										   new String[] { PodcastColumns.TITLE,
+														  PodcastColumns.ENABLED },
+										   new int[] { R.id.podcast_title_label,
+													   R.id.checkbox });
+		adapter_.setViewBinder(new PodcastViewBinder());
 		podcastListView_.setAdapter(adapter_);
 		bundle_ = null;
 	}

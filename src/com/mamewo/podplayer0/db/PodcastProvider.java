@@ -111,6 +111,7 @@ public class PodcastProvider extends ContentProvider {
 			map.put(PodcastColumns._ID, PodcastColumns._ID);
 			map.put(PodcastColumns.TITLE, PodcastColumns.TITLE);
 			map.put(PodcastColumns.URL, PodcastColumns.URL);
+			map.put(PodcastColumns.ENABLED, PodcastColumns.ENABLED);
 			map.put(PodcastColumns.ICON_URL, PodcastColumns.ICON_URL);
 			builder.setProjectionMap(map);
 			SQLiteDatabase db = helper_.getReadableDatabase();
