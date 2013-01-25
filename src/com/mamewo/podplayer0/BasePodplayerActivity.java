@@ -49,7 +49,7 @@ abstract public class BasePodplayerActivity
 	private boolean uiSettingChanged_;
 
 	//TODO: add preference
-	// 10 Mbyteq
+	// 10 Mbyte
 	static final
 	private long HTTP_CACHE_SIZE = 10 * 1024 * 1024;
 	private File httpCacheDir_;

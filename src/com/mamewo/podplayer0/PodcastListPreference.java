@@ -13,6 +13,8 @@ import java.net.URLConnection;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import android.content.ContentValues;
+import android.content.ContentUris;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,7 +28,6 @@ import android.database.Cursor;
 
 import com.mamewo.podplayer0.db.Podcast;
 import com.mamewo.podplayer0.db.Podcast.PodcastColumns;
-import com.mamewo.podplayer0.db.PodcastProvider;
 import android.widget.SimpleCursorAdapter;
 
 import android.app.Activity;
@@ -67,8 +68,8 @@ public class PodcastListPreference
 	implements OnClickListener,
 	OnItemClickListener,
 	OnItemLongClickListener,
-			   DialogInterface.OnClickListener,
-			   OnCancelListener
+    DialogInterface.OnClickListener,
+	OnCancelListener
 {
 	final static
 	private String TAG = "podplayer";
@@ -119,10 +120,12 @@ public class PodcastListPreference
 
 		@Override
 		public boolean setViewValue(View view, Cursor cursor, int columnIndex){
+			Log.d(TAG, "setViewValue: " + columnIndex);
 			boolean handled = false;
 			if(columnIndex == ENABLED_INDEX){
-				boolean enabled = cursor.getInt(ENABLED_INDEX) == 1;
-				((CheckBox)view).setChecked(enabled);
+				int enabled = cursor.getInt(ENABLED_INDEX);
+				Log.d(TAG, "setViewValue: enabled " + enabled);
+				((CheckBox)view).setChecked(enabled == 1);
 				handled = true;
 			}
 			return handled;
@@ -142,10 +145,12 @@ public class PodcastListPreference
 		
 		//adapter_ = new PodcastInfoAdapter(this, list);
 		// podcastListView_.setAdapter(adapter_);
-		// podcastListView_.setOnItemLongClickListener(this);
-		// podcastListView_.setOnItemClickListener(this);
+
+		podcastListView_.setOnItemLongClickListener(this);
+		podcastListView_.setOnItemClickListener(this);
+
 		//TODO: 
-		Cursor cursor = managedQuery(Podcast.PodcastColumns.CONTENT_URI,
+		Cursor cursor = managedQuery(PodcastColumns.CONTENT_URI,
 									 PROJECTION, null, null, null);
 		adapter_ = new SimpleCursorAdapter(this, R.layout.podcast_select_item, cursor,
 										   new String[] { PodcastColumns.TITLE,
@@ -600,10 +605,21 @@ public class PodcastListPreference
 
 	@Override
 	public void onItemClick(AdapterView<?> adapter, View parent, int pos, long id) {
-		CheckBox checkbox = (CheckBox) parent.findViewById(R.id.checkbox);
-		PodcastInfo info = (PodcastInfo) adapter.getItemAtPosition(pos);
-		info.enabled_ = !info.enabled_;
-		checkbox.setChecked(info.enabled_);
+		Cursor cursor = (Cursor) adapter.getItemAtPosition(pos);
+		int nextEnabled = cursor.getInt(ENABLED_INDEX) == 1 ? 0 : 1;
+		int podcastId = cursor.getInt(ID_INDEX);
+		String title = cursor.getString(TITLE_INDEX);
+		//TODO: update ENABLED column value
+		Uri updateUri = ContentUris.withAppendedId(PodcastColumns.CONTENT_URI, (long)podcastId);
+		ContentValues values = new ContentValues();
+		values.put(PodcastColumns.ENABLED, Integer.valueOf(nextEnabled));
+		int count = getContentResolver().update(updateUri, values, null, null);
+ 		if(count > 0){
+			//Umm...: not notified from db..
+			CheckBox checkbox = (CheckBox) parent.findViewById(R.id.checkbox);
+			checkbox.setChecked(nextEnabled == 1);
+ 		}
+		Log.d(TAG, "onItemClick: db update result: " + title + " nextEnabled: " + nextEnabled  + " " + count + " " + updateUri.toString());
 		//TODO: check total state
 		isChanged_ = true;
 	}

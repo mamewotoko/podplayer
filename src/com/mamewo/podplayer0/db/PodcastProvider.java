@@ -10,6 +10,7 @@ import com.mamewo.podplayer0.db.Podcast.PlayHistoryColumns;
 import com.mamewo.podplayer0.db.Podcast.PodcastColumns;
 import com.mamewo.podplayer0.R;
 
+import android.text.TextUtils;
 import android.net.Uri;
 import android.util.Log;
 import android.content.ContentProvider;
@@ -28,11 +29,13 @@ public class PodcastProvider extends ContentProvider {
 	private static UriMatcher uriMatcher_ = null;
 
 	private static final int PODCAST = 1;
-	private static final int EPISODE = 2;
+	private static final int PODCAST_ID = 2;
+	private static final int EPISODE = 3;
 	
 	static {
 		uriMatcher_ = new UriMatcher(UriMatcher.NO_MATCH);
 		uriMatcher_.addURI(Podcast.AUTHORITY, PodcastColumns.PATH, PODCAST);
+		uriMatcher_.addURI(Podcast.AUTHORITY, PodcastColumns.PATH+"/#", PODCAST_ID);
 		uriMatcher_.addURI(Podcast.AUTHORITY, EpisodeColumns.PATH, EPISODE);
 	}
 	
@@ -128,7 +131,23 @@ public class PodcastProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String where, String[] whereArgs) {
-		return 0;
+		SQLiteDatabase db = helper_.getWritableDatabase();
+		int count;
+		int matchResult = uriMatcher_.match(uri);
+		switch(matchResult){
+		case PODCAST_ID:
+			//?
+			String id = uri.getPathSegments().get(1);
+			Log.d(TAG, "Provider.update: " + id + " " + values.get("enabled"));
+			count = db.update(Podcast.PODCAST_TABLE_NAME, values, PodcastColumns._ID + "=" + id
+							  + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
+			break;
+		default:
+			count = 0;
+			break;
+		}
+		getContext().getContentResolver().notifyChange(uri, null);
+		return count;
 	}
 
     @Override
@@ -138,7 +157,8 @@ public class PodcastProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-		switch(uriMatcher_.match(uri)){
+		int matchResult = uriMatcher_.match(uri);
+		switch(matchResult){
 		case PODCAST:
 			SQLiteDatabase db = helper_.getWritableDatabase();
 			long id = db.insert(Podcast.PODCAST_TABLE_NAME, null, values);
