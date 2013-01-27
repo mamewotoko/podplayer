@@ -16,7 +16,9 @@ import android.util.Log;
 import android.content.ContentProvider;
 import android.content.Context;
 import android.content.ContentValues;
+import android.content.ContentUris;
 import android.content.UriMatcher;
+import android.database.SQLException;
 
 import java.util.Map;
 import java.util.ArrayList;
@@ -155,27 +157,39 @@ public class PodcastProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String where, String[] whereArgs) {
+		//TODO:
+		//PODCAST_ID
+		//EPISODE_ID?
+		//HISTORY
 		return 0;
 	}
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
 		int matchResult = uriMatcher_.match(uri);
+		Uri result = null;
 		switch(matchResult){
 		case PODCAST:
 			SQLiteDatabase db = helper_.getWritableDatabase();
 			long id = db.insert(Podcast.PODCAST_TABLE_NAME, null, values);
+			if(id > 0){
+				result = ContentUris.withAppendedId(PodcastColumns.CONTENT_URI, id);
+				getContext().getContentResolver().notifyChange(result, null);
+			}
+			else {
+				throw new SQLException("Failed to insert row into " + uri);
+			}
 			break;
 		default:
 			Log.d(TAG, "insert: not handled: " + uri);
 			break;
 		}
-
-		return null;
+		return result;
 	}
 
     @Override
     public String getType(Uri uri) {
+		//TODO: return appropriate value according to uri
 		return PodcastColumns.CONTENT_TYPE;
 	}
 }
