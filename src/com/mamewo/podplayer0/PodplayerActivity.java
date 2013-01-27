@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -37,6 +38,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.mamewo.podplayer0.PlayerService.MusicInfo;
+import com.mamewo.podplayer0.db.Podcast.EpisodeColumns;
 import com.markupartist.android.widget.PullToRefreshListView;
 
 public class PodplayerActivity
@@ -212,8 +214,8 @@ public class PodplayerActivity
 			else {
 				stateIcon.setVisibility(View.GONE);
 			}
-			if(showPodcastIcon_ && null != state_.podcastList_.get(info.index_).icon_){
-				episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
+			if(showPodcastIcon_ && null != state_.podcastList_.get(info.podcastId_).icon_){
+				episodeIcon.setImageDrawable(state_.podcastList_.get(info.podcastId_).icon_);
 				episodeIcon.setVisibility(View.VISIBLE);
 			}
 			else {
@@ -255,7 +257,7 @@ public class PodplayerActivity
 			else {
 				String selectedTitle = (String)selector_.getSelectedItem();
 				int index = podcastTitle2Index(selectedTitle);
-				if(index == info.index_) {
+				if(index == info.podcastId_) {
 					adapter_.add(info);
 					adapter_.notifyDataSetChanged();
 				}
@@ -272,11 +274,23 @@ public class PodplayerActivity
 
 		@Override
 		protected void onProgressUpdate(MusicInfo... values){
-			Intent insertIntent = new Intent();
 			for (int i = 0; i < values.length; i++) {
-				state_.loadedEpisode_.add(values[i]);
+				//TODO: insert if not exists
+				MusicInfo info = values[i];
+				ContentValues dbValues = new ContentValues();
+				dbValues.put(EpisodeColumns.TITLE, info.title_);
+				dbValues.put(EpisodeColumns.PODCAST_ID, info.podcastId_);
+				dbValues.put(EpisodeColumns.URL, info.url_);
+				dbValues.put(EpisodeColumns.PUBDATE, info.pubdate_);
+				//dbValues.put(EpisodeColumns.LINK, info.link_);
+				getContentResolver().insert(EpisodeColumns.CONTENT_URI, dbValues);
+				//int id = Integer.valueOf(uri.getPathSegments().get(1));
+				//info.id_ = id;
+				//
+				//state_.loadedEpisode_.add(values[i]);
+				//TODO: bulk update?
 			}
-			addEpisodeItemsToAdapter(values);
+			//addEpisodeItemsToAdapter(values);
 		}
 
 		private void onFinished() {
@@ -356,10 +370,10 @@ public class PodplayerActivity
 			int selectedIndex = podcastTitle2Index(selectedTitle);
 			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
 				MusicInfo info = state_.loadedEpisode_.get(i);
-				if (selectedIndex == info.index_) {
+				if (selectedIndex == info.podcastId_) {
 					adapter_.add(info);
 				}
-				else if (selectedIndex < info.index_) {
+				else if (selectedIndex < info.podcastId_) {
 					break;
 				}
 			}

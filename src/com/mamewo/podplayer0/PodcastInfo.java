@@ -12,13 +12,15 @@ public class PodcastInfo
 	 * 
 	 */
 	private static final long serialVersionUID = 7613791894671950703L;
+	public int id_;
 	public String title_;
 	public URL url_;
 	public URL iconURL_;
 	public boolean enabled_;
 	transient public BitmapDrawable icon_;
 
-	public PodcastInfo(String title, URL url, URL iconURL, BitmapDrawable icon, boolean enabled) {
+	public PodcastInfo(int id, String title, URL url, URL iconURL, BitmapDrawable icon, boolean enabled) {
+		id_ = id;
 		title_ = title;
 		url_ = url;
 		iconURL_ = iconURL;

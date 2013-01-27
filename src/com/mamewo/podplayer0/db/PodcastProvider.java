@@ -55,23 +55,24 @@ public class PodcastProvider extends ContentProvider {
 		
 		@Override
 		public void onCreate(SQLiteDatabase db){
-			db.execSQL("CREATE TABLE " + Podcast.PODCAST_TABLE_NAME + " ("
+			db.execSQL("CREATE TABLE " + PodcastColumns.TABLE_NAME + " ("
 					   + PodcastColumns._ID + " INTEGER PRIMARY KEY,"
 					   + PodcastColumns.TITLE + " TEXT,"
 					   + PodcastColumns.URL + " TEXT,"
 					   + PodcastColumns.ICON_URL + " TEXT,"
 					   + PodcastColumns.ENABLED + " BOOLEAN,"
 					   + PodcastColumns.ORD + " INTEGER);");
-			db.execSQL("CREATE TABLE " + Podcast.EPISODE_TABLE_NAME + "("
-						+ EpisodeColumns._ID + " INTEGER PRIMARY KEY,"
-						+ EpisodeColumns.URL + " TEXT,"
-						+ EpisodeColumns.TITLE + " TEXT,"
-						+ EpisodeColumns.PUBDATE + " TEXT,"
-						+ EpisodeColumns.LINK_URL + " TEXT);");
-			db.execSQL("CREATE TABLE " + Podcast.PLAY_HISTORY_TABLE_NAME + "("
-						+ PlayHistoryColumns._ID + " INTEGER PRIMARY KEY,"
-						+ PlayHistoryColumns.EPISODE_ID + " INTEGER,"
-						+ PlayHistoryColumns.PLAYED_DATE + " TEXT)");
+			db.execSQL("CREATE TABLE " + EpisodeColumns.TABLE_NAME + "("
+					   + EpisodeColumns._ID + " INTEGER PRIMARY KEY,"
+					   + EpisodeColumns.PODCAST_ID + " INTEGER,"
+					   + EpisodeColumns.URL + " TEXT,"
+					   + EpisodeColumns.TITLE + " TEXT,"
+					   + EpisodeColumns.PUBDATE + " TEXT,"
+					   + EpisodeColumns.LINK_URL + " TEXT);");
+			db.execSQL("CREATE TABLE " + PlayHistoryColumns.TABLE_NAME + "("
+					   + PlayHistoryColumns._ID + " INTEGER PRIMARY KEY,"
+					   + PlayHistoryColumns.EPISODE_ID + " INTEGER,"
+					   + PlayHistoryColumns.PLAYED_DATE + " TEXT)");
 			//TODO: migrate podcast data from JSON
 			String[] allTitles = context_.getResources().getStringArray(R.array.pref_podcastlist_keys);
 			String[] allURLs = context_.getResources().getStringArray(R.array.pref_podcastlist_urls);
@@ -86,7 +87,7 @@ public class PodcastProvider extends ContentProvider {
 				values.put(PodcastColumns.ENABLED, Integer.valueOf(1));
 				values.put(PodcastColumns.ORD, Integer.valueOf(i));
 				//TODO: check result of insert
-				db.insert(Podcast.PODCAST_TABLE_NAME, null, values);
+				db.insert(PodcastColumns.TABLE_NAME, null, values);
 			}
 			//TODO: cache icon data
 		}
@@ -110,22 +111,49 @@ public class PodcastProvider extends ContentProvider {
 		Log.d(TAG, "query: uri " + uri.toString());
 		Cursor c = null;
 		SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
-
+		SQLiteDatabase db = null;
+		Map<String, String> map = null;
+		
 		switch(uriMatcher_.match(uri)){
 		case PODCAST:
-			builder.setTables(Podcast.PODCAST_TABLE_NAME);
-			Map<String, String> map = new HashMap<String, String>();
+			builder.setTables(PodcastColumns.TABLE_NAME);
+			map = new HashMap<String, String>();
 			map.put(PodcastColumns._ID, PodcastColumns._ID);
 			map.put(PodcastColumns.TITLE, PodcastColumns.TITLE);
 			map.put(PodcastColumns.URL, PodcastColumns.URL);
 			map.put(PodcastColumns.ENABLED, PodcastColumns.ENABLED);
 			map.put(PodcastColumns.ICON_URL, PodcastColumns.ICON_URL);
 			builder.setProjectionMap(map);
-			SQLiteDatabase db = helper_.getReadableDatabase();
+			db = helper_.getReadableDatabase();
 			c = builder.query(db, projection, selection, selectionArgs, null, null, null);
 			break;
 		case EPISODE:
-			//fall through
+			builder.setTables(PodcastColumns.TABLE_NAME+","+EpisodeColumns.TABLE_NAME);
+			map = new HashMap<String, String>();
+			String[] columns = new String[] {
+					EpisodeColumns._ID,
+					EpisodeColumns.TITLE,
+					EpisodeColumns.URL,
+					EpisodeColumns.PUBDATE,
+					EpisodeColumns.LINK_URL,
+					EpisodeColumns.PODCAST_ID
+			};
+			for(String column: columns){
+				map.put(column, EpisodeColumns.TABLE_NAME+"."+column);
+			}
+// 			map.put(EpisodeColumns.TABLE_NAME+"."+EpisodeColumns._ID, EpisodeColumns._ID);
+// 			map.put(EpisodeColumns.TABLE_NAME+"."+EpisodeColumns.TITLE, EpisodeColumns.TITLE);
+// 			map.put(EpisodeColumns.TABLE_NAME+"."+EpisodeColumns.URL, EpisodeColumns.URL);
+// 			map.put(EpisodeColumns.TABLE_NAME+"."+EpisodeColumns.PUBDATE, EpisodeColumns.PUBDATE);
+// 			map.put(EpisodeColumns.TABLE_NAME+"."+EpisodeColumns.LINK_URL, EpisodeColumns.LINK_URL);
+// 			map.put(EpisodeColumns.TABLE_NAME+"."+EpisodeColumns.PODCAST_ID, EpisodeColumns.PODCAST_ID);
+			builder.setProjectionMap(map);
+			builder.appendWhere(EpisodeColumns.PODCAST_ID
+								+ "=" + PodcastColumns.TABLE_NAME+"."+PodcastColumns._ID);
+			db = helper_.getReadableDatabase();
+			c = builder.query(db, projection, selection, selectionArgs, null, null, null);
+			//TODO: add last played time
+			break;
 		default:
 			Log.d(TAG, "query: not handled uri " + uri);
 			break;
@@ -143,7 +171,7 @@ public class PodcastProvider extends ContentProvider {
 			//?
 			String id = uri.getPathSegments().get(1);
 			Log.d(TAG, "Provider.update: " + id + " " + values.get("enabled"));
-			count = db.update(Podcast.PODCAST_TABLE_NAME, values, PodcastColumns._ID + "=" + id
+			count = db.update(PodcastColumns.TABLE_NAME, values, PodcastColumns._ID + "=" + id
 							  + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
 			break;
 		default:
@@ -171,7 +199,7 @@ public class PodcastProvider extends ContentProvider {
 		switch(matchResult){
 		case PODCAST:
 			SQLiteDatabase db = helper_.getWritableDatabase();
-			long id = db.insert(Podcast.PODCAST_TABLE_NAME, null, values);
+			long id = db.insert(PodcastColumns.TABLE_NAME, null, values);
 			if(id > 0){
 				result = ContentUris.withAppendedId(PodcastColumns.CONTENT_URI, id);
 				getContext().getContentResolver().notifyChange(result, null);

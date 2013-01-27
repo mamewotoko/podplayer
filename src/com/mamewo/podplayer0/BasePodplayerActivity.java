@@ -6,7 +6,9 @@ import java.util.List;
 import java.io.File;
 import com.mamewo.podplayer0.PlayerService.MusicInfo;
 import com.mamewo.podplayer0.db.Podcast.EpisodeColumns;
+import com.mamewo.podplayer0.db.Podcast.PodcastColumns;
 
+import android.database.Cursor;
 import android.media.AudioManager;
 import android.app.Activity;
 import android.content.Context;
@@ -61,6 +63,23 @@ abstract public class BasePodplayerActivity
 	Object cacheObject_ = null;
 	static final public int CACHERESPONSE_API_LEVEL = 13;
 
+	//TODO: add last played time
+	static final private String[] EPISODE_PROJECTION = {
+		EpisodeColumns._ID, //0
+		EpisodeColumns.TITLE, //1
+		EpisodeColumns.URL, //2
+		EpisodeColumns.PUBDATE, //3
+		EpisodeColumns.LINK_URL, //4
+		EpisodeColumns.PODCAST_ID, //5
+	};
+
+	private static final int EPISODE_ID_INDEX = 0;
+	private static final int EPISODE_TITLE_INDEX = 1;
+	private static final int EPISODE_URL_INDEX = 2;
+	private static final int EPISODE_PUBDATE_INDEX = 3;
+	private static final int EPISODE_LINK_URL_INDEX = 4;
+	private static final int EPISODE_PODCAST_ID_INDEX = 5;
+
 	public void onCreate(Bundle savedInstanceState, ServiceConnection conn, Class<?> userClass) {
 		super.onCreate(savedInstanceState);
 		Intent myIntent = getIntent();
@@ -88,9 +107,14 @@ abstract public class BasePodplayerActivity
 		pref.registerOnSharedPreferenceChangeListener(this);
 		httpCacheDir_ = null;
 		cacheObject_ = null;
-
-		//Cursor cursor = getContentResolver().query(PodcastColumns.CONTENT_URI, null, null, null);
-		//do something
+		//uri, projection, where, where value, order
+		Cursor cursor = getContentResolver().query(EpisodeColumns.CONTENT_URI,
+												   EPISODE_PROJECTION,
+												   PodcastColumns.ENABLED + "=1",
+												   null,
+												   null);
+		startManagingCursor(cursor);
+		//TODO: create cursor adapter
 	}
 
 	private Object enableHttpResponseCache(File cacheDir) {

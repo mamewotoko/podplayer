@@ -5,15 +5,13 @@ import android.provider.BaseColumns;
 
 public class Podcast {
 	public static final String AUTHORITY = "com.mamewo.podplayer0.provider.Podcast";
-	public static final String PODCAST_TABLE_NAME = "podcast";
-	public static final String EPISODE_TABLE_NAME = "episode";
-	public static final String PLAY_HISTORY_TABLE_NAME = "play_history";
 
 	public static final class PodcastColumns
 		implements BaseColumns
 	{
 		public static final String PATH = "podcasts";
 		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + PATH);
+		public static final String TABLE_NAME = "podcast";
 
 		private PodcastColumns(){}
 		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/xml+rss";
@@ -35,8 +33,11 @@ public class Podcast {
 	{
 		public static final String PATH = "episode";
 		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + PATH);
+		public static final String TABLE_NAME = "episode";
 
 		private EpisodeColumns(){}
+		//INTEGER
+		public static final String PODCAST_ID = "podcast_id";
 		//TEXT
 		public static final String TITLE = "title";
 		//TEXT
@@ -52,6 +53,7 @@ public class Podcast {
 	{
 		private PlayHistoryColumns() {}
 		public static final String PATH = "play_history";
+		public static final String TABLE_NAME = "play_history";
 		
 		//int
 		public static final String EPISODE_ID = "episode_id";

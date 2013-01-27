@@ -69,6 +69,8 @@ How to run Scirocco test
 
 TODO
 ----------
+* use database to store played history and episodes as cache
+    * store icon image into podcast table
 * cache podcast icon
     * avoid loading podcast when UI is switched 
 * change notification icon for Android4.0

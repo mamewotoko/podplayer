@@ -560,14 +560,16 @@ public class PlayerService
 		static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_PATTERN, Locale.US);
 
 		private static final long serialVersionUID = 1L;
-		final public String url_;
-		final public String title_;
-		final public String pubdate_;
+		public String url_;
+		public String title_;
+		public String pubdate_;
 		public Date pubdateobj_;
-		final public String link_;
-		final public int index_;
+		public String link_;
+		public int podcastId_;
+		public int id_;
 
 		public MusicInfo(String url, String title, String pubdate, String link, int index) {
+			id_ = 0;
 			url_ = url;
 			title_ = title;
 			pubdate_ = pubdate;
@@ -581,7 +583,7 @@ public class PlayerService
 				Log.d(TAG, "parse error: " + pubdate, e);
 			}
 			link_ = link;
-			index_ = index;
+			podcastId_ = index;
 		}
 		
 		public String getPubdateString(){

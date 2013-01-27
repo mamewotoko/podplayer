@@ -320,8 +320,8 @@ public class PodplayerExpActivity
 			else {
 				stateIcon.setVisibility(View.GONE);
 			}
-			if(showPodcastIcon_ && null != state_.podcastList_.get(info.index_).icon_){
-				episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
+			if(showPodcastIcon_ && null != state_.podcastList_.get(info.podcastId_).icon_){
+				episodeIcon.setImageDrawable(state_.podcastList_.get(info.podcastId_).icon_);
 				episodeIcon.setVisibility(View.VISIBLE);
 			}
 			else {
@@ -359,7 +359,7 @@ public class PodplayerExpActivity
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("TITLE", info.title_);
 			map.put("DATA", info);
-			int groupIndex = filteredItemIndex_[info.index_];
+			int groupIndex = filteredItemIndex_[info.podcastId_];
 			childData_.get(groupIndex).add(map);
 			if (groupIndex < groupMin) {
 				groupMin = groupIndex;

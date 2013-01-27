@@ -3,7 +3,6 @@ package com.mamewo.podplayer0;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,10 +25,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.database.Cursor;
 
-import com.mamewo.podplayer0.db.Podcast;
 import com.mamewo.podplayer0.db.Podcast.PodcastColumns;
 import android.widget.SimpleCursorAdapter;
-import android.widget.CursorAdapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -105,12 +102,19 @@ public class PodcastListPreference
 	private int TITLE_INDEX = 1;
 	static final
 	private int ENABLED_INDEX = 2;
+	static final
+	private int URL_INDEX = 3;
+	static final
+	private int ICON_URL_INDEX = 4;
 
 	final static
 	private String[] PROJECTION =
-		new String[] { PodcastColumns._ID,
-					   PodcastColumns.TITLE,
-					   PodcastColumns.ENABLED };
+		new String[] { PodcastColumns._ID, //0
+					   PodcastColumns.TITLE, //1
+					   PodcastColumns.ENABLED, //2
+					   PodcastColumns.URL, //3
+					   PodcastColumns.ICON_URL //4
+					   };
 
 	static
 	public class PodcastViewBinder
@@ -123,9 +127,9 @@ public class PodcastListPreference
 			Log.d(TAG, "setViewValue: " + columnIndex);
 			boolean handled = false;
 			if(columnIndex == ENABLED_INDEX){
-				int enabled = cursor.getInt(ENABLED_INDEX);
+				boolean enabled = cursor.getInt(ENABLED_INDEX) != 0;
 				Log.d(TAG, "setViewValue: enabled " + enabled);
-				((CheckBox)view).setChecked(enabled == 1);
+				((CheckBox)view).setChecked(enabled);
 				handled = true;
 			}
 			return handled;
@@ -140,7 +144,6 @@ public class PodcastListPreference
 		addButton_ = (Button) findViewById(R.id.add_podcast_button);
 		addButton_.setOnClickListener(this);
 		urlEdit_ = (EditText) findViewById(R.id.url_edit);
-		//List<PodcastInfo> list = loadSetting(this);
 		podcastListView_ = (ListView) findViewById(R.id.podlist);
 		
 		podcastListView_.setOnItemLongClickListener(this);
@@ -170,27 +173,6 @@ public class PodcastListPreference
 	private Cursor createCursor(){
 		return managedQuery(PodcastColumns.CONTENT_URI,
 							PROJECTION, null, null, null);
-	}
-	
-	static
-	private List<PodcastInfo> defaultPodcastInfoList(Context context) {
-		String[] allTitles = context.getResources().getStringArray(R.array.pref_podcastlist_keys);
-		String[] allURLs = context.getResources().getStringArray(R.array.pref_podcastlist_urls);
-		List<PodcastInfo> list = new ArrayList<PodcastInfo>();
-		for (int i = 0; i < allTitles.length; i++) {
-			String title = allTitles[i];
-			URL url = null;
-			try {
-				url = new URL(allURLs[i]);
-				//TODO: get config and fetch icon
-				PodcastInfo info = new PodcastInfo(title, url, null, null, true);
-				list.add(info);
-			}
-			catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-		}
-		return list;
 	}
 
 	@Override
@@ -372,7 +354,8 @@ public class PodcastListPreference
 					}
 					if (numItems > 0 && null != title) {
 						Log.d(TAG, "publish: " + title);
-						publishProgress(new PodcastInfo(title, url, iconURL, bitmap, true));
+						//dummy info
+						publishProgress(new PodcastInfo(-1, title, url, iconURL, bitmap, true));
 						result = true;
 					}
 				}
@@ -406,7 +389,9 @@ public class PodcastListPreference
 			dbValues.put(PodcastColumns.URL, info.url_.toString());
 			dbValues.put(PodcastColumns.ENABLED, Integer.valueOf(1));
 
-			getContentResolver().insert(PodcastColumns.CONTENT_URI, dbValues);
+			Uri uri = getContentResolver().insert(PodcastColumns.CONTENT_URI, dbValues);
+			int id = Integer.valueOf(uri.getPathSegments().get(1));
+			info.id_ = id;
 			adapter_.getCursor().requery();
 			String msg =
 					MessageFormat.format(getString(R.string.podcast_added), info.title_);
@@ -470,25 +455,55 @@ public class PodcastListPreference
 		}
 	}
 
+	/**
+	 * load podcast list from db, json...
+	 */
 	static
 	public List<PodcastInfo> loadSetting(Context context) {
-		List<PodcastInfo> list;
+		List<PodcastInfo> oldList = null;
 		File configFile = context.getFileStreamPath(CONFIG_FILENAME);
+		
 		if (configFile.exists()) {
 			try {
-				list = loadSettingFromJSONFile(context);
+				oldList = loadSettingFromJSONFile(context);
 			}
 			catch (IOException e) {
 				Log.d(TAG, "IOException", e);
-				list = defaultPodcastInfoList(context);
 			}
 			catch (JSONException e) {
 				Log.d(TAG, "JSONException", e);
-				list = defaultPodcastInfoList(context);
 			}
 		}
-		else {
-			list = defaultPodcastInfoList(context);
+		if(null != oldList){
+			//TODO: insert all into db
+			//TODO: remove config file
+		}
+		//TODO: load from db
+		Cursor cursor = context.getContentResolver().query(PodcastColumns.CONTENT_URI,
+														   PROJECTION, null, null, null);
+		List<PodcastInfo> list = new ArrayList<PodcastInfo>();
+		try{
+			while(cursor.moveToNext()){
+				//TODO: getId, xxx
+				int id = cursor.getInt(ID_INDEX);
+				String title = cursor.getString(ID_INDEX);
+				String urlString = cursor.getString(URL_INDEX);
+				URL url = null;
+				try {
+					url = new URL(urlString);
+				}
+				catch (MalformedURLException e) {
+					Log.d(TAG, "cannot parse: " + url, e);
+					continue;
+				}
+				//TODO: 
+				URL iconURL = null;
+				boolean enabled = cursor.getInt(ENABLED_INDEX) != 0;
+				list.add(new PodcastInfo(id, title, url, iconURL, null, enabled));
+			}
+		}
+		finally {
+			cursor.close();
 		}
 		return list;
 	}
@@ -519,7 +534,7 @@ public class PodcastListPreference
 			String title  = value.getString("title");
 			URL url = new URL(value.getString("url"));
 			boolean enabled = value.getBoolean("enabled");
-			PodcastInfo info = new PodcastInfo(title, url, null, null, enabled);
+			PodcastInfo info = new PodcastInfo(-1, title, url, null, null, enabled);
 			list.add(info);
 		}
 		return list;
@@ -591,13 +606,13 @@ public class PodcastListPreference
 	@Override
 	public void onItemClick(AdapterView<?> adapter, View parent, int pos, long id) {
 		Cursor cursor = (Cursor) adapter.getItemAtPosition(pos);
-		int nextEnabled = cursor.getInt(ENABLED_INDEX) == 1 ? 0 : 1;
+		boolean nextEnabled = ! (cursor.getInt(ENABLED_INDEX) != 0);
 		int podcastId = cursor.getInt(ID_INDEX);
 		String title = cursor.getString(TITLE_INDEX);
 		//TODO: update ENABLED column value
 		Uri updateUri = ContentUris.withAppendedId(PodcastColumns.CONTENT_URI, (long)podcastId);
 		ContentValues values = new ContentValues();
-		values.put(PodcastColumns.ENABLED, Integer.valueOf(nextEnabled));
+		values.put(PodcastColumns.ENABLED, Boolean.valueOf(nextEnabled));
 		int count = getContentResolver().update(updateUri, values, null, null);
  		if(count > 0){
 			cursor.requery();
