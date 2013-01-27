@@ -24,7 +24,6 @@ public class BaseGetPodcastTask
 	extends AsyncTask<PodcastInfo, MusicInfo, Void>
 {
 	private Context context_;
-	private URL[] iconURL_;
 	private boolean showPodcastIcon_;
 	private List<MusicInfo> buffer_;
 	int timeoutSec_;
@@ -93,7 +92,6 @@ public class BaseGetPodcastTask
 			Log.i(TAG, "cannot get xml parser", e1);
 			return null;
 		}
-		iconURL_ = new URL[podcastInfo.length];
 		for(int i = 0; i < podcastInfo.length; i++) {
 			PodcastInfo pinfo = podcastInfo[i];
 			if(isCancelled()){
@@ -105,6 +103,8 @@ public class BaseGetPodcastTask
 			URL url = pinfo.url_;
 			Log.d(TAG, "get URL: " + ": "+ pinfo.url_);
 			InputStream is = null;
+			URL iconURL = null;
+
 			try {
 				is = getInputStreamFromURL(url, timeoutSec_);
 				XmlPullParser parser = factory.newPullParser();
@@ -132,9 +132,8 @@ public class BaseGetPodcastTask
 							podcastURL = parser.getAttributeValue(null, "url");
 						}
 						else if("itunes:image".equalsIgnoreCase(currentName)) {
-							if(null == iconURL_[i]) {
-								URL iconURL = new URL(parser.getAttributeValue(null, "href"));
-								iconURL_[i] = iconURL;
+							if(null == iconURL){
+								iconURL = new URL(parser.getAttributeValue(null, "href"));
 								if(showPodcastIcon_ && null == pinfo.icon_) {
 									pinfo.icon_ = downloadIcon(context_, iconURL, timeoutSec_);
 								}

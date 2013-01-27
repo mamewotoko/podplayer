@@ -19,6 +19,8 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 
 public class PodcastProvider extends ContentProvider {
@@ -71,6 +73,7 @@ public class PodcastProvider extends ContentProvider {
 			//TODO: migrate podcast data from JSON
 			String[] allTitles = context_.getResources().getStringArray(R.array.pref_podcastlist_keys);
 			String[] allURLs = context_.getResources().getStringArray(R.array.pref_podcastlist_urls);
+			List<ContentValues> valuesList = new ArrayList<ContentValues>();
 			for(int i = 0; i < allTitles.length; i++){
 				String title = allTitles[i];
 				String url = allURLs[i];
@@ -84,7 +87,6 @@ public class PodcastProvider extends ContentProvider {
 				db.insert(Podcast.PODCAST_TABLE_NAME, null, values);
 			}
 			//TODO: cache icon data
-// 			Log.i(TAG, "db insert: " + result);
 		}
 
 		@Override
@@ -146,7 +148,8 @@ public class PodcastProvider extends ContentProvider {
 			count = 0;
 			break;
 		}
-		getContext().getContentResolver().notifyChange(uri, null);
+		//test
+		getContext().getContentResolver().notifyChange(PodcastColumns.CONTENT_URI, null);
 		return count;
 	}
 

@@ -29,6 +29,7 @@ import android.database.Cursor;
 import com.mamewo.podplayer0.db.Podcast;
 import com.mamewo.podplayer0.db.Podcast.PodcastColumns;
 import android.widget.SimpleCursorAdapter;
+import android.widget.CursorAdapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -78,7 +79,6 @@ public class PodcastListPreference
 	private EditText urlEdit_;
 	private CheckTask task_;
 	private Dialog dialog_;
-	//private PodcastInfoAdapter adapter_;
 	public SimpleCursorAdapter adapter_;
 	private ListView podcastListView_;
 	private Bundle bundle_;
@@ -140,19 +140,24 @@ public class PodcastListPreference
 		addButton_ = (Button) findViewById(R.id.add_podcast_button);
 		addButton_.setOnClickListener(this);
 		urlEdit_ = (EditText) findViewById(R.id.url_edit);
-		List<PodcastInfo> list = loadSetting(this);
+		//List<PodcastInfo> list = loadSetting(this);
 		podcastListView_ = (ListView) findViewById(R.id.podlist);
 		
-		//adapter_ = new PodcastInfoAdapter(this, list);
-		// podcastListView_.setAdapter(adapter_);
-
 		podcastListView_.setOnItemLongClickListener(this);
 		podcastListView_.setOnItemClickListener(this);
 
 		//TODO: 
-		Cursor cursor = managedQuery(PodcastColumns.CONTENT_URI,
-									 PROJECTION, null, null, null);
-		adapter_ = new SimpleCursorAdapter(this, R.layout.podcast_select_item, cursor,
+		Cursor cursor = createCursor();
+		//obsoleted...
+		startManagingCursor(cursor);
+		//API > 14??
+		//TODO: use cursorloader API
+		//int flag = CursorAdapter.FLAG_AUTO_REQUERY | CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER;
+		
+		//this is not in API-10...
+		adapter_ = new SimpleCursorAdapter((Context)this,
+										   R.layout.podcast_select_item,
+										   cursor,
 										   new String[] { PodcastColumns.TITLE,
 														  PodcastColumns.ENABLED },
 										   new int[] { R.id.podcast_title_label,
@@ -160,6 +165,11 @@ public class PodcastListPreference
 		adapter_.setViewBinder(new PodcastViewBinder());
 		podcastListView_.setAdapter(adapter_);
 		bundle_ = null;
+	}
+
+	private Cursor createCursor(){
+		return managedQuery(PodcastColumns.CONTENT_URI,
+							PROJECTION, null, null, null);
 	}
 	
 	static
@@ -173,7 +183,7 @@ public class PodcastListPreference
 			try {
 				url = new URL(allURLs[i]);
 				//TODO: get config and fetch icon
-				PodcastInfo info = new PodcastInfo(title, url, null, true);
+				PodcastInfo info = new PodcastInfo(title, url, null, null, true);
 				list.add(info);
 			}
 			catch (MalformedURLException e) {
@@ -192,15 +202,6 @@ public class PodcastListPreference
 	@Override
 	public void onStop() {
 		super.onStop();
-		try {
-			saveSetting();
-		}
-		catch (JSONException e) {
-			Log.d(TAG, "failed to save podcast list setting");
-		}
-		catch (IOException e) {
-			Log.d(TAG, "failed to save podcast list setting");
-		}
 		//Ummm..: to call preference listener
 		if (isChanged_) {
 			SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -333,6 +334,7 @@ public class PodcastListPreference
 				Log.d(TAG, "get URL: " + url);
 				InputStream is = null;
 				int numItems = 0;
+				URL iconURL = null;
 				BitmapDrawable bitmap = null;
 				String title = null;
 				try {
@@ -351,9 +353,9 @@ public class PodcastListPreference
 								numItems++;
 							}
 							else if("itunes:image".equalsIgnoreCase(currentName)) {
-								if (null == bitmap) {
-									URL iconURL = new URL(parser.getAttributeValue(null, "href"));
-									bitmap = BaseGetPodcastTask.downloadIcon(PodcastListPreference.this, iconURL, 60);
+								if (null == iconURL){
+									iconURL = new URL(parser.getAttributeValue(null, "href"));
+									//bitmap = BaseGetPodcastTask.downloadIcon(PodcastListPreference.this, iconURL, 60);
 								}
 							}
 							else {
@@ -370,12 +372,12 @@ public class PodcastListPreference
 					}
 					if (numItems > 0 && null != title) {
 						Log.d(TAG, "publish: " + title);
-						publishProgress(new PodcastInfo(title, url, bitmap, true));
+						publishProgress(new PodcastInfo(title, url, iconURL, bitmap, true));
 						result = true;
 					}
 				}
 				catch (IOException e) {
-					Log.i(TAG, "IOException", e);
+					Log.i(TAG, "IOException: " + e.getMessage(), e);
 					//continue
 				}
 				catch (XmlPullParserException e) {
@@ -399,7 +401,13 @@ public class PodcastListPreference
 		@Override
 		protected void onProgressUpdate(PodcastInfo... values){
 			PodcastInfo info = values[0];
-			//adapter_.add(info);
+			ContentValues dbValues = new ContentValues();
+			dbValues.put(PodcastColumns.TITLE, info.title_);
+			dbValues.put(PodcastColumns.URL, info.url_.toString());
+			dbValues.put(PodcastColumns.ENABLED, Integer.valueOf(1));
+
+			getContentResolver().insert(PodcastColumns.CONTENT_URI, dbValues);
+			adapter_.getCursor().requery();
 			String msg =
 					MessageFormat.format(getString(R.string.podcast_added), info.title_);
 			showMessage(msg);
@@ -462,29 +470,6 @@ public class PodcastListPreference
 		}
 	}
 
-	private void saveSetting() throws
-		JSONException, IOException
-	{
-		JSONArray array = new JSONArray();
-		// for (int i = 0; i < adapter_.getCount(); i++) {
-		// 	PodcastInfo info = adapter_.getItem(i);
-		// 	JSONObject jsonValue = (new JSONObject())
-		// 			.accumulate("title", info.title_)
-		// 			.accumulate("url", info.url_.toString())
-		// 			.accumulate("enabled", info.enabled_);
-		// 	array.put(jsonValue);
-		//}
-		String json = array.toString();
-		//Log.d(TAG, "JSON: " + json);
-		FileOutputStream fos = openFileOutput(CONFIG_FILENAME, MODE_PRIVATE);
-		try{
-			fos.write(json.getBytes());
-		}
-		finally {
-			fos.close();
-		}
-	}
-	
 	static
 	public List<PodcastInfo> loadSetting(Context context) {
 		List<PodcastInfo> list;
@@ -534,7 +519,7 @@ public class PodcastListPreference
 			String title  = value.getString("title");
 			URL url = new URL(value.getString("url"));
 			boolean enabled = value.getBoolean("enabled");
-			PodcastInfo info = new PodcastInfo(title, url, null, enabled);
+			PodcastInfo info = new PodcastInfo(title, url, null, null, enabled);
 			list.add(info);
 		}
 		return list;
@@ -615,12 +600,10 @@ public class PodcastListPreference
 		values.put(PodcastColumns.ENABLED, Integer.valueOf(nextEnabled));
 		int count = getContentResolver().update(updateUri, values, null, null);
  		if(count > 0){
-			//Umm...: not notified from db..
-			CheckBox checkbox = (CheckBox) parent.findViewById(R.id.checkbox);
-			checkbox.setChecked(nextEnabled == 1);
+			cursor.requery();
+			//TODO: check total state
+			isChanged_ = true;
  		}
 		Log.d(TAG, "onItemClick: db update result: " + title + " nextEnabled: " + nextEnabled  + " " + count + " " + updateUri.toString());
-		//TODO: check total state
-		isChanged_ = true;
 	}
 }
