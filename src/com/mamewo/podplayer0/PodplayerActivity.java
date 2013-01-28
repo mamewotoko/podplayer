@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -33,6 +34,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -56,7 +58,7 @@ public class PodplayerActivity
 	private ToggleButton playButton_;
 	private Spinner selector_;
 	private PullToRefreshListView episodeListView_;
-	private ArrayAdapter<MusicInfo> adapter_;
+	private SimpleCursorAdapter adapter_;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -74,7 +76,10 @@ public class PodplayerActivity
 		episodeListView_.setOnItemLongClickListener(this);
 		episodeListView_.setOnRefreshListener(this);
 		episodeListView_.setOnCancelListener(this);
-		adapter_ = new EpisodeAdapter(this);
+		adapter_ = new SimpleCursorAdapter((Context)this, R.layout.episode_item,
+											getCursor(),
+											new String[] { EpisodeColumns.TITLE, EpisodeColumns.PUBDATE },
+											new int[] { R.id.episode_title, R.id.episode_time});
 		episodeListView_.setAdapter(adapter_);
 	}
 
@@ -91,7 +96,8 @@ public class PodplayerActivity
 			Log.i(TAG, "Already loading");
 			return;
 		}
-		adapter_.clear();
+		//TODO: refactor
+		adapter_.getCursor().requery();
 		setProgressBarIndeterminateVisibility(true);
 		GetPodcastTask task = new GetPodcastTask();
 		startLoading(task);
@@ -137,11 +143,16 @@ public class PodplayerActivity
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> list, View view, int pos, long id) {
+	public void onItemClick(AdapterView<?> adapter, View view, int pos, long id) {
 		//refresh header is added....
-		MusicInfo info = adapter_.getItem(pos-1);
+		Cursor cursor = (Cursor)adapter.getItemAtPosition(pos);
 		MusicInfo current = player_.getCurrentPodInfo();
-		if(current != null && current.url_.equals(info.url_)) {
+		String url = cursor.getString(EPISODE_URL_INDEX);
+		//TODO: fix info
+		MusicInfo info = new MusicInfo(url, cursor.getString(EPISODE_TITLE_INDEX),
+										cursor.getString(EPISODE_PUBDATE_INDEX),
+										null, -1);
+		if(null != cursor && current.url_.equals(url)) {
 			Log.d(TAG, "onItemClick: URL: " + current.url_);
 			if(player_.isPlaying()) {
 				Log.d(TAG, "onItemClick1");
@@ -245,26 +256,6 @@ public class PodplayerActivity
 	}
 	// end of callback methods
 
-	private void addEpisodeItemsToAdapter(MusicInfo[] values) {
-		for (int i = 0; i < values.length; i++) {
-			MusicInfo info = values[i];
-			int selectorPos = selector_.getSelectedItemPosition();
-			if(selectorPos == 0) {
-				//ALL is selected
-				adapter_.add(info);
-				adapter_.notifyDataSetChanged();
-			}
-			else {
-				String selectedTitle = (String)selector_.getSelectedItem();
-				int index = podcastTitle2Index(selectedTitle);
-				if(index == info.podcastId_) {
-					adapter_.add(info);
-					adapter_.notifyDataSetChanged();
-				}
-			}
-		}
-	}
-	
 	private class GetPodcastTask
 		extends BaseGetPodcastTask
 	{
@@ -277,6 +268,7 @@ public class PodplayerActivity
 			for (int i = 0; i < values.length; i++) {
 				//TODO: insert if not exists
 				MusicInfo info = values[i];
+				Log.d(TAG, "onProgressUpdate: " + info.url_);
 				ContentValues dbValues = new ContentValues();
 				dbValues.put(EpisodeColumns.TITLE, info.title_);
 				dbValues.put(EpisodeColumns.PODCAST_ID, info.podcastId_);
@@ -290,6 +282,7 @@ public class PodplayerActivity
 				//state_.loadedEpisode_.add(values[i]);
 				//TODO: bulk update?
 			}
+			getCursor().requery();
 			//addEpisodeItemsToAdapter(values);
 		}
 
@@ -334,50 +327,50 @@ public class PodplayerActivity
 		}
 	}
 
+	//TODO: implement using curosor
 	@Override
 	public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
-		MusicInfo info = adapter_.getItem(pos-1);
-		SharedPreferences pref=
-				PreferenceManager.getDefaultSharedPreferences(this);
-		boolean enableLongClick = pref.getBoolean("enable_long_click", PodplayerPreference.DEFAULT_ENABLE_LONG_CLICK);
-		if ((! enableLongClick) || null == info.link_) {
-			return false;
-		}
-		//TODO: add preference to enable this 
-		Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		if (vibrator != null) {
-			vibrator.vibrate(100);
-		}
-		Intent i =
-				new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
-		startActivity(i);
+//		MusicInfo info = adapter_.getItem(pos-1);
+//		SharedPreferences pref=
+//				PreferenceManager.getDefaultSharedPreferences(this);
+//		boolean enableLongClick = pref.getBoolean("enable_long_click", PodplayerPreference.DEFAULT_ENABLE_LONG_CLICK);
+//		if ((! enableLongClick) || null == info.link_) {
+//			return false;
+//		}
+//		//TODO: add preference to enable this 
+//		Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+//		if (vibrator != null) {
+//			vibrator.vibrate(100);
+//		}
+//		Intent i =
+//				new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
+//		startActivity(i);
 		return true;
 	}
 
 	//Filter is changed
 	@Override
 	public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
-		adapter_.clear();
-		if(pos == 0){
-			//0: all
-			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
-				MusicInfo info = state_.loadedEpisode_.get(i);
-				adapter_.add(info);
-			}
-		}
-		else {
-			String selectedTitle = (String)adapter.getItemAtPosition(pos);
-			int selectedIndex = podcastTitle2Index(selectedTitle);
-			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
-				MusicInfo info = state_.loadedEpisode_.get(i);
-				if (selectedIndex == info.podcastId_) {
-					adapter_.add(info);
-				}
-				else if (selectedIndex < info.podcastId_) {
-					break;
-				}
-			}
-		}
+		//TODO: change filter and requery
+//		if(pos == 0){
+//			//0: all
+//			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
+//				MusicInfo info = state_.loadedEpisode_.get(i);
+//			}
+//		}
+//		else {
+//			String selectedTitle = (String)adapter.getItemAtPosition(pos);
+//			int selectedIndex = podcastTitle2Index(selectedTitle);
+//			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
+//				MusicInfo info = state_.loadedEpisode_.get(i);
+//				if (selectedIndex == info.podcastId_) {
+//					adapter_.add(info);
+//				}
+//				else if (selectedIndex < info.podcastId_) {
+//					break;
+//				}
+//			}
+//		}
 		if (! isLoading()) {
 			episodeListView_.hideHeader();
 		}
@@ -385,10 +378,7 @@ public class PodplayerActivity
 
 	@Override
 	public void onNothingSelected(AdapterView<?> adapter) {
-		for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
-			MusicInfo info = state_.loadedEpisode_.get(i);
-			adapter_.add(info);
-		}
+		//TODO: use default filter and requery
 	}
 	
 	private int podcastTitle2Index(String title){
@@ -451,8 +441,7 @@ public class PodplayerActivity
 		}
 		else if (playlist != null && ! playlist.isEmpty()) {
 			//update list by loaded items
-			adapter_.clear();
-			addEpisodeItemsToAdapter(playlist.toArray(new MusicInfo[0]));
+			adapter_.getCursor().requery();
 			episodeListView_.onRefreshComplete(state_.lastUpdated_);
 		}
 		updateUI();

@@ -73,12 +73,13 @@ abstract public class BasePodplayerActivity
 		EpisodeColumns.PODCAST_ID, //5
 	};
 
-	private static final int EPISODE_ID_INDEX = 0;
-	private static final int EPISODE_TITLE_INDEX = 1;
-	private static final int EPISODE_URL_INDEX = 2;
-	private static final int EPISODE_PUBDATE_INDEX = 3;
-	private static final int EPISODE_LINK_URL_INDEX = 4;
-	private static final int EPISODE_PODCAST_ID_INDEX = 5;
+	protected static final int EPISODE_ID_INDEX = 0;
+	protected static final int EPISODE_TITLE_INDEX = 1;
+	protected static final int EPISODE_URL_INDEX = 2;
+	protected static final int EPISODE_PUBDATE_INDEX = 3;
+	protected static final int EPISODE_LINK_URL_INDEX = 4;
+	protected static final int EPISODE_PODCAST_ID_INDEX = 5;
+	private Cursor cursor_;
 
 	public void onCreate(Bundle savedInstanceState, ServiceConnection conn, Class<?> userClass) {
 		super.onCreate(savedInstanceState);
@@ -108,13 +109,17 @@ abstract public class BasePodplayerActivity
 		httpCacheDir_ = null;
 		cacheObject_ = null;
 		//uri, projection, where, where value, order
-		Cursor cursor = getContentResolver().query(EpisodeColumns.CONTENT_URI,
-												   EPISODE_PROJECTION,
-												   PodcastColumns.ENABLED + "=1",
-												   null,
-												   null);
-		startManagingCursor(cursor);
+		//TODO: sort by title or pubdate
+		cursor_ = managedQuery(EpisodeColumns.CONTENT_URI,
+								EPISODE_PROJECTION,
+								PodcastColumns.ENABLED + "=1",
+								null,
+								null);
 		//TODO: create cursor adapter
+	}
+	
+	protected Cursor getCursor() {
+		return cursor_;
 	}
 
 	private Object enableHttpResponseCache(File cacheDir) {

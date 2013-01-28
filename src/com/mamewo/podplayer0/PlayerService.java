@@ -568,8 +568,8 @@ public class PlayerService
 		public int podcastId_;
 		public int id_;
 
-		public MusicInfo(String url, String title, String pubdate, String link, int index) {
-			id_ = 0;
+		public MusicInfo(String url, String title, String pubdate, String link, int podcastId) {
+			id_ = -1;
 			url_ = url;
 			title_ = title;
 			pubdate_ = pubdate;
@@ -583,7 +583,7 @@ public class PlayerService
 				Log.d(TAG, "parse error: " + pubdate, e);
 			}
 			link_ = link;
-			podcastId_ = index;
+			podcastId_ = podcastId;
 		}
 		
 		public String getPubdateString(){

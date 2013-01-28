@@ -196,12 +196,23 @@ public class PodcastProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
 		int matchResult = uriMatcher_.match(uri);
 		Uri result = null;
+		long id;
+		SQLiteDatabase db = helper_.getWritableDatabase();
 		switch(matchResult){
 		case PODCAST:
-			SQLiteDatabase db = helper_.getWritableDatabase();
-			long id = db.insert(PodcastColumns.TABLE_NAME, null, values);
+			id = db.insert(PodcastColumns.TABLE_NAME, null, values);
 			if(id > 0){
 				result = ContentUris.withAppendedId(PodcastColumns.CONTENT_URI, id);
+				getContext().getContentResolver().notifyChange(result, null);
+			}
+			else {
+				throw new SQLException("Failed to insert row into " + uri);
+			}
+			break;
+		case EPISODE:
+			id = db.insert(EpisodeColumns.TABLE_NAME, null, values);
+			if(id > 0){
+				result = ContentUris.withAppendedId(EpisodeColumns.CONTENT_URI, id);
 				getContext().getContentResolver().notifyChange(result, null);
 			}
 			else {

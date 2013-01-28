@@ -149,10 +149,7 @@ public class PodcastListPreference
 		podcastListView_.setOnItemLongClickListener(this);
 		podcastListView_.setOnItemClickListener(this);
 
-		//TODO: 
 		Cursor cursor = createCursor();
-		//obsoleted...
-		startManagingCursor(cursor);
 		//API > 14??
 		//TODO: use cursorloader API
 		//int flag = CursorAdapter.FLAG_AUTO_REQUERY | CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER;
@@ -171,6 +168,7 @@ public class PodcastListPreference
 	}
 
 	private Cursor createCursor(){
+		//obsoleted...
 		return managedQuery(PodcastColumns.CONTENT_URI,
 							PROJECTION, null, null, null);
 	}
