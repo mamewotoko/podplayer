@@ -2,9 +2,11 @@ package com.mamewo.podplayer0;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.io.File;
-import com.mamewo.podplayer0.PlayerService.MusicInfo;
+import com.mamewo.podplayer0.PlayerService.EpisodeInfo;
 import com.mamewo.podplayer0.db.Podcast.EpisodeColumns;
 import com.mamewo.podplayer0.db.Podcast.PodcastColumns;
 
@@ -304,6 +306,10 @@ abstract public class BasePodplayerActivity
 		//following block should be last one of this function
 		if (updateAll || "podcastlist2".equals(key)) {
 			state_.podcastList_ = PodcastListPreference.loadSetting(this);
+			state_.podcastID2Info_.clear();
+			for(PodcastInfo info: state_.podcastList_){
+				state_.podcastID2Info_.put(info.id_, info);
+			}
 			onPodcastListChanged(updateAll);
 		}
 	}
@@ -345,14 +351,17 @@ abstract public class BasePodplayerActivity
 		implements Serializable
 	{
 		private static final long serialVersionUID = 1L;
-		protected List<MusicInfo> loadedEpisode_;
+		protected List<EpisodeInfo> loadedEpisode_;
 		protected List<PodcastInfo> podcastList_;
 		protected String lastUpdated_;
+		//TODO: use ordered map and remove podcastList_
+		protected Map<Integer, PodcastInfo> podcastID2Info_;
 
 		private PodplayerState() {
-			loadedEpisode_ = new ArrayList<MusicInfo>();
+			loadedEpisode_ = new ArrayList<EpisodeInfo>();
 			podcastList_ = new ArrayList<PodcastInfo>();
 			lastUpdated_ = "";
+			podcastID2Info_ = new HashMap<Integer, PodcastInfo>();
 		}
 	}
 }

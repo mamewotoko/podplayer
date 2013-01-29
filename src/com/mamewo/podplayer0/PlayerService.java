@@ -60,7 +60,7 @@ public class PlayerService
 	final static
 	private int NOTIFY_PLAYING_ID = 1;
 	private final IBinder binder_ = new LocalBinder();
-	private List<MusicInfo> currentPlaylist_;
+	private List<EpisodeInfo> currentPlaylist_;
 	private int playCursor_;
 	private MediaPlayer player_;
 	private PlayerStateListener listener_;
@@ -70,7 +70,7 @@ public class PlayerService
 	private boolean isPausing_;
 	private ComponentName mediaButtonReceiver_;
 	private long previousPrevKeyTime_;
-	private MusicInfo currentPlaying_;
+	private EpisodeInfo currentPlaying_;
 	
 	//msec
 	final static
@@ -119,7 +119,7 @@ public class PlayerService
 		return (networkInfo != null && networkInfo.isConnected());
 	}
 
-	public void setPlaylist(List<MusicInfo> playlist) {
+	public void setPlaylist(List<EpisodeInfo> playlist) {
 		currentPlaylist_ = playlist;
 	}
 	
@@ -195,7 +195,7 @@ public class PlayerService
 		return (! stopOnPrepared_) && (isPreparing_ || player_.isPlaying());
 	}
 
-	public List<MusicInfo> getCurrentPlaylist() {
+	public List<EpisodeInfo> getCurrentPlaylist() {
 		return currentPlaylist_;
 	}
 	
@@ -203,7 +203,7 @@ public class PlayerService
 	 * get current playing or pausing music
 	 * @return current music info
 	 */
-	public MusicInfo getCurrentPodInfo(){
+	public EpisodeInfo getCurrentPodInfo(){
 		if (null != currentPlaylist_) {
 			return currentPlaying_;
 		}
@@ -261,7 +261,7 @@ public class PlayerService
 			return false;
 		}
 		player_.start();
-		MusicInfo info = currentPlaylist_.get(playCursor_);
+		EpisodeInfo info = currentPlaylist_.get(playCursor_);
 		if(null != listener_){
 			listener_.onStartMusic(currentPlaylist_.get(playCursor_));
 		}
@@ -477,7 +477,7 @@ public class PlayerService
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 		String code = ErrorCode2String(extra);
-		MusicInfo info = currentPlaying_;
+		EpisodeInfo info = currentPlaying_;
 		Log.i(TAG, "onError: what: " + what + " error code: " + code + " url: " + info.url_);
 		//TODO: show error message to GUI
 		isPreparing_ = false;
@@ -518,8 +518,8 @@ public class PlayerService
 	}
 	
 	public interface PlayerStateListener {
-		public void onStartLoadingMusic(MusicInfo info);
-		public void onStartMusic(MusicInfo info);
+		public void onStartLoadingMusic(EpisodeInfo info);
+		public void onStartMusic(EpisodeInfo info);
 		public void onStopMusic(int mode);
 	}
 
@@ -553,7 +553,7 @@ public class PlayerService
 	}
 
 	static
-	public class MusicInfo
+	public class EpisodeInfo
 		implements Serializable
 	{
 		static final String DATE_PATTERN = "EEE, dd MMM yyyy HH:mm:ss Z";
@@ -568,7 +568,7 @@ public class PlayerService
 		public int podcastId_;
 		public int id_;
 
-		public MusicInfo(String url, String title, String pubdate, String link, int podcastId) {
+		public EpisodeInfo(String url, String title, String pubdate, String link, int podcastId) {
 			id_ = -1;
 			url_ = url;
 			title_ = title;

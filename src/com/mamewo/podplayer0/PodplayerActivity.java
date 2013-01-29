@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -39,7 +40,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.mamewo.podplayer0.PlayerService.MusicInfo;
+import com.mamewo.podplayer0.PlayerService.EpisodeInfo;
 import com.mamewo.podplayer0.db.Podcast.EpisodeColumns;
 import com.markupartist.android.widget.PullToRefreshListView;
 
@@ -78,8 +79,9 @@ public class PodplayerActivity
 		episodeListView_.setOnCancelListener(this);
 		adapter_ = new SimpleCursorAdapter((Context)this, R.layout.episode_item,
 											getCursor(),
-											new String[] { EpisodeColumns.TITLE, EpisodeColumns.PUBDATE },
-											new int[] { R.id.episode_title, R.id.episode_time});
+											new String[] { EpisodeColumns.TITLE, EpisodeColumns.PUBDATE, EpisodeColumns.PODCAST_ID},
+											new int[] { R.id.episode_title, R.id.episode_time, R.id.episode_icon});
+		adapter_.setViewBinder(new EpisodeViewBinder());
 		episodeListView_.setAdapter(adapter_);
 	}
 
@@ -146,10 +148,10 @@ public class PodplayerActivity
 	public void onItemClick(AdapterView<?> adapter, View view, int pos, long id) {
 		//refresh header is added....
 		Cursor cursor = (Cursor)adapter.getItemAtPosition(pos);
-		MusicInfo current = player_.getCurrentPodInfo();
+		EpisodeInfo current = player_.getCurrentPodInfo();
 		String url = cursor.getString(EPISODE_URL_INDEX);
 		//TODO: fix info
-		MusicInfo info = new MusicInfo(url, cursor.getString(EPISODE_TITLE_INDEX),
+		EpisodeInfo info = new EpisodeInfo(url, cursor.getString(EPISODE_TITLE_INDEX),
 										cursor.getString(EPISODE_PUBDATE_INDEX),
 										null, -1);
 		if(null != cursor && current.url_.equals(url)) {
@@ -173,7 +175,7 @@ public class PodplayerActivity
 		}
 	}
 
-	private boolean playByInfo(MusicInfo info) {
+	private boolean playByInfo(EpisodeInfo info) {
 		//umm...
 		int playPos = -1;
 		for(playPos = 0; playPos < state_.loadedEpisode_.size(); playPos++) {
@@ -189,7 +191,7 @@ public class PodplayerActivity
 	}
 
 	public class EpisodeAdapter
-		extends ArrayAdapter<MusicInfo>
+		extends ArrayAdapter<EpisodeInfo>
 	{
 		public EpisodeAdapter(Context context) {
 			super(context, R.layout.episode_item);
@@ -204,14 +206,14 @@ public class PodplayerActivity
 			else {
 				view = convertView;
 			}
-			MusicInfo info = getItem(position);
+			EpisodeInfo info = getItem(position);
 			TextView titleView = (TextView)view.findViewById(R.id.episode_title);
 			TextView timeView = (TextView)view.findViewById(R.id.episode_time);
 			titleView.setText(info.title_);
 			timeView.setText(info.getPubdateString());
 			ImageView stateIcon = (ImageView)view.findViewById(R.id.play_icon);
 			ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
-			MusicInfo current = player_.getCurrentPodInfo();
+			EpisodeInfo current = player_.getCurrentPodInfo();
 			if(current != null && current.url_.equals(info.url_)) {
 				//cache!
 				if(player_.isPlaying()) {
@@ -238,13 +240,13 @@ public class PodplayerActivity
 
 	//UI is updated in following callback methods
 	@Override
-	public void onStartMusic(MusicInfo info) {
+	public void onStartMusic(EpisodeInfo info) {
 		setProgressBarIndeterminateVisibility(false);
 		updateUI();
 	}
 
 	@Override
-	public void onStartLoadingMusic(MusicInfo info) {
+	public void onStartLoadingMusic(EpisodeInfo info) {
 		setProgressBarIndeterminateVisibility(true);
 		updateUI();
 	}
@@ -264,10 +266,10 @@ public class PodplayerActivity
 		}
 
 		@Override
-		protected void onProgressUpdate(MusicInfo... values){
+		protected void onProgressUpdate(EpisodeInfo... values){
 			for (int i = 0; i < values.length; i++) {
 				//TODO: insert if not exists
-				MusicInfo info = values[i];
+				EpisodeInfo info = values[i];
 				Log.d(TAG, "onProgressUpdate: " + info.url_);
 				ContentValues dbValues = new ContentValues();
 				dbValues.put(EpisodeColumns.TITLE, info.title_);
@@ -398,7 +400,7 @@ public class PodplayerActivity
 		player_.setOnStartMusicListener(this);
 		playButton_.setEnabled(true);
 		//TODO: move to base?
-		List<MusicInfo> playlist = player_.getCurrentPlaylist();
+		List<EpisodeInfo> playlist = player_.getCurrentPlaylist();
 		if (null != playlist) {
 			state_.loadedEpisode_ = playlist;
 		}
@@ -434,7 +436,7 @@ public class PodplayerActivity
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		selector_.setAdapter(adapter);
 		boolean doLoad = pref.getBoolean("load_on_start", PodplayerPreference.DEFAULT_LOAD_ON_START);
-		List<MusicInfo> playlist = state_.loadedEpisode_;
+		List<EpisodeInfo> playlist = state_.loadedEpisode_;
 		Log.d(TAG, "podcastListChanged: " + state_.loadedEpisode_.size());
 		if (!start || doLoad) {
 			//reload
@@ -446,5 +448,26 @@ public class PodplayerActivity
 			episodeListView_.onRefreshComplete(state_.lastUpdated_);
 		}
 		updateUI();
+	}
+	
+	public class EpisodeViewBinder
+		implements SimpleCursorAdapter.ViewBinder {
+
+		@Override
+		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+			boolean handled = false;
+			if(columnIndex == EPISODE_PODCAST_ID_INDEX){
+				//display icon
+				int id = cursor.getInt(EPISODE_PODCAST_ID_INDEX);
+				ImageView episodeIcon = (ImageView)view;
+				PodcastInfo podcast = state_.podcastID2Info_.get(id);
+				if(showPodcastIcon_ && null != podcast && null != podcast.icon_) {
+					episodeIcon.setImageDrawable(podcast.icon_);
+				}
+				handled = true;
+			}
+			return handled;
+		}
+		
 	}
 }

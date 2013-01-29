@@ -11,7 +11,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import com.mamewo.podplayer0.PlayerService.MusicInfo;
+import com.mamewo.podplayer0.PlayerService.EpisodeInfo;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,16 +21,16 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class BaseGetPodcastTask
-	extends AsyncTask<PodcastInfo, MusicInfo, Void>
+	extends AsyncTask<PodcastInfo, EpisodeInfo, Void>
 {
 	private Context context_;
 	private boolean showPodcastIcon_;
-	private List<MusicInfo> buffer_;
+	private List<EpisodeInfo> buffer_;
 	int timeoutSec_;
 	final static
 	private int BUFFER_SIZE = 10;
 	final static
-	MusicInfo[] DUMMY_ARRAY = new MusicInfo[0];
+	EpisodeInfo[] DUMMY_ARRAY = new EpisodeInfo[0];
 	
 	final static
 	private String TAG = "podplayer";
@@ -45,7 +45,7 @@ public class BaseGetPodcastTask
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
 		timeoutSec_ = Integer.valueOf(pref.getString("read_timeout", PodplayerPreference.DEFAULT_READ_TIMEOUT));
 		showPodcastIcon_ = pref.getBoolean("show_podcast_icon", PodplayerPreference.DEFAULT_SHOW_ICON);
-		buffer_ = new ArrayList<MusicInfo>();
+		buffer_ = new ArrayList<EpisodeInfo>();
 	}
 
 	static
@@ -164,7 +164,7 @@ public class BaseGetPodcastTask
 									title = podcastURL;
 								}
 								//TODO: insert to db here?
-								MusicInfo info = new MusicInfo(podcastURL, title, pubdate, link, pinfo.id_);
+								EpisodeInfo info = new EpisodeInfo(podcastURL, title, pubdate, link, pinfo.id_);
 								buffer_.add(info);
 								if (buffer_.size() >= BUFFER_SIZE) {
 									publish();
