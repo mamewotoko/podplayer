@@ -163,7 +163,8 @@ public class BaseGetPodcastTask
 								if(title == null) {
 									title = podcastURL;
 								}
-								MusicInfo info = new MusicInfo(podcastURL, title, pubdate, link, i);
+								//TODO: insert to db here?
+								MusicInfo info = new MusicInfo(podcastURL, title, pubdate, link, pinfo.id_);
 								buffer_.add(info);
 								if (buffer_.size() >= BUFFER_SIZE) {
 									publish();
