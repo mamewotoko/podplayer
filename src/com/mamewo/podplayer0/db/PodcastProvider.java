@@ -68,7 +68,7 @@ public class PodcastProvider extends ContentProvider {
 					   + EpisodeColumns.URL + " TEXT,"
 					   + EpisodeColumns.TITLE + " TEXT,"
 					   + EpisodeColumns.PUBDATE + " TEXT,"
-					   + EpisodeColumns.LINK_URL + " TEXT);");
+					   + EpisodeColumns.LINK_URL + " TEXT, UNIQUE(URL, PUBDATE));");
 			db.execSQL("CREATE TABLE " + PlayHistoryColumns.TABLE_NAME + "("
 					   + PlayHistoryColumns._ID + " INTEGER PRIMARY KEY,"
 					   + PlayHistoryColumns.EPISODE_ID + " INTEGER,"
@@ -215,9 +215,6 @@ public class PodcastProvider extends ContentProvider {
 				result = ContentUris.withAppendedId(EpisodeColumns.CONTENT_URI, id);
 				getContext().getContentResolver().notifyChange(result, null);
 			}
-			else {
-				throw new SQLException("Failed to insert row into " + uri);
-			}
 			break;
 		default:
 			Log.d(TAG, "insert: not handled: " + uri);
@@ -228,7 +225,7 @@ public class PodcastProvider extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
-		//TODO: return appropriate value according to uri
-		return PodcastColumns.CONTENT_TYPE;
-	}
+    	//TODO: return appropriate value according to uri
+    	return PodcastColumns.CONTENT_TYPE;
+    }
 }

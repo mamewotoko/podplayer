@@ -484,7 +484,7 @@ public class PodcastListPreference
 			while(cursor.moveToNext()){
 				//TODO: getId, xxx
 				int id = cursor.getInt(ID_INDEX);
-				String title = cursor.getString(ID_INDEX);
+				String title = cursor.getString(TITLE_INDEX);
 				String urlString = cursor.getString(URL_INDEX);
 				URL url = null;
 				try {

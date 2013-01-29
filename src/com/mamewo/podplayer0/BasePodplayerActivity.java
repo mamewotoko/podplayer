@@ -359,7 +359,7 @@ abstract public class BasePodplayerActivity
 
 		private PodplayerState() {
 			loadedEpisode_ = new ArrayList<EpisodeInfo>();
-			podcastList_ = new ArrayList<PodcastInfo>();
+			podcastList_ = null;
 			lastUpdated_ = "";
 			podcastID2Info_ = new HashMap<Integer, PodcastInfo>();
 		}

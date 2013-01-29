@@ -113,10 +113,6 @@ public class PodplayerActivity
 				player_.pauseMusic();
 			}
 			else {
-				if (null == state_.loadedEpisode_ || state_.loadedEpisode_.isEmpty()) {
-					return;
-				}
-				updatePlaylist();
 				if(! player_.restartMusic()) {
 					player_.playMusic();
 				}
@@ -125,6 +121,23 @@ public class PodplayerActivity
 		}
 	}
 
+	@Override
+	public void updatePlaylist() {
+		state_.loadedEpisode_.clear();
+		Cursor cursor = adapter_.getCursor();
+		while(cursor.moveToNext()) {
+			String url = cursor.getString(EPISODE_URL_INDEX);
+			String title = cursor.getString(EPISODE_TITLE_INDEX);
+			String pubdate = cursor.getString(EPISODE_PUBDATE_INDEX);
+			String linkURL = cursor.getString(EPISODE_LINK_URL_INDEX);
+			int podcastId = cursor.getInt(EPISODE_PODCAST_ID_INDEX);
+			state_.loadedEpisode_.add(new EpisodeInfo(url, title, pubdate, linkURL, podcastId));
+		}
+		if (state_.loadedEpisode_.isEmpty()) {
+			return;
+		}
+		super.updatePlaylist();
+	}
 	@Override
 	public boolean onLongClick(View view) {
 		if (view == playButton_) {
@@ -154,7 +167,7 @@ public class PodplayerActivity
 		EpisodeInfo info = new EpisodeInfo(url, cursor.getString(EPISODE_TITLE_INDEX),
 										cursor.getString(EPISODE_PUBDATE_INDEX),
 										null, -1);
-		if(null != cursor && current.url_.equals(url)) {
+		if(null != cursor && null != current && current.url_.equals(url)) {
 			Log.d(TAG, "onItemClick: URL: " + current.url_);
 			if(player_.isPlaying()) {
 				Log.d(TAG, "onItemClick1");
@@ -332,8 +345,8 @@ public class PodplayerActivity
 	//TODO: implement using curosor
 	@Override
 	public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
-//		MusicInfo info = adapter_.getItem(pos-1);
-//		SharedPreferences pref=
+	
+		//		SharedPreferences pref=
 //				PreferenceManager.getDefaultSharedPreferences(this);
 //		boolean enableLongClick = pref.getBoolean("enable_long_click", PodplayerPreference.DEFAULT_ENABLE_LONG_CLICK);
 //		if ((! enableLongClick) || null == info.link_) {
@@ -451,8 +464,8 @@ public class PodplayerActivity
 	}
 	
 	public class EpisodeViewBinder
-		implements SimpleCursorAdapter.ViewBinder {
-
+		implements SimpleCursorAdapter.ViewBinder
+	{
 		@Override
 		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
 			boolean handled = false;
@@ -468,6 +481,5 @@ public class PodplayerActivity
 			}
 			return handled;
 		}
-		
 	}
 }
