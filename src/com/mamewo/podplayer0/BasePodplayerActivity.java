@@ -111,13 +111,6 @@ abstract public class BasePodplayerActivity
 		httpCacheDir_ = null;
 		cacheObject_ = null;
 		//uri, projection, where, where value, order
-		//TODO: sort by title or pubdate
-		cursor_ = managedQuery(EpisodeColumns.CONTENT_URI,
-								EPISODE_PROJECTION,
-								PodcastColumns.ENABLED + "=1",
-								null,
-								null);
-		//TODO: create cursor adapter
 	}
 	
 	protected Cursor getCursor() {

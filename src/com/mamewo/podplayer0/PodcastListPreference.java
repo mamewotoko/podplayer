@@ -390,7 +390,7 @@ public class PodcastListPreference
 			Uri uri = getContentResolver().insert(PodcastColumns.CONTENT_URI, dbValues);
 			int id = Integer.valueOf(uri.getPathSegments().get(1));
 			info.id_ = id;
-			adapter_.getCursor().requery();
+			//adapter_.getCursor().requery();
 			String msg =
 					MessageFormat.format(getString(R.string.podcast_added), info.title_);
 			showMessage(msg);

@@ -228,6 +228,7 @@ public class PlayerService
 	 * @return true if succeed
 	 */
 	public boolean playNth(int pos) {
+		Log.d(TAG, "playNth: pos = " + pos);
 		if(currentPlaylist_ == null || currentPlaylist_.size() == 0){
 			Log.d(TAG, "playNth: currentPlaylist_: " + currentPlaylist_);
 			return false;
@@ -580,7 +581,7 @@ public class PlayerService
 			}
 			catch (ParseException e) {
 				pubdateobj_ = null;
-				Log.d(TAG, "parse error: " + pubdate, e);
+				Log.d(TAG, "parse error: " + pubdate + " " + e.getMessage());
 			}
 			link_ = link;
 			podcastId_ = podcastId;

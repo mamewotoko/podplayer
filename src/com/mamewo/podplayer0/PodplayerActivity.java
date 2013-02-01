@@ -42,6 +42,7 @@ import android.widget.ToggleButton;
 
 import com.mamewo.podplayer0.PlayerService.EpisodeInfo;
 import com.mamewo.podplayer0.db.Podcast.EpisodeColumns;
+import com.mamewo.podplayer0.db.Podcast.PodcastColumns;
 import com.markupartist.android.widget.PullToRefreshListView;
 
 public class PodplayerActivity
@@ -60,7 +61,44 @@ public class PodplayerActivity
 	private Spinner selector_;
 	private PullToRefreshListView episodeListView_;
 	private SimpleCursorAdapter adapter_;
+	private String queryWhere_ = null;
+	//TODO: add last played time
+	static final private String[] EPISODE_PROJECTION = {
+		EpisodeColumns._ID, //0
+		EpisodeColumns.TITLE, //1
+		EpisodeColumns.URL, //2
+		EpisodeColumns.PUBDATE, //3
+		EpisodeColumns.LINK_URL, //4
+		EpisodeColumns.PODCAST_ID, //5
+	};
 
+	protected static final int EPISODE_ID_INDEX = 0;
+	protected static final int EPISODE_TITLE_INDEX = 1;
+	protected static final int EPISODE_URL_INDEX = 2;
+	protected static final int EPISODE_PUBDATE_INDEX = 3;
+	protected static final int EPISODE_LINK_URL_INDEX = 4;
+	protected static final int EPISODE_PODCAST_ID_INDEX = 5;
+	private Cursor cursor_;
+
+	private Cursor query() {
+		String condition = PodcastColumns.ENABLED + "= 1";
+		if (queryWhere_ != null) {
+			condition += " and " + queryWhere_;
+		}
+		if(null != cursor_) {
+			stopManagingCursor(cursor_);
+		}
+		//TODO: sort by title or pubdate
+		cursor_ = managedQuery(EpisodeColumns.CONTENT_URI,
+								EPISODE_PROJECTION,
+								condition,
+								null,
+								null);
+		startManagingCursor(cursor_);
+		adapter_.changeCursor(cursor_);
+		return cursor_;
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState, this, PodplayerActivity.class);
@@ -79,8 +117,8 @@ public class PodplayerActivity
 		episodeListView_.setOnCancelListener(this);
 		adapter_ = new SimpleCursorAdapter((Context)this, R.layout.episode_item,
 											getCursor(),
-											new String[] { EpisodeColumns.TITLE, EpisodeColumns.PUBDATE, EpisodeColumns.PODCAST_ID},
-											new int[] { R.id.episode_title, R.id.episode_time, R.id.episode_icon});
+											new String[] { EpisodeColumns.TITLE, EpisodeColumns.PUBDATE, EpisodeColumns.PODCAST_ID, EpisodeColumns._ID },
+											new int[] { R.id.episode_title, R.id.episode_time, R.id.episode_icon, R.id.play_icon});
 		adapter_.setViewBinder(new EpisodeViewBinder());
 		episodeListView_.setAdapter(adapter_);
 	}
@@ -99,7 +137,7 @@ public class PodplayerActivity
 			return;
 		}
 		//TODO: refactor
-		adapter_.getCursor().requery();
+		query();
 		setProgressBarIndeterminateVisibility(true);
 		GetPodcastTask task = new GetPodcastTask();
 		startLoading(task);
@@ -125,19 +163,33 @@ public class PodplayerActivity
 	public void updatePlaylist() {
 		state_.loadedEpisode_.clear();
 		Cursor cursor = adapter_.getCursor();
+		cursor.moveToPosition(-1);
 		while(cursor.moveToNext()) {
 			String url = cursor.getString(EPISODE_URL_INDEX);
 			String title = cursor.getString(EPISODE_TITLE_INDEX);
 			String pubdate = cursor.getString(EPISODE_PUBDATE_INDEX);
 			String linkURL = cursor.getString(EPISODE_LINK_URL_INDEX);
 			int podcastId = cursor.getInt(EPISODE_PODCAST_ID_INDEX);
-			state_.loadedEpisode_.add(new EpisodeInfo(url, title, pubdate, linkURL, podcastId));
+			EpisodeInfo info = new EpisodeInfo(url, title, pubdate, linkURL, podcastId);
+			info.id_ = cursor.getInt(EPISODE_ID_INDEX);
+			state_.loadedEpisode_.add(info);
 		}
 		if (state_.loadedEpisode_.isEmpty()) {
 			return;
 		}
 		super.updatePlaylist();
 	}
+
+	private EpisodeInfo getEpisodeById(int id){
+		for(EpisodeInfo info: state_.loadedEpisode_){
+			Log.d(TAG, "getEpisodeById: " + id + " " + info.id_ + " " + info.title_);
+			if(info.id_ == id) {
+				return info;
+			}
+		}
+		return null;
+	}
+	
 	@Override
 	public boolean onLongClick(View view) {
 		if (view == playButton_) {
@@ -159,15 +211,17 @@ public class PodplayerActivity
 
 	@Override
 	public void onItemClick(AdapterView<?> adapter, View view, int pos, long id) {
-		//refresh header is added....
 		Cursor cursor = (Cursor)adapter.getItemAtPosition(pos);
 		EpisodeInfo current = player_.getCurrentPodInfo();
-		String url = cursor.getString(EPISODE_URL_INDEX);
-		//TODO: fix info
-		EpisodeInfo info = new EpisodeInfo(url, cursor.getString(EPISODE_TITLE_INDEX),
-										cursor.getString(EPISODE_PUBDATE_INDEX),
-										null, -1);
-		if(null != cursor && null != current && current.url_.equals(url)) {
+		int selectedId = cursor.getInt(EPISODE_ID_INDEX);
+		if(null == current) {
+			updatePlaylist();
+		}
+		EpisodeInfo info = getEpisodeById(selectedId);
+		Log.d(TAG, "onItemClickxx: " + id + " " + info + " " + selectedId);
+		Log.d(TAG, "onItemClick: " + selectedId + " " + info.title_);
+		if(null != cursor && null != current && current.url_.equals(info.url_)) {
+			//item is already played and paused
 			Log.d(TAG, "onItemClick: URL: " + current.url_);
 			if(player_.isPlaying()) {
 				Log.d(TAG, "onItemClick1");
@@ -182,7 +236,6 @@ public class PodplayerActivity
 			}
 		}
 		else {
-			updatePlaylist();
 			boolean result = playByInfo(info);
 			Log.d(TAG, "onItemClick4: " + result);
 		}
@@ -203,10 +256,10 @@ public class PodplayerActivity
 		return player_.playNth(playPos);
 	}
 
-	public class EpisodeAdapter
+	public class EpisodeAdapter_
 		extends ArrayAdapter<EpisodeInfo>
 	{
-		public EpisodeAdapter(Context context) {
+		public EpisodeAdapter_(Context context) {
 			super(context, R.layout.episode_item);
 		}
 		
@@ -297,7 +350,7 @@ public class PodplayerActivity
 				//state_.loadedEpisode_.add(values[i]);
 				//TODO: bulk update?
 			}
-			getCursor().requery();
+			query();
 			//addEpisodeItemsToAdapter(values);
 		}
 
@@ -315,7 +368,7 @@ public class PodplayerActivity
 			episodeListView_.onRefreshComplete();
 			loadTask_ = null;
 			//TODO: Sync playlist
-			updatePlaylist();
+			//updatePlaylist();
 		}
 		
 		@Override
@@ -367,41 +420,36 @@ public class PodplayerActivity
 	@Override
 	public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
 		//TODO: change filter and requery
-//		if(pos == 0){
-//			//0: all
-//			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
-//				MusicInfo info = state_.loadedEpisode_.get(i);
-//			}
-//		}
-//		else {
-//			String selectedTitle = (String)adapter.getItemAtPosition(pos);
-//			int selectedIndex = podcastTitle2Index(selectedTitle);
-//			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
-//				MusicInfo info = state_.loadedEpisode_.get(i);
-//				if (selectedIndex == info.podcastId_) {
-//					adapter_.add(info);
-//				}
-//				else if (selectedIndex < info.podcastId_) {
-//					break;
-//				}
-//			}
-//		}
+		if(pos == 0){
+			//0: all
+			queryWhere_ = null;
+		}
+		else {
+			String selectedTitle = (String)adapter.getItemAtPosition(pos);
+			int podcastId = podcastTitle2Id(selectedTitle);
+			queryWhere_ = "podcast_id = " + podcastId;
+		}
 		if (! isLoading()) {
 			episodeListView_.hideHeader();
 		}
+		query();
 	}
 
 	@Override
 	public void onNothingSelected(AdapterView<?> adapter) {
-		//TODO: use default filter and requery
+		queryWhere_ = null;
+		if (! isLoading()) {
+			episodeListView_.hideHeader();
+		}
+		query();
 	}
 	
-	private int podcastTitle2Index(String title){
+	private int podcastTitle2Id(String title){
 		List<PodcastInfo> list = state_.podcastList_;
 		for(int i = 0; i < list.size(); i++) {
 			PodcastInfo info = list.get(i);
 			if(title.equals(info.title_)) {
-				return i;
+				return info.id_;
 			}
 		}
 		return -1;
@@ -457,7 +505,7 @@ public class PodplayerActivity
 		}
 		else if (playlist != null && ! playlist.isEmpty()) {
 			//update list by loaded items
-			adapter_.getCursor().requery();
+			query();
 			episodeListView_.onRefreshComplete(state_.lastUpdated_);
 		}
 		updateUI();
@@ -468,7 +516,6 @@ public class PodplayerActivity
 	{
 		@Override
 		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-			boolean handled = false;
 			if(columnIndex == EPISODE_PODCAST_ID_INDEX){
 				//display icon
 				int id = cursor.getInt(EPISODE_PODCAST_ID_INDEX);
@@ -477,9 +524,33 @@ public class PodplayerActivity
 				if(showPodcastIcon_ && null != podcast && null != podcast.icon_) {
 					episodeIcon.setImageDrawable(podcast.icon_);
 				}
-				handled = true;
+				return true;
 			}
-			return handled;
+			else if(columnIndex == EPISODE_ID_INDEX) {
+				if (player_ == null) {
+					return false;
+				}
+				ImageView icon = (ImageView)view;
+				EpisodeInfo current = player_.getCurrentPodInfo();
+				if(null == current){
+					icon.setVisibility(View.GONE);
+					return true;
+				}
+				int id = cursor.getInt(EPISODE_ID_INDEX);
+				if(id != current.id_) {
+					icon.setVisibility(View.GONE);
+					return true;
+				}
+				if (player_.isPlaying()) {
+					icon.setImageResource(android.R.drawable.ic_media_play);
+				}
+				else {
+					icon.setImageResource(android.R.drawable.ic_media_pause);
+				}
+				icon.setVisibility(View.VISIBLE);
+				return true;
+			}
+			return false;
 		}
 	}
 }
