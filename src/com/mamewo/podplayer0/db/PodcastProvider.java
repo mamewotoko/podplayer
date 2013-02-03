@@ -68,7 +68,9 @@ public class PodcastProvider extends ContentProvider {
 					   + EpisodeColumns.URL + " TEXT,"
 					   + EpisodeColumns.TITLE + " TEXT,"
 					   + EpisodeColumns.PUBDATE + " TEXT,"
-					   + EpisodeColumns.LINK_URL + " TEXT, UNIQUE(URL, PUBDATE));");
+					   + EpisodeColumns.LINK_URL + " TEXT, "
+					   + "UNIQUE("+ EpisodeColumns.URL
+					   + ", " + EpisodeColumns.PUBDATE + " ));");
 			db.execSQL("CREATE TABLE " + PlayHistoryColumns.TABLE_NAME + "("
 					   + PlayHistoryColumns._ID + " INTEGER PRIMARY KEY,"
 					   + PlayHistoryColumns.EPISODE_ID + " INTEGER,"
@@ -196,7 +198,7 @@ public class PodcastProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
 		int matchResult = uriMatcher_.match(uri);
 		Uri result = null;
-		long id;
+		long id = 0;
 		SQLiteDatabase db = helper_.getWritableDatabase();
 		switch(matchResult){
 		case PODCAST:
@@ -210,7 +212,7 @@ public class PodcastProvider extends ContentProvider {
 			}
 			break;
 		case EPISODE:
-			id = db.insert(EpisodeColumns.TABLE_NAME, null, values);
+			id = db.insertWithOnConflict(EpisodeColumns.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
 			if(id > 0){
 				result = ContentUris.withAppendedId(EpisodeColumns.CONTENT_URI, id);
 				getContext().getContentResolver().notifyChange(result, null);
@@ -223,9 +225,9 @@ public class PodcastProvider extends ContentProvider {
 		return result;
 	}
 
-    @Override
-    public String getType(Uri uri) {
-    	//TODO: return appropriate value according to uri
-    	return PodcastColumns.CONTENT_TYPE;
-    }
+	@Override
+	public String getType(Uri uri) {
+		//TODO: return appropriate value according to uri
+		return PodcastColumns.CONTENT_TYPE;
+	}
 }

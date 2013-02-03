@@ -115,6 +115,8 @@ public class PodplayerActivity
 		episodeListView_.setOnItemLongClickListener(this);
 		episodeListView_.setOnRefreshListener(this);
 		episodeListView_.setOnCancelListener(this);
+		
+		//API level > 10
 		adapter_ = new SimpleCursorAdapter((Context)this, R.layout.episode_item,
 											getCursor(),
 											new String[] { EpisodeColumns.TITLE, EpisodeColumns.PUBDATE, EpisodeColumns.PODCAST_ID, EpisodeColumns._ID },
@@ -213,13 +215,10 @@ public class PodplayerActivity
 	public void onItemClick(AdapterView<?> adapter, View view, int pos, long id) {
 		Cursor cursor = (Cursor)adapter.getItemAtPosition(pos);
 		EpisodeInfo current = player_.getCurrentPodInfo();
-		int selectedId = cursor.getInt(EPISODE_ID_INDEX);
 		if(null == current) {
 			updatePlaylist();
 		}
-		EpisodeInfo info = getEpisodeById(selectedId);
-		Log.d(TAG, "onItemClickxx: " + id + " " + info + " " + selectedId);
-		Log.d(TAG, "onItemClick: " + selectedId + " " + info.title_);
+		EpisodeInfo info = getEpisodeById((int)id);
 		if(null != cursor && null != current && current.url_.equals(info.url_)) {
 			//item is already played and paused
 			Log.d(TAG, "onItemClick: URL: " + current.url_);
@@ -350,8 +349,7 @@ public class PodplayerActivity
 				//state_.loadedEpisode_.add(values[i]);
 				//TODO: bulk update?
 			}
-			query();
-			//addEpisodeItemsToAdapter(values);
+			//query();
 		}
 
 		private void onFinished() {
@@ -523,6 +521,10 @@ public class PodplayerActivity
 				PodcastInfo podcast = state_.podcastID2Info_.get(id);
 				if(showPodcastIcon_ && null != podcast && null != podcast.icon_) {
 					episodeIcon.setImageDrawable(podcast.icon_);
+					episodeIcon.setVisibility(View.VISIBLE);
+				}
+				else {
+					episodeIcon.setVisibility(View.GONE);
 				}
 				return true;
 			}
