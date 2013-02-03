@@ -110,7 +110,7 @@ public class PodcastProvider extends ContentProvider {
 	@Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
             String sortOrder) {
-		Log.d(TAG, "query: uri " + uri.toString());
+		Log.d(TAG, "query: uri " + uri.toString() + " " + sortOrder);
 		Cursor c = null;
 		SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 		SQLiteDatabase db = null;
@@ -127,18 +127,19 @@ public class PodcastProvider extends ContentProvider {
 			map.put(PodcastColumns.ICON_URL, PodcastColumns.ICON_URL);
 			builder.setProjectionMap(map);
 			db = helper_.getReadableDatabase();
-			c = builder.query(db, projection, selection, selectionArgs, null, null, null);
+			//last 3 arguments: groupby, having, sortorder
+			c = builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
 			break;
 		case EPISODE:
 			builder.setTables(PodcastColumns.TABLE_NAME+","+EpisodeColumns.TABLE_NAME);
 			map = new HashMap<String, String>();
 			String[] columns = new String[] {
-					EpisodeColumns._ID,
-					EpisodeColumns.TITLE,
-					EpisodeColumns.URL,
-					EpisodeColumns.PUBDATE,
-					EpisodeColumns.LINK_URL,
-					EpisodeColumns.PODCAST_ID
+				EpisodeColumns._ID,
+				EpisodeColumns.TITLE,
+				EpisodeColumns.URL,
+				EpisodeColumns.PUBDATE,
+				EpisodeColumns.LINK_URL,
+				EpisodeColumns.PODCAST_ID
 			};
 			for(String column: columns){
 				map.put(column, EpisodeColumns.TABLE_NAME+"."+column);
@@ -153,7 +154,7 @@ public class PodcastProvider extends ContentProvider {
 			builder.appendWhere(EpisodeColumns.PODCAST_ID
 								+ "=" + PodcastColumns.TABLE_NAME+"."+PodcastColumns._ID);
 			db = helper_.getReadableDatabase();
-			c = builder.query(db, projection, selection, selectionArgs, null, null, null);
+			c = builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
 			//TODO: add last played time
 			break;
 		default:

@@ -13,12 +13,9 @@ import java.util.List;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
@@ -89,11 +86,13 @@ public class PodplayerActivity
 			stopManagingCursor(cursor_);
 		}
 		//TODO: sort by title or pubdate
+		String sortOrder = EpisodeColumns.PODCAST_ID + " asc, "
+			+ EpisodeColumns.PUBDATE + " desc";
 		cursor_ = managedQuery(EpisodeColumns.CONTENT_URI,
-								EPISODE_PROJECTION,
-								condition,
-								null,
-								null);
+							   EPISODE_PROJECTION,
+							   condition,
+							   null,
+							   sortOrder);
 		startManagingCursor(cursor_);
 		adapter_.changeCursor(cursor_);
 		return cursor_;
