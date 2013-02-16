@@ -218,6 +218,7 @@ public class PodplayerActivity
 			updatePlaylist();
 		}
 		EpisodeInfo info = getEpisodeById((int)id);
+		Log.d(TAG, "info: " + info + " current: " + current);
 		if(null != cursor && null != current && current.url_.equals(info.url_)) {
 			//item is already played and paused
 			Log.d(TAG, "onItemClick: URL: " + current.url_);
