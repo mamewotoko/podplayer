@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import android.content.Loader;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -36,6 +37,8 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 
 import com.mamewo.podplayer0.PlayerService.EpisodeInfo;
 import com.mamewo.podplayer0.db.Podcast.EpisodeColumns;
@@ -52,7 +55,8 @@ public class PodplayerActivity
 	OnItemSelectedListener,
 	PlayerService.PlayerStateListener,
 	PullToRefreshListView.OnRefreshListener,
-	PullToRefreshListView.OnCancelListener
+	PullToRefreshListView.OnCancelListener,
+    LoaderManager.LoaderCallbacks<Cursor>
 {
 	private ToggleButton playButton_;
 	private Spinner selector_;
@@ -68,6 +72,7 @@ public class PodplayerActivity
 		EpisodeColumns.LINK_URL, //4
 		EpisodeColumns.PODCAST_ID, //5
 	};
+	static final private int LOADER_ID = 0;
 
 	protected static final int EPISODE_ID_INDEX = 0;
 	protected static final int EPISODE_TITLE_INDEX = 1;
@@ -117,9 +122,10 @@ public class PodplayerActivity
 		
 		//API level > 10
 		adapter_ = new SimpleCursorAdapter((Context)this, R.layout.episode_item,
-											getCursor(),
-											new String[] { EpisodeColumns.TITLE, EpisodeColumns.PUBDATE, EpisodeColumns.PODCAST_ID, EpisodeColumns._ID },
-											new int[] { R.id.episode_title, R.id.episode_time, R.id.episode_icon, R.id.play_icon});
+										   null,
+										   new String[] { EpisodeColumns.TITLE, EpisodeColumns.PUBDATE, EpisodeColumns.PODCAST_ID, EpisodeColumns._ID },
+										   new int[] { R.id.episode_title, R.id.episode_time, R.id.episode_icon, R.id.play_icon});
+		getLoaderManager().initLoader(LOADER_ID, null, this);
 		adapter_.setViewBinder(new EpisodeViewBinder());
 		episodeListView_.setAdapter(adapter_);
 	}
@@ -554,5 +560,29 @@ public class PodplayerActivity
 			}
 			return false;
 		}
+	}
+
+	//cursor loader
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args){
+		String condition = PodcastColumns.ENABLED + "= 1";
+		if (queryWhere_ != null) {
+			condition += " and " + queryWhere_;
+		}
+		//TODO: sort by title or pubdate
+		String sortOrder = EpisodeColumns.PODCAST_ID + " asc, "
+			+ EpisodeColumns.PUBDATE + " desc";
+		return new CursorLoader(this, EpisodeColumns.CONTENT_URI,
+								EPISODE_PROJECTION, condition, null, sortOrder);
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor){
+		adapter_.swapCursor(cursor);
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader){
+		adapter_.swapCursor(null);
 	}
 }
