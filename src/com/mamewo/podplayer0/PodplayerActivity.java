@@ -63,6 +63,8 @@ public class PodplayerActivity
 	private PullToRefreshListView episodeListView_;
 	private SimpleCursorAdapter adapter_;
 	private String queryWhere_ = null;
+	static final private int LOADER_ID = 0;
+
 	//TODO: add last played time
 	static final private String[] EPISODE_PROJECTION = {
 		EpisodeColumns._ID, //0
@@ -72,7 +74,6 @@ public class PodplayerActivity
 		EpisodeColumns.LINK_URL, //4
 		EpisodeColumns.PODCAST_ID, //5
 	};
-	static final private int LOADER_ID = 0;
 
 	protected static final int EPISODE_ID_INDEX = 0;
 	protected static final int EPISODE_TITLE_INDEX = 1;
@@ -81,27 +82,6 @@ public class PodplayerActivity
 	protected static final int EPISODE_LINK_URL_INDEX = 4;
 	protected static final int EPISODE_PODCAST_ID_INDEX = 5;
 	private Cursor cursor_;
-
-	private Cursor query() {
-		String condition = PodcastColumns.ENABLED + "= 1";
-		if (queryWhere_ != null) {
-			condition += " and " + queryWhere_;
-		}
-		if(null != cursor_) {
-			stopManagingCursor(cursor_);
-		}
-		//TODO: sort by title or pubdate
-		String sortOrder = EpisodeColumns.PODCAST_ID + " asc, "
-			+ EpisodeColumns.PUBDATE + " desc";
-		cursor_ = managedQuery(EpisodeColumns.CONTENT_URI,
-							   EPISODE_PROJECTION,
-							   condition,
-							   null,
-							   sortOrder);
-		startManagingCursor(cursor_);
-		adapter_.changeCursor(cursor_);
-		return cursor_;
-	}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -143,8 +123,6 @@ public class PodplayerActivity
 			Log.i(TAG, "Already loading");
 			return;
 		}
-		//TODO: refactor
-		query();
 		setProgressBarIndeterminateVisibility(true);
 		GetPodcastTask task = new GetPodcastTask();
 		startLoading(task);
@@ -355,7 +333,6 @@ public class PodplayerActivity
 				//state_.loadedEpisode_.add(values[i]);
 				//TODO: bulk update?
 			}
-			//query();
 		}
 
 		private void onFinished() {
@@ -436,7 +413,6 @@ public class PodplayerActivity
 		if (! isLoading()) {
 			episodeListView_.hideHeader();
 		}
-		query();
 	}
 
 	@Override
@@ -445,7 +421,6 @@ public class PodplayerActivity
 		if (! isLoading()) {
 			episodeListView_.hideHeader();
 		}
-		query();
 	}
 	
 	private int podcastTitle2Id(String title){
@@ -509,7 +484,6 @@ public class PodplayerActivity
 		}
 		else if (playlist != null && ! playlist.isEmpty()) {
 			//update list by loaded items
-			query();
 			episodeListView_.onRefreshComplete(state_.lastUpdated_);
 		}
 		updateUI();

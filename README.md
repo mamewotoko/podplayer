@@ -87,6 +87,7 @@ TODO
 * improve UI to add podcast URL
     * update main activity when setting is changed
 * fix bugs
+    * OOM after icons are loaded
     * when prepare error occurs, cursor moves to next episode
         * stop playing
     * podcast selection is not applied immediately
