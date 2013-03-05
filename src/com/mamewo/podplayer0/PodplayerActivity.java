@@ -55,6 +55,8 @@ public class PodplayerActivity
 	private Spinner selector_;
 	private PullToRefreshListView episodeListView_;
 	private ArrayAdapter<MusicInfo> adapter_;
+	static final
+	private	int EPISODE_LIMIT = 1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -267,7 +269,7 @@ public class PodplayerActivity
 		extends BaseGetPodcastTask
 	{
 		public GetPodcastTask() {
-			super(PodplayerActivity.this);
+			super(PodplayerActivity.this, EPISODE_LIMIT);
 		}
 
 		@Override

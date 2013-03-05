@@ -61,6 +61,8 @@ public class PodplayerExpActivity
 	private int[] filteredItemIndex_;
 	private List<Map<String,String>> groupData_;
 	private List<List<Map<String, Object>>> childData_;
+	static final
+	private int EPISODE_LIMIT = -1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -387,7 +389,7 @@ public class PodplayerExpActivity
 		extends BaseGetPodcastTask
 	{
 		public GetPodcastTask() {
-			super(PodplayerExpActivity.this);
+			super(PodplayerExpActivity.this, EPISODE_LIMIT);
 		}
 
 		@Override

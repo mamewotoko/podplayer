@@ -24,6 +24,7 @@ public class BaseGetPodcastTask
 	extends AsyncTask<PodcastInfo, MusicInfo, Void>
 {
 	private Context context_;
+	private int limit_;
 	private URL[] iconURL_;
 	private boolean showPodcastIcon_;
 	private List<MusicInfo> buffer_;
@@ -41,8 +42,9 @@ public class BaseGetPodcastTask
 	};
 
 	//TODO refactor to cache icon
-	public BaseGetPodcastTask(Context context) {
+	public BaseGetPodcastTask(Context context, int limit) {
 		context_ = context;
+		limit_ = limit;
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
 		timeoutSec_ = Integer.valueOf(pref.getString("read_timeout", PodplayerPreference.DEFAULT_READ_TIMEOUT));
 		showPodcastIcon_ = pref.getBoolean("show_podcast_icon", PodplayerPreference.DEFAULT_SHOW_ICON);
@@ -117,6 +119,7 @@ public class BaseGetPodcastTask
 				int eventType;
 				String link = null;
 				while((eventType = parser.getEventType()) != XmlPullParser.END_DOCUMENT && !isCancelled()) {
+					int episodeCount = 0;
 					if(eventType == XmlPullParser.START_TAG) {
 						String currentName = parser.getName();
 						if("title".equalsIgnoreCase(currentName)) {
@@ -173,6 +176,10 @@ public class BaseGetPodcastTask
 							podcastURL = null;
 							title = null;
 							link = null;
+							episodeCount++;
+							if(0 < limit_ && limit_ <= episodeCount){
+								break;
+							}
 						}
 						else {
 							//always set to NONE, because there is no nested tag for now
