@@ -93,7 +93,11 @@ public class PodplayerActivity
 		}
 		adapter_.clear();
 		setProgressBarIndeterminateVisibility(true);
-		GetPodcastTask task = new GetPodcastTask();
+		SharedPreferences pref=
+				PreferenceManager.getDefaultSharedPreferences(this);
+		int limit = Integer.valueOf(pref.getString("episode_limit", PodplayerPreference.DEFAULT_EPISODE_LIMIT));
+		Log.d(TAG, "loadPodcast: limit " + limit);
+		GetPodcastTask task = new GetPodcastTask(limit);
 		startLoading(task);
 	}
 	
@@ -268,8 +272,8 @@ public class PodplayerActivity
 	private class GetPodcastTask
 		extends BaseGetPodcastTask
 	{
-		public GetPodcastTask() {
-			super(PodplayerActivity.this, EPISODE_LIMIT);
+		public GetPodcastTask(int limit) {
+			super(PodplayerActivity.this, limit);
 		}
 
 		@Override

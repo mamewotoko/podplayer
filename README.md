@@ -91,6 +91,9 @@ TODO
     * to reduce reload of podcast
     * show description of playing episode
     * save podcast list and updated time as state
+* translate
+    <string name="pref_episode_limit">Limit of episodes for each podcast</string>
+    <string name="pref_episode_limit_title">Limit of episodes</string>
 * support play previous item when KEYCODE_MEDIA_PREVIOUS button is pressed
 * optimize initialization of podplayer
     * setContentView takes long time

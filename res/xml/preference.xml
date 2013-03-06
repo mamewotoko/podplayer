@@ -25,6 +25,14 @@
         android:summaryOff="@string/pref_do_not_load_automatically"
         android:summaryOn="@string/pref_load_podcasts_when_app_starts"
         android:title="@string/pref_autoload_podcast" />
+    <ListPreference 
+        android:defaultValue="-1"
+        android:dialogTitle="@string/pref_episode_limit"
+        android:entries="@array/pref_episode_limit_titles"
+        android:entryValues="@array/pref_episode_limit_values"
+        android:title="@string/pref_episode_limit_title"
+        android:key="episode_limit"
+         />
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="use_response_cache"
@@ -34,7 +42,7 @@
     <Preference
        android:key="clear_response_cache"
        android:title="@string/clear_response_cache_title" />
-<ListPreference
+    <ListPreference
         android:defaultValue="30"
         android:dialogTitle="@string/pref_read_timeout"
         android:entries="@array/pref_timeout_titles"
@@ -90,5 +98,6 @@
             android:selectable="true"
             android:title="@string/pref_version" />
     </PreferenceCategory>
+    
 
 </PreferenceScreen>

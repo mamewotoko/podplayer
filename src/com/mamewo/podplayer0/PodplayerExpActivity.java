@@ -170,7 +170,6 @@ public class PodplayerExpActivity
 		return false;
 	}
 
-
 	private void expandOrCollapseAll(boolean expand) {
 		for (int i = 0; i < groupData_.size(); i++) {
 			if (expand) {
