@@ -118,8 +118,9 @@ public class BaseGetPodcastTask
 				TagName tagName = TagName.NONE;
 				int eventType;
 				String link = null;
+				int episodeCount = 0;
+
 				while((eventType = parser.getEventType()) != XmlPullParser.END_DOCUMENT && !isCancelled()) {
-					int episodeCount = 0;
 					if(eventType == XmlPullParser.START_TAG) {
 						String currentName = parser.getName();
 						if("title".equalsIgnoreCase(currentName)) {

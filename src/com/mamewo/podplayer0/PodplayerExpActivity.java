@@ -61,8 +61,6 @@ public class PodplayerExpActivity
 	private int[] filteredItemIndex_;
 	private List<Map<String,String>> groupData_;
 	private List<List<Map<String, Object>>> childData_;
-	static final
-	private int EPISODE_LIMIT = -1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -112,7 +110,10 @@ public class PodplayerExpActivity
 		}
 		setProgressBarIndeterminateVisibility(true);
 		updateUI();
-		GetPodcastTask task = new GetPodcastTask();
+		SharedPreferences pref=
+				PreferenceManager.getDefaultSharedPreferences(this);
+		int limit = Integer.valueOf(pref.getString("episode_limit", PodplayerPreference.DEFAULT_EPISODE_LIMIT));
+		GetPodcastTask task = new GetPodcastTask(limit);
 		startLoading(task);
 	}
 
@@ -387,8 +388,8 @@ public class PodplayerExpActivity
 	private class GetPodcastTask
 		extends BaseGetPodcastTask
 	{
-		public GetPodcastTask() {
-			super(PodplayerExpActivity.this, EPISODE_LIMIT);
+		public GetPodcastTask(int limit) {
+			super(PodplayerExpActivity.this, limit);
 		}
 
 		@Override

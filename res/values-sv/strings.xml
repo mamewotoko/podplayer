@@ -61,4 +61,7 @@
     <string name="use_response_cache_title">Cache HTTP-svar</string>
     <string name="clear_response_cache_title">Klar HTTP-svar cache</string>
     <string name="hint_podcast_url">URL podcast XML</string>
+
+    <string name="pref_episode_limit">Gräns för episoder för varje podcast</string>
+    <string name="pref_episode_limit_title">Gräns för episoder</string>
 </resources>

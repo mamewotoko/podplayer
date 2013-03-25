@@ -60,4 +60,7 @@
     <string name="use_response_cache_title">HTTP Responseをキャッシュする</string>
     <string name="clear_response_cache_title">キャッシュを削除する</string>
     <string name="hint_podcast_url">Podcast(XML)のURL</string>
+
+    <string name="pref_episode_limit">Podcast毎のエピソード数制限</string>
+    <string name="pref_episode_limit_title">エピソード数制限</string>
 </resources>
