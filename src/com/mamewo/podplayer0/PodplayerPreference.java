@@ -73,6 +73,7 @@ public class PodplayerPreference
 	private ListPreference readTimeout_;
 	private Preference scoreThreshold_;
 	private Preference clearCache_;
+	private Preference episodeLimit_;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -92,6 +93,7 @@ public class PodplayerPreference
 		podcastList_.setOnPreferenceClickListener(this);
 		readTimeout_ = (ListPreference)findPreference("read_timeout");
 		scoreThreshold_ = findPreference("gesture_score_threshold");
+		episodeLimit_ = findPreference("episode_limit");
 		gestureTable_ = findPreference("gesture_list");
 		gestureTable_.setOnPreferenceClickListener(this);
 		version_.setOnPreferenceClickListener(this);
@@ -230,6 +232,16 @@ public class PodplayerPreference
 		if (updateAll || "gesture_score_threshold".equals(key)) {
 			double threshold = Double.valueOf(pref.getString("gesture_score_threshold", PodplayerPreference.DEFAULT_GESTURE_SCORE));
 			scoreThreshold_.setSummary(String.format("%.2f", threshold));
+		}
+		if (updateAll || "episode_limit".equals(key)){
+			int limit = Integer.valueOf(pref.getString("episode_limit", PodplayerPreference.DEFAULT_EPISODE_LIMIT));
+			//TODO: localize
+			String summary = "No limit";
+			if (limit > 0){
+				//TODO: localize
+				summary = String.format("%d episodes", limit);
+			}
+			episodeLimit_.setSummary(summary);
 		}
 	}
 
