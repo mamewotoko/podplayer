@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.MessageFormat;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -235,11 +236,9 @@ public class PodplayerPreference
 		}
 		if (updateAll || "episode_limit".equals(key)){
 			int limit = Integer.valueOf(pref.getString("episode_limit", PodplayerPreference.DEFAULT_EPISODE_LIMIT));
-			//TODO: localize
-			String summary = "No limit";
+			String summary = getString(R.string.pref_episode_nolimit_summary);
 			if (limit > 0){
-				//TODO: localize
-				summary = String.format("%d episodes", limit);
+				summary = MessageFormat.format(getString(R.string.pref_episode_limit_summary), limit);
 			}
 			episodeLimit_.setSummary(summary);
 		}
