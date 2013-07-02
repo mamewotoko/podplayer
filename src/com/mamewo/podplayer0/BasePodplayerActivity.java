@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
-import com.mamewo.podplayer0.PlayerService.MusicInfo;
+
+import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
+import com.mamewo.lib.podcast_parser.EpisodeInfo;
+import com.mamewo.lib.podcast_parser.PodcastInfo;
 
 import android.media.AudioManager;
 import android.app.Activity;
@@ -308,12 +311,12 @@ abstract public class BasePodplayerActivity
 		implements Serializable
 	{
 		private static final long serialVersionUID = 1L;
-		protected List<MusicInfo> loadedEpisode_;
+		protected List<EpisodeInfo> loadedEpisode_;
 		protected List<PodcastInfo> podcastList_;
 		protected String lastUpdated_;
 
 		private PodplayerState() {
-			loadedEpisode_ = new ArrayList<MusicInfo>();
+			loadedEpisode_ = new ArrayList<EpisodeInfo>();
 			podcastList_ = new ArrayList<PodcastInfo>();
 			lastUpdated_ = "";
 		}

@@ -22,6 +22,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
+import com.mamewo.lib.podcast_parser.PodcastInfo;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -263,6 +266,7 @@ public class PodcastListPreference
 		}
 	}
 	
+	//check that podcast XML is valid
 	public class CheckTask
 		extends AsyncTask<URL, PodcastInfo, Boolean>
 	{

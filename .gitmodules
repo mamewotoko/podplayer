@@ -1,3 +1,6 @@
 [submodule "libsrc/pulltorefresh"]
 	path = libsrc/pulltorefresh
 	url = git://github.com/mamewotoko/android-pulltorefresh.git
+[submodule "libsrc/podcast_parser"]
+	path = libsrc/podcast_parser
+	url = git@github.com:mamewotoko/podcast_parser.git

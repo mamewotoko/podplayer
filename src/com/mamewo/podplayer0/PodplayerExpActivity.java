@@ -10,6 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
+import com.mamewo.lib.podcast_parser.EpisodeInfo;
+import com.mamewo.lib.podcast_parser.PodcastInfo;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -39,8 +43,6 @@ import android.widget.ImageView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
-import com.mamewo.podplayer0.PlayerService.MusicInfo;
 
 public class PodplayerExpActivity
 	extends BasePodplayerActivity
@@ -113,7 +115,9 @@ public class PodplayerExpActivity
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		int limit = Integer.valueOf(pref.getString("episode_limit", PodplayerPreference.DEFAULT_EPISODE_LIMIT));
-		GetPodcastTask task = new GetPodcastTask(limit);
+		int timeoutSec = Integer.valueOf(pref.getString("read_timeout", PodplayerPreference.DEFAULT_READ_TIMEOUT));
+		boolean getIcon = pref.getBoolean("show_podcast_icon", PodplayerPreference.DEFAULT_SHOW_ICON);
+		GetPodcastTask task = new GetPodcastTask(limit, timeoutSec, getIcon);
 		startLoading(task);
 	}
 
@@ -187,7 +191,7 @@ public class PodplayerExpActivity
 		player_ = ((PlayerService.LocalBinder)binder).getService();
 		player_.setOnStartMusicListener(this);
 		playButton_.setEnabled(true);
-		List<MusicInfo> playlist = player_.getCurrentPlaylist();
+		List<EpisodeInfo> playlist = player_.getCurrentPlaylist();
 		if (null != playlist) {
 			state_.loadedEpisode_ = playlist;
 		}
@@ -210,8 +214,8 @@ public class PodplayerExpActivity
 		@SuppressWarnings("unchecked")
 		HashMap<String,Object> map =
 			(HashMap<String, Object>) expandableAdapter_.getChild(groupPosition, childPosition);
-		MusicInfo info = (MusicInfo) map.get("DATA");
-		MusicInfo current = player_.getCurrentPodInfo();
+		EpisodeInfo info = (EpisodeInfo) map.get("DATA");
+		EpisodeInfo current = player_.getCurrentPodInfo();
 		if(current != null && current.url_.equals(info.url_)) {
 			if(player_.isPlaying()) {
 				player_.pauseMusic();
@@ -229,7 +233,7 @@ public class PodplayerExpActivity
 		return true;
 	}
 
-	private void playByInfo(MusicInfo info) {
+	private void playByInfo(EpisodeInfo info) {
 		//umm...
 		int playPos = -1;
 		for(playPos = 0; playPos < state_.loadedEpisode_.size(); playPos++) {
@@ -301,14 +305,14 @@ public class PodplayerExpActivity
 			}
 			@SuppressWarnings("unchecked")
 			HashMap<String, Object> map = (HashMap<String, Object>)getChild(groupPosition, childPosition);
-			MusicInfo info = (MusicInfo)map.get("DATA");
+			EpisodeInfo info = (EpisodeInfo)map.get("DATA");
 			TextView titleView = (TextView)view.findViewById(R.id.episode_title);
 			TextView timeView = (TextView)view.findViewById(R.id.episode_time);
 			titleView.setText(info.title_);
 			timeView.setText(info.pubdate_);
 			ImageView stateIcon = (ImageView)view.findViewById(R.id.play_icon);
 			ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
-			MusicInfo current = player_.getCurrentPodInfo();
+			EpisodeInfo current = player_.getCurrentPodInfo();
 			if(current != null && current.url_.equals(info.url_)) {
 				//cache!
 				if(player_.isPlaying()) {
@@ -333,19 +337,6 @@ public class PodplayerExpActivity
 		}
 	}
 
-	//UI is updated in following callback methods
-	@Override
-	public void onStartMusic(MusicInfo info) {
-		setProgressBarIndeterminateVisibility(false);
-		updateUI();
-	}
-
-	@Override
-	public void onStartLoadingMusic(MusicInfo info) {
-		setProgressBarIndeterminateVisibility(true);
-		updateUI();
-	}
-
 	@Override
 	public void onStopMusic(int mode) {
 		setProgressBarIndeterminateVisibility(false);
@@ -353,11 +344,11 @@ public class PodplayerExpActivity
 	}
 	// end of callback methods
 
-	private void addEpisodeItemsToAdapter(MusicInfo[] values) {
+	private void addEpisodeItemsToAdapter(EpisodeInfo[] values) {
 		int groupMin = groupData_.size() - 1;
 		int groupMax = 0;
 		for (int i = 0; i < values.length; i++) {
-			MusicInfo info = values[i];
+			EpisodeInfo info = values[i];
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("TITLE", info.title_);
 			map.put("DATA", info);
@@ -388,13 +379,13 @@ public class PodplayerExpActivity
 	private class GetPodcastTask
 		extends BaseGetPodcastTask
 	{
-		public GetPodcastTask(int limit) {
-			super(PodplayerExpActivity.this, limit);
+		public GetPodcastTask(int limit, int timeoutSec, boolean getIcon) {
+			super(PodplayerExpActivity.this, limit, timeoutSec, getIcon);
 		}
 
 		@Override
-		protected void onProgressUpdate(MusicInfo... values){
-			for (MusicInfo info: values) {
+		protected void onProgressUpdate(EpisodeInfo... values){
+			for (EpisodeInfo info: values) {
 				state_.loadedEpisode_.add(info);
 			}
 			addEpisodeItemsToAdapter(values);
@@ -430,7 +421,7 @@ public class PodplayerExpActivity
 		@SuppressWarnings("unchecked")
 		Map<String, Object> map =
 				(Map<String, Object>)adapter.getItemAtPosition(pos);
-		MusicInfo info = (MusicInfo)map.get("DATA");
+		EpisodeInfo info = (EpisodeInfo)map.get("DATA");
 		if (null == info) {
 			//parent is long clicked
 			return false;
@@ -493,13 +484,25 @@ public class PodplayerExpActivity
 		expandableList_.setOnChildClickListener(this);
 		boolean doLoad = pref.getBoolean("load_on_start", PodplayerPreference.DEFAULT_LOAD_ON_START);
 		updateUI();
-		List<MusicInfo> playlist = state_.loadedEpisode_;
+		List<EpisodeInfo> playlist = state_.loadedEpisode_;
 		if (!start || doLoad) {
 			loadPodcast();
 		}
 		else if (null != playlist && ! playlist.isEmpty()) {
 			//use list
-			addEpisodeItemsToAdapter(playlist.toArray(new MusicInfo[0]));
+			addEpisodeItemsToAdapter(playlist.toArray(new EpisodeInfo[0]));
 		}
+	}
+
+	@Override
+	public void onStartLoadingMusic(EpisodeInfo info) {
+		setProgressBarIndeterminateVisibility(false);
+		updateUI();		
+	}
+
+	@Override
+	public void onStartMusic(EpisodeInfo info) {
+		setProgressBarIndeterminateVisibility(true);
+		updateUI();
 	}
 }
