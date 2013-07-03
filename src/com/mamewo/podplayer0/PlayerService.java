@@ -1,12 +1,7 @@
 package com.mamewo.podplayer0;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
 
@@ -73,12 +68,6 @@ public class PlayerService
 	private ComponentName mediaButtonReceiver_;
 	private long previousPrevKeyTime_;
 	private EpisodeInfo currentPlaying_;
-	
-	//msec
-	final static
-	private int LAST_ERROR_TIME_LIMIT = 10000;
-	final static
-	private int LAST_ERROR_COUNT_LIMIT = 5;
 	
 	//error code
 	//error code from base/include/media/stagefright/MediaErrors.h
