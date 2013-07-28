@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.Resources;
 import android.gesture.Gesture;
 import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
@@ -218,8 +219,9 @@ abstract public class BasePodplayerActivity
 		if ("use_expandable_ui".equals(key)) {
 			uiSettingChanged_ = true;
 		}
+		Resources res = getResources();
 		if (updateAll || "enable_gesture".equals(key)) {
-			boolean useGesture = pref.getBoolean("enable_gesture", PodplayerPreference.DEFAULT_USE_GESTURE);
+			boolean useGesture = pref.getBoolean("enable_gesture", res.getBoolean(R.bool.default_enable_gesture));
 			GestureOverlayView gestureView =
 					(GestureOverlayView)findViewById(R.id.gesture_view);
 			if(useGesture) {
@@ -237,13 +239,16 @@ abstract public class BasePodplayerActivity
 		}
 		if (updateAll || "gesture_score_threshold".equals(key)) {
 			gestureScoreThreshold_ =
-					Double.valueOf(pref.getString("gesture_score_threshold", PodplayerPreference.DEFAULT_GESTURE_SCORE));
+					Double.valueOf(pref.getString("gesture_score_threshold",
+												res.getString(R.string.default_gesture_score_threshold)));
 		}
 		if (updateAll || "show_podcast_icon".equals(key)) {
-			showPodcastIcon_ = pref.getBoolean("show_podcast_icon", PodplayerPreference.DEFAULT_SHOW_ICON);
+			showPodcastIcon_ = pref.getBoolean("show_podcast_icon", 
+												res.getBoolean(R.bool.default_show_podcast_icon));
 		}
 		if (updateAll || "use_reponse_cache".equals(key)){
-			boolean useCache = pref.getBoolean("use_reponse_cache", PodplayerPreference.DEFAULT_USE_RESPONSE_CACHE);
+			boolean useCache = pref.getBoolean("use_reponse_cache", 
+												res.getBoolean(R.bool.default_use_response_cache));
 			if(useCache){
 				if(null == httpCacheDir_){
 					httpCacheDir_ = new File(getCacheDir(), "http");

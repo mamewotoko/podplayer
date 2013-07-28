@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -95,9 +96,10 @@ public class PodplayerActivity
 		setProgressBarIndeterminateVisibility(true);
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
-		int limit = Integer.valueOf(pref.getString("episode_limit", PodplayerPreference.DEFAULT_EPISODE_LIMIT));
-		int timeoutSec = Integer.valueOf(pref.getString("read_timeout", PodplayerPreference.DEFAULT_READ_TIMEOUT));
-		boolean getIcon = pref.getBoolean("show_podcast_icon", PodplayerPreference.DEFAULT_SHOW_ICON);
+		Resources res = getResources();
+		int limit = Integer.valueOf(pref.getString("episode_limit", res.getString(R.string.default_episode_limit)));
+		int timeoutSec = Integer.valueOf(pref.getString("read_timeout", res.getString(R.string.default_read_timeout)));
+		boolean getIcon = pref.getBoolean("show_podcast_icon", res.getBoolean(R.bool.default_show_podcast_icon));
 		Log.d(TAG, "loadPodcast: limit " + limit);
 		GetPodcastTask task = new GetPodcastTask(limit, timeoutSec, getIcon);
 		startLoading(task);
@@ -332,7 +334,8 @@ public class PodplayerActivity
 		EpisodeInfo info = adapter_.getItem(pos-1);
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
-		boolean enableLongClick = pref.getBoolean("enable_long_click", PodplayerPreference.DEFAULT_ENABLE_LONG_CLICK);
+		Resources res = getResources();
+		boolean enableLongClick = pref.getBoolean("enable_long_click", res.getBoolean(R.bool.default_enable_long_click));
 		if ((! enableLongClick) || null == info.link_) {
 			return false;
 		}
@@ -435,7 +438,8 @@ public class PodplayerActivity
 		//TODO: load if selected item is changed
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		selector_.setAdapter(adapter);
-		boolean doLoad = pref.getBoolean("load_on_start", PodplayerPreference.DEFAULT_LOAD_ON_START);
+		Resources res = getResources();
+		boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
 		List<EpisodeInfo> playlist = state_.loadedEpisode_;
 		Log.d(TAG, "podcastListChanged: " + state_.loadedEpisode_.size());
 		if (!start || doLoad) {

@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
@@ -132,7 +133,8 @@ public class PlayerService
 		else if (JACK_UNPLUGGED_ACTION.equals(action)) {
 			SharedPreferences pref =
 					PreferenceManager.getDefaultSharedPreferences(this);
-			boolean pause = pref.getBoolean("pause_on_unplugged", PodplayerPreference.DEFAULT_PAUSE_ON_UNPLUGGED);
+			Resources res = getResources();
+			boolean pause = pref.getBoolean("pause_on_unplugged", res.getBoolean(R.bool.default_pause_on_unplugged));
 			if (pause && null != player_ && player_.isPlaying()) {
 				pauseMusic();
 			}

@@ -43,29 +43,6 @@ public class PodplayerPreference
 	private int GESTURE_TABLE_DIALOG = 2;
 	static final
 	private int LICENSE_DIALOG = 3;
-	//add key
-	static final
-	public String DEFAULT_READ_TIMEOUT = "30";
-	static final
-	public String DEFAULT_GESTURE_SCORE = "3.0";
-	final static
-	public boolean DEFAULT_USE_GESTURE = true;
-	final static
-	public boolean DEFAULT_SHOW_ICON = true;
-	final static
-	public boolean DEFAULT_USE_EXPANDABLE_LIST = false;
-	final static
-	public boolean DEFAULT_PAUSE_ON_UNPLUGGED = true;
-	final static
-	public boolean DEFAULT_LOAD_ON_START = true;
-	final static
-	public boolean DEFAULT_ENABLE_LONG_CLICK = true;
-	final static
-	public boolean DEFAULT_EXPAND_IN_DEFAULT = true;
-	final static
-	public boolean DEFAULT_USE_RESPONSE_CACHE = true;
-	final static
-	public String DEFAULT_EPISODE_LIMIT = "-1";
 	
 	private Preference podcastList_;
 	private Preference version_;
@@ -75,6 +52,7 @@ public class PodplayerPreference
 	private Preference scoreThreshold_;
 	private Preference clearCache_;
 	private Preference episodeLimit_;
+	private SharedPreferences pref_;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -113,17 +91,14 @@ public class PodplayerPreference
 		else {
 			clearCache_.setOnPreferenceClickListener(this);
 		}
-		SharedPreferences pref =
-				PreferenceManager.getDefaultSharedPreferences(this);
-		pref.registerOnSharedPreferenceChangeListener(this);
-		updateSummary(pref, "ALL");
+		pref_ = PreferenceManager.getDefaultSharedPreferences(this);
+		pref_.registerOnSharedPreferenceChangeListener(this);
+		updateSummary(pref_, "ALL");
 	}
 	
 	@Override
 	public void onDestroy() {
-		SharedPreferences pref =
-				PreferenceManager.getDefaultSharedPreferences(this);
-		pref.unregisterOnSharedPreferenceChangeListener(this);
+		pref_.unregisterOnSharedPreferenceChangeListener(this);
 		super.onDestroy();
 	}
 
@@ -135,11 +110,9 @@ public class PodplayerPreference
 			return true;
 		}
 		if (item == clearCache_){
-			SharedPreferences pref =
-				PreferenceManager.getDefaultSharedPreferences(this);
 			//dummy field....
-			boolean flag = pref.getBoolean("clear_response_cache", true);
-			pref.edit()
+			boolean flag = pref_.getBoolean("clear_response_cache", true);
+			pref_.edit()
 				.putBoolean("clear_response_cache", !flag)
 				.commit();
 			return true;
@@ -227,15 +200,19 @@ public class PodplayerPreference
 
 	public void updateSummary(SharedPreferences pref, String key) {
 		boolean updateAll = "ALL".equals(key);
+		Resources res = getResources();
+		
 		if (updateAll || "read_timeout".equals(key)) {
 			readTimeout_.setSummary(readTimeout_.getEntry());
 		}
-		if (updateAll || "gesture_score_threshold".equals(key)) {
-			double threshold = Double.valueOf(pref.getString("gesture_score_threshold", PodplayerPreference.DEFAULT_GESTURE_SCORE));
+		if (updateAll || "gesture_score_threshold".equals(key)) {	
+			double threshold = Double.valueOf(pref.getString("gesture_score_threshold", 
+															res.getString(R.string.default_gesture_score_threshold)));
 			scoreThreshold_.setSummary(String.format("%.2f", threshold));
 		}
 		if (updateAll || "episode_limit".equals(key)){
-			int limit = Integer.valueOf(pref.getString("episode_limit", PodplayerPreference.DEFAULT_EPISODE_LIMIT));
+			int limit = Integer.valueOf(pref.getString("episode_limit", 
+														res.getString(R.string.default_episode_limit)));
 			String summary = getString(R.string.pref_episode_nolimit_summary);
 			if (limit > 0){
 				summary = MessageFormat.format(getString(R.string.pref_episode_limit_summary), limit);

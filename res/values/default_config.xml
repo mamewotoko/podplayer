@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <bool name="default_pause_on_unplugged">true</bool>
+	<bool name="default_enable_long_click">false</bool>
+	<bool name="default_load_on_start">true</bool>
+	
+	<string name="default_episode_limit">-1</string>
+	<bool name="default_use_response_cache">true</bool>
+	<string name="default_read_timeout">30</string>
+	<bool name="default_use_expandable_ui">false</bool>
+	<bool name="default_expand_in_default">true</bool>
+	<bool name="default_show_podcast_icon">true</bool>
+	
+	<bool name="default_enable_gesture">true</bool>
+
+	<string name="default_gesture_score_threshold">3.0</string>
+</resources>
