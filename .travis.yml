@@ -5,6 +5,8 @@ android:
         - android-10
     licences:
         - '.+'
+before_script:
+    - android update project -t android-10
+    - android update lib-project -p libsrc/pulltorefresh 
 script:
     - ant debug
-
