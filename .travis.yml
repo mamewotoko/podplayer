@@ -1,0 +1,10 @@
+language: android
+android:
+    components:
+        - build-tools-19.1.0
+        - android-10
+    licences:
+        - '.+'
+script:
+	- ant debug
+

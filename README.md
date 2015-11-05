@@ -22,21 +22,25 @@ https://play.google.com/store/apps/details?id=com.mamewo.podplayer0
 How to build
 ------------
 1. Clone source
-
-        git clone git://github.com/mamewotoko/podplayer.git
-        git submodule update --init
+```bash
+git clone git://github.com/mamewotoko/podplayer.git
+git submodule update --init
+```
 
 ### ant
 1. Update project
     * In this directory
-
-            android update project -p . -n podplayer -t android-10
+      ```bash
+      android update project -p . -n podplayer -t android-10
+      ```
     * In the libsrc/pulltorefresh/pulltorefresh directory
-
-            android update project -p . -n pulltoupdate -t android-10
+      ```bash
+      android update project -p . -n pulltoupdate -t android-10
+      ```
 2. Build
-
-        ant debug
+      ```bash
+      ant debug
+      ```
 A file bin/podplayer-debug.apk is created if succeed.
 
 ### Eclipse
