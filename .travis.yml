@@ -6,5 +6,5 @@ android:
     licences:
         - '.+'
 script:
-	- ant debug
+    - ant debug
 
