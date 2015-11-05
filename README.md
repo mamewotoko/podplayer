@@ -1,6 +1,6 @@
-===============================================================================
 podplayer - An android podcast player
-===============================================================================
+[![Build Status](https://travis-ci.org/mamewotoko/podplayer.svg?branch=master)](https://travis-ci.org/mamewotoko/podplayer)
+=====================================
 
 What?
 ----------
