@@ -71,7 +71,8 @@ How to run Scirocco test
 2. Run as "Android JUnit Test" or "Scirocco JUnit Test"
 
 TODO
-----------
+----
+* add play/pause button in notification
 * cache podcast icon
     * avoid loading podcast when UI is switched 
 * fix bugs
