@@ -26,10 +26,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
-/**
- * @author Takashi Masuyama <mamewotoko@gmail.com>
- * http://www002.upp.so-net.ne.jp/mamewo/
- */
 public class PlayerService
 	extends Service
 	implements MediaPlayer.OnCompletionListener,

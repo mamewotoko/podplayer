@@ -1,10 +1,5 @@
 package com.mamewo.podplayer0;
 
-/**
- * @author Takashi Masuyama <mamewotoko@gmail.com>
- * http://www002.upp.so-net.ne.jp/mamewo/
- */
-
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
