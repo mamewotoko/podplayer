@@ -2,14 +2,12 @@
 <resources>
     <string-array name="pref_podcastlist_keys">
         <item>NHK WORLD RADIO JAPAN</item>
-        <item>Voice of America (VOA)</item>
         <item>BBC: The English We Speak</item>
         <item>Wall Street Journal This Morning</item>
     </string-array>
     
     <string-array name="pref_podcastlist_urls">
         <item>http://www.nhk.or.jp/rj/podcast/rss/english.xml</item>
-        <item>http://www.voanews.com/api/epiqq</item>
         <item>http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml</item>
         <item>http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml</item>
     </string-array>
