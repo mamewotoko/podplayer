@@ -114,7 +114,7 @@ public class PodplayerPreference
 			boolean flag = pref_.getBoolean("clear_response_cache", true);
 			pref_.edit()
 				.putBoolean("clear_response_cache", !flag)
-				.commit();
+				.apply();
 			return true;
 		}
 		if (item == gestureTable_) {

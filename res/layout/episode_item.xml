@@ -1,45 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+	      android:layout_width="match_parent"
+	      android:layout_height="match_parent">
+  <ImageView
+      android:id="@+id/episode_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:adjustViewBounds="true"
+      android:maxHeight="54dp"
+      android:maxWidth="54dp"
+      android:layout_marginLeft="2dp"
+      android:focusable="false" />
 
-    <ImageView
-        android:id="@+id/episode_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:maxHeight="54dp"
-        android:maxWidth="54dp"
-        android:layout_marginLeft="2dp"
-        android:focusable="false" />
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical" >
+  <LinearLayout 
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical" >
     <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-        <!--  visibility of image view below is changed by code, so compound image is not suitable -->
-        <ImageView
-                android:id="@+id/play_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:src="@android:drawable/ic_media_play"
-                android:tint="#9E9"
-                android:visibility="gone" />
-          <TextView
-                android:id="@+id/episode_title"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+      <!--  visibility of image view below is changed by code, so compound image is not suitable -->
+      <ImageView
+          android:id="@+id/play_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:focusable="false"
+          android:src="@android:drawable/ic_media_play"
+          android:tint="#9E9"
+          android:visibility="gone" />
+      <TextView
+          android:id="@+id/episode_title"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
-<TextView
+    <TextView
         android:id="@+id/episode_time"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall" />
-</LinearLayout>
+  </LinearLayout>
 </LinearLayout>

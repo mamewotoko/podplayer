@@ -56,7 +56,7 @@ public class PodplayerActivity
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState, this, PodplayerActivity.class);
+		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.main);
 		playButton_ = (ToggleButton) findViewById(R.id.play_button);

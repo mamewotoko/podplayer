@@ -154,7 +154,7 @@ public class PodcastListPreference
 		if (isChanged_) {
 			SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 			boolean prevValue = pref.getBoolean("podcastlist2", true);
-			pref.edit().putBoolean("podcastlist2", !prevValue).commit();
+			pref.edit().putBoolean("podcastlist2", !prevValue).apply();
 		}
 	}
 	
