@@ -337,7 +337,6 @@ public class PlayerService
 	@Override
 	public void onCreate(){
 		super.onCreate();
-
 		currentPlaylist_ = null;
 		currentPlaying_ = null;
 		listener_ = null;

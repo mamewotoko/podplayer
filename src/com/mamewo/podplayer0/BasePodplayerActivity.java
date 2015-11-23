@@ -73,7 +73,7 @@ abstract public class BasePodplayerActivity
 		uiSettingChanged_ = false;
 		
 		if(null != savedInstanceState){
-			state_ = (PodplayerState) savedInstanceState.get("state");
+		 	state_ = (PodplayerState) savedInstanceState.get("state");
 		}
 		if(null == state_){
 			state_ = new PodplayerState();
@@ -275,6 +275,7 @@ abstract public class BasePodplayerActivity
 		//following block should be last one of this function
 		if (updateAll || "podcastlist2".equals(key)) {
 			state_.podcastList_ = PodcastListPreference.loadSetting(this);
+			Log.d(TAG, "load setting: " + state_.podcastList_.size());
 			onPodcastListChanged(updateAll);
 		}
 	}

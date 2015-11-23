@@ -91,7 +91,7 @@ public class PodcastListPreference
 	static final
 	public int DOWN_OPERATION = 2;
 	final static
-	private String PODCAST_SITE_URL = "http://www002.upp.so-net.ne.jp/mamewo/podcast.html";
+	private String PODCAST_SITE_URL = "http://mamewo.ddo.jp/podcast.html";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
