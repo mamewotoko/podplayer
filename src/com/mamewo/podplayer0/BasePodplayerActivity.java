@@ -275,7 +275,6 @@ abstract public class BasePodplayerActivity
 		//following block should be last one of this function
 		if (updateAll || "podcastlist2".equals(key)) {
 			state_.podcastList_ = PodcastListPreference.loadSetting(this);
-			Log.d(TAG, "load setting: " + state_.podcastList_.size());
 			onPodcastListChanged(updateAll);
 		}
 	}

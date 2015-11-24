@@ -91,7 +91,7 @@ public class PodcastListPreference
 	static final
 	public int DOWN_OPERATION = 2;
 	final static
-	private String PODCAST_SITE_URL = "http://mamewo.ddo.jp/podcast.html";
+	private String PODCAST_SITE_URL = "http://mamewo.ddo.jp/podcast/podcast.html";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -184,20 +184,35 @@ public class PodcastListPreference
 	@Override
 	public void onClick(View view) {
 		if (view == addButton_) {
-			String urlStr = urlEdit_.getText().toString();
+			String[] urlStrList = urlEdit_.getText().toString().split("\n");
+
 			//check url
-			URL url = null;
-			try {
-				url = new URL(urlStr);
+			//String[] urlStrList = urlStr.split("\n");
+			int malformed = 0;
+			List<URL> urlList = new ArrayList<URL>();
+			for(String urlStr: urlStrList){
+				if(urlStr.isEmpty()){
+					continue;
+				}
+				URL url = null;
+				try {
+					url = new URL(urlStr);
+					urlList.add(url);
+				}
+				catch (MalformedURLException e) {
+					malformed += 1;
+				}
 			}
-			catch (MalformedURLException e) {
+			if(malformed > 0){
 				showMessage(getString(R.string.error_malformed_url));
+			}
+			if(urlList.size() == 0){
 				return;
 			}
-			URL[] urlList = new URL[] { url };
+			//URL[] urlList = urlList;
 			showDialog(CHECKING_DIALOG);
 			task_ = new CheckTask();
-			task_.execute(urlList);
+			task_.execute((URL[])urlList.toArray(new URL[urlList.size()]));
 		}
 		else if (view.getId() == R.id.checkbox) {
 			CheckBox checkbox = (CheckBox) view;
