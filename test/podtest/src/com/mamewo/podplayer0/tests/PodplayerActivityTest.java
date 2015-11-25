@@ -80,15 +80,15 @@ public class PodplayerActivityTest
 	@Override
 	public void tearDown() throws Exception {
 		try {
+			getActivity().finish();
+			solo_.finishOpenedActivities();
+			System.gc();
 			solo_.finalize();
-			solo_ = null;
 		}
 		catch(Throwable e) {
 			Log.i(TAG, "tearDown error", e);
 		}
-		if (! getActivity().isFinishing()) {
-			getActivity().finish();
-		}
+		solo_ = null;
 		super.tearDown();
 	}
 
@@ -178,6 +178,7 @@ public class PodplayerActivityTest
 		String beforeString = edit.getText().toString();
 		View plusButton = solo_.getView(R.id.double_plus_button);
 		solo_.clickOnView(plusButton);
+		solo_.sleep(100);
 		String afterString = edit.getText().toString();
 		double diff = Double.valueOf(afterString) - Double.valueOf(beforeString) - 0.1;
 		Log.d(TAG, "diff:  " + diff);
@@ -196,9 +197,11 @@ public class PodplayerActivityTest
 		String beforeString = edit.getText().toString();
 		View minusButton = solo_.getView(R.id.double_minus_button);
 		solo_.clickOnView(minusButton);
+		solo_.sleep(100);
 		String afterString = edit.getText().toString();
 		double diff = Double.valueOf(beforeString) - Double.valueOf(afterString) - 0.1;
-		assertTrue(Math.abs(diff) < 0.0001);
+		Log.d(TAG, "befere after diff: " + beforeString + " " + afterString + " " + diff);
+		assertTrue("scoreminused", Math.abs(diff) < 0.0001);
 		solo_.clickOnButton("Cancel");
 		//TODO: check summary and pref value
 		solo_.takeScreenshot("testGestureScoreDown");
@@ -231,7 +234,7 @@ public class PodplayerActivityTest
 		solo_.sleep(500);
 		View githubView = solo_.getView(R.id.github_logo);
 		solo_.clickOnView(githubView);
-		solo_.sleep(10000);
+		solo_.sleep(5000);
 		//browser starts
 		solo_.takeScreenshot("testVersion");
 	}

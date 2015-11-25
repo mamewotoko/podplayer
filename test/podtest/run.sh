@@ -1,8 +1,7 @@
 #! /bin/sh
 COVERAGE_FILE=/data/data/com.mamewo.podplayer0/coverage.ec
 REPORT_FILE=/data/data/com.mamewo.podplayer0/files/TEST-all.xml
-CLASS_LIST="\
-com.mamewo.podplayer0.tests.PodplayerActivityTest"
+CLASS_LIST="com.mamewo.podplayer0.tests.PodplayerActivityTest"
 #com.mamewo.podplayer0.tests.PodplayerExpActivityTest,\
 #com.mamewo.podplayer0.tests.PodcastListPreferenceTest,\
 #com.mamewo.podplayer0.tests.MainActivityTest"
