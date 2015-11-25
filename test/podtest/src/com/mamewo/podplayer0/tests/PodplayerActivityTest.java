@@ -1,8 +1,14 @@
 package com.mamewo.podplayer0.tests;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import com.jayway.android.robotium.solo.Solo;
+//import com.jayway.android.robotium.solo.Solo;
+import com.robotium.solo.Solo;
+import com.robotium.solo.Solo.Config;
+import com.robotium.solo.Solo.Config.ScreenshotFileType;
+import android.os.Environment;
+import java.io.File;
+
 import com.mamewo.podplayer0.PodcastListPreference;
 import com.mamewo.podplayer0.PodplayerActivity;
 import com.mamewo.podplayer0.R;
@@ -14,7 +20,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-import asia.sonix.scirocco.SciroccoSolo;
+//import asia.sonix.scirocco.SciroccoSolo;
 
 /**
  * This is a simple framework for a test of an Application.  See
@@ -29,7 +35,8 @@ import asia.sonix.scirocco.SciroccoSolo;
 public class PodplayerActivityTest
 	extends ActivityInstrumentationTestCase2<PodplayerActivity>
 {
-	protected SciroccoSolo solo_;
+	//protected SciroccoSolo solo_;
+	protected Solo solo_;
 	final static
 	private String TAG = "podtest";
 
@@ -41,7 +48,8 @@ public class PodplayerActivityTest
 		TextView view = null;
 		solo_.waitForActivity("PodplayerPrefrence", 3000);
 		do {
-			ArrayList<TextView> list = solo_.getCurrentTextViews(null);
+			//ArrayList<TextView> list = solo_.getCurrentTextViews(null);
+			List<TextView> list = solo_.getCurrentViews(TextView.class, false);
 			for (TextView listText : list) {
 				//Log.i(TAG, "listtext: " + listText.getText());
 				if(targetTitle.equals(listText.getText())){
@@ -60,13 +68,18 @@ public class PodplayerActivityTest
 
 	@Override
 	public void setUp() throws Exception {
-		solo_ = new SciroccoSolo(getInstrumentation(), getActivity(), "com.mamewo.podtest");
+		//solo_ = new SciroccoSolo(getInstrumentation(), getActivity(), "com.mamewo.podtest");
+		Config config = new Config();
+		config.screenshotFileType = ScreenshotFileType.PNG;
+		config.screenshotSavePath = new File(Environment.getExternalStorageDirectory(), "Robotium-Screenshots").getPath();
+		config.shouldScroll = false;
+
+		solo_ = new Solo(getInstrumentation(), config, getActivity());
 	}
 
 	@Override
 	public void tearDown() throws Exception {
 		try {
-//			solo_.takeScreenShot();
 			solo_.finalize();
 			solo_ = null;
 		}
@@ -86,27 +99,28 @@ public class PodplayerActivityTest
 		Log.d(TAG, "testPlay: click play button");
 		solo_.clickOnView(playButton);
 		solo_.sleep(10000);
-		//solo_.takeScreenShot();
 		assertTrue(((ToggleButton)playButton).isChecked());
 		solo_.clickOnView(playButton);
+		solo_.takeScreenshot("testPlay");
 	}
 	
 	public void testPlayItem() throws Exception {
 		solo_.sleep(4000);
 		solo_.clickInList(2);
 		solo_.sleep(10000);
-		//solo_.takeScreenShot();
 		View playButton = solo_.getView(R.id.play_button);
 		//umm: solo_.isToggled does not work... why?
 		assertTrue(((ToggleButton)playButton).isChecked());
 		solo_.clickOnView(playButton);
 		solo_.sleep(500);
+		solo_.takeScreenshot("testPlayItem");
 	}
 
 	public void testFilter() {
 		solo_.sleep(500);
 		solo_.pressSpinnerItem(0, 2);
 		solo_.sleep(3000);
+		solo_.takeScreenshot("testFilter");
 	}
 
 	public void testFinish() {
@@ -120,12 +134,11 @@ public class PodplayerActivityTest
 		solo_.clickOnMenuItem("Preference");
 		selectPreference("Podcast list");
 		solo_.waitForActivity(PodcastListPreference.class.getName(), 3000);
-//		solo_.takeScreenShot();
 		solo_.clickInList(1);
 		solo_.clickInList(3);
 		solo_.clickInList(5);
 		solo_.sleep(500);
-//		solo_.takeScreenShot();
+		solo_.takeScreenshot("testSelectPodcast");
 	}
 	
 	//TODO: add testAddPodcast
@@ -136,10 +149,12 @@ public class PodplayerActivityTest
 		selectPreference("Podcast list");
 		solo_.waitForActivity(PodcastListPreference.class.getName(), 3000);
 		solo_.enterText(0, url);
+		solo_.sleep(500);
 		View addButton = solo_.getView(R.id.add_podcast_button);
 		solo_.clickOnView(addButton);
 		//TOOD: add assert
 		solo_.sleep(5000);
+		solo_.takeScreenshot("testAddPodcast");
 	}
 
 	public void testAbortReload() {
@@ -151,6 +166,7 @@ public class PodplayerActivityTest
 		//TODO: this does not work...
 		solo_.scrollUpList(0);
 		solo_.sleep(10000);
+		solo_.takeScreenshot("testAbortReload");
 	}
 
 	public void testGestureScoreUp() throws Exception {
@@ -168,6 +184,7 @@ public class PodplayerActivityTest
 		assertTrue(Math.abs(diff) < 0.0001);
 		solo_.clickOnButton("OK");
 		//TODO: check summary and pref value
+		solo_.takeScreenshot("testGestureScoreUp");
 	}
 
 	public void testGestureScoreDown() throws Exception {
@@ -184,6 +201,7 @@ public class PodplayerActivityTest
 		assertTrue(Math.abs(diff) < 0.0001);
 		solo_.clickOnButton("Cancel");
 		//TODO: check summary and pref value
+		solo_.takeScreenshot("testGestureScoreDown");
 	}
 
 	public void testGestureDialog() throws Exception {
@@ -191,7 +209,7 @@ public class PodplayerActivityTest
 		solo_.clickOnMenuItem("Preference");
 		selectPreference("Gesture list");
 		solo_.sleep(1000);
-//		solo_.takeScreenShot();
+		solo_.takeScreenshot("testGestureDialog");
 		//TODO: check that gesture list dialog is displayed
 	}
 	
@@ -202,6 +220,8 @@ public class PodplayerActivityTest
 		solo_.sleep(2000);
 		//click ok button
 		solo_.clickOnButton(0);
+		solo_.sleep(200);
+		solo_.takeScreenshot("testLicence");
 	}
 
 	public void testVersion() {
@@ -213,30 +233,30 @@ public class PodplayerActivityTest
 		solo_.clickOnView(githubView);
 		solo_.sleep(10000);
 		//browser starts
+		solo_.takeScreenshot("testVersion");
 	}
 
 	//-----------------------
-	public void testMainScreenshot() throws Exception {
+	public void testMain() throws Exception {
 		solo_.sleep(500);
 		View playButton = solo_.getView(R.id.play_button);
 		solo_.clickOnView(playButton);
 		solo_.sendKey(Solo.MENU);
 		solo_.sleep(1000);
-		//solo_.takeScreenShot();
 		solo_.sendKey(Solo.MENU);
 		solo_.sleep(300);
 		solo_.clickOnView(playButton);
 		solo_.sleep(300);
 		assertFalse(((ToggleButton)playButton).isChecked());
+		solo_.takeScreenshot("testMain");
 	}
 	
-	public void testPreferenceScreenshot() throws Exception {
+	public void testPreference() throws Exception {
 		solo_.sleep(500);
 		solo_.clickOnMenuItem("Preference");
 		solo_.sleep(1000);
-		//solo_.takeScreenShot();
 		solo_.scrollDown();
 		solo_.sleep(500);
-		//solo_.takeScreenShot();
+		solo_.takeScreenshot("testPreference");
 	}
 }

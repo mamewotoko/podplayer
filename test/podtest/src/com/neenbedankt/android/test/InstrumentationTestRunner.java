@@ -34,7 +34,6 @@ public class InstrumentationTestRunner extends android.test.InstrumentationTestR
     private long mTestStarted;
     private static final String JUNIT_XML_FILE = "TEST-all.xml";
     
-    
     @Override
     public void onStart() {
         try {

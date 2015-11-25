@@ -471,6 +471,7 @@ public class PlayerService
 		isPreparing_ = false;
 		//TODO: localize
 		showMessage("Network error: " + code);
+		//TODO: if next item is different, continue playing
 		stopMusic();
 		return true;
 	}

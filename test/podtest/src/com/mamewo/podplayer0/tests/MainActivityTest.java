@@ -4,17 +4,24 @@ import com.mamewo.podplayer0.MainActivity;
 import com.mamewo.podplayer0.PodplayerActivity;
 import com.mamewo.podplayer0.PodplayerExpActivity;
 
+import com.robotium.solo.Solo;
+import com.robotium.solo.Solo.Config;
+import com.robotium.solo.Solo.Config.ScreenshotFileType;
+import android.os.Environment;
+import java.io.File;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
-import asia.sonix.scirocco.SciroccoSolo;
+//import asia.sonix.scirocco.SciroccoSolo;
 
 public class MainActivityTest
 	extends ActivityInstrumentationTestCase2<MainActivity>
 {
-	private SciroccoSolo solo_;
+	//private SciroccoSolo solo_;
+	private Solo solo_;
 	static final
 	private String TAG = "podtest";
 	
@@ -24,7 +31,13 @@ public class MainActivityTest
 	
 	@Override
 	public void setUp() {
-		solo_ = new SciroccoSolo(getInstrumentation(), getActivity(), "com.mamewo.podtest");
+		//solo_ = new SciroccoSolo(getInstrumentation(), getActivity(), "com.mamewo.podtest");
+		Config config = new Config();
+		config.screenshotFileType = ScreenshotFileType.PNG;
+		config.screenshotSavePath = new File(Environment.getExternalStorageDirectory(), "Robotium-Screenshots").getPath();
+		config.shouldScroll = false;
+
+		solo_ = new Solo(getInstrumentation(), config, getActivity());
 	}
 	
 	@Override

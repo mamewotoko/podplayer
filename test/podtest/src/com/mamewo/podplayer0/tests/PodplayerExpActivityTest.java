@@ -1,6 +1,12 @@
 package com.mamewo.podplayer0.tests;
 
-import com.jayway.android.robotium.solo.Solo;
+//import com.jayway.android.robotium.solo.Solo;
+import com.robotium.solo.Solo;
+import com.robotium.solo.Solo.Config;
+import com.robotium.solo.Solo.Config.ScreenshotFileType;
+import android.os.Environment;
+import java.io.File;
+
 import com.mamewo.podplayer0.PodplayerExpActivity;
 import com.mamewo.podplayer0.R;
 
@@ -8,7 +14,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.view.View;
 import android.widget.ToggleButton;
-import asia.sonix.scirocco.SciroccoSolo;
+//import asia.sonix.scirocco.SciroccoSolo;
 
 /**
  * This is a simple framework for a test of an Application.  See
@@ -23,7 +29,9 @@ import asia.sonix.scirocco.SciroccoSolo;
 public class PodplayerExpActivityTest
 	extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
 {
-	protected SciroccoSolo solo_;
+	//protected SciroccoSolo solo_;
+	protected Solo solo_;
+
 	final static
 	private String TAG = "podtest";
 
@@ -33,7 +41,13 @@ public class PodplayerExpActivityTest
 
 	@Override
 	public void setUp() throws Exception {
-		solo_ = new SciroccoSolo(getInstrumentation(), getActivity(), "com.mamewo.podtest");
+		//solo_ = new SciroccoSolo(getInstrumentation(), getActivity(), "com.mamewo.podtest");
+		Config config = new Config();
+		config.screenshotFileType = ScreenshotFileType.PNG;
+		config.screenshotSavePath = new File(Environment.getExternalStorageDirectory(), "Robotium-Screenshots").getPath();
+		config.shouldScroll = false;
+
+		solo_ = new Solo(getInstrumentation(), config, getActivity());
 	}
 
 	@Override

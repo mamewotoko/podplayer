@@ -2,19 +2,27 @@ package com.mamewo.podplayer0.tests;
 
 import junit.framework.Assert;
 
-import com.mamewo.podplayer0.PodcastInfo;
+import com.robotium.solo.Solo;
+import com.robotium.solo.Solo.Config;
+import com.robotium.solo.Solo.Config.ScreenshotFileType;
+import android.os.Environment;
+import java.io.File;
+
+import com.mamewo.lib.podcast_parser.PodcastInfo;
 import com.mamewo.podplayer0.PodcastListPreference;
 import com.mamewo.podplayer0.R;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.widget.ListAdapter;
-import asia.sonix.scirocco.SciroccoSolo;
+import android.widget.ListView;
+//import asia.sonix.scirocco.SciroccoSolo;
 
 public class PodcastListPreferenceTest
 	extends ActivityInstrumentationTestCase2<PodcastListPreference>
 {
-	private SciroccoSolo solo_;
+	//private SciroccoSolo solo_;
+	private Solo solo_;
 	static final
 	private String TAG = "podtest";
 	
@@ -24,8 +32,13 @@ public class PodcastListPreferenceTest
 
 	@Override
 	public void setUp() {
-		solo_ = new SciroccoSolo(getInstrumentation(), getActivity(), "com.mamewo.podtest");
-		solo_.sleep(500);
+		//solo_ = new SciroccoSolo(getInstrumentation(), getActivity(), "com.mamewo.podtest");
+		Config config = new Config();
+		config.screenshotFileType = ScreenshotFileType.PNG;
+		config.screenshotSavePath = new File(Environment.getExternalStorageDirectory(), "Robotium-Screenshots").getPath();
+		config.shouldScroll = false;
+
+		solo_ = new Solo(getInstrumentation(), config, getActivity());
 	}
 	
 	@Override
@@ -42,7 +55,7 @@ public class PodcastListPreferenceTest
 	}
 	
 	public void testAddFail() {
-		ListAdapter adapter = solo_.getCurrentListViews().get(0).getAdapter();
+		ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
 		PodcastInfo prevInfo = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
 		String url = "http://www.google.co.jp/";
 		int prevCount = adapter.getCount();
@@ -55,7 +68,7 @@ public class PodcastListPreferenceTest
 	}
 
 	public void testAddSuccess() {
-		ListAdapter adapter = solo_.getCurrentListViews().get(0).getAdapter();
+		ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
 		String url = "http://www.tfm.co.jp/podcasts/avanti/podcast.xml";
 		int prevCount = adapter.getCount();
 		solo_.enterText(solo_.getEditText(0), url);
@@ -68,7 +81,7 @@ public class PodcastListPreferenceTest
 	}
 	
 	public void testDelete3() {
-		ListAdapter adapter = solo_.getCurrentListViews().get(0).getAdapter();
+		ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
 		int count = adapter.getCount();
 		solo_.clickLongInList(3);
 		solo_.sleep(200);
@@ -78,7 +91,7 @@ public class PodcastListPreferenceTest
 	}
 	
 	public void testUp() {
-		ListAdapter adapter = solo_.getCurrentListViews().get(0).getAdapter();
+		ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
 		PodcastInfo info = (PodcastInfo)adapter.getItem(1);
 		solo_.clickLongInList(2);
 		solo_.sleep(200);
@@ -88,7 +101,7 @@ public class PodcastListPreferenceTest
 	}
 	
 	public void testDown() {
-		ListAdapter adapter = solo_.getCurrentListViews().get(0).getAdapter();
+		ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
 		PodcastInfo info = (PodcastInfo)adapter.getItem(0);
 		solo_.clickLongInList(1);
 		solo_.sleep(200);

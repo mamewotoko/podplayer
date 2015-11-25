@@ -72,6 +72,7 @@ How to run Scirocco test
 
 TODO
 ----
+* add/mark listened item list
 * add play/pause button in notification
 * cache podcast icon
     * avoid loading podcast when UI is switched 
@@ -80,6 +81,7 @@ TODO
         * check heap size and class histogram
     * when prepare error occurs, cursor moves to next episode
         * stop playing
+        * or mark error item and try playing next unerror item
 * add / update test
     * preference
     * gesture?
@@ -103,7 +105,6 @@ TODO
     * setContentView takes long time
 * Autoload: load when create activity or when podcast list setting is changed
 * fix a bug that when only one episode is registered, list is in tap to refresh mode after loaded
-* add listened item list
 * add confirm dialog to open web site
 * play episode which is clicked while preparing other episode
 * sort episode by date
