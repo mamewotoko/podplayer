@@ -74,6 +74,8 @@ TODO
 ----
 * add/mark listened item list
 * add play/pause button in notification
+* http proxy setting?
+* write additional podcast url to sd card?
 * cache podcast icon
     * avoid loading podcast when UI is switched 
 * fix bugs

@@ -72,6 +72,7 @@ public class PodplayerActivityTest
 		Config config = new Config();
 		config.screenshotFileType = ScreenshotFileType.PNG;
 		config.screenshotSavePath = new File(Environment.getExternalStorageDirectory(), "Robotium-Screenshots").getPath();
+		Log.d(TAG, "screenshotpath:"+config.screenshotSavePath.toString());
 		config.shouldScroll = false;
 
 		solo_ = new Solo(getInstrumentation(), config, getActivity());
@@ -101,6 +102,7 @@ public class PodplayerActivityTest
 		solo_.sleep(10000);
 		assertTrue(((ToggleButton)playButton).isChecked());
 		solo_.clickOnView(playButton);
+		solo_.sleep(500);
 		solo_.takeScreenshot("testPlay");
 	}
 	
@@ -109,7 +111,6 @@ public class PodplayerActivityTest
 		solo_.clickInList(2);
 		solo_.sleep(10000);
 		View playButton = solo_.getView(R.id.play_button);
-		//umm: solo_.isToggled does not work... why?
 		assertTrue(((ToggleButton)playButton).isChecked());
 		solo_.clickOnView(playButton);
 		solo_.sleep(500);
