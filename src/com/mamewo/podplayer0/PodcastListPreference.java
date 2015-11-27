@@ -212,7 +212,7 @@ public class PodcastListPreference
 			//URL[] urlList = urlList;
 			showDialog(CHECKING_DIALOG);
 			task_ = new CheckTask();
-			task_.execute((URL[])urlList.toArray(new URL[urlList.size()]));
+			task_.execute(urlList.toArray(new URL[urlList.size()]));
 		}
 		else if (view.getId() == R.id.checkbox) {
 			CheckBox checkbox = (CheckBox) view;
