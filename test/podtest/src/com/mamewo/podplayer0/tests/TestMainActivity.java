@@ -17,7 +17,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 //import asia.sonix.scirocco.SciroccoSolo;
 
-public class MainActivityTest
+public class TestMainActivity
 	extends ActivityInstrumentationTestCase2<MainActivity>
 {
 	//private SciroccoSolo solo_;
@@ -25,7 +25,7 @@ public class MainActivityTest
 	static final
 	private String TAG = "podtest";
 	
-	public MainActivityTest() {
+	public TestMainActivity() {
 		super("com.mamewo.podplayer0", MainActivity.class);
 	}
 	

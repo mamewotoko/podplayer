@@ -32,7 +32,7 @@ import android.widget.ToggleButton;
  * -e class com.mamewo.podplayer0.PodplayerActivityTest \
  * com.mamewo.podplayer0.tests/android.test.InstrumentationTestRunner
  */
-public class PodplayerActivityTest
+public class TestPodplayerActivity
 	extends ActivityInstrumentationTestCase2<PodplayerActivity>
 {
 	//protected SciroccoSolo solo_;
@@ -40,7 +40,7 @@ public class PodplayerActivityTest
 	final static
 	private String TAG = "podtest";
 
-	public PodplayerActivityTest() {
+	public TestPodplayerActivity() {
 		super("com.mamewo.podplayer0", PodplayerActivity.class);
 	}
 
@@ -107,7 +107,7 @@ public class PodplayerActivityTest
 	}
 	
 	public void testPlayItem() throws Exception {
-		solo_.sleep(4000);
+		solo_.sleep(10000);
 		solo_.clickInList(2);
 		solo_.sleep(10000);
 		View playButton = solo_.getView(R.id.play_button);
@@ -136,11 +136,17 @@ public class PodplayerActivityTest
 		selectPreference("Podcast list");
 		solo_.waitForActivity(PodcastListPreference.class.getName(), 3000);
 		solo_.clickInList(1);
-		solo_.clickInList(3);
-		solo_.clickInList(5);
 		solo_.sleep(500);
+		solo_.clickInList(3);
+		// solo_.clickInList(5);
+		// solo_.sleep(500);
 		solo_.takeScreenshot("testSelectPodcast");
 	}
+
+	//TODO: long click
+	// remove
+	// move up
+	// move down
 	
 	//TODO: add testAddPodcast
 	public void testAddPodcast() throws Exception {

@@ -26,7 +26,7 @@ import android.widget.ToggleButton;
  * -e class com.mamewo.podplayer0.PodplayerExpActivityTest \
  * com.mamewo.podplayer0.tests/android.test.InstrumentationTestRunner
  */
-public class PodplayerExpActivityTest
+public class TestPodplayerExpActivity
 	extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
 {
 	//protected SciroccoSolo solo_;
@@ -35,7 +35,7 @@ public class PodplayerExpActivityTest
 	final static
 	private String TAG = "podtest";
 
-	public PodplayerExpActivityTest() {
+	public TestPodplayerExpActivity() {
 		super("com.mamewo.podplayer0", PodplayerExpActivity.class);
 	}
 

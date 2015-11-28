@@ -18,7 +18,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 //import asia.sonix.scirocco.SciroccoSolo;
 
-public class PodcastListPreferenceTest
+public class TestPodcastListPreference
 	extends ActivityInstrumentationTestCase2<PodcastListPreference>
 {
 	//private SciroccoSolo solo_;
@@ -26,7 +26,7 @@ public class PodcastListPreferenceTest
 	static final
 	private String TAG = "podtest";
 	
-	public PodcastListPreferenceTest() {
+	public TestPodcastListPreference() {
 		super("com.mamewo.podplayer0", PodcastListPreference.class);
 	}
 

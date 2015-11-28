@@ -3,8 +3,8 @@ package com.mamewo.podplayer0.tests;
 //import com.jayway.android.robotium.solo.Solo;
 import com.robotium.solo.Solo;
 
-public class PodplayerExpActivityLandTest
-	extends PodplayerExpActivityTest
+public class TestPodplayerExpActivityLand
+	extends TestPodplayerExpActivity
 {
 	@Override
 	public void setUp()
