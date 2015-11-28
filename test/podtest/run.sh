@@ -1,11 +1,11 @@
 #! /bin/sh
 COVERAGE_FILE=/data/data/com.mamewo.podplayer0/coverage.ec
 REPORT_FILE=/data/data/com.mamewo.podplayer0/files/TEST-all.xml
-CLASS_LIST="com.mamewo.podplayer0.tests.TestPodplayerActivity,\
-com.mamewo.podplayer0.tests.TestPodcastListPreference,\
-com.mamewo.podplayer0.tests.TestPodplayerExpActivity,\
-com.mamewo.podplayer0.tests.TestMainActivity,\
-com.mamewo.podplayer0.tests.TestPodplayerActivityLand,\
+#CLASS_LIST="com.mamewo.podplayer0.tests.TestPodplayerActivity,\
+#com.mamewo.podplayer0.tests.TestPodcastListPreference,\
+#com.mamewo.podplayer0.tests.TestPodplayerExpActivity,\
+#com.mamewo.podplayer0.tests.TestMainActivity,\
+CLASS_LIST="com.mamewo.podplayer0.tests.TestPodplayerActivityLand,\
 com.mamewo.podplayer0.tests.TestPodplayerExpActivityLand"
 RUNNER=com.neenbedankt.android.test.InstrumentationTestRunner
 ADB=$ANDROID_HOME/platform-tools/adb

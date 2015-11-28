@@ -25,6 +25,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 
 public class PlayerService
 	extends Service
@@ -378,11 +380,17 @@ public class PlayerService
 
 	private void startForeground(String title, String description) {
 		String podTitle = getString(R.string.notify_playing_podcast);
-		Notification note =
-				new Notification(R.drawable.ic_status, podTitle, 0);
-		Intent ni = new Intent(this, USER_CLASS);
-		PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
-		note.setLatestEventInfo(this, title, description, npi);
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+			.setSmallIcon(R.drawable.ic_status)
+			.setContentTitle(podTitle)
+			.setContentText(description);
+		Intent resultIntent = new Intent(this, USER_CLASS);
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		stackBuilder.addParentStack(USER_CLASS);
+		stackBuilder.addNextIntent(resultIntent);
+		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		builder.setContentIntent(resultPendingIntent);
+		Notification note = builder.build();
 		startForeground(NOTIFY_PLAYING_ID, note);
 	}
 

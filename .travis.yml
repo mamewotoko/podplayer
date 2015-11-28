@@ -3,11 +3,13 @@ android:
     components:
         - build-tools-19.1.0
         - android-10
+        - extra-android-support
     licences:
         - '.+'
 before_script:
     - android update project -t android-10 -p .
     - android update lib-project -p libsrc/pulltorefresh 
+    - cp -r /usr/local/android-sdk/extras/google/v4/android-support-v4.jar libsrc/
 script:
     - ant debug lint
 

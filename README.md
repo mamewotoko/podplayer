@@ -36,6 +36,10 @@ git submodule update --init
       ```bash
       android update project -p . -n pulltoupdate -t android-10
       ```
+    * copy support lib 
+    ```
+    cp <android-sdk-path>/extras/android/support/v4/android-support-v4.jar libs
+    ```
 2. Build
       ```bash
       ant debug
