@@ -9,7 +9,8 @@ android:
 before_script:
     - android update project -t android-10 -p .
     - android update lib-project -p libsrc/pulltorefresh 
-    - cp -r /usr/local/android-sdk/extras/android/support/v4/android-support-v4.jar libs
+    - mkdir libs
+    - cp -r /usr/local/android-sdk/extras/android/support/v4/android-support-v4.jar libs/
 script:
     - ant debug lint
 
