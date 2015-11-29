@@ -40,6 +40,8 @@ public class PlayerService
 	final static
 	public String PACKAGE_NAME = PlayerService.class.getPackage().getName();
 	final static
+	public String START_MUSIC_ACTION = PACKAGE_NAME + ".START_MUSIC_ACTION";
+	final static
 	public String STOP_MUSIC_ACTION = PACKAGE_NAME + ".STOP_MUSIC_ACTION";
 	final static
 	public String PREVIOUS_MUSIC_ACTION = PACKAGE_NAME + ".PREVIOUS_MUSIC_ACTION";
@@ -73,7 +75,8 @@ public class PlayerService
 	private ComponentName mediaButtonReceiver_;
 	private long previousPrevKeyTime_;
 	private EpisodeInfo currentPlaying_;
-	
+	private	SharedPreferences pref_;
+
 	//error code
 	//error code from base/include/media/stagefright/MediaErrors.h
 	final static
@@ -129,7 +132,7 @@ public class PlayerService
 			}
 			else {
 				playCursor_--;
-					}
+			}
 			playNth(playCursor_);
 		}
 		else {
@@ -151,8 +154,12 @@ public class PlayerService
 		if (null == action) {
 			return START_STICKY;
 		}
-		if (STOP_MUSIC_ACTION.equals(action)) {
-			stopMusic();
+		if (START_MUSIC_ACTION.equals(action)) {
+			restartMusic();
+		}
+		else if (STOP_MUSIC_ACTION.equals(action)) {
+			//stopMusic();
+			pauseMusic();
 		}
 		else if(NEXT_MUSIC_ACTION.equals(action)){
 			//TODO: move cursor to next if not playing
@@ -167,10 +174,8 @@ public class PlayerService
 			}
 		}
 		else if (JACK_UNPLUGGED_ACTION.equals(action)) {
-			SharedPreferences pref =
-					PreferenceManager.getDefaultSharedPreferences(this);
 			Resources res = getResources();
-			boolean pause = pref.getBoolean("pause_on_unplugged", res.getBoolean(R.bool.default_pause_on_unplugged));
+			boolean pause = pref_.getBoolean("pause_on_unplugged", res.getBoolean(R.bool.default_pause_on_unplugged));
 			if (pause && null != player_ && player_.isPlaying()) {
 				pauseMusic();
 			}
@@ -347,7 +352,8 @@ public class PlayerService
 			player_.pause();
 		}
 		isPausing_ = true;
-		stopForeground(false);
+		//stopForeground(false);
+		showNotification(currentPlaying_.title_);
 		if(null != listener_){
 			listener_.onStopMusic(PAUSE);
 		}
@@ -367,6 +373,7 @@ public class PlayerService
 		currentPlaylist_ = null;
 		currentPlaying_ = null;
 		listener_ = null;
+		pref_ =	PreferenceManager.getDefaultSharedPreferences(this);
 		player_ = new MediaPlayer();
 		player_.setOnCompletionListener(this);
 		player_.setOnErrorListener(this);
@@ -408,8 +415,16 @@ public class PlayerService
 	private void showNotification(String episodeTitle) {
 		RemoteViews rvs = new RemoteViews(getClass().getPackage().getName(), R.layout.notification);
 		rvs.setTextViewText(R.id.notification_title, episodeTitle);
+		
 		Intent pauseIntent = new Intent(this, getClass());
-		pauseIntent.setAction(STOP_MUSIC_ACTION);
+		if(isPlaying()){
+			pauseIntent.setAction(STOP_MUSIC_ACTION);
+			rvs.setImageViewResource(R.id.notification_pause, android.R.drawable.ic_media_pause);
+		}
+		else {
+			pauseIntent.setAction(START_MUSIC_ACTION);
+			rvs.setImageViewResource(R.id.notification_pause, android.R.drawable.ic_media_play);
+		}
 		PendingIntent pausePendingIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
 		rvs.setOnClickPendingIntent(R.id.notification_pause, pausePendingIntent);
 		
@@ -529,7 +544,16 @@ public class PlayerService
 		//TODO: localize
 		showMessage("Network error: " + code);
 		//TODO: if next item is different, continue playing
-		stopMusic();
+		boolean stopOnError = pref_.getBoolean("stop_playing_on_error", false);
+		if(stopOnError){
+			stopMusic();
+		}
+		else {
+			//TODO: if next item is different
+			if(currentPlaylist_.size() > 1){
+				playNext();
+			}
+		}
 		return true;
 	}
 
@@ -595,11 +619,6 @@ public class PlayerService
 				i.putExtra("event", intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT));
 				context.startService(i);
 			}
-			// else if(STOP_MUSIC_ACTION.equals(action)){
-			// 	Intent i = new Intent(context, PlayerService.class);
-			// 	i.setAction(STOP_MUSIC_ACTION);
-			// 	context.startService(i);
-			// }
 		}
 	}
 

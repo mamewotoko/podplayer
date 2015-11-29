@@ -14,19 +14,19 @@
       android:maxLines="3"
       android:textAppearance="?android:attr/textAppearanceMedium"
       />
-  <ImageButton android:id="@+id/notification_previous"
+  <ImageView android:id="@+id/notification_previous"
 	       android:layout_width="0dp"
 	       android:layout_weight="1"
 	       android:layout_height="wrap_content"
 	       android:src="@android:drawable/ic_media_previous"
 	       />
-  <ImageButton android:id="@+id/notification_pause"
+  <ImageView android:id="@+id/notification_pause"
 	       android:layout_width="0dp"
 	       android:layout_weight="1"
 	       android:layout_height="wrap_content"
 	       android:src="@android:drawable/ic_media_pause"
 	       />
-  <ImageButton android:id="@+id/notification_next"
+  <ImageView android:id="@+id/notification_next"
 	     android:layout_width="0dp"
 	       android:layout_weight="1"
 	       android:layout_height="wrap_content"
