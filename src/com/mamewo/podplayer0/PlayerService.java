@@ -352,7 +352,7 @@ public class PlayerService
 			player_.pause();
 		}
 		isPausing_ = true;
-		//stopForeground(false);
+		stopForeground(false);
 		showNotification(currentPlaying_.title_);
 		if(null != listener_){
 			listener_.onStopMusic(PAUSE);

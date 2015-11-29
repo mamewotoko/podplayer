@@ -78,7 +78,6 @@ TODO
 ----
 * add/mark listened item list
 * add play/pause button in notification
-* handle bom in podcast xml
 * http proxy setting?
 * write additional podcast url to sd card?
 * cache podcast icon

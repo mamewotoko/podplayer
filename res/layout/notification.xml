@@ -6,11 +6,13 @@
 	android:weightSum="6"
 	android:orientation="horizontal" >
   <!-- height: 64dp -->
+   
   <TextView
       android:id="@+id/notification_title"
       android:layout_width="0dp"
       android:layout_weight="3"
       android:layout_height="wrap_content"
+      android:drawableLeft="@drawable/ic_status"
       android:maxLines="3"
       android:textAppearance="?android:attr/textAppearanceMedium"
       />
