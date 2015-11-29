@@ -6,6 +6,7 @@ import java.util.List;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -25,6 +26,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
+import android.widget.RemoteViews;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
@@ -39,6 +41,10 @@ public class PlayerService
 	public String PACKAGE_NAME = PlayerService.class.getPackage().getName();
 	final static
 	public String STOP_MUSIC_ACTION = PACKAGE_NAME + ".STOP_MUSIC_ACTION";
+	final static
+	public String PREVIOUS_MUSIC_ACTION = PACKAGE_NAME + ".PREVIOUS_MUSIC_ACTION";
+	final static
+	public String NEXT_MUSIC_ACTION = PACKAGE_NAME + ".NEXT_MUSIC_ACTION";
 	final static
 	public String JACK_UNPLUGGED_ACTION = PACKAGE_NAME + ".JUCK_UNPLUGGED_ACTION";
 	final static
@@ -112,6 +118,26 @@ public class PlayerService
 	public void setPlaylist(List<EpisodeInfo> playlist) {
 		currentPlaylist_ = playlist;
 	}
+
+	//previous tune when previous is clicked twice quickly
+	public void playPrevious(){
+		long currentTime = System.currentTimeMillis();
+		Log.d(TAG, "Interval: " + (currentTime - previousPrevKeyTime_));
+		if ((currentTime - previousPrevKeyTime_) <= PREV_INTERVAL_MILLIS) {
+			if(0 == playCursor_){
+				playCursor_ = currentPlaylist_.size() - 1;
+			}
+			else {
+				playCursor_--;
+					}
+			playNth(playCursor_);
+		}
+		else {
+			//rewind
+			playMusic();
+		}
+		previousPrevKeyTime_ = currentTime;
+	}
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
@@ -127,6 +153,18 @@ public class PlayerService
 		}
 		if (STOP_MUSIC_ACTION.equals(action)) {
 			stopMusic();
+		}
+		else if(NEXT_MUSIC_ACTION.equals(action)){
+			//TODO: move cursor to next if not playing
+			if (player_.isPlaying()) {
+				playNext();
+			}
+		}
+		else if(PREVIOUS_MUSIC_ACTION.equals(action)){
+			//TODO: move cursor to previous if not playing
+			if (player_.isPlaying()) {
+				playPrevious();
+			}
 		}
 		else if (JACK_UNPLUGGED_ACTION.equals(action)) {
 			SharedPreferences pref =
@@ -158,22 +196,9 @@ public class PlayerService
 				}
 				break;
 			case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-				long currentTime = System.currentTimeMillis();
-				Log.d(TAG, "Interval: " + (currentTime - previousPrevKeyTime_));
-				if ((currentTime - previousPrevKeyTime_) <= PREV_INTERVAL_MILLIS) {
-					if(0 == playCursor_){
-						playCursor_ = currentPlaylist_.size() - 1;
-					}
-					else {
-						playCursor_--;
-					}
-					playNth(playCursor_);
+				if (player_.isPlaying()) {
+					playPrevious();
 				}
-				else {
-					//rewind
-					playMusic();
-				}
-				previousPrevKeyTime_ = currentTime;
 				break;
 			default:
 				break;
@@ -256,7 +281,7 @@ public class PlayerService
 		if(null != listener_){
 			listener_.onStartMusic(currentPlaylist_.get(playCursor_));
 		}
-		startForeground("Playing podcast", info.title_);
+		showNotification(info.title_);
 		return true;
 	}
 
@@ -289,7 +314,7 @@ public class PlayerService
 		if(null != listener_){
 			listener_.onStartLoadingMusic(currentPlaying_);
 		}
-		startForeground(getString(R.string.notify_playing_podcast), currentPlaying_.title_);
+		showNotification(currentPlaying_.title_);
 		return true;
 	}
 	
@@ -303,7 +328,7 @@ public class PlayerService
 			player_.stop();
 		}
 		isPausing_ = false;
-		stopForeground(true);
+		stopForeground(false);
 		if(null != listener_){
 			Log.d(TAG, "call onStopMusic");
 			listener_.onStopMusic(STOP);
@@ -322,7 +347,7 @@ public class PlayerService
 			player_.pause();
 		}
 		isPausing_ = true;
-		stopForeground(true);
+		stopForeground(false);
 		if(null != listener_){
 			listener_.onStopMusic(PAUSE);
 		}
@@ -348,6 +373,7 @@ public class PlayerService
 		player_.setOnPreparedListener(this);
 		receiver_ = new Receiver();
 		registerReceiver(receiver_, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
+		registerReceiver(receiver_, new IntentFilter(STOP_MUSIC_ACTION));
 		isPreparing_ = false;
 		stopOnPrepared_ = false;
 		isPausing_ = false;
@@ -363,7 +389,7 @@ public class PlayerService
 		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		manager.unregisterMediaButtonEventReceiver(mediaButtonReceiver_);
 		unregisterReceiver(receiver_);
-		stopForeground(false);
+		stopForeground(true);
 		player_.setOnCompletionListener(null);
 		player_.setOnErrorListener(null);
 		player_.setOnPreparedListener(null);
@@ -378,12 +404,35 @@ public class PlayerService
 		return binder_;
 	}
 
-	private void startForeground(String title, String description) {
-		String podTitle = getString(R.string.notify_playing_podcast);
+	//TODO: show podcast title / episode title
+	private void showNotification(String episodeTitle) {
+		RemoteViews rvs = new RemoteViews(getClass().getPackage().getName(), R.layout.notification);
+		rvs.setTextViewText(R.id.notification_title, episodeTitle);
+		Intent pauseIntent = new Intent(this, getClass());
+		pauseIntent.setAction(STOP_MUSIC_ACTION);
+		PendingIntent pausePendingIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
+		rvs.setOnClickPendingIntent(R.id.notification_pause, pausePendingIntent);
+		
+		Intent prevIntent = new Intent(this, getClass());
+		prevIntent.setAction(PREVIOUS_MUSIC_ACTION);
+		PendingIntent previousPendingIntent = PendingIntent.getService(this, 0, prevIntent, 0);
+		rvs.setOnClickPendingIntent(R.id.notification_previous, previousPendingIntent);
+
+		Intent nextIntent = new Intent(this, getClass());
+		nextIntent.setAction(NEXT_MUSIC_ACTION);
+		PendingIntent nextPendingIntent = PendingIntent.getService(this, 0, nextIntent, 0);
+		rvs.setOnClickPendingIntent(R.id.notification_next, nextPendingIntent);
+
+		//for backward compatibility
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
 			.setSmallIcon(R.drawable.ic_status)
-			.setContentTitle(podTitle)
-			.setContentText(description);
+			.setContentTitle("Podplayer")
+			.setContentText(episodeTitle)
+			.setAutoCancel(false)
+			.setOngoing(true)
+			.setContent(rvs);
+		//.setForegroundService(true)
+			//.setCategory(Notification.CATEGORY_TRANSPORT)
 		Intent resultIntent = new Intent(this, USER_CLASS);
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 		stackBuilder.addParentStack(USER_CLASS);
@@ -491,7 +540,7 @@ public class PlayerService
 		switch(focusChange){
 		case AudioManager.AUDIOFOCUS_GAIN:
 			Log.d(TAG, "AUDIOFOCUS_GAIN");
-			//TODO: test stop -> gain / plaing -> gain
+			//TODO: test stop -> gain / playing -> gain
 			manager.registerMediaButtonEventReceiver(mediaButtonReceiver_);
 			restartMusic();
 			break;
@@ -526,8 +575,8 @@ public class PlayerService
 	{
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.d(TAG, "onReceive is called");
 			String action = intent.getAction();
+			Log.d(TAG, "onReceive is called: " + action);
 			if (null == action) {
 				return;
 			}
@@ -546,6 +595,11 @@ public class PlayerService
 				i.putExtra("event", intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT));
 				context.startService(i);
 			}
+			// else if(STOP_MUSIC_ACTION.equals(action)){
+			// 	Intent i = new Intent(context, PlayerService.class);
+			// 	i.setAction(STOP_MUSIC_ACTION);
+			// 	context.startService(i);
+			// }
 		}
 	}
 

@@ -33,7 +33,12 @@
         android:launchMode="singleTask" />
     <activity android:name="PodplayerPreference" />
     <activity android:name="PodcastListPreference" />
-    <receiver android:name="PlayerService$Receiver" />
+    <receiver android:name="PlayerService$Receiver">
+      <intent-filter>
+        <action android:name="com.mamewo.podplayer0.STOP_MUSIC_ACTION"/>
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+    </receiver>
     <service android:name="PlayerService" />
   </application>
 </manifest>
