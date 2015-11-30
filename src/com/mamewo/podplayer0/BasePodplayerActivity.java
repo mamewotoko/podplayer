@@ -157,6 +157,7 @@ abstract public class BasePodplayerActivity
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putSerializable("state", state_);
+		super.onSaveInstanceState(outState);
 	}
 
 	public void updatePlaylist() {

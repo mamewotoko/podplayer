@@ -55,20 +55,19 @@ A file bin/podplayer-debug.apk is created if succeed.
     3. check pulltorefresh. 
 4. Run podplayer project as Android Application
 
-How to run Scirocco test
--------------------------
-1. Download robotium and scirocco jars
- 
-        cd test/podtest/libs
-        sh setup.sh
-2. update project
-
-        cd ../
-        android update test-project -m ../../ -n podtest -p .
+How to run UI test using Robotium
+---------------------------------
+1. update project
+```bash
+  cd ../
+  android update test-project -m ../../ -n podtest -p .
+```
 
 ### ant
-    ant debug install
-    ant test
+```bash
+  ant debug install
+  ant test
+```
 
 ### Eclipse
 1. Import the test/podtest directory as an Eclipse projct
@@ -76,8 +75,9 @@ How to run Scirocco test
 
 TODO
 ----
+* cache episode info
 * add/mark listened item list
-* add play/pause button in notification
+* use large notification
 * http proxy setting?
 * write additional podcast url to sd card?
 * cache podcast icon
@@ -90,6 +90,7 @@ TODO
         * or mark error item and try playing next unerror item
 * add / update test
     * preference
+    * notification
     * gesture?
     * landscape UI
 * define smoke test and full test. smoke test can be run with SmokeTestSuiteBuilder.
@@ -106,7 +107,6 @@ TODO
 * translate
     <string name="pref_episode_limit">Limit of episodes for each podcast</string>
     <string name="pref_episode_limit_title">Limit of episodes</string>
-* support play previous item when KEYCODE_MEDIA_PREVIOUS button is pressed
 * optimize initialization of podplayer
     * setContentView takes long time
 * Autoload: load when create activity or when podcast list setting is changed
