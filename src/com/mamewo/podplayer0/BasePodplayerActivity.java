@@ -72,9 +72,9 @@ abstract public class BasePodplayerActivity
 		state_ = null;
 		uiSettingChanged_ = false;
 		
-		if(null != savedInstanceState){
-		 	state_ = (PodplayerState) savedInstanceState.get("state");
-		}
+		// if(null != savedInstanceState){
+		//  	state_ = (PodplayerState) savedInstanceState.get("state");
+		// }
 		if(null == state_){
 			state_ = new PodplayerState();
 		}
@@ -154,11 +154,11 @@ abstract public class BasePodplayerActivity
 		}
 	}
 	
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		outState.putSerializable("state", state_);
-		super.onSaveInstanceState(outState);
-	}
+	// @Override
+	// protected void onSaveInstanceState(Bundle outState) {
+	// 	outState.putSerializable("state", state_);
+	// 	super.onSaveInstanceState(outState);
+	// }
 
 	public void updatePlaylist() {
 		//TODO: use tree like structure as playlist (loadedEpisode_)

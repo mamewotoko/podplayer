@@ -170,8 +170,8 @@ public class PodplayerActivity
 	private boolean playByInfo(EpisodeInfo info) {
 		//umm...
 		int playPos = -1;
-		for(playPos = 0; playPos < state_.loadedEpisode_.size(); playPos++) {
-			if(state_.loadedEpisode_.get(playPos) == info) {
+		for(playPos = 0; playPos < state_.latestList_.size(); playPos++) {
+			if(state_.latestList_.get(playPos) == info) {
 				break;
 			}
 		}
@@ -179,6 +179,7 @@ public class PodplayerActivity
 			Log.i(TAG, "playByInfo: info is not found: " + info.url_);
 			return false;
 		}
+
 		return player_.playNth(playPos);
 	}
 
@@ -190,7 +191,7 @@ public class PodplayerActivity
 		}
 		
 		@Override
-		public View getView (int position, View convertView, ViewGroup parent) {
+		public View getView(int position, View convertView, ViewGroup parent) {
 			View view;
 			if (null == convertView) {
 				view = View.inflate(PodplayerActivity.this, R.layout.episode_item, null);
@@ -251,23 +252,22 @@ public class PodplayerActivity
 	// end of callback methods
 
 	private void addEpisodeItemsToAdapter(EpisodeInfo[] values) {
-		for (int i = 0; i < values.length; i++) {
-			EpisodeInfo info = values[i];
-			int selectorPos = selector_.getSelectedItemPosition();
-			if(selectorPos == 0) {
-				//ALL is selected
+		//ALL is selected
+		if(selector_.getSelectedItemPosition() == 0){
+			for(EpisodeInfo info: values){
 				adapter_.add(info);
-				adapter_.notifyDataSetChanged();
 			}
-			else {
-				String selectedTitle = (String)selector_.getSelectedItem();
-				int index = podcastTitle2Index(selectedTitle);
+		}
+		else {
+			String selectedTitle = (String)selector_.getSelectedItem();
+			int index = podcastTitle2Index(selectedTitle);
+			for(EpisodeInfo info: values){
 				if(index == info.index_) {
 					adapter_.add(info);
-					adapter_.notifyDataSetChanged();
 				}
 			}
 		}
+		adapter_.notifyDataSetChanged();
 	}
 	
 	private class GetPodcastTask
@@ -348,28 +348,23 @@ public class PodplayerActivity
 		return true;
 	}
 
-	//Filter is changed
-	@Override
-	public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
+	private void updateListView(){
 		adapter_.clear();
-		if(pos == 0){
-			//0: all
-			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
-				EpisodeInfo info = state_.loadedEpisode_.get(i);
-				adapter_.add(info);
-			}
+		
+		List<EpisodeInfo> l;
+		if(selector_.getSelectedItemPosition() == 0){
+			//-1: all
+			l = state_.latestList_;
 		}
 		else {
-			String selectedTitle = (String)adapter.getItemAtPosition(pos);
-			int selectedIndex = podcastTitle2Index(selectedTitle);
-			for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
-				EpisodeInfo info = state_.loadedEpisode_.get(i);
-				if (selectedIndex == info.index_) {
-					adapter_.add(info);
-				}
-				else if (selectedIndex < info.index_) {
-					break;
-				}
+			String title = (String)selector_.getSelectedItem();
+			int selected = podcastTitle2Index(title);
+			//addAll: api level 11
+			l = state_.loadedEpisode_.get(selected);
+		}
+		if(l != null){
+			for(int i = 0; i < l.size(); i++){
+				adapter_.add(l.get(i));
 			}
 		}
 		if (! isLoading()) {
@@ -377,12 +372,15 @@ public class PodplayerActivity
 		}
 	}
 
+	//Filter is changed
+	@Override
+	public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
+		updateListView();
+	}
+
 	@Override
 	public void onNothingSelected(AdapterView<?> adapter) {
-		for(int i = 0; i < state_.loadedEpisode_.size(); i++) {
-			EpisodeInfo info = state_.loadedEpisode_.get(i);
-			adapter_.add(info);
-		}
+		updateListView();
 	}
 	
 	private int podcastTitle2Index(String title){
@@ -401,14 +399,21 @@ public class PodplayerActivity
 		player_ = ((PlayerService.LocalBinder)binder).getService();
 		player_.setOnStartMusicListener(this);
 		playButton_.setEnabled(true);
-		//TODO: move to base?
-		List<EpisodeInfo> playlist = player_.getCurrentPlaylist();
-		if (null != playlist) {
-			state_.loadedEpisode_ = playlist;
-		}
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		syncPreference(pref, "ALL");
+		//TODO: move to base?
+		List<EpisodeInfo> playlist = player_.getCurrentPlaylist();
+		if (null != playlist) {
+			state_.latestList_ = playlist;
+			state_.loadedEpisode_ = new ArrayList<List<EpisodeInfo>>();
+			for(int i = 0; i < state_.podcastList_.size(); i++){
+				state_.loadedEpisode_.add(new ArrayList<EpisodeInfo>());
+			}
+			for(EpisodeInfo info: state_.latestList_){
+				state_.loadedEpisode_.get(info.index_).add(info);
+			}
+		}
 	}
 
 	@Override
@@ -438,7 +443,7 @@ public class PodplayerActivity
 		selector_.setAdapter(adapter);
 		Resources res = getResources();
 		boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
-		List<EpisodeInfo> playlist = state_.loadedEpisode_;
+		List<EpisodeInfo> playlist = state_.latestList_;
 		Log.d(TAG, "podcastListChanged: " + state_.loadedEpisode_.size());
 		if (!start || doLoad) {
 			//reload
@@ -446,8 +451,9 @@ public class PodplayerActivity
 		}
 		else if (playlist != null && ! playlist.isEmpty()) {
 			//update list by loaded items
-			adapter_.clear();
-			addEpisodeItemsToAdapter(playlist.toArray(new EpisodeInfo[0]));
+			//adapter_.clear();
+			//addEpisodeItemsToAdapter(playlist.toArray(new EpisodeInfo[0]));
+			updateListView();
 			episodeListView_.onRefreshComplete(state_.lastUpdated_);
 		}
 		updateUI();

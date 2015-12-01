@@ -72,6 +72,21 @@ public class TestPodcastListPreference
 		String url = "http://www.tfm.co.jp/podcasts/avanti/podcast.xml";
 		int prevCount = adapter.getCount();
 		solo_.enterText(solo_.getEditText(0), url);
+		solo_.sleep(500);
+		solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
+		solo_.waitForDialogToClose(20000);
+		Assert.assertEquals(prevCount+1, adapter.getCount());
+		PodcastInfo info = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
+		Log.d(TAG, "add succ: " + info.title_);
+		Assert.assertEquals("check url", url, info.url_.toString());
+	}
+
+	public void testAddWithBOMSuccess() {
+		ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
+		String url = "http://www.fmtoyama.co.jp/contents/podcast/podcast_24.xml";
+		int prevCount = adapter.getCount();
+		solo_.enterText(solo_.getEditText(0), url);
+		solo_.sleep(500);
 		solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
 		solo_.waitForDialogToClose(20000);
 		Assert.assertEquals(prevCount+1, adapter.getCount());

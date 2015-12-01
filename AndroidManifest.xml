@@ -27,7 +27,7 @@
     </activity>
     <activity
         android:name="PodplayerExpActivity"
-        android:label="stacklr_exp"
+        android:label="podplayer_exp"
         android:launchMode="singleTask">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
@@ -36,7 +36,7 @@
     </activity>
     <activity
         android:name="PodplayerActivity"
-        android:label="stacklr_list"
+        android:label="podplayer_list"
         android:launchMode="singleTask">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />

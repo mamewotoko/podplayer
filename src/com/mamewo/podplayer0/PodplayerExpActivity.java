@@ -214,12 +214,6 @@ public class PodplayerExpActivity
 								int childPosition,
 								long id)
 	{
-		//Log.d(TAG, "ExpActivity.onChildClick: " + groupPosition + " " + childPosition + " " + state_.podcastList_.get(groupPosition).title_);
-		//refresh header is added....
-		// @SuppressWarnings("unchecked")
-		// HashMap<String,Object> map =
-		// 	(HashMap<String, Object>) expandableAdapter_.getChild(groupPosition, childPosition);
-		// EpisodeInfo info = (EpisodeInfo) map.get(MAP_KEY_DATA);
 		EpisodeInfo info = (EpisodeInfo)expandableAdapter_.getChild(groupPosition, childPosition);
 		Log.d(TAG, "ExpActivity.onChildClick: " + groupPosition + " " + childPosition + " " + state_.podcastList_.get(groupPosition).title_ + " " + info.title_ + " " + info.url_);
 
