@@ -52,6 +52,8 @@ public class PodplayerActivity
 	private ToggleButton playButton_;
 	private Spinner selector_;
 	private PullToRefreshListView episodeListView_;
+	//adapter_: filtered view
+	//state_.loadedEpisode_: all data
 	private ArrayAdapter<EpisodeInfo> adapter_;
 
 	@Override
@@ -278,7 +280,8 @@ public class PodplayerActivity
 		@Override
 		protected void onProgressUpdate(EpisodeInfo... values){
 			for (int i = 0; i < values.length; i++) {
-				state_.loadedEpisode_.add(values[i]);
+				//state_.loadedEpisode_.add(values[i]);
+				state_.mergeEpisode(values[i]);
 			}
 			addEpisodeItemsToAdapter(values);
 		}

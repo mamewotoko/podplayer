@@ -27,10 +27,22 @@
     </activity>
     <activity
         android:name="PodplayerExpActivity"
-        android:launchMode="singleTask" />
+        android:label="stacklr_exp"
+        android:launchMode="singleTask">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
     <activity
         android:name="PodplayerActivity"
-        android:launchMode="singleTask" />
+        android:label="stacklr_list"
+        android:launchMode="singleTask">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
     <activity android:name="PodplayerPreference" />
     <activity android:name="PodcastListPreference" />
     <receiver android:name="PlayerService$Receiver">

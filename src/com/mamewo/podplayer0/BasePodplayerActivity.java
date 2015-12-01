@@ -161,7 +161,8 @@ abstract public class BasePodplayerActivity
 	}
 
 	public void updatePlaylist() {
-		player_.setPlaylist(state_.loadedEpisode_);
+		//TODO: use tree like structure as playlist (loadedEpisode_)
+		player_.setPlaylist(state_.list());
 	}
 
 	public boolean isLoading() {
@@ -173,7 +174,7 @@ abstract public class BasePodplayerActivity
 			Log.d(TAG, "startLoading: already loading");
 			return;
 		}
-		state_.loadedEpisode_.clear();
+		//state_.loadedEpisode_.clear();
 		loadTask_ = task;
 		loadTask_.execute(state_.podcastList_.toArray(DUMMY_INFO_LIST));
 	}
@@ -276,6 +277,15 @@ abstract public class BasePodplayerActivity
 		//following block should be last one of this function
 		if (updateAll || "podcastlist2".equals(key)) {
 			state_.podcastList_ = PodcastListPreference.loadSetting(this);
+			//TODO: reuse loaded episode
+			for(int i = 0; i < state_.podcastList_.size(); i++){
+				if(i < state_.loadedEpisode_.size()){
+					state_.loadedEpisode_.clear();
+				}
+				else {
+					state_.loadedEpisode_.add(new ArrayList<EpisodeInfo>());
+				}
+			}
 			onPodcastListChanged(updateAll);
 		}
 	}
@@ -317,14 +327,50 @@ abstract public class BasePodplayerActivity
 		implements Serializable
 	{
 		private static final long serialVersionUID = 1L;
-		protected List<EpisodeInfo> loadedEpisode_;
 		protected List<PodcastInfo> podcastList_;
+		//same order with podcastList_
+		protected List<List<EpisodeInfo>> loadedEpisode_;
 		protected String lastUpdated_;
-
+		protected List<EpisodeInfo> latestList_;
+		
 		private PodplayerState() {
-			loadedEpisode_ = new ArrayList<EpisodeInfo>();
+			loadedEpisode_ = new ArrayList<List<EpisodeInfo>>();
 			podcastList_ = new ArrayList<PodcastInfo>();
 			lastUpdated_ = "";
+			latestList_ = null;
+		}
+
+		public List<EpisodeInfo> list(){
+			List l = new ArrayList<EpisodeInfo>();
+			for(List<EpisodeInfo> loaded: loadedEpisode_){
+				l.addAll(loaded);
+			}
+			latestList_ = l;
+			return l;
+		}
+
+		//model: episodeInfo is continuous
+		//TODO: use hash
+		public void mergeEpisode(EpisodeInfo episode){
+			//called by AsyncTask ...
+			if(loadedEpisode_.size() <= episode.index_){
+				return;
+			}
+			//TODO: binary search by date? (sort by date first)
+			List<EpisodeInfo> targetList = loadedEpisode_.get(episode.index_);
+			int s = targetList.size();
+			for(int i = 0; i < s; i++){
+				EpisodeInfo existing = targetList.get(s-1-i);
+				//different episode
+				if(episode.index_ != existing.index_){
+					targetList.add(episode);
+					return;
+				}
+				else if(episode.equalEpisode(existing)){
+					return;
+				}
+			}
+			targetList.add(episode);
 		}
 	}
 }
