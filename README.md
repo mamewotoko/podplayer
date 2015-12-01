@@ -75,8 +75,14 @@ How to run UI test using Robotium
 
 TODO
 ----
-* cache episode info
 * add/mark listened item list
+* use database to manage loaded episodes
+    * display mark which is already played, new item etc...
+    * to reduce reload of podcast
+    * show description of playing episode
+    * save podcast list and updated time as state
+* move state to service
+  * remove array adapter?
 * use large notification
 * http proxy setting?
 * write additional podcast url to sd card?
@@ -99,11 +105,6 @@ TODO
     * update main activity when setting is changed
 * change notification icon for Android4.0
 * reset playing position after podcast selection is changed
-* use database to manage loaded episodes
-    * display mark which is already played, new item etc...
-    * to reduce reload of podcast
-    * show description of playing episode
-    * save podcast list and updated time as state
 * translate
     <string name="pref_episode_limit">Limit of episodes for each podcast</string>
     <string name="pref_episode_limit_title">Limit of episodes</string>
