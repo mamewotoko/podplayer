@@ -56,8 +56,8 @@ public class PodplayerExpActivity
 	private Button expandButton_;
 	private Button collapseButton_;
 	private ExpandableListView expandableList_;
-	//private SimpleExpandableListAdapter expandableAdapter_;
-	private ExpAdapter expandableAdapter_;
+	//private SimpleExpandableListAdapter adapter_;
+	private ExpAdapter adapter_;
 	
 	private int[] filteredItemIndex_;
 	// private List<Map<String,String>> groupData_;
@@ -96,7 +96,7 @@ public class PodplayerExpActivity
 		if(null == player_) {
 			return;
 		}
-		expandableAdapter_.notifyDataSetChanged();
+		adapter_.notifyDataSetChanged();
 		playButton_.setChecked(player_.isPlaying());
 	}
 
@@ -107,9 +107,6 @@ public class PodplayerExpActivity
 			return;
 		}
 		reloadButton_.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
-		// for (int i = 0; i < childData_.size(); i++) {
-		// 	childData_.get(i).clear();
-		// }
 		setProgressBarIndeterminateVisibility(true);
 		updateUI();
 		SharedPreferences pref=
@@ -146,12 +143,12 @@ public class PodplayerExpActivity
 			}
 		}
 		else if (view == expandButton_) {
-			for (int i = 0; i < expandableAdapter_.getGroupCount(); i++) {
+			for (int i = 0; i < adapter_.getGroupCount(); i++) {
 				expandOrCollapseAll(true);
 			}
 		}
 		else if (view == collapseButton_) {
-			for (int i = 0; i < expandableAdapter_.getGroupCount(); i++) {
+			for (int i = 0; i < adapter_.getGroupCount(); i++) {
 				expandOrCollapseAll(false);
 			}
 		}
@@ -177,7 +174,7 @@ public class PodplayerExpActivity
 	}
 
 	private void expandOrCollapseAll(boolean expand) {
-		for (int i = 0; i < expandableAdapter_.getGroupCount(); i++) {
+		for (int i = 0; i < adapter_.getGroupCount(); i++) {
 			if (expand) {
 				expandableList_.expandGroup(i);
 			}
@@ -214,7 +211,7 @@ public class PodplayerExpActivity
 								int childPosition,
 								long id)
 	{
-		EpisodeInfo info = (EpisodeInfo)expandableAdapter_.getChild(groupPosition, childPosition);
+		EpisodeInfo info = (EpisodeInfo)adapter_.getChild(groupPosition, childPosition);
 		Log.d(TAG, "ExpActivity.onChildClick: " + groupPosition + " " + childPosition + " " + state_.podcastList_.get(groupPosition).title_ + " " + info.title_ + " " + info.url_);
 
 		EpisodeInfo current = player_.getCurrentPodInfo();
@@ -437,7 +434,7 @@ public class PodplayerExpActivity
 	// 		}
 	// 		groupData_.get(i).put(MAP_KEY_COUNT, childNum + numStr);
 	// 	}
-	// 	expandableAdapter_.notifyDataSetChanged();
+	// 	adapter_.notifyDataSetChanged();
 	// }
 	
 	private class GetPodcastTask
@@ -485,30 +482,22 @@ public class PodplayerExpActivity
 		if (! enableLongClick) {
 			return false;
 		}
-		// @SuppressWarnings("unchecked")
-		// Map<String, Object> map =
-		// 		(Map<String, Object>)adapter.getItemAtPosition(pos);
-		// EpisodeInfo info = (EpisodeInfo)map.get(MAP_KEY_DATA);
+		if(ExpandableListView.getPackedPositionType(id) != ExpandableListView.PACKED_POSITION_TYPE_CHILD){
+			return false;
+		}
+		int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+		int childPosition = ExpandableListView.getPackedPositionChild(id);
 
-		/////////
-		//  fill
-		// EpisodeInfo info = (EpisodeInfo)expandableAdapter_.get
-		// if (null == info) {
-		// 	//parent is long clicked
-		// 	return false;
-		// }
-		// if ((! enableLongClick) || null == info.link_) {
-		// 	return false;
-		// }
-		// //TODO: add preference to enable this 
-		// Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		// if (vibrator != null) {
-		// 	vibrator.vibrate(100);
-		// }
-		// Intent i =
-		// 		new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
-		// startActivity(i);
-		// return true;
+		EpisodeInfo info = (EpisodeInfo)adapter_.getChild(groupPosition, childPosition);
+		if(info.link_ == null){
+			return true;
+		}
+		//TODO: use link of podcast.xml (global one)
+		//TODO: display url before connect
+		//episode.link refers audio file...
+		Intent i =
+			new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
+		startActivity(i);
 		return true;
 	}
 
@@ -537,7 +526,7 @@ public class PodplayerExpActivity
 		// 	groupData_.add(groupItem);
 		// 	childData_.add(new ArrayList<Map<String, Object>>());
 		// }
-		// expandableAdapter_ = new ExpAdapter(
+		// adapter_ = new ExpAdapter(
 		// 		this,
 		// 		groupData_,
 		// 		R.layout.expandable_list_item2,
@@ -546,8 +535,8 @@ public class PodplayerExpActivity
 		// 		childData_,
 		// 		R.layout.episode_item,
 		// 		null, null);
-		expandableAdapter_ = new ExpAdapter();
-		expandableList_.setAdapter(expandableAdapter_);
+		adapter_ = new ExpAdapter();
+		expandableList_.setAdapter(adapter_);
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
 		Resources res = getResources();
@@ -562,13 +551,6 @@ public class PodplayerExpActivity
 		if ((!start) || doLoad) {
 			loadPodcast();
 		}
-		// else if (null != playlist && ! playlist.isEmpty()) {
-		// 	//use list
-		// 	//addEpisodeItemsToAdapter(playlist.toArray(new EpisodeInfo[0]));
-		// 	for(EpisodeInfo info: playlist){
-		// 		state_.mergeEpisode(info);
-		// 	}
-		// }
 	}
 
 	@Override

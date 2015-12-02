@@ -307,12 +307,9 @@ public class PodcastListPreference
 				BitmapDrawable bitmap = null;
 				String title = null;
 				try {
-					// URLConnection conn = url.openConnection();
-					// conn.setReadTimeout(60 * 1000);
-					// is = conn.getInputStream();
+					///XXX
 					is = BaseGetPodcastTask.getInputStreamFromURL(url, 60*1000, true);
 					XmlPullParser parser = factory.newPullParser();
-					//TODO: use reader or give correct encoding
 					parser.setInput(is, "UTF-8");
 					boolean inTitle = false;
 					int eventType;

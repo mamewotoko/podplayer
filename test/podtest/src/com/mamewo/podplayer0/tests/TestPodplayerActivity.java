@@ -51,7 +51,6 @@ public class TestPodplayerActivity
 			//ArrayList<TextView> list = solo_.getCurrentTextViews(null);
 			List<TextView> list = solo_.getCurrentViews(TextView.class, false);
 			for (TextView listText : list) {
-				//Log.i(TAG, "listtext: " + listText.getText());
 				if(targetTitle.equals(listText.getText())){
 					view = listText;
 					break;

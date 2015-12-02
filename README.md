@@ -76,34 +76,38 @@ How to run UI test using Robotium
 TODO
 ----
 * add/mark listened item list
+    * ? not listened / ! listened
+    * remember listened timestamp
+* save latest few item to savedInstanceState
+* filter not listened item only (preference)
 * use database to manage loaded episodes
     * display mark which is already played, new item etc...
     * to reduce reload of podcast
     * show description of playing episode
     * save podcast list and updated time as state
 * move state to service
-  * remove array adapter?
+    * remove array adapter contents?
 * use large notification
-* http proxy setting?
+    * change notification icon for Android4.0
 * write additional podcast url to sd card?
+* add confirm dialog to open web site
 * cache podcast icon
-    * avoid loading podcast when UI is switched 
+    * avoid loading podcast when UI is switched (by rotation)
 * fix bugs
     * fix memory leak (bitmap problem)
         * check heap size and class histogram
     * when prepare error occurs, cursor moves to next episode
         * stop playing
         * or mark error item and try playing next unerror item
+   * when only one episode is registered, list is in tap to refresh mode after loaded
 * add / update test
+    * MainActivityTest, PodcastActivity then testAbortReload blocks...
     * preference
     * notification
     * gesture?
     * landscape UI
-* define smoke test and full test. smoke test can be run with SmokeTestSuiteBuilder.
-* display playing icon in group of expandable list
 * improve UI to add podcast URL
     * update main activity when setting is changed
-* change notification icon for Android4.0
 * reset playing position after podcast selection is changed
 * translate
     <string name="pref_episode_limit">Limit of episodes for each podcast</string>
@@ -111,8 +115,6 @@ TODO
 * optimize initialization of podplayer
     * setContentView takes long time
 * Autoload: load when create activity or when podcast list setting is changed
-* fix a bug that when only one episode is registered, list is in tap to refresh mode after loaded
-* add confirm dialog to open web site
 * play episode which is clicked while preparing other episode
 * sort episode by date
 * add episode search UI
@@ -121,9 +123,9 @@ TODO
 * add error handling
 * write user guide?
 * check apk size
-* MainActivityTest, PodcastActivity then testAbortReload blocks...
 * add Wifi only mode
     * acquire [wifi lock](http://developer.android.com/reference/android/net/wifi/WifiManager.WifiLock.html)
+* display playing icon in group of expandable list
 
 License
 ----------
