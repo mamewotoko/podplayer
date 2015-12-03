@@ -280,12 +280,14 @@ abstract public class BasePodplayerActivity
 			//TODO: reuse loaded episode
 			for(int i = 0; i < state_.podcastList_.size(); i++){
 				if(i < state_.loadedEpisode_.size()){
-					state_.loadedEpisode_.clear();
+					state_.loadedEpisode_.get(i).clear();
 				}
 				else {
 					state_.loadedEpisode_.add(new ArrayList<EpisodeInfo>());
 				}
 			}
+			//TODO: make short if podcastList_ is shorten
+			Log.d(TAG, "loadedEpisode_:" + state_.loadedEpisode_.size() + "; " + state_.podcastList_.size());
 			onPodcastListChanged(updateAll);
 		}
 	}

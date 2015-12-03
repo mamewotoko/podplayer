@@ -56,18 +56,9 @@ public class PodplayerExpActivity
 	private Button expandButton_;
 	private Button collapseButton_;
 	private ExpandableListView expandableList_;
-	//private SimpleExpandableListAdapter adapter_;
 	private ExpAdapter adapter_;
 	
-	private int[] filteredItemIndex_;
-	// private List<Map<String,String>> groupData_;
-	// private List<List<Map<String, Object>>> childData_;
-	// static
-	// private final String MAP_KEY_TITLE = "TITLE";
-	// static
-	// private final String MAP_KEY_COUNT = "COUNT";
-	// static
-	// private final String MAP_KEY_DATA = "DATA";
+	private List<Integer> filteredItemIndex_;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -212,8 +203,6 @@ public class PodplayerExpActivity
 								long id)
 	{
 		EpisodeInfo info = (EpisodeInfo)adapter_.getChild(groupPosition, childPosition);
-		Log.d(TAG, "ExpActivity.onChildClick: " + groupPosition + " " + childPosition + " " + state_.podcastList_.get(groupPosition).title_ + " " + info.title_ + " " + info.url_);
-
 		EpisodeInfo current = player_.getCurrentPodInfo();
 		if(current != null && current.url_.equals(info.url_)) {
 			if(player_.isPlaying()) {
@@ -238,8 +227,7 @@ public class PodplayerExpActivity
 			return;
 		}
 		int playPos = -1;
-		//skip!
-		//List<EpisodeInfo> target = state_.loadedEpisode_.get(info.index_);
+		//skip! use list size
 		for(int pos = 0; pos < state_.latestList_.size(); pos++) {
 			if(state_.latestList_.get(pos) == info) {
 				playPos = pos;
@@ -298,12 +286,14 @@ public class PodplayerExpActivity
 
 		@Override
 		public int getGroupCount() {
-			return state_.loadedEpisode_.size();
+			return filteredItemIndex_.size();
 		}
 
 		@Override
 		public int getChildrenCount(int groupPosition) {
-			return state_.loadedEpisode_.get(groupPosition).size();
+			Log.d(TAG, "groupPosition: "+groupPosition);
+			Log.d(TAG, "fil " + filteredItemIndex_.get(groupPosition));
+			return state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition)).size();
 		}
 
 		@Override
@@ -318,13 +308,12 @@ public class PodplayerExpActivity
 
 		@Override
 		public Object getGroup(int groupPosition){
-			//return podcastinfo?
-			return state_.podcastList_.get(groupPosition);
+			return state_.podcastList_.get(filteredItemIndex_.get(groupPosition));
 		}
 
 		@Override
 		public Object getChild(int groupPosition, int childPosition) {
-			return state_.loadedEpisode_.get(groupPosition).get(childPosition);
+			return state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition)).get(childPosition);
 		}
 		
 		@Override
@@ -339,9 +328,9 @@ public class PodplayerExpActivity
 			}
 			TextView titleView = (TextView)view.findViewById(R.id.text1);
 			TextView countView = (TextView)view.findViewById(R.id.text2);
-			PodcastInfo info = state_.podcastList_.get(groupPosition);
+			PodcastInfo info = state_.podcastList_.get(filteredItemIndex_.get(groupPosition));
 			titleView.setText(info.title_);
-			int childNum = state_.loadedEpisode_.get(groupPosition).size();
+			int childNum = state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition)).size();
 			String numStr = "";
 			if (childNum <= 1) {
 				//TODO: localize
@@ -365,7 +354,7 @@ public class PodplayerExpActivity
 			if(convertView == null){
 				view = View.inflate(PodplayerExpActivity.this, R.layout.episode_item, null);
 			}
-			EpisodeInfo info = state_.loadedEpisode_.get(groupPosition).get(childPosition);
+			EpisodeInfo info = state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition)).get(childPosition);
 			TextView titleView = (TextView)view.findViewById(R.id.episode_title);
 			TextView timeView = (TextView)view.findViewById(R.id.episode_time);
 			titleView.setText(info.title_);
@@ -404,39 +393,6 @@ public class PodplayerExpActivity
 	}
 	// end of callback methods
 
-	// private void addEpisodeItemsToAdapter(EpisodeInfo[] values) {
-	// 	int groupMin = groupData_.size() - 1;
-	// 	int groupMax = 0;
-	// 	for (int i = 0; i < values.length; i++) {
-	// 		EpisodeInfo info = values[i];
-	// 		int groupIndex = filteredItemIndex_[info.index_];
-
-	// 		Map<String, Object> map = new HashMap<String, Object>();
-	// 		map.put(MAP_KEY_TITLE, info.title_);
-	// 		map.put(MAP_KEY_DATA, info);
-	// 		childData_.get(groupIndex).add(map);
-	// 		if (groupIndex < groupMin) {
-	// 			groupMin = groupIndex;
-	// 		}
-	// 		if (groupIndex > groupMax) {
-	// 			groupMax = groupIndex;
-	// 		}
-	// 	}
-	// 	for (int i = groupMin; i <= groupMax; i++) {
-	// 		int childNum = childData_.get(i).size();
-	// 		String numStr;
-	// 		if (childNum <= 1) {
-	// 			//TODO: localize
-	// 			numStr = " item";
-	// 		}
-	// 		else {
-	// 			numStr = " items";
-	// 		}
-	// 		groupData_.get(i).put(MAP_KEY_COUNT, childNum + numStr);
-	// 	}
-	// 	adapter_.notifyDataSetChanged();
-	// }
-	
 	private class GetPodcastTask
 		extends BaseGetPodcastTask
 	{
@@ -451,7 +407,6 @@ public class PodplayerExpActivity
 				state_.mergeEpisode(info);
 			}
 			updateUI();
-			//addEpisodeItemsToAdapter(values);
 		}
 
 		private void onFinished(){
@@ -504,37 +459,12 @@ public class PodplayerExpActivity
 	//TODO: fetch current playing episode to update currentPodInfo
 	@Override
 	protected void onPodcastListChanged(boolean start) {
-		if (null == filteredItemIndex_ || filteredItemIndex_.length != state_.podcastList_.size()) {
-			filteredItemIndex_ = new int[state_.podcastList_.size()];
+		filteredItemIndex_ = new ArrayList<Integer>();
+		for(int i = 0; i < state_.podcastList_.size(); i++) {
+			if(state_.podcastList_.get(i).enabled_){
+				filteredItemIndex_.add(i);
+			}
 		}
-		for(int i = 0; i < filteredItemIndex_.length; i++) {
-			filteredItemIndex_[i] = -1;
-		}
-		//int j = 0;
-		// groupData_.clear();
-		// childData_.clear();
-		// for (int i = 0; i < state_.podcastList_.size(); i++) {
-		// 	PodcastInfo info = state_.podcastList_.get(i);
-		// 	if (!info.enabled_) {
-		// 		continue;
-		// 	}
-		// 	Map<String, String> groupItem = new HashMap<String, String>();
-		// 	filteredItemIndex_[i] = j;
-		// 	j++;
-		// 	groupItem.put(MAP_KEY_TITLE, info.title_);
-		// 	groupItem.put(MAP_KEY_COUNT, "");
-		// 	groupData_.add(groupItem);
-		// 	childData_.add(new ArrayList<Map<String, Object>>());
-		// }
-		// adapter_ = new ExpAdapter(
-		// 		this,
-		// 		groupData_,
-		// 		R.layout.expandable_list_item2,
-		// 		new String[] {MAP_KEY_TITLE, MAP_KEY_COUNT},
-		// 		new int[] { R.id.text1, R.id.text2 },
-		// 		childData_,
-		// 		R.layout.episode_item,
-		// 		null, null);
 		adapter_ = new ExpAdapter();
 		expandableList_.setAdapter(adapter_);
 		SharedPreferences pref =

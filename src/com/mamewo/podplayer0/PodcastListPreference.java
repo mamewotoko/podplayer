@@ -481,6 +481,7 @@ public class PodcastListPreference
 	private List<PodcastInfo> loadSettingFromJSONFile(Context context)
 			throws IOException, JSONException
 	{
+		//TODO: move to podcastinfo
 		FileInputStream fis = context.openFileInput(CONFIG_FILENAME);
 		StringBuffer sb = new StringBuffer();
 		try {
@@ -495,11 +496,11 @@ public class PodcastListPreference
 		}
 		String json = sb.toString();
 		List<PodcastInfo> list = new ArrayList<PodcastInfo>();
-		//Log.d(TAG, "JSON size: " + json.length());
 		JSONTokener tokener = new JSONTokener(json);
 		JSONArray jsonArray = (JSONArray) tokener.nextValue();
 		for (int i = 0; i < jsonArray.length(); i++) {
 			JSONObject value = jsonArray.getJSONObject(i);
+			//TODO: check key existance
 			String title  = value.getString("title");
 			URL url = new URL(value.getString("url"));
 			boolean enabled = value.getBoolean("enabled");
