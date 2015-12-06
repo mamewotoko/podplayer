@@ -1,5 +1,7 @@
 package com.mamewo.podplayer0;
 
+import static com.mamewo.podplayer0.Const.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,10 +34,6 @@ public class PodplayerPreference
 	View.OnClickListener,
 	OnSharedPreferenceChangeListener
 {
-	static final
-	private String GIT_URL = "https://github.com/mamewotoko/podplayer";
-	static final
-	private String TAG = "podplayer";
 	private View logo_;
 	static final
 	private int VERSION_DIALOG = 1;
@@ -53,6 +51,7 @@ public class PodplayerPreference
 	private Preference clearCache_;
 	private Preference episodeLimit_;
 	private SharedPreferences pref_;
+	private ListPreference episodeOrder_;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -73,6 +72,7 @@ public class PodplayerPreference
 		readTimeout_ = (ListPreference)findPreference("read_timeout");
 		scoreThreshold_ = findPreference("gesture_score_threshold");
 		episodeLimit_ = findPreference("episode_limit");
+		episodeOrder_ = (ListPreference)findPreference("episode_order");
 		gestureTable_ = findPreference("gesture_list");
 		gestureTable_.setOnPreferenceClickListener(this);
 		version_.setOnPreferenceClickListener(this);
@@ -218,6 +218,10 @@ public class PodplayerPreference
 				summary = MessageFormat.format(getString(R.string.pref_episode_limit_summary), limit);
 			}
 			episodeLimit_.setSummary(summary);
+		}
+		if(updateAll || "episode_order".equals(key)){
+			int order = Integer.valueOf(pref.getString("episode_order", "0"));
+			episodeOrder_.setSummary(res.getStringArray(R.array.episode_item_order_entries)[order]);
 		}
 	}
 

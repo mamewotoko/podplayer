@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.mamewo.podplayer0.Const.*;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -126,10 +128,6 @@ public class PodplayerActivity
 	public boolean onLongClick(View view) {
 		if (view == playButton_) {
 			//TODO: add preference to enable this 
-			Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-			if (vibrator != null) {
-				vibrator.vibrate(100);
-			}
 			if (player_.isPlaying()) {
 				player_.stopMusic();
 			}
@@ -337,11 +335,7 @@ public class PodplayerActivity
 		if ((! enableLongClick) || null == info.link_) {
 			return false;
 		}
-		//TODO: add preference to enable this 
-		Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		if (vibrator != null) {
-			vibrator.vibrate(100);
-		}
+		//TODO: skip if url does not refer html?
 		Intent i =
 				new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
 		startActivity(i);

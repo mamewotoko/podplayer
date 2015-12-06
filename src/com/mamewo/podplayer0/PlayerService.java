@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
 
+import static com.mamewo.podplayer0.Const.*;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -59,8 +61,6 @@ public class PlayerService
 	private int PREV_INTERVAL_MILLIS = 3000;
 	final static
 	private Class<MainActivity> USER_CLASS = MainActivity.class;
-	final static
-	private String TAG = "podplayer";
 	final static
 	private int NOTIFY_PLAYING_ID = 1;
 	private final IBinder binder_ = new LocalBinder();

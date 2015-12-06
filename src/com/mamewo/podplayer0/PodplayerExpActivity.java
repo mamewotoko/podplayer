@@ -9,6 +9,8 @@ import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
 import com.mamewo.lib.podcast_parser.PodcastInfo;
 
+import static com.mamewo.podplayer0.Const.*;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -48,7 +50,6 @@ public class PodplayerExpActivity
 	ServiceConnection,
 	OnItemLongClickListener,
 	PlayerService.PlayerStateListener,
-	OnSharedPreferenceChangeListener,
 	OnChildClickListener
 {
 	private ToggleButton playButton_;
@@ -57,7 +58,7 @@ public class PodplayerExpActivity
 	private Button collapseButton_;
 	private ExpandableListView expandableList_;
 	private ExpAdapter adapter_;
-	
+	//private int currentOrder_;
 	private List<Integer> filteredItemIndex_;
 
 	@Override
@@ -90,6 +91,15 @@ public class PodplayerExpActivity
 		adapter_.notifyDataSetChanged();
 		playButton_.setChecked(player_.isPlaying());
 	}
+
+	// public void onSharedPreferenceChanged(SharePreference pref, String key){
+	// 	super.onSharedPreferenceChanged(pref, key);
+	// 	//TODO: move to const or string
+	// 	if("episode_limit".equals(key)){
+	// 		currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
+	// 		adapter_.notifyDataSetChanged();
+	// 	}
+	// }
 
 	//must be called from UI thread
 	private void loadPodcast(){
@@ -148,11 +158,6 @@ public class PodplayerExpActivity
 	@Override
 	public boolean onLongClick(View view) {
 		if (view == playButton_) {
-			//TODO: add preference to enable this 
-			Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-			if (vibrator != null) {
-				vibrator.vibrate(100);
-			}
 			if (player_.isPlaying()) {
 				player_.stopMusic();
 			}
@@ -291,8 +296,6 @@ public class PodplayerExpActivity
 
 		@Override
 		public int getChildrenCount(int groupPosition) {
-			Log.d(TAG, "groupPosition: "+groupPosition);
-			Log.d(TAG, "fil " + filteredItemIndex_.get(groupPosition));
 			return state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition)).size();
 		}
 
@@ -313,7 +316,19 @@ public class PodplayerExpActivity
 
 		@Override
 		public Object getChild(int groupPosition, int childPosition) {
-			return state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition)).get(childPosition);
+			List<EpisodeInfo> group = state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition));
+			int pos;
+			switch(currentOrder_){
+			case REVERSE_APPEARANCE_ORDER:
+				pos = group.size()-1-childPosition;
+				break;
+			case APPEARANCE_ORDER:
+				//fall through
+			default:
+				pos = childPosition;
+				break;
+			}
+			return group.get(pos);
 		}
 		
 		@Override
@@ -344,17 +359,17 @@ public class PodplayerExpActivity
 		}
 
 		@Override
-		public View getChildView (int groupPosition,
-								  int childPosition,
-								  boolean isLastChild,
-								  View convertView,
-								  ViewGroup parent)
+		public View getChildView(int groupPosition,
+								 int childPosition,
+								 boolean isLastChild,
+								 View convertView,
+								 ViewGroup parent)
 		{
 			View view = convertView;
 			if(convertView == null){
 				view = View.inflate(PodplayerExpActivity.this, R.layout.episode_item, null);
 			}
-			EpisodeInfo info = state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition)).get(childPosition);
+			EpisodeInfo info = (EpisodeInfo)getChild(groupPosition, childPosition);
 			TextView titleView = (TextView)view.findViewById(R.id.episode_title);
 			TextView timeView = (TextView)view.findViewById(R.id.episode_time);
 			titleView.setText(info.title_);
@@ -375,6 +390,7 @@ public class PodplayerExpActivity
 			else {
 				stateIcon.setVisibility(View.GONE);
 			}
+
 			if(showPodcastIcon_ && null != state_.podcastList_.get(info.index_).icon_){
 				episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
 				episodeIcon.setVisibility(View.VISIBLE);

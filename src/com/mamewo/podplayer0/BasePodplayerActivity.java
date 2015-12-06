@@ -9,6 +9,8 @@ import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
 import com.mamewo.lib.podcast_parser.PodcastInfo;
 
+import static com.mamewo.podplayer0.Const.*;
+
 import android.media.AudioManager;
 import android.app.Activity;
 import android.content.Context;
@@ -56,9 +58,9 @@ abstract public class BasePodplayerActivity
 	static final
 	private long HTTP_CACHE_SIZE = 10 * 1024 * 1024;
 	private File httpCacheDir_;
+	protected int currentOrder_;
 
-	final static
-	public String TAG = "podplayer";
+	//private int podcastIconSize_;
 
 	abstract protected void onPodcastListChanged(boolean start);
 	Object cacheObject_ = null;
@@ -85,8 +87,10 @@ abstract public class BasePodplayerActivity
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
+		currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
 		httpCacheDir_ = null;
 		cacheObject_ = null;
+		//podcastIconSize_ = (int)(getResources().getDisplayMetrics().density * 54);
 	}
 
 	private Object enableHttpResponseCache(File cacheDir) {
@@ -161,8 +165,8 @@ abstract public class BasePodplayerActivity
 	// }
 
 	public void updatePlaylist() {
-		//TODO: use tree like structure as playlist (loadedEpisode_)
-		player_.setPlaylist(state_.list());
+		boolean reversed = currentOrder_ == REVERSE_APPEARANCE_ORDER;
+		player_.setPlaylist(state_.list(reversed));
 	}
 
 	public boolean isLoading() {
@@ -274,6 +278,10 @@ abstract public class BasePodplayerActivity
 				}
 			}
 		}
+		if("episode_limit".equals(key)){
+			currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
+			//adapter_.notifyDataSetChanged();
+		}
 		//following block should be last one of this function
 		if (updateAll || "podcastlist2".equals(key)) {
 			state_.podcastList_ = PodcastListPreference.loadSetting(this);
@@ -324,6 +332,7 @@ abstract public class BasePodplayerActivity
 		showMessage(p.name);
 	}
 
+
 	final public static
 	class PodplayerState
 		implements Serializable
@@ -342,22 +351,29 @@ abstract public class BasePodplayerActivity
 			latestList_ = null;
 		}
 
-		public List<EpisodeInfo> list(){
+		public List<EpisodeInfo> list(boolean reversed){
 			List l = new ArrayList<EpisodeInfo>();
 			for(List<EpisodeInfo> loaded: loadedEpisode_){
-				l.addAll(loaded);
+				if(reversed){
+					for(int i = 0; i < loaded.size(); i++){
+						l.add(loaded.get(loaded.size()-1-i));
+					}
+				}
+				else {
+					l.addAll(loaded);
+				}
 			}
 			latestList_ = l;
 			return l;
 		}
 
-		//model: episodeInfo is continuous
 		//TODO: use hash
 		public void mergeEpisode(EpisodeInfo episode){
 			//called by AsyncTask ...
 			if(loadedEpisode_.size() <= episode.index_){
 				return;
 			}
+			
 			//TODO: binary search by date? (sort by date first)
 			List<EpisodeInfo> targetList = loadedEpisode_.get(episode.index_);
 			int s = targetList.size();

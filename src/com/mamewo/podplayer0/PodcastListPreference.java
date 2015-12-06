@@ -25,6 +25,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.PodcastInfo;
 
+import static com.mamewo.podplayer0.Const.*;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -66,9 +68,6 @@ public class PodcastListPreference
 	DialogInterface.OnClickListener,
 	OnCancelListener
 {
-	final static
-	private String TAG = "podplayer";
-	
 	private Button addButton_;
 	private EditText urlEdit_;
 	private CheckTask task_;
@@ -322,7 +321,7 @@ public class PodcastListPreference
 							else if("itunes:image".equalsIgnoreCase(currentName)) {
 								if (null == bitmap) {
 									URL iconURL = new URL(parser.getAttributeValue(null, "href"));
-									bitmap = BaseGetPodcastTask.downloadIcon(PodcastListPreference.this, iconURL, 60);
+									bitmap = BaseGetPodcastTask.downloadIcon(PodcastListPreference.this, iconURL, 60, -1);
 								}
 							}
 							else {

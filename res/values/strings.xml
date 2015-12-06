@@ -36,8 +36,13 @@
     <string name="google_play_and_github">Google Play &amp; Github</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
+    <!--
     <string name="expand">Expand</string>
     <string name="collapse">Collapse</string>
+    -->
+    <string name="expand"> &lt; </string>
+    <string name="collapse"> &gt; </string>
+
     <string name="add">Add</string>
     <string name="notify_playing_podcast">Playing podcast</string>
     <string name="error_malformed_url">Malformed URL</string>
@@ -67,4 +72,6 @@
 
     <string name="pref_episode_limit_summary">{0} episode(s)</string>
     <string name="pref_episode_nolimit_summary">No limit</string>
+
+    <string name="pref_episode_order">Episode order</string>
 </resources>
