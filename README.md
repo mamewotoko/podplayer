@@ -1,4 +1,4 @@
-podplayer - An android podcast player [![Build Status](https://travis-ci.org/mamewotoko/podplayer.svg?branch=master)](https://travis-ci.org/mamewotoko/podplayer)
+podplayer - An android podcast player [![Build Status](https://travis-ci.org/mamewotoko/podplayer.svg?branch=gradle)](https://travis-ci.org/mamewotoko/podplayer)
 =====================================
 
 What?
@@ -42,7 +42,7 @@ git submodule update --init
     ```
 2. Build
    ```bash 
-    ./gradlew assempleDebug
+     ./gradlew assempleDebug
    ```
 
 ./app/build/outputs/apk/app-debug.apk
