@@ -1,0 +1,6 @@
+include 'podcast_parser'
+project(':podcast_parser').projectDir = new File('libsrc/podcast_parser/')
+include 'pulltorefresh'
+project(':pulltorefresh').projectDir = new File('libsrc/pulltorefresh/pulltorefresh')
+include 'app'
+

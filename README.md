@@ -41,9 +41,12 @@ git submodule update --init
     cp <android-sdk-path>/extras/android/support/v4/android-support-v4.jar libs
     ```
 2. Build
-      ```bash
-      ant debug
-      ```
+   ```bash 
+    ./gradlew assempleDebug
+   ```
+
+./app/build/outputs/apk/app-debug.apk
+
 A file bin/podplayer-debug.apk is created if succeed.
 
 ### Eclipse
