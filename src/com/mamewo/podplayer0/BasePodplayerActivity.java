@@ -61,8 +61,9 @@ abstract public class BasePodplayerActivity
 	protected int currentOrder_;
 
 	//private int podcastIconSize_;
-
 	abstract protected void onPodcastListChanged(boolean start);
+	abstract protected void notifyOrderChanged(int order);
+
 	Object cacheObject_ = null;
 	static final public int CACHERESPONSE_API_LEVEL = 13;
 
@@ -278,9 +279,9 @@ abstract public class BasePodplayerActivity
 				}
 			}
 		}
-		if("episode_limit".equals(key)){
+		if(updateAll || "episode_order".equals(key)){
 			currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
-			//adapter_.notifyDataSetChanged();
+			notifyOrderChanged(currentOrder_);
 		}
 		//following block should be last one of this function
 		if (updateAll || "podcastlist2".equals(key)) {
@@ -332,7 +333,6 @@ abstract public class BasePodplayerActivity
 		showMessage(p.name);
 	}
 
-
 	final public static
 	class PodplayerState
 		implements Serializable
@@ -348,7 +348,7 @@ abstract public class BasePodplayerActivity
 			loadedEpisode_ = new ArrayList<List<EpisodeInfo>>();
 			podcastList_ = new ArrayList<PodcastInfo>();
 			lastUpdated_ = "";
-			latestList_ = null;
+			latestList_ = new ArrayList<EpisodeInfo>();
 		}
 
 		public List<EpisodeInfo> list(boolean reversed){
@@ -363,7 +363,8 @@ abstract public class BasePodplayerActivity
 					l.addAll(loaded);
 				}
 			}
-			latestList_ = l;
+			latestList_.clear();
+			latestList_.addAll(l);
 			return l;
 		}
 

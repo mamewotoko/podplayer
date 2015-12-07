@@ -72,16 +72,19 @@ public class PodplayerExpActivity
 		playButton_.setOnClickListener(this);
 		playButton_.setOnLongClickListener(this);
 		playButton_.setEnabled(false);
+		//XXX filteredItemIndex_ -> adapter_
+		filteredItemIndex_ = new ArrayList<Integer>();
 		expandableList_ =
 				(ExpandableListView) findViewById(R.id.exp_list);
 		expandableList_.setOnItemLongClickListener(this);
+		adapter_ = new ExpAdapter();
+		expandableList_.setAdapter(adapter_);
 		expandButton_ = (Button) findViewById(R.id.expand_button);
 		expandButton_.setOnClickListener(this);
 		collapseButton_ = (Button) findViewById(R.id.collapse_button);
 		collapseButton_.setOnClickListener(this);
 		//groupData_ = new ArrayList<Map<String, String>>();
 		//childData_ = new ArrayList<List<Map<String, Object>>>();
-		filteredItemIndex_ = null;
 	}
 
 	private void updateUI() {
@@ -475,14 +478,12 @@ public class PodplayerExpActivity
 	//TODO: fetch current playing episode to update currentPodInfo
 	@Override
 	protected void onPodcastListChanged(boolean start) {
-		filteredItemIndex_ = new ArrayList<Integer>();
+		filteredItemIndex_.clear();
 		for(int i = 0; i < state_.podcastList_.size(); i++) {
 			if(state_.podcastList_.get(i).enabled_){
 				filteredItemIndex_.add(i);
 			}
 		}
-		adapter_ = new ExpAdapter();
-		expandableList_.setAdapter(adapter_);
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
 		Resources res = getResources();
@@ -509,5 +510,10 @@ public class PodplayerExpActivity
 	public void onStartMusic(EpisodeInfo info) {
 		setProgressBarIndeterminateVisibility(true);
 		updateUI();
+	}
+
+	@Override
+	public void notifyOrderChanged(int order){
+		adapter_.notifyDataSetChanged();
 	}
 }

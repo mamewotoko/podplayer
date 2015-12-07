@@ -29,6 +29,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -56,7 +57,7 @@ public class PodplayerActivity
 	private PullToRefreshListView episodeListView_;
 	//adapter_: filtered view
 	//state_.loadedEpisode_: all data
-	private ArrayAdapter<EpisodeInfo> adapter_;
+	private EpisodeAdapter adapter_;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -74,7 +75,7 @@ public class PodplayerActivity
 		episodeListView_.setOnItemLongClickListener(this);
 		episodeListView_.setOnRefreshListener(this);
 		episodeListView_.setOnCancelListener(this);
-		adapter_ = new EpisodeAdapter(this);
+		adapter_ = new EpisodeAdapter();
 		episodeListView_.setAdapter(adapter_);
 	}
 
@@ -91,7 +92,7 @@ public class PodplayerActivity
 			Log.i(TAG, "Already loading");
 			return;
 		}
-		adapter_.clear();
+		//adapter_.clear();
 		setProgressBarIndeterminateVisibility(true);
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
@@ -142,7 +143,7 @@ public class PodplayerActivity
 	@Override
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id) {
 		//refresh header is added....
-		EpisodeInfo info = adapter_.getItem(pos-1);
+		EpisodeInfo info = (EpisodeInfo)adapter_.getItem(pos-1);
 		EpisodeInfo current = player_.getCurrentPodInfo();
 		if(current != null && current.url_.equals(info.url_)) {
 			Log.d(TAG, "onItemClick: URL: " + current.url_);
@@ -181,11 +182,93 @@ public class PodplayerActivity
 		return player_.playNth(playPos);
 	}
 
+	// public class EpisodeAdapter
+	// 	extends ArrayAdapter<EpisodeInfo>
+	// {
+	// 	public EpisodeAdapter(Context context) {
+	// 		super(context, R.layout.episode_item);
+	// 	}
+		
+	// 	@Override
+	// 	public View getView(int position, View convertView, ViewGroup parent) {
+	// 		View view;
+	// 		if (null == convertView) {
+	// 			view = View.inflate(PodplayerActivity.this, R.layout.episode_item, null);
+	// 		}
+	// 		else {
+	// 			view = convertView;
+	// 		}
+	// 		EpisodeInfo info = getItem(position);
+	// 		TextView titleView = (TextView)view.findViewById(R.id.episode_title);
+	// 		TextView timeView = (TextView)view.findViewById(R.id.episode_time);
+	// 		titleView.setText(info.title_);
+	// 		timeView.setText(info.getPubdateString());
+	// 		ImageView stateIcon = (ImageView)view.findViewById(R.id.play_icon);
+	// 		ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
+	// 		EpisodeInfo current = player_.getCurrentPodInfo();
+	// 		if(current != null && current.url_.equals(info.url_)) {
+	// 			//cache!
+	// 			if(player_.isPlaying()) {
+	// 				stateIcon.setImageResource(android.R.drawable.ic_media_play);
+	// 			}
+	// 			else {
+	// 				stateIcon.setImageResource(android.R.drawable.ic_media_pause);
+	// 			}
+	// 			stateIcon.setVisibility(View.VISIBLE);
+	// 		}
+	// 		else {
+	// 			stateIcon.setVisibility(View.GONE);
+	// 		}
+	// 		if(showPodcastIcon_ && null != state_.podcastList_.get(info.index_).icon_){
+	// 			episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
+	// 			episodeIcon.setVisibility(View.VISIBLE);
+	// 		}
+	// 		else {
+	// 			episodeIcon.setVisibility(View.GONE);
+	// 		}
+	// 		return view;
+	// 	}
+	// }
+
+	//UI is updated in following callback methods
+	@Override
+	public void onStartMusic(EpisodeInfo info) {
+		setProgressBarIndeterminateVisibility(false);
+		updateUI();
+	}
+
+	@Override
+	public void onStartLoadingMusic(EpisodeInfo info) {
+		setProgressBarIndeterminateVisibility(true);
+		updateUI();
+	}
+
+	@Override
+	public void onStopMusic(int mode) {
+		setProgressBarIndeterminateVisibility(false);
+		updateUI();
+	}
+	// end of callback methods
+
 	public class EpisodeAdapter
-		extends ArrayAdapter<EpisodeInfo>
+		extends BaseAdapter
 	{
-		public EpisodeAdapter(Context context) {
-			super(context, R.layout.episode_item);
+		public EpisodeAdapter(){
+		}
+		
+		@Override
+		public int getCount(){
+			return state_.latestList_.size();
+		}
+
+		@Override
+		public Object getItem(int position){
+			return state_.latestList_.get(position);
+		}
+		
+		@Override
+		public long getItemId(int position){
+			return position;
 		}
 		
 		@Override
@@ -197,7 +280,7 @@ public class PodplayerActivity
 			else {
 				view = convertView;
 			}
-			EpisodeInfo info = getItem(position);
+			EpisodeInfo info = (EpisodeInfo)getItem(position);
 			TextView titleView = (TextView)view.findViewById(R.id.episode_title);
 			TextView timeView = (TextView)view.findViewById(R.id.episode_time);
 			titleView.setText(info.title_);
@@ -229,44 +312,25 @@ public class PodplayerActivity
 		}
 	}
 
-	//UI is updated in following callback methods
-	@Override
-	public void onStartMusic(EpisodeInfo info) {
-		setProgressBarIndeterminateVisibility(false);
-		updateUI();
-	}
 
-	@Override
-	public void onStartLoadingMusic(EpisodeInfo info) {
-		setProgressBarIndeterminateVisibility(true);
-		updateUI();
-	}
-
-	@Override
-	public void onStopMusic(int mode) {
-		setProgressBarIndeterminateVisibility(false);
-		updateUI();
-	}
-	// end of callback methods
-
-	private void addEpisodeItemsToAdapter(EpisodeInfo[] values) {
-		//ALL is selected
-		if(selector_.getSelectedItemPosition() == 0){
-			for(EpisodeInfo info: values){
-				adapter_.add(info);
-			}
-		}
-		else {
-			String selectedTitle = (String)selector_.getSelectedItem();
-			int index = podcastTitle2Index(selectedTitle);
-			for(EpisodeInfo info: values){
-				if(index == info.index_) {
-					adapter_.add(info);
-				}
-			}
-		}
-		adapter_.notifyDataSetChanged();
-	}
+	// private void addEpisodeItemsToAdapter(EpisodeInfo[] values) {
+	// 	//ALL is selected
+	// 	if(selector_.getSelectedItemPosition() == 0){
+	// 		for(EpisodeInfo info: values){
+	// 			adapter_.add(info);
+	// 		}
+	// 	}
+	// 	else {
+	// 		String selectedTitle = (String)selector_.getSelectedItem();
+	// 		int index = podcastTitle2Index(selectedTitle);
+	// 		for(EpisodeInfo info: values){
+	// 			if(index == info.index_) {
+	// 				adapter_.add(info);
+	// 			}
+	// 		}
+	// 	}
+	// 	adapter_.notifyDataSetChanged();
+	// }
 	
 	private class GetPodcastTask
 		extends BaseGetPodcastTask
@@ -281,7 +345,8 @@ public class PodplayerActivity
 				//state_.loadedEpisode_.add(values[i]);
 				state_.mergeEpisode(values[i]);
 			}
-			addEpisodeItemsToAdapter(values);
+			adapter_.notifyDataSetChanged();
+			//addEpisodeItemsToAdapter(values);
 		}
 
 		private void onFinished() {
@@ -296,6 +361,7 @@ public class PodplayerActivity
 			}
 			setProgressBarIndeterminateVisibility(false);
 			episodeListView_.onRefreshComplete();
+			episodeListView_.hideHeader();
 			loadTask_ = null;
 			//TODO: Sync playlist
 			updatePlaylist();
@@ -327,7 +393,7 @@ public class PodplayerActivity
 
 	@Override
 	public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
-		EpisodeInfo info = adapter_.getItem(pos-1);
+		EpisodeInfo info = (EpisodeInfo)adapter_.getItem(pos-1);
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		Resources res = getResources();
@@ -336,14 +402,13 @@ public class PodplayerActivity
 			return false;
 		}
 		//TODO: skip if url does not refer html?
-		Intent i =
-				new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
+		Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
 		startActivity(i);
 		return true;
 	}
 
 	private void updateListView(){
-		adapter_.clear();
+		//adapter_.clear();
 		
 		List<EpisodeInfo> l;
 		if(selector_.getSelectedItemPosition() == 0){
@@ -356,11 +421,13 @@ public class PodplayerActivity
 			//addAll: api level 11
 			l = state_.loadedEpisode_.get(selected);
 		}
-		if(l != null){
-			for(int i = 0; i < l.size(); i++){
-				adapter_.add(l.get(i));
-			}
-		}
+		//TODO: updateview
+
+		// if(l != null){
+		// 	for(int i = 0; i < l.size(); i++){
+		// 		adapter_.add(l.get(i));
+		// 	}
+		// }
 		if (! isLoading()) {
 			episodeListView_.hideHeader();
 		}
@@ -451,5 +518,10 @@ public class PodplayerActivity
 			episodeListView_.onRefreshComplete(state_.lastUpdated_);
 		}
 		updateUI();
+	}
+
+	@Override
+	public void notifyOrderChanged(int order){
+		adapter_.notifyDataSetChanged();
 	}
 }

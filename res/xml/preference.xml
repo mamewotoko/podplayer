@@ -65,7 +65,6 @@
             android:title="@string/pref_expand_list_in_default" />
 	<ListPreference
 	    android:key="episode_order"
-	    android:dependency="use_expandable_ui"
 	    android:entries="@array/episode_item_order_entries"
 	    android:entryValues="@array/episode_item_order_entries_value"
 	    android:defaultValue="0"
