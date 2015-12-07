@@ -58,6 +58,7 @@ public class PodplayerActivity
 	//adapter_: filtered view
 	//state_.loadedEpisode_: all data
 	private EpisodeAdapter adapter_;
+	private List<EpisodeInfo> currentList_;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,7 @@ public class PodplayerActivity
 		episodeListView_.setOnItemLongClickListener(this);
 		episodeListView_.setOnRefreshListener(this);
 		episodeListView_.setOnCancelListener(this);
+		currentList_ = state_.latestList_;
 		adapter_ = new EpisodeAdapter();
 		episodeListView_.setAdapter(adapter_);
 	}
@@ -92,7 +94,6 @@ public class PodplayerActivity
 			Log.i(TAG, "Already loading");
 			return;
 		}
-		//adapter_.clear();
 		setProgressBarIndeterminateVisibility(true);
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
@@ -182,54 +183,6 @@ public class PodplayerActivity
 		return player_.playNth(playPos);
 	}
 
-	// public class EpisodeAdapter
-	// 	extends ArrayAdapter<EpisodeInfo>
-	// {
-	// 	public EpisodeAdapter(Context context) {
-	// 		super(context, R.layout.episode_item);
-	// 	}
-		
-	// 	@Override
-	// 	public View getView(int position, View convertView, ViewGroup parent) {
-	// 		View view;
-	// 		if (null == convertView) {
-	// 			view = View.inflate(PodplayerActivity.this, R.layout.episode_item, null);
-	// 		}
-	// 		else {
-	// 			view = convertView;
-	// 		}
-	// 		EpisodeInfo info = getItem(position);
-	// 		TextView titleView = (TextView)view.findViewById(R.id.episode_title);
-	// 		TextView timeView = (TextView)view.findViewById(R.id.episode_time);
-	// 		titleView.setText(info.title_);
-	// 		timeView.setText(info.getPubdateString());
-	// 		ImageView stateIcon = (ImageView)view.findViewById(R.id.play_icon);
-	// 		ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
-	// 		EpisodeInfo current = player_.getCurrentPodInfo();
-	// 		if(current != null && current.url_.equals(info.url_)) {
-	// 			//cache!
-	// 			if(player_.isPlaying()) {
-	// 				stateIcon.setImageResource(android.R.drawable.ic_media_play);
-	// 			}
-	// 			else {
-	// 				stateIcon.setImageResource(android.R.drawable.ic_media_pause);
-	// 			}
-	// 			stateIcon.setVisibility(View.VISIBLE);
-	// 		}
-	// 		else {
-	// 			stateIcon.setVisibility(View.GONE);
-	// 		}
-	// 		if(showPodcastIcon_ && null != state_.podcastList_.get(info.index_).icon_){
-	// 			episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
-	// 			episodeIcon.setVisibility(View.VISIBLE);
-	// 		}
-	// 		else {
-	// 			episodeIcon.setVisibility(View.GONE);
-	// 		}
-	// 		return view;
-	// 	}
-	// }
-
 	//UI is updated in following callback methods
 	@Override
 	public void onStartMusic(EpisodeInfo info) {
@@ -258,12 +211,13 @@ public class PodplayerActivity
 		
 		@Override
 		public int getCount(){
-			return state_.latestList_.size();
+			return currentList_.size();
 		}
 
 		@Override
 		public Object getItem(int position){
-			return state_.latestList_.get(position);
+			Log.d(TAG, "getItem " + position + " " + currentList_.get(position).title_);
+			return currentList_.get(position);
 		}
 		
 		@Override
@@ -312,26 +266,6 @@ public class PodplayerActivity
 		}
 	}
 
-
-	// private void addEpisodeItemsToAdapter(EpisodeInfo[] values) {
-	// 	//ALL is selected
-	// 	if(selector_.getSelectedItemPosition() == 0){
-	// 		for(EpisodeInfo info: values){
-	// 			adapter_.add(info);
-	// 		}
-	// 	}
-	// 	else {
-	// 		String selectedTitle = (String)selector_.getSelectedItem();
-	// 		int index = podcastTitle2Index(selectedTitle);
-	// 		for(EpisodeInfo info: values){
-	// 			if(index == info.index_) {
-	// 				adapter_.add(info);
-	// 			}
-	// 		}
-	// 	}
-	// 	adapter_.notifyDataSetChanged();
-	// }
-	
 	private class GetPodcastTask
 		extends BaseGetPodcastTask
 	{
@@ -342,11 +276,9 @@ public class PodplayerActivity
 		@Override
 		protected void onProgressUpdate(EpisodeInfo... values){
 			for (int i = 0; i < values.length; i++) {
-				//state_.loadedEpisode_.add(values[i]);
 				state_.mergeEpisode(values[i]);
 			}
 			adapter_.notifyDataSetChanged();
-			//addEpisodeItemsToAdapter(values);
 		}
 
 		private void onFinished() {
@@ -406,10 +338,8 @@ public class PodplayerActivity
 		startActivity(i);
 		return true;
 	}
-
+	
 	private void updateListView(){
-		//adapter_.clear();
-		
 		List<EpisodeInfo> l;
 		if(selector_.getSelectedItemPosition() == 0){
 			//-1: all
@@ -419,21 +349,25 @@ public class PodplayerActivity
 			String title = (String)selector_.getSelectedItem();
 			int selected = podcastTitle2Index(title);
 			//addAll: api level 11
-			l = state_.loadedEpisode_.get(selected);
-		}
-		//TODO: updateview
+			Log.d(TAG, "  updateListView: selected " + selected);
 
-		// if(l != null){
-		// 	for(int i = 0; i < l.size(); i++){
-		// 		adapter_.add(l.get(i));
-		// 	}
-		// }
+			l = state_.loadedEpisode_.get(selected);
+			if(currentOrder_ == REVERSE_APPEARANCE_ORDER){
+				///XXX provide view
+				List<EpisodeInfo> reversed = new ArrayList<EpisodeInfo>();
+				for(int i = 0; i < l.size(); i++){
+					reversed.add(l.get(l.size()-1-i));
+				}
+				l = reversed;
+			}
+		}
+		currentList_ = l;
 		if (! isLoading()) {
 			episodeListView_.hideHeader();
 		}
+		adapter_.notifyDataSetChanged();
 	}
 
-	//Filter is changed
 	@Override
 	public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
 		updateListView();
@@ -505,15 +439,12 @@ public class PodplayerActivity
 		Resources res = getResources();
 		boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
 		List<EpisodeInfo> playlist = state_.latestList_;
-		Log.d(TAG, "podcastListChanged: " + state_.loadedEpisode_.size());
 		if (!start || doLoad) {
 			//reload
 			episodeListView_.startRefresh();
 		}
 		else if (playlist != null && ! playlist.isEmpty()) {
 			//update list by loaded items
-			//adapter_.clear();
-			//addEpisodeItemsToAdapter(playlist.toArray(new EpisodeInfo[0]));
 			updateListView();
 			episodeListView_.onRefreshComplete(state_.lastUpdated_);
 		}
