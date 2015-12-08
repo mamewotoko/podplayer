@@ -34,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+import android.widget.SeekBar;
 
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
@@ -50,13 +51,15 @@ public class PodplayerActivity
 	OnItemSelectedListener,
 	PlayerService.PlayerStateListener,
 	PullToRefreshListView.OnRefreshListener,
-	PullToRefreshListView.OnCancelListener
+    PullToRefreshListView.OnCancelListener,
+	SeekBar.OnSeekBarChangeListener		   
 {
 	private ToggleButton playButton_;
 	private Spinner selector_;
 	private PullToRefreshListView episodeListView_;
 	//adapter_: filtered view
 	//state_.loadedEpisode_: all data
+	private SeekBar currentPlayPosition_;
 	private EpisodeAdapter adapter_;
 	private List<EpisodeInfo> currentList_;
 
@@ -79,6 +82,8 @@ public class PodplayerActivity
 		currentList_ = state_.latestList_;
 		adapter_ = new EpisodeAdapter();
 		episodeListView_.setAdapter(adapter_);
+		currentPlayPosition_ = (SeekBar) findViewById(R.id.seekbar);
+		currentPlayPosition_.setOnSeekBarChangeListener(this);
 	}
 
 	private void updateUI() {
@@ -101,7 +106,6 @@ public class PodplayerActivity
 		int limit = Integer.valueOf(pref.getString("episode_limit", res.getString(R.string.default_episode_limit)));
 		int timeoutSec = Integer.valueOf(pref.getString("read_timeout", res.getString(R.string.default_read_timeout)));
 		boolean getIcon = pref.getBoolean("show_podcast_icon", res.getBoolean(R.bool.default_show_podcast_icon));
-		Log.d(TAG, "loadPodcast: limit " + limit);
 		GetPodcastTask task = new GetPodcastTask(limit, timeoutSec, getIcon);
 		startLoading(task);
 	}
@@ -187,6 +191,10 @@ public class PodplayerActivity
 	@Override
 	public void onStartMusic(EpisodeInfo info) {
 		setProgressBarIndeterminateVisibility(false);
+		currentPlayPosition_.setMax(player_.getDuration());
+		int pos = player_.getCurrentPositionMsec();
+		currentPlayPosition_.setProgress(pos);
+		//timer
 		updateUI();
 	}
 
@@ -454,5 +462,23 @@ public class PodplayerActivity
 	@Override
 	public void notifyOrderChanged(int order){
 		adapter_.notifyDataSetChanged();
+	}
+
+	@Override
+	public void onProgressChanged(SeekBar bar, int progress, boolean fromUser){
+		if(!fromUser){
+			return;
+		}
+		player_.seekTo(progress);
+	}
+
+	@Override
+	public void onStartTrackingTouch(SeekBar bar){
+		//nop
+	}
+
+	@Override
+	public void onStopTrackingTouch(SeekBar bar){
+		//nop
 	}
 }

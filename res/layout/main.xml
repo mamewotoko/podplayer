@@ -3,11 +3,15 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-
-<LinearLayout
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
-
+  <SeekBar
+      android:id="@+id/seekbar"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      />
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content">
+    
     <ToggleButton
         android:id="@+id/play_button"
         android:layout_width="wrap_content"
@@ -20,18 +24,18 @@
         android:layout_height="wrap_content"
         android:layout_weight="1" />
     </LinearLayout>
-         <android.gesture.GestureOverlayView
-             android:id="@+id/gesture_view"
-             android:layout_width="match_parent"
-             android:layout_height="0dip"
-             android:layout_weight="1.0"
-             android:eventsInterceptionEnabled="true"
-             android:gestureStrokeType="single"
-             android:orientation="vertical" >
-         <com.markupartist.android.widget.PullToRefreshListView
-            android:id="@+id/list"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            />
-         </android.gesture.GestureOverlayView>
+    <android.gesture.GestureOverlayView
+        android:id="@+id/gesture_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1.0"
+        android:eventsInterceptionEnabled="true"
+        android:gestureStrokeType="single"
+        android:orientation="vertical" >
+      <com.markupartist.android.widget.PullToRefreshListView
+          android:id="@+id/list"
+          android:layout_height="wrap_content"
+          android:layout_width="match_parent"
+          />
+    </android.gesture.GestureOverlayView>
 </LinearLayout>

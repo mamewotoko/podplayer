@@ -583,6 +583,18 @@ public class PlayerService
 		listener_ = listener;
 	}
 
+	public int getDuration(){
+		return player_.getDuration();
+	}
+
+	public int getCurrentPositionMsec(){
+		return player_.getCurrentPosition();
+	}
+
+	public void seekTo(int msec){
+		player_.seekTo(msec);
+	}
+
 	public void clearOnStartMusicListener() {
 		listener_ = null;
 	}
