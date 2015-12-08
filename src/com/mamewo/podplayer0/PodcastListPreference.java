@@ -319,10 +319,11 @@ public class PodcastListPreference
 								numItems++;
 							}
 							else if("itunes:image".equalsIgnoreCase(currentName)) {
-								if (null == bitmap) {
-									URL iconURL = new URL(parser.getAttributeValue(null, "href"));
-									bitmap = BaseGetPodcastTask.downloadIcon(PodcastListPreference.this, iconURL, 60, -1);
-								}
+								//TODO: avoid out of memory
+								// if (null == bitmap) {
+								// 	URL iconURL = new URL(parser.getAttributeValue(null, "href"));
+								// 	bitmap = BaseGetPodcastTask.downloadIcon(PodcastListPreference.this, iconURL, 60, -1);
+								// }
 							}
 							else {
 								inTitle = "title".equalsIgnoreCase(currentName);
