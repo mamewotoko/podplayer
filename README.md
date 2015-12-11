@@ -75,6 +75,14 @@ How to run UI test using Robotium
 
 TODO
 ----
+* fix bugs
+    * fix memory leak (bitmap problem)
+        * check heap size and class histogram
+        * put scaled image on memory
+    * when prepare error occurs, cursor moves to next episode
+        * stop playing
+        * or mark error item and try playing next unerror item
+   * when only one episode is registered, list is in tap to refresh mode after loaded
 * add/mark listened item list
     * ? not listened / ! listened
     * remember listened timestamp
@@ -93,14 +101,6 @@ TODO
 * add confirm dialog to open web site
 * cache podcast icon
     * avoid loading podcast when UI is switched (by rotation)
-* fix bugs
-    * fix memory leak (bitmap problem)
-        * check heap size and class histogram
-        * put scaled image on memory
-    * when prepare error occurs, cursor moves to next episode
-        * stop playing
-        * or mark error item and try playing next unerror item
-   * when only one episode is registered, list is in tap to refresh mode after loaded
 * http://developer.android.com/intl/ja/training/improving-layouts/smooth-scrolling.html#ViewHolder
 * add / update test
     * MainActivityTest, PodcastActivity then testAbortReload blocks...
