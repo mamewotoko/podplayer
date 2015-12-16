@@ -35,9 +35,11 @@ import android.widget.Toast;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
+import android.support.v4.app.FragmentActivity;
+
 //common activity + gesture
 abstract public class BasePodplayerActivity
-	extends Activity
+	extends FragmentActivity
 	implements OnSharedPreferenceChangeListener,
 	OnGesturePerformedListener
 {

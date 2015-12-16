@@ -13,14 +13,20 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
+import android.provider.BaseColumns;
 
 import java.util.List;
+
+import static com.mamewo.podplayer0.Const.*;
 
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
 import com.mamewo.lib.podcast_parser.PodcastInfo;
 
-public class EpisodeProvider extends ContentProvider {
+public class EpisodeProvider
+	extends ContentProvider
+{
 	public static
 	final String AUTHORITY = "com.mamewo.podplayer0.provider.Episode";
 
@@ -31,9 +37,9 @@ public class EpisodeProvider extends ContentProvider {
 	final UriMatcher uriMatcher_ = new UriMatcher(UriMatcher.NO_MATCH);
 
 	private static
-		final int EPISODE = 1;
+	final int EPISODE = 1;
 	private static
-		final int EPISODE_ID = 2;
+	final int EPISODE_ID = 2;
 
 	private DBHelper dbhelper_;
 
@@ -50,7 +56,7 @@ public class EpisodeProvider extends ContentProvider {
 						String[] selectionArgs,
 						String sortOrder)
 	{
-		return dbhelper_.load();
+		return dbhelper_.query(projection, selection, selectionArgs, sortOrder);
 	}
 
     @Override
@@ -58,30 +64,73 @@ public class EpisodeProvider extends ContentProvider {
 		int match = uriMatcher_.match(uri);
 		switch(match){
 		case EPISODE:
-			return "vnd.android.cursor.dir/episode";
+			return EpisodeColumns.CONTENT_TYPE;
 		case EPISODE_ID:
-			return "vnd.android.cursor.item/episode";
+			return EpisodeColumns.CONTENT_ITEM_TYPE;
 		default:
 			return null;
 		}
 	}
 
+	//unique insert
     @Override
-    public Uri insert(Uri uri, ContentValues initialValues) {
+    public Uri insert(Uri uri, ContentValues values) {
+		Log.d(TAG, "Provider insert: episode ");
+
 		if(uriMatcher_.match(uri) != EPISODE){
 			throw new IllegalArgumentException("Unknown URI"+uri);
 		}
-		if(initialValues == null){
+		if(values == null){
 			throw new IllegalArgumentException("null initialValues");
 		}
 		SQLiteDatabase db = dbhelper_.getWritableDatabase();
-		//db.insert();
-		return null;
+
+		//duplicate item check
+		String[] args = new String[]{ values.getAsString(EpisodeColumns.PODCAST),
+									  values.getAsString(EpisodeColumns.TITLE),
+									  values.getAsString(EpisodeColumns.PUBDATE)
+		};
+		Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "
+									+ EpisodeColumns.PODCAST+ " = ? AND "
+									+ EpisodeColumns.TITLE+" = ? AND "
+									+ EpisodeColumns.PUBDATE+"= ?", args);	
+		long rowId;
+		if(cursor.moveToNext()){
+			Log.d(TAG, "exists: " + cursor.getString(cursor.getColumnIndex(EpisodeColumns.TITLE)));
+			rowId = cursor.getLong(cursor.getColumnIndex(EpisodeColumns._ID));
+		}
+		else {		
+			rowId = db.insert(TABLE_NAME, null, new ContentValues(values));
+		}
+		if(rowId <= 0){
+			throw new SQLException("Failed to insert row into " + uri);
+		}
+		//TODO: check
+		Uri episodeUri = ContentUris.withAppendedId(EpisodeColumns.CONTENT_URI, rowId);
+		getContext().getContentResolver().notifyChange(episodeUri, null);
+		return episodeUri;
 	}
 
 	@Override
 	public int delete(Uri uri, String where, String[] whereArgs) {
-		return -1;
+        SQLiteDatabase db = dbhelper_.getWritableDatabase();
+        int count;
+		switch (uriMatcher_.match(uri)) {
+        case EPISODE:
+            count = db.delete(TABLE_NAME, where, whereArgs);
+            break;
+        case EPISODE_ID:
+			String episodeId = uri.getPathSegments().get(1);
+            count = db.delete(TABLE_NAME,
+							  EpisodeColumns._ID + "=" + episodeId
+							  + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""),
+							  whereArgs);
+			break;
+		default:
+            throw new IllegalArgumentException("Unknown URI " + uri);
+		}
+		getContext().getContentResolver().notifyChange(uri, null);
+		return count;
 	}
 
 	@Override
@@ -101,49 +150,49 @@ public class EpisodeProvider extends ContentProvider {
 		private final Context context_;
 		private SQLiteDatabase database_;
 		private static
-			final String DATABASE_NAME = "podcast_db";
+		final String DATABASE_NAME = "podcast_db";
 		private static
-			final int DATABASE_VERSION = 1;
-		public static
-			final String TITLE_COLUMN = "title";
-		public static
-			final String URL_COLUMN = "url";
-		public static
-			final String DATE_COLUMN = "date";
-		public static
-			final String PODCAST_COLUMN = "podcast_url";
-		public static
-			final String LISTENED_COLUMN = "listened";
-
-		public static
-			final String[] COLUMNS = new String[]{
-			TITLE_COLUMN,
-			URL_COLUMN,
-			DATE_COLUMN,
-			PODCAST_COLUMN,
-			LISTENED_COLUMN
-		};
+		final int DATABASE_VERSION = 1;
 
 		private static
-			final String CREATE_SQL = "CREATE TABLE USING fts3 (" 
-			+ TITLE_COLUMN + "," + URL_COLUMN + "," + DATE_COLUMN + ","
-			+ PODCAST_COLUMN + "," + LISTENED_COLUMN+");";
+		final String CREATE_SQL = "CREATE TABLE "+TABLE_NAME+" ("
+			+ EpisodeColumns._ID + " INTEGER PRIMARY KEY,"
+			+ EpisodeColumns.TITLE + " TEXT,"
+			+ EpisodeColumns.URL + " TEXT,"
+			+ EpisodeColumns.PUBDATE + " TEXT,"
+			+ EpisodeColumns.PODCAST + " TEXT,"
+			+ EpisodeColumns.LISTENED+" INTEGER"
+			+ ");";
 
 		public DBHelper(Context context){
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 			context_ = context;
 		}
 
-		public Cursor load(){
+		public Cursor query(String[] projection,
+							String selection,
+							String[] selectionArgs,
+							String sortOrder)
+		{
 			SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 			builder.setTables(TABLE_NAME);
-			Cursor cursor = builder.query(getReadableDatabase(), COLUMNS, null, null, null, null, null);
+			Cursor cursor = builder.query(getReadableDatabase(),
+										  EpisodeColumns.LIST,
+										  selection,
+										  selectionArgs,
+										  null,
+										  null,
+										  null);
 			if(cursor == null){
+				Log.d(TAG, "DBHelper.load: cursor is null");
 				return null;
 			}
 			if(!cursor.moveToFirst()){
+				Log.d(TAG, "DBHelper.load: cursor is empty");
 				return null;
 			}
+			Log.d(TAG, "DBHelper.load: cursor returned");
+				
 			return cursor;
 		}
 	
@@ -159,19 +208,19 @@ public class EpisodeProvider extends ContentProvider {
 			onCreate(db);
 		}
 
-		public void write(final List<PodcastInfo> podcastList,
-						  final List<EpisodeInfo> episodeList)
-		{
-			for(EpisodeInfo info: episodeList){
-				ContentValues v = new ContentValues();
-				v.put(TITLE_COLUMN, info.title_);
-				v.put(URL_COLUMN, info.url_);
-				v.put(DATE_COLUMN, info.pubdate_);
-				v.put(PODCAST_COLUMN, podcastList.get(info.index_).url_.toString());
-				v.put(LISTENED_COLUMN, "false");
-				database_.insert(TABLE_NAME, null, v);
-				//check return value
-			}
-		}
+		// public void write(final List<PodcastInfo> podcastList,
+		// 				  final List<EpisodeInfo> episodeList)
+		// {
+		// 	for(EpisodeInfo info: episodeList){
+		// 		ContentValues v = new ContentValues();
+		// 		v.put(EpisodeColumns.TITLE, info.title_);
+		// 		v.put(EpisodeColumns.URL, info.url_);
+		// 		v.put(EpisodeColumns.DATE, info.pubdate_);
+		// 		v.put(EpisodeColumns.PODCAST, podcastList.get(info.index_).url_.toString());
+		// 		v.put(EpisodeColumns.LISTENED, "false");
+		// 		database_.insert(TABLE_NAME, null, v);
+		// 		//check return value
+		// 	}
+		// }
 	}
 }
