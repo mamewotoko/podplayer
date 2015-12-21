@@ -202,7 +202,7 @@ public class PodplayerDBActivity
 		String podcastURL = c.getString(EpisodeColumns.PODCAST_INDEX);
 		int index = 0;
 		for(; index < state_.podcastList_.size(); index++){
-			if(podcastURL.equals(state_.podcastURL.get(index))){
+			if(podcastURL.equals(state_.podcastList_.get(index))){
 				break;
 			}
 		}
