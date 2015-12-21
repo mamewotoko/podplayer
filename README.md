@@ -1,8 +1,8 @@
 podplayer - An android podcast player [![Build Status](https://travis-ci.org/mamewotoko/podplayer.svg?branch=master)](https://travis-ci.org/mamewotoko/podplayer)
 =====================================
 
-What?
-----------
+Summary
+-------
 <img src="https://github.com/mamewotoko/podplayer/raw/pullupdate/res/drawable-hdpi/ic_launcher.png" width="80" height="80">
 A podcast player android application.
 
@@ -12,7 +12,7 @@ Screenshot
 ![preference](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/preference.png)
 
 Google Play
-------------
+-----------
  [![my play page](http://www.android.com/images/brand/get_it_on_play_logo_small.png)](http://play.google.com/store/search?q=pub:mamewo)  
 <img src="https://github.com/mamewotoko/podplayer/raw/pullupdate/res/drawable/qr.png" width="86" height="86>
   
