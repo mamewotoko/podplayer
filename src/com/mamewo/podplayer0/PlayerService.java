@@ -480,6 +480,9 @@ public class PlayerService
 
 	@Override
 	public void onCompletion(MediaPlayer mp) {
+		if(null != listener_){
+			listener_.onCompleteMusic(currentPlaying_);
+		}
 		playNext();
 	}
 
@@ -602,6 +605,7 @@ public class PlayerService
 	public interface PlayerStateListener {
 		public void onStartLoadingMusic(EpisodeInfo info);
 		public void onStartMusic(EpisodeInfo info);
+		public void onCompleteMusic(EpisodeInfo info);
 		public void onStopMusic(int mode);
 	}
 

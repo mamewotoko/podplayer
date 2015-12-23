@@ -192,26 +192,14 @@ public class PodplayerDBActivity
 	@Override
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id) {
 		//refresh header is added....
-		pos--;
+		//pos--;
 		//selected
-		Cursor c = adapter_.getCursor();
-		c.moveToPosition(pos);
-		String title = c.getString(EpisodeColumns.TITLE_INDEX);
-		String url = c.getString(EpisodeColumns.URL_INDEX);
-		String pubdate = c.getString(EpisodeColumns.PUBDATE_INDEX);
-		String link = null;
-		String podcastURL = c.getString(EpisodeColumns.PODCAST_INDEX);
-		int index = 0;
-		for(; index < state_.podcastList_.size(); index++){
-			if(podcastURL.equals(state_.podcastList_.get(index))){
-				break;
-			}
-		}
-		
-		EpisodeInfo info = new EpisodeInfo(url, title, pubdate, link, index);
-		EpisodeInfo current = player_.getCurrentEpisodeInfo();
+		// Cursor c = adapter_.getCursor();
+		// c.moveToPosition(pos);
+
+		DBEpisodeInfo current = (DBEpisodeInfo)(player_.getCurrentEpisodeInfo());
 	
-		if(current != null && current.url_.equals(info.url_)) {
+		if(current != null && current.getId() == id) {
 			Log.d(TAG, "onItemClick: URL: " + current.url_);
 			if(player_.isPlaying()) {
 				Log.d(TAG, "onItemClick1");
@@ -221,30 +209,31 @@ public class PodplayerDBActivity
 				Log.d(TAG, "onItemClick2");
 				if(! player_.restartMusic()){
 					Log.d(TAG, "onItemClick3");
-					playByInfo(info);
+					playById(id);
 				}
 			}
 		}
 		else {
 			updatePlaylist();
-			boolean result = playByInfo(info);
+			boolean result = playById(id);
 			Log.d(TAG, "onItemClick4: " + result);
 		}
 	}
 
-	private boolean playByInfo(EpisodeInfo info) {
+	private boolean playById(long id) {
 		//umm...
 		int playPos = -1;
 		for(playPos = 0; playPos < state_.latestList_.size(); playPos++) {
-			if(state_.latestList_.get(playPos).equalEpisode(info)) {
+			DBEpisodeInfo dbinfo = (DBEpisodeInfo)(state_.latestList_.get(playPos));
+			if(dbinfo.getId() == id){
 				break;
 			}
 		}
 		if (playPos < 0){
-			Log.i(TAG, "playByInfo: info is not found: " + info.url_);
+			Log.i(TAG, "playById: info is not found: " + id);
 			return false;
 		}
-		Log.d(TAG, "playByInfo: pos: " + playPos + " " + info.title_);
+		Log.d(TAG, "playById: pos: " + playPos + " " + id);
 		return player_.playNth(playPos);
 	}
 
@@ -270,6 +259,13 @@ public class PodplayerDBActivity
 		setProgressBarIndeterminateVisibility(false);
 		updateUI();
 	}
+
+	@Override
+	public void onCompleteMusic(EpisodeInfo info){
+		//TODO: insert listened date by async task
+		((DBEpisodeInfo)info).setListenedTime(System.currentTimeMillis());
+	}
+
 	// end of callback methods
 
 	public class EpisodeCursorAdapter
@@ -304,23 +300,12 @@ public class PodplayerDBActivity
 			}
 			ImageView stateIcon = (ImageView)view.findViewById(R.id.play_icon);
 			ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
-			//long rowId = cursor.getLong(EpisodeColumns._ID);
-			//long playingRowId = player_.getCurrentEpisodeId();
-			String url = cursor.getString(EpisodeColumns.URL_INDEX);
-			String podcastURL = cursor.getString(EpisodeColumns.PODCAST_INDEX);
-			int index = 0;
-			for(; index < state_.podcastList_.size(); index++){
-				if(podcastURL.equals(state_.podcastList_.get(index).url_.toString())){
-					break;
-				}
-			}
-			EpisodeInfo info = new EpisodeInfo(url, title, pubdate, null, index);
-			EpisodeInfo currentInfo = player_.getCurrentEpisodeInfo();
-			Log.d(TAG, "getItem: " + info.url_ + " " + info.title_ + " " + info.index_ + " current " + currentInfo + " " + info.equalEpisode(currentInfo));
-			if(currentInfo != null){
-				Log.d(TAG, "  getItem current: " + currentInfo.url_ + " " + currentInfo.title_ + " " + currentInfo.index_);
-			}
-			if(info.equalEpisode(currentInfo)){
+
+			int id = cursor.getInt(EpisodeColumns.ID_INDEX);
+			DBEpisodeInfo dbinfo = (DBEpisodeInfo)(player_.getCurrentEpisodeInfo());
+			
+			//if(info.equalEpisode(currentInfo)){
+			if(dbinfo != null && id == dbinfo.getId()) {
 				//cache!
 				if(player_.isPlaying()) {
 					stateIcon.setImageResource(android.R.drawable.ic_media_play);
@@ -352,9 +337,9 @@ public class PodplayerDBActivity
 
 		@Override
 		protected void onProgressUpdate(EpisodeInfo... values){
-			for (int i = 0; i < values.length; i++) {
-				state_.mergeEpisode(values[i]);
-			}
+			// for (int i = 0; i < values.length; i++) {
+			// 	state_.mergeEpisode(values[i]);
+			// }
 			//Another Async Task?
 			//check if exists
 			for(int i = 0; i < values.length; i++){
@@ -364,6 +349,7 @@ public class PodplayerDBActivity
 				v.put(EpisodeColumns.URL, info.url_);
 				v.put(EpisodeColumns.TITLE, info.title_);
 				v.put(EpisodeColumns.PUBDATE, info.pubdate_);
+				//TODO: listened
 				v.put(EpisodeColumns.LISTENED, 0);
 				//TODO: link?
 				v.put(EpisodeColumns.PODCAST, state_.podcastList_.get(info.index_).url_.toString());
@@ -579,13 +565,16 @@ public class PodplayerDBActivity
 					}
 				}
 				Log.d(TAG, "index: " + index + " " + title + " podurl: " + podcastURL);
-				EpisodeInfo info = new EpisodeInfo(url, title, pubdate, link, index);
+				long id = c.getLong(EpisodeColumns.ID_INDEX);
+				long listenedTime = c.getLong(EpisodeColumns.LISTENED_INDEX);
+				EpisodeInfo info = new DBEpisodeInfo(url, title, pubdate, link, index, id, listenedTime);
 				state_.mergeEpisode(info);
 			}
 			while(c.moveToNext());
 		}
 		adapter_.swapCursor(c);
-		adapter_.notifyDataSetChanged();
+		//adapter_.notifyDataSetChanged();
+		episodeListView_.hideHeader();
 	}
 
 	@Override

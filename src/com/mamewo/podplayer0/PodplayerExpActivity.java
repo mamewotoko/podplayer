@@ -410,6 +410,11 @@ public class PodplayerExpActivity
 		setProgressBarIndeterminateVisibility(false);
 		updateUI();
 	}
+
+	@Override
+	public void onCompleteMusic(EpisodeInfo info){
+		//nop
+	}
 	// end of callback methods
 
 	private class GetPodcastTask
