@@ -170,6 +170,7 @@ abstract public class BasePodplayerActivity
 	public void updatePlaylist() {
 		boolean reversed = currentOrder_ == REVERSE_APPEARANCE_ORDER;
 		player_.setPlaylist(state_.list(reversed));
+		Log.d(TAG, "updatePlaylist latest: "+state_.latestList_);
 	}
 
 	public boolean isLoading() {
@@ -392,6 +393,10 @@ abstract public class BasePodplayerActivity
 				}
 			}
 			targetList.add(episode);
+		}
+
+		public void addEpisode(EpisodeInfo episode){
+			loadedEpisode_.get(episode.index_).add(episode);
 		}
 	}
 }

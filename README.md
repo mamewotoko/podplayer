@@ -75,6 +75,8 @@ How to run UI test using Robotium
 
 TODO
 ----
+* remove index from episode info
+   * use id of podcast
 * fix bugs
     * fix memory leak (bitmap problem)
         * check heap size and class histogram
@@ -83,6 +85,8 @@ TODO
         * stop playing
         * or mark error item and try playing next unerror item
    * when only one episode is registered, list is in tap to refresh mode after loaded
+   * stop playing when network error occur
+        * retry/restart on connected
 * add/mark listened item list
     * ? not listened / ! listened
     * remember listened timestamp

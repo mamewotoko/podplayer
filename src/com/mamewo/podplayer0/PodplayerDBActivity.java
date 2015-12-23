@@ -192,6 +192,7 @@ public class PodplayerDBActivity
 	@Override
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id) {
 		//refresh header is added....
+		pos--;
 		//selected
 		Cursor c = adapter_.getCursor();
 		c.moveToPosition(pos);
@@ -208,8 +209,8 @@ public class PodplayerDBActivity
 		}
 		
 		EpisodeInfo info = new EpisodeInfo(url, title, pubdate, link, index);
-		
 		EpisodeInfo current = player_.getCurrentPodInfo();
+	
 		if(current != null && current.url_.equals(info.url_)) {
 			Log.d(TAG, "onItemClick: URL: " + current.url_);
 			if(player_.isPlaying()) {
@@ -233,19 +234,18 @@ public class PodplayerDBActivity
 
 	private boolean playByInfo(EpisodeInfo info) {
 		//umm...
-		// int playPos = -1;
-		// for(playPos = 0; playPos < state_.latestList_.size(); playPos++) {
-		// 	if(state_.latestList_.get(playPos) == info) {
-		// 		break;
-		// 	}
-		// }
-		// if (playPos < 0){
-		// 	Log.i(TAG, "playByInfo: info is not found: " + info.url_);
-		// 	return false;
-		// }
-
-		// return player_.playNth(playPos);
-		return false;
+		int playPos = -1;
+		for(playPos = 0; playPos < state_.latestList_.size(); playPos++) {
+			if(state_.latestList_.get(playPos).equalEpisode(info)) {
+				break;
+			}
+		}
+		if (playPos < 0){
+			Log.i(TAG, "playByInfo: info is not found: " + info.url_);
+			return false;
+		}
+		Log.d(TAG, "playByInfo: pos: " + playPos + " " + info.title_);
+		return player_.playNth(playPos);
 	}
 
 	//UI is updated in following callback methods
@@ -306,20 +306,33 @@ public class PodplayerDBActivity
 			ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
 			//long rowId = cursor.getLong(EpisodeColumns._ID);
 			//long playingRowId = player_.getCurrentEpisodeId();
-
-			// if(rowId == playingRowId) {
-			// 	//cache!
-			// 	if(player_.isPlaying()) {
-			// 		stateIcon.setImageResource(android.R.drawable.ic_media_play);
-			// 	}
-			// 	else {
-			// 		stateIcon.setImageResource(android.R.drawable.ic_media_pause);
-			// 	}
-			// 	stateIcon.setVisibility(View.VISIBLE);
-			// }
-			// else {
-			// 	stateIcon.setVisibility(View.GONE);
-			// }
+			String url = cursor.getString(EpisodeColumns.URL_INDEX);
+			String podcastURL = cursor.getString(EpisodeColumns.PODCAST_INDEX);
+			int index = 0;
+			for(; index < state_.podcastList_.size(); index++){
+				if(podcastURL.equals(state_.podcastList_.get(index).url_.toString())){
+					break;
+				}
+			}
+			EpisodeInfo info = new EpisodeInfo(url, title, pubdate, null, index);
+			EpisodeInfo currentInfo = player_.getCurrentPodInfo();
+			Log.d(TAG, "getItem: " + info.url_ + " " + info.title_ + " " + info.index_ + " current " + currentInfo + " " + info.equalEpisode(currentInfo));
+			if(currentInfo != null){
+				Log.d(TAG, "  getItem current: " + currentInfo.url_ + " " + currentInfo.title_ + " " + currentInfo.index_);
+			}
+			if(info.equalEpisode(currentInfo)){
+				//cache!
+				if(player_.isPlaying()) {
+					stateIcon.setImageResource(android.R.drawable.ic_media_play);
+				}
+				else {
+					stateIcon.setImageResource(android.R.drawable.ic_media_pause);
+				}
+				stateIcon.setVisibility(View.VISIBLE);
+			}
+			else {
+				stateIcon.setVisibility(View.GONE);
+			}
 			// if(showPodcastIcon_ && null != state_.podcastList_.get(info.index_).icon_){
 			// 	episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
 			// 	episodeIcon.setVisibility(View.VISIBLE);
@@ -339,9 +352,9 @@ public class PodplayerDBActivity
 
 		@Override
 		protected void onProgressUpdate(EpisodeInfo... values){
-			// for (int i = 0; i < values.length; i++) {
-			// 	state_.mergeEpisode(values[i]);
-			// }
+			for (int i = 0; i < values.length; i++) {
+				state_.mergeEpisode(values[i]);
+			}
 			//Another Async Task?
 			//check if exists
 			for(int i = 0; i < values.length; i++){
@@ -542,8 +555,37 @@ public class PodplayerDBActivity
 	}
 
 	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor data){
-		adapter_.swapCursor(data);
+	public void onLoadFinished(Loader<Cursor> loader, Cursor c){
+		if(c == null){
+			adapter_.swapCursor(c);
+			return;
+		}
+		//debug
+		for(int i = 0; i < state_.podcastList_.size(); i++){
+			Log.d(TAG, "Podlist url: " + state_.podcastList_.get(i).url_);
+		}
+		//TODO: XXXX use cursor only ?
+		if(c.moveToFirst()){
+			do {
+				String title = c.getString(EpisodeColumns.TITLE_INDEX);
+				String url = c.getString(EpisodeColumns.URL_INDEX);
+				String pubdate = c.getString(EpisodeColumns.PUBDATE_INDEX);
+				String link = null;
+				String podcastURL = c.getString(EpisodeColumns.PODCAST_INDEX);
+				int index = 0;
+				for(; index < state_.podcastList_.size(); index++){
+					if(podcastURL.equals(state_.podcastList_.get(index).url_.toString())){
+						break;
+					}
+				}
+				Log.d(TAG, "index: " + index + " " + title + " podurl: " + podcastURL);
+				EpisodeInfo info = new EpisodeInfo(url, title, pubdate, link, index);
+				state_.mergeEpisode(info);
+			}
+			while(c.moveToNext());
+		}
+		adapter_.swapCursor(c);
+		adapter_.notifyDataSetChanged();
 	}
 
 	@Override

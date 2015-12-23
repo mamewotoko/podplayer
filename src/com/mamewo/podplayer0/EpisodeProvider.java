@@ -174,6 +174,7 @@ public class EpisodeProvider
 							String[] selectionArgs,
 							String sortOrder)
 		{
+			Log.d(TAG, "DBHelper.query: " + selection + " " + selectionArgs);
 			SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 			builder.setTables(TABLE_NAME);
 			Cursor cursor = builder.query(getReadableDatabase(),
