@@ -224,7 +224,7 @@ public class PlayerService
 	 * get current playing or pausing music
 	 * @return current music info
 	 */
-	public EpisodeInfo getCurrentPodInfo(){
+	public EpisodeInfo getCurrentEpisodeInfo(){
 		if (null != currentPlaylist_) {
 			return currentPlaying_;
 		}

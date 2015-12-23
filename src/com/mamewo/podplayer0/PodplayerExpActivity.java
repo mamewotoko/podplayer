@@ -211,7 +211,7 @@ public class PodplayerExpActivity
 								long id)
 	{
 		EpisodeInfo info = (EpisodeInfo)adapter_.getChild(groupPosition, childPosition);
-		EpisodeInfo current = player_.getCurrentPodInfo();
+		EpisodeInfo current = player_.getCurrentEpisodeInfo();
 		if(current != null && current.url_.equals(info.url_)) {
 			if(player_.isPlaying()) {
 				player_.pauseMusic();
@@ -379,7 +379,7 @@ public class PodplayerExpActivity
 			timeView.setText(info.pubdate_);
 			ImageView stateIcon = (ImageView)view.findViewById(R.id.play_icon);
 			ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
-			EpisodeInfo current = player_.getCurrentPodInfo();
+			EpisodeInfo current = player_.getCurrentEpisodeInfo();
 			if(current != null && current.url_.equals(info.url_)) {
 				//cache!
 				if(player_.isPlaying()) {

@@ -209,7 +209,7 @@ public class PodplayerDBActivity
 		}
 		
 		EpisodeInfo info = new EpisodeInfo(url, title, pubdate, link, index);
-		EpisodeInfo current = player_.getCurrentPodInfo();
+		EpisodeInfo current = player_.getCurrentEpisodeInfo();
 	
 		if(current != null && current.url_.equals(info.url_)) {
 			Log.d(TAG, "onItemClick: URL: " + current.url_);
@@ -315,7 +315,7 @@ public class PodplayerDBActivity
 				}
 			}
 			EpisodeInfo info = new EpisodeInfo(url, title, pubdate, null, index);
-			EpisodeInfo currentInfo = player_.getCurrentPodInfo();
+			EpisodeInfo currentInfo = player_.getCurrentEpisodeInfo();
 			Log.d(TAG, "getItem: " + info.url_ + " " + info.title_ + " " + info.index_ + " current " + currentInfo + " " + info.equalEpisode(currentInfo));
 			if(currentInfo != null){
 				Log.d(TAG, "  getItem current: " + currentInfo.url_ + " " + currentInfo.title_ + " " + currentInfo.index_);

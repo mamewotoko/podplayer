@@ -149,7 +149,7 @@ public class PodplayerActivity
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id) {
 		//refresh header is added....
 		EpisodeInfo info = (EpisodeInfo)adapter_.getItem(pos-1);
-		EpisodeInfo current = player_.getCurrentPodInfo();
+		EpisodeInfo current = player_.getCurrentEpisodeInfo();
 		if(current != null && current.url_.equals(info.url_)) {
 			Log.d(TAG, "onItemClick: URL: " + current.url_);
 			if(player_.isPlaying()) {
@@ -249,7 +249,7 @@ public class PodplayerActivity
 			timeView.setText(info.getPubdateString());
 			ImageView stateIcon = (ImageView)view.findViewById(R.id.play_icon);
 			ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
-			EpisodeInfo current = player_.getCurrentPodInfo();
+			EpisodeInfo current = player_.getCurrentEpisodeInfo();
 			if(current != null && current.url_.equals(info.url_)) {
 				//cache!
 				if(player_.isPlaying()) {
