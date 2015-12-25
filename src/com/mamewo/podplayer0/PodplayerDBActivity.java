@@ -194,9 +194,6 @@ public class PodplayerDBActivity
 		//refresh header is added....
 		//pos--;
 		//selected
-		// Cursor c = adapter_.getCursor();
-		// c.moveToPosition(pos);
-
 		DBEpisodeInfo current = (DBEpisodeInfo)(player_.getCurrentEpisodeInfo());
 	
 		if(current != null && current.getId() == id) {
@@ -263,23 +260,31 @@ public class PodplayerDBActivity
 	@Override
 	public void onCompleteMusic(EpisodeInfo info){
 		//TODO: insert listened date by async task
-		((DBEpisodeInfo)info).setListenedTime(System.currentTimeMillis());
+		long now = System.currentTimeMillis();
+		DBEpisodeInfo dbinfo = (DBEpisodeInfo)info;
+		dbinfo.setListenedTime(now);
+		updateDB(dbinfo);
 	}
 
 	// end of callback methods
 
+	private void updateDB(DBEpisodeInfo dbinfo){
+		ContentValues v = new ContentValues();
+		Uri uri = EpisodeColumns.EPISODE_URI.buildUpon()
+			.fragment(String.valueOf(dbinfo.getId()))
+			.build();
+		Log.d(TAG, "udpateDb: uri: " + uri.toString());
+		v.put(EpisodeColumns.LISTENED, dbinfo.getListenedTime());
+		getContentResolver().update(uri, v, null, null);
+	}
+	
 	public class EpisodeCursorAdapter
 		extends ResourceCursorAdapter
 	{
 		public EpisodeCursorAdapter(Context context, int layout, Cursor c){
 			super(context, layout, c, false);
 		}
-
-		// @Override
-		// public View newView(Context context, Cursor cursor, ViewGroup parent){
-		// 	returnView.inflate(context, R.layout.episode_item, null);
-		// }
-		
+	
 		@Override
 		public void bindView(View view, Context context, Cursor cursor){
 			//TODO: notifyUpdate if played item changed?
@@ -291,12 +296,16 @@ public class PodplayerDBActivity
 			TextView timeView = (TextView)view.findViewById(R.id.episode_time);
 			titleView.setText(title);
 			timeView.setText(pubdate);
+			TextView listenedView = (TextView)view.findViewById(R.id.episode_listened);
 			if(listened > 0){
 				//TODO: add checkmark
-				TextView listenedView = (TextView)view.findViewById(R.id.episode_listened);
 				String listenedStr = dateFormat_.format(new Date(listened));
 				//TODO: localize
 				listenedView.setText("Listened: "+listenedStr);
+				listenedView.setVisibility(View.VISIBLE);
+			}
+			else {
+				listenedView.setVisibility(View.GONE);
 			}
 			ImageView stateIcon = (ImageView)view.findViewById(R.id.play_icon);
 			ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
@@ -374,6 +383,7 @@ public class PodplayerDBActivity
 			loadTask_ = null;
 			//TODO: Sync playlist
 			updatePlaylist();
+			updateListView();
 		}
 		
 		@Override
@@ -402,18 +412,18 @@ public class PodplayerDBActivity
 
 	@Override
 	public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
-		EpisodeInfo info = (EpisodeInfo)adapter_.getItem(pos-1);
-		SharedPreferences pref=
-				PreferenceManager.getDefaultSharedPreferences(this);
-		Resources res = getResources();
-		boolean enableLongClick = pref.getBoolean("enable_long_click", res.getBoolean(R.bool.default_enable_long_click));
-		if ((! enableLongClick) || null == info.link_) {
-			return false;
-		}
-		//TODO: skip if url does not refer html?
-		Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
-		startActivity(i);
-		return true;
+		// EpisodeInfo info = (EpisodeInfo)adapter_.getItem(pos-1);
+		// SharedPreferences pref=
+		// 		PreferenceManager.getDefaultSharedPreferences(this);
+		// Resources res = getResources();
+		// boolean enableLongClick = pref.getBoolean("enable_long_click", res.getBoolean(R.bool.default_enable_long_click));
+		// if ((! enableLongClick) || null == info.link_) {
+		// 	return false;
+		// }
+		// //TODO: skip if url does not refer html?
+		// Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
+		// startActivity(i);
+		return false;
 	}
 	
 	private void updateListView(){

@@ -134,8 +134,28 @@ public class EpisodeProvider
 	}
 
 	@Override
-	public int update(Uri uri, ContentValues values, String where, String[] whereArgs) {
-		return -1;
+	public int update(Uri uri,
+					  ContentValues values,
+					  String where,
+					  String[] whereArgs)
+	{
+		SQLiteDatabase db = dbhelper_.getWritableDatabase();
+		int count;
+		switch(uriMatcher_.match(uri)){
+		case EPISODE:
+			count = db.update(TABLE_NAME, values, where, whereArgs);
+			break;
+		case EPISODE_ID:
+			String episodeId = uri.getPathSegments().get(1);
+			count = db.update(TABLE_NAME, values,
+							  EpisodeColumns._ID + "=" + episodeId
+							  + (!TextUtils.isEmpty(where) ? " AND (" + where + ")" : ""), whereArgs);
+			break;
+		default:
+			throw new IllegalArgumentException("update: Unknown URI: "+uri);
+		}
+		getContext().getContentResolver().notifyChange(uri, null);
+		return count;
 	}
 
 	static {

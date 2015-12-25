@@ -11,6 +11,9 @@ public class EpisodeColumns
 	public static
 	final Uri CONTENT_URI = Uri.parse("content://"+EpisodeProvider.AUTHORITY+"/episode");
 	public static
+	final Uri EPISODE_URI = Uri.parse("content://"+EpisodeProvider.AUTHORITY+"/episode/#");
+	
+	public static
 	final String CONTENT_TYPE = "vnd.android.cursor.dir/episode";
 	public static
 	final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/episode";
