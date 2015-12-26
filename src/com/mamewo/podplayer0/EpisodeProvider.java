@@ -75,8 +75,6 @@ public class EpisodeProvider
 	//unique insert
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-		Log.d(TAG, "Provider insert: episode ");
-
 		if(uriMatcher_.match(uri) != EPISODE){
 			throw new IllegalArgumentException("Unknown URI"+uri);
 		}
@@ -96,7 +94,6 @@ public class EpisodeProvider
 									+ EpisodeColumns.PUBDATE+"= ?", args);	
 		long rowId;
 		if(cursor.moveToNext()){
-			Log.d(TAG, "exists: " + cursor.getString(cursor.getColumnIndex(EpisodeColumns.TITLE)));
 			rowId = cursor.getLong(cursor.getColumnIndex(EpisodeColumns._ID));
 		}
 		else {		
@@ -198,7 +195,6 @@ public class EpisodeProvider
 							String[] selectionArgs,
 							String sortOrder)
 		{
-			Log.d(TAG, "DBHelper.query: " + selection + " " + selectionArgs);
 			SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 			builder.setTables(TABLE_NAME);
 			Cursor cursor = builder.query(getReadableDatabase(),
@@ -216,8 +212,6 @@ public class EpisodeProvider
 				Log.d(TAG, "DBHelper.load: cursor is empty");
 				return null;
 			}
-			Log.d(TAG, "DBHelper.load: cursor returned");
-				
 			return cursor;
 		}
 	

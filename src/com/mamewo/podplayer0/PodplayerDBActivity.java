@@ -219,6 +219,7 @@ public class PodplayerDBActivity
 		//pos--;
 		//selected
 		DBEpisodeInfo current = (DBEpisodeInfo)(player_.getCurrentEpisodeInfo());
+		Log.d(TAG, "onItemClick: id: " + id);
 	
 		if(current != null && current.getId() == id) {
 			Log.d(TAG, "onItemClick: URL: " + current.url_);

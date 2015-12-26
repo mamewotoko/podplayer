@@ -89,6 +89,7 @@ TODO
 * add test
    * stop playing when network error occur
        * network info is connected and avaiable but actually wifi error and 3g is disabled
+* store podcast list in database
 * add/mark listened item list
     * ? not listened / ! listened
     * remember listened timestamp
