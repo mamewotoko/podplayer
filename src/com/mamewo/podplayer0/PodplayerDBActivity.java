@@ -44,6 +44,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.CheckBox;
 import android.widget.ToggleButton;
 import android.widget.SeekBar;
 
@@ -99,11 +100,6 @@ public class PodplayerDBActivity
         if (intent.getData() == null) {
             intent.setData(EpisodeColumns.CONTENT_URI);
         }
-        // Cursor cursor = managedQuery(getIntent().getData(),
-		// 							 EpisodeColumns.LIST,
-		// 							 null,
-		// 							 null,
-		// 							 null);
 		adapter_ = new EpisodeCursorAdapter(this, R.layout.episode_item, null);
 		episodeListView_.setAdapter(adapter_);
 		
@@ -217,7 +213,7 @@ public class PodplayerDBActivity
 		}
 	}
 
-	private boolean playById(long id) {
+	private int getLatestListIndexFromId(long id){
 		//umm...
 		int playPos = -1;
 		for(playPos = 0; playPos < state_.latestList_.size(); playPos++) {
@@ -226,6 +222,11 @@ public class PodplayerDBActivity
 				break;
 			}
 		}
+		return playPos;
+	}
+	
+	private boolean playById(long id) {
+		int playPos = getLatestListIndexFromId(id);
 		if (playPos < 0){
 			Log.i(TAG, "playById: info is not found: " + id);
 			return false;
@@ -263,19 +264,24 @@ public class PodplayerDBActivity
 		long now = System.currentTimeMillis();
 		DBEpisodeInfo dbinfo = (DBEpisodeInfo)info;
 		dbinfo.setListenedTime(now);
-		updateDB(dbinfo);
+		updateListenedDB(dbinfo.getId(), now);
 	}
 
 	// end of callback methods
 
-	private void updateDB(DBEpisodeInfo dbinfo){
+	private void updateListenedDB(long id, long listenedTime){
 		ContentValues v = new ContentValues();
+		// Uri uri = EpisodeColumns.EPISODE_URI.buildUpon()
+		// 	.fragment(String.valueOf(id))
+		// 	.build();
 		Uri uri = EpisodeColumns.EPISODE_URI.buildUpon()
-			.fragment(String.valueOf(dbinfo.getId()))
+			.appendPath(String.valueOf(id))
 			.build();
-		Log.d(TAG, "udpateDb: uri: " + uri.toString());
-		v.put(EpisodeColumns.LISTENED, dbinfo.getListenedTime());
+		Log.d(TAG, "updateDb: uri: " + uri.toString());
+		//v.put(EpisodeColumns.LISTENED, dbinfo.getListenedTime());
+		v.put(EpisodeColumns.LISTENED, listenedTime);
 		getContentResolver().update(uri, v, null, null);
+		updateQuery();
 	}
 	
 	public class EpisodeCursorAdapter
@@ -290,22 +296,57 @@ public class PodplayerDBActivity
 			//TODO: notifyUpdate if played item changed?
 			String title = cursor.getString(EpisodeColumns.TITLE_INDEX);
 			String pubdate = cursor.getString(EpisodeColumns.PUBDATE_INDEX);
-			long listened = cursor.getLong(EpisodeColumns.LISTENED_INDEX);
 			
 			TextView titleView = (TextView)view.findViewById(R.id.episode_title);
 			TextView timeView = (TextView)view.findViewById(R.id.episode_time);
 			titleView.setText(title);
 			timeView.setText(pubdate);
 			TextView listenedView = (TextView)view.findViewById(R.id.episode_listened);
+			CheckBox listenedCheck = (CheckBox)view.findViewById(R.id.listened_check);
+
+			//listenedCheck.setOnClickListener(PodplayerDBActivity.this);
+			listenedCheck.setOnClickListener(new OnClickListener()
+				{
+					@Override
+					public void onClick(View v){
+						//mark listened
+						CheckBox ck = (CheckBox)v;
+						long id = (Long)ck.getTag();
+						//Log.d(TAG, "checkbox clicked: "+id+" "+ck.isChecked());
+
+						int playPos = getLatestListIndexFromId(id);
+						if(playPos < 0){
+							Log.d(TAG, "not found: " + id);
+						}
+						DBEpisodeInfo dbinfo = (DBEpisodeInfo)(state_.latestList_.get(playPos));
+						long time = 0;
+						if(!ck.isChecked()){
+							time = 0;
+							//ck.setChecked(false);
+						}
+						else {
+							time = System.currentTimeMillis();
+							//ck.setChecked(true);
+						}
+						dbinfo.setListenedTime(time);
+						updateListenedDB(id, time);
+						adapter_.notifyDataSetChanged();
+					}
+				});
+			listenedCheck.setTag(Long.valueOf(cursor.getLong(EpisodeColumns.ID_INDEX)));
+			long listened = cursor.getLong(EpisodeColumns.LISTENED_INDEX);
+			//Log.d(TAG, "bindView: " + listened + " " + title);
 			if(listened > 0){
 				//TODO: add checkmark
 				String listenedStr = dateFormat_.format(new Date(listened));
 				//TODO: localize
 				listenedView.setText("Listened: "+listenedStr);
 				listenedView.setVisibility(View.VISIBLE);
+				listenedCheck.setChecked(true);
 			}
 			else {
 				listenedView.setVisibility(View.GONE);
+				listenedCheck.setChecked(false);
 			}
 			ImageView stateIcon = (ImageView)view.findViewById(R.id.play_icon);
 			ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
@@ -313,7 +354,6 @@ public class PodplayerDBActivity
 			int id = cursor.getInt(EpisodeColumns.ID_INDEX);
 			DBEpisodeInfo dbinfo = (DBEpisodeInfo)(player_.getCurrentEpisodeInfo());
 			
-			//if(info.equalEpisode(currentInfo)){
 			if(dbinfo != null && id == dbinfo.getId()) {
 				//cache!
 				if(player_.isPlaying()) {
@@ -381,9 +421,9 @@ public class PodplayerDBActivity
 			episodeListView_.onRefreshComplete();
 			episodeListView_.hideHeader();
 			loadTask_ = null;
-			//TODO: Sync playlist
-			updatePlaylist();
-			updateListView();
+
+			//updatePlaylist();
+			updateQuery();
 		}
 		
 		@Override
@@ -426,18 +466,19 @@ public class PodplayerDBActivity
 		return false;
 	}
 	
-	private void updateListView(){
+	private void updateQuery(){
 		getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
 	}
 
 	@Override
 	public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
-		updateListView();
+		updateQuery();
 	}
 
 	@Override
 	public void onNothingSelected(AdapterView<?> adapter) {
-		updateListView();
+		//updateListView();
+		updateQuery();
 	}
 	
 	private int podcastTitle2Index(String title){
@@ -552,6 +593,7 @@ public class PodplayerDBActivity
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor c){
+		Log.d(TAG, "onLoadFinished: cursor " +c);
 		if(c == null){
 			adapter_.swapCursor(c);
 			return;
@@ -574,7 +616,7 @@ public class PodplayerDBActivity
 						break;
 					}
 				}
-				Log.d(TAG, "index: " + index + " " + title + " podurl: " + podcastURL);
+				//Log.d(TAG, "index: " + index + " " + title + " podurl: " + podcastURL);
 				long id = c.getLong(EpisodeColumns.ID_INDEX);
 				long listenedTime = c.getLong(EpisodeColumns.LISTENED_INDEX);
 				EpisodeInfo info = new DBEpisodeInfo(url, title, pubdate, link, index, id, listenedTime);
@@ -583,7 +625,8 @@ public class PodplayerDBActivity
 			while(c.moveToNext());
 		}
 		adapter_.swapCursor(c);
-		//adapter_.notifyDataSetChanged();
+		updatePlaylist();
+		adapter_.notifyDataSetChanged();
 		episodeListView_.hideHeader();
 	}
 

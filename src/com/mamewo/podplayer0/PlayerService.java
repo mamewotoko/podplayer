@@ -115,7 +115,12 @@ public class PlayerService
 		ConnectivityManager connMgr =
 				(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		return (networkInfo != null && networkInfo.isConnected());
+		Log.d(TAG, "networkInfo: " + networkInfo);
+		if(networkInfo != null){
+			Log.d(TAG, "networkInfo connected: " + networkInfo.isConnected());
+			Log.d(TAG, "networkInfo avail: " + networkInfo.isAvailable());
+		}
+		return (networkInfo != null && networkInfo.isConnected() && networkInfo.isAvailable());
 	}
 
 	public void setPlaylist(List<EpisodeInfo> playlist) {

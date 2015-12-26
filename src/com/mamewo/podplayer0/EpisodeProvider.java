@@ -28,7 +28,7 @@ public class EpisodeProvider
 	extends ContentProvider
 {
 	public static
-	final String AUTHORITY = "com.mamewo.podplayer0.provider.Episode";
+	final String AUTHORITY = "com.mamewo.podplayer0.provider";
 
 	private static
 	final String TABLE_NAME = "episode";
@@ -143,13 +143,15 @@ public class EpisodeProvider
 		int count;
 		switch(uriMatcher_.match(uri)){
 		case EPISODE:
+			Log.d(TAG, "update EPISODE: ");
 			count = db.update(TABLE_NAME, values, where, whereArgs);
 			break;
 		case EPISODE_ID:
 			String episodeId = uri.getPathSegments().get(1);
-			count = db.update(TABLE_NAME, values,
-							  EpisodeColumns._ID + "=" + episodeId
-							  + (!TextUtils.isEmpty(where) ? " AND (" + where + ")" : ""), whereArgs);
+			String whereValue = EpisodeColumns._ID + " = " + episodeId
+				+ (!TextUtils.isEmpty(where) ? " AND (" + where + ")" : "");
+			Log.d(TAG, "update EPISODE_ID: " + episodeId + " " + whereValue);
+			count = db.update(TABLE_NAME, values, whereValue, whereArgs);
 			break;
 		default:
 			throw new IllegalArgumentException("update: Unknown URI: "+uri);
@@ -228,20 +230,5 @@ public class EpisodeProvider
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
 			onCreate(db);
 		}
-
-		// public void write(final List<PodcastInfo> podcastList,
-		// 				  final List<EpisodeInfo> episodeList)
-		// {
-		// 	for(EpisodeInfo info: episodeList){
-		// 		ContentValues v = new ContentValues();
-		// 		v.put(EpisodeColumns.TITLE, info.title_);
-		// 		v.put(EpisodeColumns.URL, info.url_);
-		// 		v.put(EpisodeColumns.DATE, info.pubdate_);
-		// 		v.put(EpisodeColumns.PODCAST, podcastList.get(info.index_).url_.toString());
-		// 		v.put(EpisodeColumns.LISTENED, "false");
-		// 		database_.insert(TABLE_NAME, null, v);
-		// 		//check return value
-		// 	}
-		// }
 	}
 }

@@ -50,10 +50,12 @@
         android:textAppearance="?android:attr/textAppearanceSmall" />
   </LinearLayout>
   <CheckBox
-      android:id="@+id/listnened_check"
+      android:id="@+id/listened_check"
       android:layout_width="wrap_content"
       android:layout_height="fill_parent"
       android:layout_alignParentRight="true"
+      android:focusable="true"
+      android:clickable="true"
       />
 </RelativeLayout>
   

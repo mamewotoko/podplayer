@@ -284,10 +284,12 @@ public class PodplayerActivity
 	{
 		public GetPodcastTask(int limit, int timeoutSec, boolean getIcon) {
 			super(PodplayerActivity.this, limit, timeoutSec, getIcon);
+			Log.d(TAG, "PodplayerActivity.GetPodcastTask");
 		}
 
 		@Override
 		protected void onProgressUpdate(EpisodeInfo... values){
+			Log.d(TAG, "PodplayerActivity.onProgressUpdate");
 			for (int i = 0; i < values.length; i++) {
 				state_.mergeEpisode(values[i]);
 			}
@@ -308,7 +310,6 @@ public class PodplayerActivity
 			episodeListView_.onRefreshComplete();
 			episodeListView_.hideHeader();
 			loadTask_ = null;
-			//TODO: Sync playlist
 			updatePlaylist();
 		}
 		
