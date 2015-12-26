@@ -162,6 +162,8 @@ public class EpisodeProvider
 
 	static {
 		uriMatcher_.addURI(AUTHORITY, "episode", EPISODE);
+		// # matches numbers not #(sharp) itself
+		//  e.g. episode/124
 		uriMatcher_.addURI(AUTHORITY, "episode/#", EPISODE_ID);
 	}
 

@@ -77,6 +77,7 @@ TODO
 ----
 * remove index from episode info
    * use id of podcast
+* use tab view to display listened item/not listened item/all (filter condition)
 * fix bugs
     * fix memory leak (bitmap problem)
         * check heap size and class histogram
@@ -85,8 +86,9 @@ TODO
         * stop playing
         * or mark error item and try playing next unerror item
    * when only one episode is registered, list is in tap to refresh mode after loaded
-* test
+* add test
    * stop playing when network error occur
+       * network info is connected and avaiable but actually wifi error and 3g is disabled
 * add/mark listened item list
     * ? not listened / ! listened
     * remember listened timestamp

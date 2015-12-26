@@ -25,6 +25,13 @@
         android:summaryOff="@string/pref_do_not_load_automatically"
         android:summaryOn="@string/pref_load_podcasts_when_app_starts"
         android:title="@string/pref_autoload_podcast" />
+    <CheckBoxPreference
+        android:key="hide_listened_episode"
+        android:defaultValue="@bool/default_hide_listened_episode"
+        android:summaryOn="@string/pref_summary_on_hide_listened_episode"
+	android:summaryOff="@string/pref_summary_off_hide_listened_episode"
+        android:title="@string/pref_title_hide_listend_episode" />
+
     <ListPreference 
         android:key="episode_limit"
         android:defaultValue="@string/default_episode_limit"

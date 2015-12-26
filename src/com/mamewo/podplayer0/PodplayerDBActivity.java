@@ -14,6 +14,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.ContentValues;
 import android.content.res.Resources;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
 import android.database.Cursor;
 
@@ -78,6 +79,8 @@ public class PodplayerDBActivity
 	private EpisodeCursorAdapter adapter_;
 	private List<EpisodeInfo> currentList_;
 	private DateFormat dateFormat_;
+	private boolean hideListenedEpisode_;
+	private OnSharedPreferenceChangeListener prefChangeListener_;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -96,6 +99,22 @@ public class PodplayerDBActivity
 		episodeListView_.setOnRefreshListener(this);
 		episodeListView_.setOnCancelListener(this);
 
+		prefChangeListener_ = new OnSharedPreferenceChangeListener(){
+				@Override
+				public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
+					if("hide_listened_episode".equals(key)){
+						hideListenedEpisode_ = pref.getBoolean("hide_listened_episode", false);
+						updateQuery();
+					}
+				}
+			};
+		SharedPreferences pref=
+			PreferenceManager.getDefaultSharedPreferences(this);
+		pref.registerOnSharedPreferenceChangeListener(prefChangeListener_);
+		//TODO: read default value from xml
+		//TODO: refresh ui if changed
+		hideListenedEpisode_ = pref.getBoolean("hide_listened_episode", false);
+		
         Intent intent = getIntent();
         if (intent.getData() == null) {
             intent.setData(EpisodeColumns.CONTENT_URI);
@@ -108,6 +127,15 @@ public class PodplayerDBActivity
 		currentPlayPosition_.setOnSeekBarChangeListener(this);
 		dateFormat_ = DateFormat.getDateTimeInstance();
 		getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+	}
+
+	@Override
+	public void onDestroy(){
+		SharedPreferences pref =
+			PreferenceManager.getDefaultSharedPreferences(this);
+		pref.unregisterOnSharedPreferenceChangeListener(prefChangeListener_);
+		prefChangeListener_ = null;
+		super.onDestroy();
 	}
 
 	public String getSelectedPodcastURL(){
@@ -271,14 +299,10 @@ public class PodplayerDBActivity
 
 	private void updateListenedDB(long id, long listenedTime){
 		ContentValues v = new ContentValues();
-		// Uri uri = EpisodeColumns.EPISODE_URI.buildUpon()
-		// 	.fragment(String.valueOf(id))
-		// 	.build();
 		Uri uri = EpisodeColumns.EPISODE_URI.buildUpon()
 			.appendPath(String.valueOf(id))
 			.build();
 		Log.d(TAG, "updateDb: uri: " + uri.toString());
-		//v.put(EpisodeColumns.LISTENED, dbinfo.getListenedTime());
 		v.put(EpisodeColumns.LISTENED, listenedTime);
 		getContentResolver().update(uri, v, null, null);
 		updateQuery();
@@ -336,6 +360,7 @@ public class PodplayerDBActivity
 			listenedCheck.setTag(Long.valueOf(cursor.getLong(EpisodeColumns.ID_INDEX)));
 			long listened = cursor.getLong(EpisodeColumns.LISTENED_INDEX);
 			//Log.d(TAG, "bindView: " + listened + " " + title);
+
 			if(listened > 0){
 				//TODO: add checkmark
 				String listenedStr = dateFormat_.format(new Date(listened));
@@ -422,7 +447,6 @@ public class PodplayerDBActivity
 			episodeListView_.hideHeader();
 			loadTask_ = null;
 
-			//updatePlaylist();
 			updateQuery();
 		}
 		
@@ -477,7 +501,6 @@ public class PodplayerDBActivity
 
 	@Override
 	public void onNothingSelected(AdapterView<?> adapter) {
-		//updateListView();
 		updateQuery();
 	}
 	
@@ -584,8 +607,17 @@ public class PodplayerDBActivity
 		String selection = null;
 		String[] selectionArgs = null;
 
+		if(hideListenedEpisode_){
+			selection = "listened = 0";
+		}
 		if(url != null){
-			selection = EpisodeColumns.PODCAST + " = ? ";
+			if(selection == null){
+				selection = "";
+			}
+			else {
+				selection += " AND ";
+			}
+			selection += EpisodeColumns.PODCAST + " = ? ";
 			selectionArgs = new String[] { url };
 		}
 		return new CursorLoader(this, baseUri, null, selection, selectionArgs, null);

@@ -74,4 +74,8 @@
     <string name="pref_episode_nolimit_summary">No limit</string>
 
     <string name="pref_episode_order">Episode order</string>
+
+    <string name="pref_summary_on_hide_listened_episode">Hide listened episode</string>
+    <string name="pref_summary_off_hide_listened_episode">Show listened episode</string>
+    <string name="pref_title_hide_listend_episode">Hide listened episode (DB mode only)</string>
 </resources>

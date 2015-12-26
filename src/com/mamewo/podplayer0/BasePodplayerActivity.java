@@ -77,9 +77,6 @@ abstract public class BasePodplayerActivity
 		state_ = null;
 		uiSettingChanged_ = false;
 		
-		// if(null != savedInstanceState){
-		//  	state_ = (PodplayerState) savedInstanceState.get("state");
-		// }
 		if(null == state_){
 			state_ = new PodplayerState();
 		}

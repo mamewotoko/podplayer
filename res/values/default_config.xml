@@ -3,6 +3,7 @@
     <bool name="default_pause_on_unplugged">true</bool>
 	<bool name="default_enable_long_click">false</bool>
 	<bool name="default_load_on_start">true</bool>
+	<bool name="default_hide_listened_episode">false</bool>
 	
 	<string name="default_episode_limit">-1</string>
 	<bool name="default_use_response_cache">true</bool>
