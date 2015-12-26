@@ -85,8 +85,8 @@ TODO
         * stop playing
         * or mark error item and try playing next unerror item
    * when only one episode is registered, list is in tap to refresh mode after loaded
+* test
    * stop playing when network error occur
-        * retry/restart on connected
 * add/mark listened item list
     * ? not listened / ! listened
     * remember listened timestamp

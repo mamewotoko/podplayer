@@ -535,7 +535,7 @@ public class PlayerService
 		}
 		return result;
 	}
-
+	
 	// This method is not called when DRM error occurs
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra) {
@@ -548,7 +548,7 @@ public class PlayerService
 		showMessage("Network error: " + code);
 		//TODO: if next item is different, continue playing
 		boolean stopOnError = pref_.getBoolean("stop_playing_on_error", false);
-		if(stopOnError){
+		if(stopOnError || (!isNetworkConnected(this))){
 			stopMusic();
 		}
 		else {
