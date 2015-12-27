@@ -367,11 +367,12 @@ public class PodcastListPreference
 		
 		@Override
 		protected void onProgressUpdate(PodcastInfo... values){
+			isChanged_ = true;
 			PodcastInfo info = values[0];
 			adapter_.add(info);
-			String msg =
-					MessageFormat.format(getString(R.string.podcast_added), info.title_);
-			showMessage(msg);
+			// String msg =
+			// 		MessageFormat.format(getString(R.string.podcast_added), info.title_);
+			// showMessage(msg);
 			urlEdit_.setText("");
 			urlEdit_.clearFocus();
 		}

@@ -102,8 +102,8 @@ public class PodplayerDBActivity
 		prefChangeListener_ = new OnSharedPreferenceChangeListener(){
 				@Override
 				public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
-					if("hide_listened_episode".equals(key)){
-						hideListenedEpisode_ = pref.getBoolean("hide_listened_episode", false);
+					if(PodplayerPreference.PREF_KEY_HIDE_LISTENED_EPISODE.equals(key)){
+						hideListenedEpisode_ = pref.getBoolean(PodplayerPreference.PREF_KEY_HIDE_LISTENED_EPISODE, false);
 						updateQuery();
 					}
 				}
@@ -113,7 +113,7 @@ public class PodplayerDBActivity
 		pref.registerOnSharedPreferenceChangeListener(prefChangeListener_);
 		//TODO: read default value from xml
 		//TODO: refresh ui if changed
-		hideListenedEpisode_ = pref.getBoolean("hide_listened_episode", false);
+		hideListenedEpisode_ = pref.getBoolean(PodplayerPreference.PREF_KEY_HIDE_LISTENED_EPISODE, false);
 		
         Intent intent = getIntent();
         if (intent.getData() == null) {
@@ -217,7 +217,7 @@ public class PodplayerDBActivity
 	public void onItemClick(AdapterView<?> list, View view, int pos, long id) {
 		//refresh header is added....
 		//pos--;
-		//selected
+
 		DBEpisodeInfo current = (DBEpisodeInfo)(player_.getCurrentEpisodeInfo());
 		Log.d(TAG, "onItemClick: id: " + id);
 	

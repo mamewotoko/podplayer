@@ -158,12 +158,6 @@ abstract public class BasePodplayerActivity
 		}
 	}
 	
-	// @Override
-	// protected void onSaveInstanceState(Bundle outState) {
-	// 	outState.putSerializable("state", state_);
-	// 	super.onSaveInstanceState(outState);
-	// }
-
 	public void updatePlaylist() {
 		boolean reversed = currentOrder_ == REVERSE_APPEARANCE_ORDER;
 		player_.setPlaylist(state_.list(reversed));

@@ -78,7 +78,9 @@ TODO
 * remove index from episode info
    * use id of podcast
 * use tab view to display listened item/not listened item/all (filter condition)
+* use id list as playlist
 * fix bugs
+    * null point exception when rotate db activity
     * fix memory leak (bitmap problem)
         * check heap size and class histogram
         * put scaled image on memory
@@ -86,18 +88,18 @@ TODO
         * stop playing
         * or mark error item and try playing next unerror item
    * when only one episode is registered, list is in tap to refresh mode after loaded
-* add test
-   * stop playing when network error occur
+* add  / update test
+    * MainActivityTest, PodcastActivity then testAbortReload blocks...
+    * preference
+    * notification
+    * gesture?
+    * landscape UI
+    * stop playing when network error occur
        * network info is connected and avaiable but actually wifi error and 3g is disabled
 * store podcast list in database
-* add/mark listened item list
-    * ? not listened / ! listened
-    * remember listened timestamp
-* save latest few item to savedInstanceState
-* filter not listened item only (preference)
 * use database to manage loaded episodes
-    * display mark which is already played, new item etc...
-    * to reduce reload of podcast
+    * display mark for new item etc...
+    * to reduce reload of podcast remember last load time for each podcast
     * show description of playing episode
     * save podcast list and updated time as state
 * move state to service
@@ -109,14 +111,7 @@ TODO
 * cache podcast icon
     * avoid loading podcast when UI is switched (by rotation)
 * http://developer.android.com/intl/ja/training/improving-layouts/smooth-scrolling.html#ViewHolder
-* add / update test
-    * MainActivityTest, PodcastActivity then testAbortReload blocks...
-    * preference
-    * notification
-    * gesture?
-    * landscape UI
 * improve UI to add podcast URL
-    * update main activity when setting is changed
 * reset playing position after podcast selection is changed
 * translate
     <string name="pref_episode_limit">Limit of episodes for each podcast</string>

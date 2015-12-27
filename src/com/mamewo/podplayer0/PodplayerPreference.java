@@ -41,6 +41,9 @@ public class PodplayerPreference
 	private int GESTURE_TABLE_DIALOG = 2;
 	static final
 	private int LICENSE_DIALOG = 3;
+
+	static final
+	public String PREF_KEY_HIDE_LISTENED_EPISODE = "hide_listened_episode";
 	
 	private Preference podcastList_;
 	private Preference version_;
