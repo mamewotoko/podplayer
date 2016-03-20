@@ -77,6 +77,7 @@ TODO
 ----
 * build using gradle
 * support opml to load podcast list
+  * outline element whose type attribute is "rss", has text, xmlUrl attributes
 * support youtube?
 * remove index from episode info
    * use id of podcast
