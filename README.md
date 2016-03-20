@@ -75,6 +75,9 @@ How to run UI test using Robotium
 
 TODO
 ----
+* build using gradle
+* support opml to load podcast list
+* support youtube?
 * remove index from episode info
    * use id of podcast
 * use tab view to display listened item/not listened item/all (filter condition)

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import static com.mamewo.podplayer0.PodplayerPreference.*;
 
 public class MainActivity
 	extends Activity
@@ -17,7 +18,7 @@ public class MainActivity
 				PreferenceManager.getDefaultSharedPreferences(this);
 		Resources res = getResources();
 		boolean useExpandableList =
-				pref.getBoolean("use_expandable_ui", 
+				pref.getBoolean(PREF_KEY_USE_EXPANDABLE_UI, 
 								res.getBoolean(R.bool.default_use_expandable_ui));
 		Class<?> targetClass;
 		if (useExpandableList) {

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.mamewo.podplayer0.Const.*;
+import static com.mamewo.podplayer0.PodplayerPreference.*;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -171,9 +172,10 @@ public class PodplayerDBActivity
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		Resources res = getResources();
-		int limit = Integer.valueOf(pref.getString("episode_limit", res.getString(R.string.default_episode_limit)));
-		int timeoutSec = Integer.valueOf(pref.getString("read_timeout", res.getString(R.string.default_read_timeout)));
-		boolean getIcon = pref.getBoolean("show_podcast_icon", res.getBoolean(R.bool.default_show_podcast_icon));
+		int limit = Integer.valueOf(pref.getString(PREF_KEY_EPISODE_LIMIT, res.getString(R.string.default_episode_limit)));
+		int timeoutSec = Integer.valueOf(pref.getString(PREF_KEY_READ_TIMEOUT,
+														res.getString(R.string.default_read_timeout)));
+		boolean getIcon = pref.getBoolean(PREF_KEY_SHOW_PODCAST_ICON, res.getBoolean(R.bool.default_show_podcast_icon));
 		GetPodcastTask task = new GetPodcastTask(limit, timeoutSec, getIcon);
 		startLoading(task);
 	}
@@ -564,7 +566,7 @@ public class PodplayerDBActivity
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		selector_.setAdapter(adapter);
 		Resources res = getResources();
-		boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
+		boolean doLoad = pref.getBoolean(PREF_KEY_LOAD_ON_START, res.getBoolean(R.bool.default_load_on_start));
 		// List<EpisodeInfo> playlist = state_.latestList_;
 		// if (!start || doLoad) {
 		// 	//reload

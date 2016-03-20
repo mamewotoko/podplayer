@@ -10,6 +10,7 @@ import com.mamewo.lib.podcast_parser.EpisodeInfo;
 import com.mamewo.lib.podcast_parser.PodcastInfo;
 
 import static com.mamewo.podplayer0.Const.*;
+import static com.mamewo.podplayer0.PodplayerPreference.*;
 
 import android.media.AudioManager;
 import android.app.Activity;
@@ -87,7 +88,7 @@ abstract public class BasePodplayerActivity
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
-		currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
+		currentOrder_ = Integer.valueOf(pref.getString(PREF_KEY_EPISODE_ORDER, "0"));
 		httpCacheDir_ = null;
 		cacheObject_ = null;
 		//podcastIconSize_ = (int)(getResources().getDisplayMetrics().density * 54);
@@ -217,12 +218,12 @@ abstract public class BasePodplayerActivity
 	protected void syncPreference(SharedPreferences pref, String key){
 		Log.d(TAG, "syncPreference: " + key);
 		boolean updateAll = "ALL".equals(key);
-		if ("use_expandable_ui".equals(key)) {
+		if (PREF_KEY_USE_EXPANDABLE_UI.equals(key)) {
 			uiSettingChanged_ = true;
 		}
 		Resources res = getResources();
-		if (updateAll || "enable_gesture".equals(key)) {
-			boolean useGesture = pref.getBoolean("enable_gesture", res.getBoolean(R.bool.default_enable_gesture));
+		if (updateAll || PREF_KEY_ENABLE_GESTURE.equals(key)) {
+			boolean useGesture = pref.getBoolean(PREF_KEY_ENABLE_GESTURE, res.getBoolean(R.bool.default_enable_gesture));
 			GestureOverlayView gestureView =
 					(GestureOverlayView)findViewById(R.id.gesture_view);
 			if(useGesture) {
@@ -238,17 +239,17 @@ abstract public class BasePodplayerActivity
 			}
 			gestureView.setEnabled(useGesture);
 		}
-		if (updateAll || "gesture_score_threshold".equals(key)) {
+		if (updateAll || PREF_KEY_GESTURE_SCORE_THRESHOLD.equals(key)) {
 			gestureScoreThreshold_ =
-					Double.valueOf(pref.getString("gesture_score_threshold",
-												res.getString(R.string.default_gesture_score_threshold)));
+				Double.valueOf(pref.getString(PREF_KEY_GESTURE_SCORE_THRESHOLD,
+											  res.getString(R.string.default_gesture_score_threshold)));
 		}
-		if (updateAll || "show_podcast_icon".equals(key)) {
-			showPodcastIcon_ = pref.getBoolean("show_podcast_icon", 
+		if (updateAll || PREF_KEY_SHOW_PODCAST_ICON.equals(key)) {
+			showPodcastIcon_ = pref.getBoolean(PREF_KEY_SHOW_PODCAST_ICON,
 												res.getBoolean(R.bool.default_show_podcast_icon));
 		}
-		if (updateAll || "use_reponse_cache".equals(key)){
-			boolean useCache = pref.getBoolean("use_reponse_cache", 
+		if (updateAll || PREF_KEY_USE_RESPONSE_CACHE.equals(key)){
+			boolean useCache = pref.getBoolean(PREF_KEY_USE_RESPONSE_CACHE,
 												res.getBoolean(R.bool.default_use_response_cache));
 			if(useCache){
 				if(null == httpCacheDir_){
@@ -273,8 +274,8 @@ abstract public class BasePodplayerActivity
 				}
 			}
 		}
-		if(updateAll || "episode_order".equals(key)){
-			currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
+		if(updateAll || PREF_KEY_EPISODE_ORDER.equals(key)){
+			currentOrder_ = Integer.valueOf(pref.getString(PREF_KEY_EPISODE_ORDER, "0"));
 			notifyOrderChanged(currentOrder_);
 		}
 		//following block should be last one of this function

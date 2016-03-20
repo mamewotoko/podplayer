@@ -10,6 +10,7 @@ import com.mamewo.lib.podcast_parser.EpisodeInfo;
 import com.mamewo.lib.podcast_parser.PodcastInfo;
 
 import static com.mamewo.podplayer0.Const.*;
+import static com.mamewo.podplayer0.PodplayerPreference.*;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -95,15 +96,6 @@ public class PodplayerExpActivity
 		playButton_.setChecked(player_.isPlaying());
 	}
 
-	// public void onSharedPreferenceChanged(SharePreference pref, String key){
-	// 	super.onSharedPreferenceChanged(pref, key);
-	// 	//TODO: move to const or string
-	// 	if("episode_limit".equals(key)){
-	// 		currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
-	// 		adapter_.notifyDataSetChanged();
-	// 	}
-	// }
-
 	//must be called from UI thread
 	private void loadPodcast(){
 		if (isLoading()) {
@@ -116,9 +108,10 @@ public class PodplayerExpActivity
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(this);
 		Resources res = getResources();
-		int limit = Integer.valueOf(pref.getString("episode_limit", res.getString(R.string.default_episode_limit)));
-		int timeoutSec = Integer.valueOf(pref.getString("read_timeout", res.getString(R.string.default_read_timeout)));
-		boolean getIcon = pref.getBoolean("show_podcast_icon", res.getBoolean(R.bool.default_show_podcast_icon));
+		int limit = Integer.valueOf(pref.getString(PREF_KEY_EPISODE_LIMIT, res.getString(R.string.default_episode_limit)));
+		int timeoutSec = Integer.valueOf(pref.getString(PREF_KEY_READ_TIMEOUT,
+														res.getString(R.string.default_read_timeout)));
+		boolean getIcon = pref.getBoolean(PREF_KEY_SHOW_PODCAST_ICON, res.getBoolean(R.bool.default_show_podcast_icon));
 		GetPodcastTask task = new GetPodcastTask(limit, timeoutSec, getIcon);
 		startLoading(task);
 	}
@@ -492,12 +485,13 @@ public class PodplayerExpActivity
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
 		Resources res = getResources();
-		boolean expandInDefault = pref.getBoolean("expand_in_default", res.getBoolean(R.bool.default_expand_in_default));
+		boolean expandInDefault = pref.getBoolean(PREF_KEY_EXPAND_IN_DEFAULT,
+												  res.getBoolean(R.bool.default_expand_in_default));
 		if (expandInDefault) { 
 			expandOrCollapseAll(true);
 		}
 		expandableList_.setOnChildClickListener(this);
-		boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
+		boolean doLoad = pref.getBoolean(PREF_KEY_LOAD_ON_START, res.getBoolean(R.bool.default_load_on_start));
 		updateUI();
 		//List<EpisodeInfo> playlist = state_.loadedEpisode_;
 		if ((!start) || doLoad) {

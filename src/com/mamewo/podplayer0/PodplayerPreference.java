@@ -44,6 +44,26 @@ public class PodplayerPreference
 
 	static final
 	public String PREF_KEY_HIDE_LISTENED_EPISODE = "hide_listened_episode";
+	static final
+	public String PREF_KEY_ENABLE_GESTURE = "enable_gesture";
+	static final
+	public String PREF_KEY_USE_EXPANDABLE_UI = "use_expandable_ui";
+	static final
+	public String PREF_KEY_EPISODE_ORDER = "episode_order";
+	static final
+	public String PREF_KEY_GESTURE_SCORE_THRESHOLD = "gesture_score_threshold";
+	static final
+	public String PREF_KEY_SHOW_PODCAST_ICON = "show_podcast_icon";
+	static final
+	public String PREF_KEY_EPISODE_LIMIT = "episode_limit";
+	static final
+	public String PREF_KEY_USE_RESPONSE_CACHE = "use_reponse_cache";
+	static final
+	public String PREF_KEY_READ_TIMEOUT = "read_timeout";
+	static final
+	public String PREF_KEY_LOAD_ON_START = "load_on_start";
+	static final
+	public String PREF_KEY_EXPAND_IN_DEFAULT = "expand_in_default";
 	
 	private Preference podcastList_;
 	private Preference version_;
@@ -72,16 +92,16 @@ public class PodplayerPreference
 		}
 		podcastList_ = findPreference("podcastlist");
 		podcastList_.setOnPreferenceClickListener(this);
-		readTimeout_ = (ListPreference)findPreference("read_timeout");
-		scoreThreshold_ = findPreference("gesture_score_threshold");
-		episodeLimit_ = findPreference("episode_limit");
-		episodeOrder_ = (ListPreference)findPreference("episode_order");
+		readTimeout_ = (ListPreference)findPreference(PREF_KEY_READ_TIMEOUT);
+		scoreThreshold_ = findPreference(PREF_KEY_GESTURE_SCORE_THRESHOLD);
+		episodeLimit_ = findPreference(PREF_KEY_EPISODE_LIMIT);
+		episodeOrder_ = (ListPreference)findPreference(PREF_KEY_EPISODE_ORDER);
 		gestureTable_ = findPreference("gesture_list");
 		gestureTable_.setOnPreferenceClickListener(this);
 		version_.setOnPreferenceClickListener(this);
 		license_ = findPreference("license");
 		license_.setOnPreferenceClickListener(this);
-		CheckBoxPreference cachePreference = (CheckBoxPreference)findPreference("use_response_cache");
+		CheckBoxPreference cachePreference = (CheckBoxPreference)findPreference(PREF_KEY_USE_RESPONSE_CACHE);
 		//Build.VERSION_CODES.HONEYCOMB_MR2;
 		clearCache_ = findPreference("clear_response_cache");
 
@@ -205,16 +225,16 @@ public class PodplayerPreference
 		boolean updateAll = "ALL".equals(key);
 		Resources res = getResources();
 		
-		if (updateAll || "read_timeout".equals(key)) {
+		if (updateAll || PREF_KEY_READ_TIMEOUT.equals(key)) {
 			readTimeout_.setSummary(readTimeout_.getEntry());
 		}
-		if (updateAll || "gesture_score_threshold".equals(key)) {	
-			double threshold = Double.valueOf(pref.getString("gesture_score_threshold", 
-															res.getString(R.string.default_gesture_score_threshold)));
+		if (updateAll || PREF_KEY_GESTURE_SCORE_THRESHOLD.equals(key)) {	
+			double threshold = Double.valueOf(pref.getString(PREF_KEY_GESTURE_SCORE_THRESHOLD,
+															 res.getString(R.string.default_gesture_score_threshold)));
 			scoreThreshold_.setSummary(String.format("%.2f", threshold));
 		}
-		if (updateAll || "episode_limit".equals(key)){
-			int limit = Integer.valueOf(pref.getString("episode_limit", 
+		if (updateAll || PREF_KEY_EPISODE_LIMIT.equals(key)){
+			int limit = Integer.valueOf(pref.getString(PREF_KEY_EPISODE_LIMIT,
 														res.getString(R.string.default_episode_limit)));
 			String summary = getString(R.string.pref_episode_nolimit_summary);
 			if (limit > 0){
@@ -222,8 +242,8 @@ public class PodplayerPreference
 			}
 			episodeLimit_.setSummary(summary);
 		}
-		if(updateAll || "episode_order".equals(key)){
-			int order = Integer.valueOf(pref.getString("episode_order", "0"));
+		if(updateAll || PREF_KEY_EPISODE_ORDER.equals(key)){
+			int order = Integer.valueOf(pref.getString(PREF_KEY_EPISODE_ORDER, "0"));
 			episodeOrder_.setSummary(res.getStringArray(R.array.episode_item_order_entries)[order]);
 		}
 	}
