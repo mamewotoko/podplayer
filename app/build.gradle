@@ -1,0 +1,32 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'com.android.tools.build:gradle:0.12.2'
+	}
+}
+
+//apply plugin: 'android'
+apply plugin: 'com.android.application'
+
+android {
+	compileSdkVersion 17
+	buildToolsVersion "23.0.1"
+	defaultConfig {
+       	   applicationId "com.mamewo.podplayer0"
+	   minSdkVersion 10
+	   targetSdkVersion 17
+	   versionCode 10
+	   versionName "1.0.0"
+	}
+      lintOptions {
+          abortOnError false
+      }
+}
+
+dependencies {
+    compile project(":podcast_parser")
+    compile project(":pulltorefresh")
+    compile 'com.android.support:support-v4:20.0.0'
+}
