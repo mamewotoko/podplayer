@@ -30,4 +30,3 @@ dependencies {
     compile project(":pulltorefresh")
     compile 'com.android.support:support-v4:20.0.0'
 }
-
