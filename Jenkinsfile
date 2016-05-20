@@ -1,4 +1,4 @@
 #! /usr/local/bin/groovy
-node('linux') {
-  sh './gradlew assembleDebug'
-}
+stage 'Build'	      
+sh './gradlew assembleDebug lint'
+
