@@ -11,4 +11,7 @@ node {
   env.PATH="${env.JAVA_HOME}/bin:${env.ANDROID_HOME}/tools:${env.PATH}"
 
   sh './gradlew assembleDebug lint'
+
+  stage 'Report'
+  publishHTML(target: [reportDir: './app/build/outputs/' reportFiles: 'lint-results.html', reportName: 'Android Lint'])
 }
