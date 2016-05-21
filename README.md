@@ -48,21 +48,12 @@ A file bin/podplayer-debug.apk is created if succeed.
 
 How to run UI test using Robotium
 ---------------------------------
-1. update project
-```bash
-  cd ../
-  android update test-project -m ../../ -n podtest -p .
-```
-
-### ant
-```bash
-  ant debug install
-  ant test
-```
-
-### Eclipse
-1. Import the test/podtest directory as an Eclipse projct
-2. Run as "Android JUnit Test" or "Scirocco JUnit Test"
+1. connect android device or start android emulator
+2. start testing
+    ```
+    ./gradlew spoon
+    ```
+3. test report is created as ` app/build/spoon/debug/index.html `
 
 TODO
 ----

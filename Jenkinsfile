@@ -1,4 +1,4 @@
-#! /usr/local/bin/groovy
+#! groovy
 node {
   stage 'Checkout'
   checkout scm
@@ -11,6 +11,9 @@ node {
   env.PATH="${env.JAVA_HOME}/bin:${env.ANDROID_HOME}/tools:${env.PATH}"
 
   sh './gradlew assembleDebug lint'
+
+  stage 'Build test'
+  sh './gradlew assembleAndroidTest'
 
   stage 'Report'
   step([$class: 'LintPublisher'])

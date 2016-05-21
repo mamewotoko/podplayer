@@ -1,32 +1,36 @@
 buildscript {
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath 'com.android.tools.build:gradle:1.2.3'
-	}
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:1.2.3'
+    classpath 'com.stanfy.spoon:spoon-gradle-plugin:1.0.0'
+  }
 }
 
-//apply plugin: 'android'
 apply plugin: 'com.android.application'
+apply plugin: 'spoon'
 
 android {
-	compileSdkVersion 17
-	buildToolsVersion "23.0.1"
-	defaultConfig {
-       	   applicationId "com.mamewo.podplayer0"
-	   minSdkVersion 10
-	   targetSdkVersion 17
-	   versionCode 10
-	   versionName "1.0.0"
-	}
-      lintOptions {
-          abortOnError false
-      }
+  compileSdkVersion 17
+  buildToolsVersion "23.0.1"
+  defaultConfig {
+    applicationId "com.mamewo.podplayer0"
+    minSdkVersion 10
+    targetSdkVersion 17
+    versionCode 10
+    versionName "1.0.0"
+  }
+  lintOptions {
+    abortOnError false
+  }
 }
 
 dependencies {
-    compile project(":podcast_parser")
-    compile project(":pulltorefresh")
-    compile 'com.android.support:support-v4:20.0.0'
+  compile project(":podcast_parser")
+  compile project(":pulltorefresh")
+  compile 'com.android.support:support-v4:20.0.0'
+
+  androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.5.2'
+  androidTestCompile 'com.squareup.spoon:spoon-client:1.1.0'
 }
