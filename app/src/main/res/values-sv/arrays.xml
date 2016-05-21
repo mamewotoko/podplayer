@@ -7,13 +7,6 @@
 	<item>Voice of America (VOA)</item>
     </string-array>
     
-    <string-array name="pref_podcastlist_urls">
-        <item>http://www.nhk.or.jp/rj/podcast/rss/english.xml</item>
-        <item>http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml</item>
-        <item>http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml</item>
-	<item>http://learningenglish.voanews.com/podcast/</item>
-    </string-array>
-
     <string-array name="pref_timeout_titles">
         <item>Ingen tidsgräns</item>
         <item>15 sekunder</item>
@@ -22,27 +15,17 @@
         <item>120 sekunder</item>
     </string-array>
     
-    <string-array name="pref_timeout_values">
-        <item>0</item>
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>120</item>
-    </string-array>
-
     <string-array name="pref_episode_limit_titles">
         <item>Ingen begränsning</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
         <item>5</item>
-   </string-array>
-
-   <string-array name="pref_episode_limit_values">
-       <item>-1</item>
-       <item>1</item>
-       <item>2</item>
-       <item>3</item>
-       <item>5</item>
     </string-array>
+
+    <string-array name="episode_item_order_entries">
+      <item>Ordningsföljden</item>
+      <item>Omvänd ordning utseende</item>
+    </string-array>
+   
 </resources>

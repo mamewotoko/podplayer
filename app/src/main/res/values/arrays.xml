@@ -4,14 +4,14 @@
         <item>NHK WORLD RADIO JAPAN</item>
         <item>BBC: The English We Speak</item>
         <item>Wall Street Journal This Morning</item>
-	<item>Voice of America (VOA)</item>
+        <item>Voice of America (VOA)</item>
     </string-array>
     
-    <string-array name="pref_podcastlist_urls">
+    <string-array name="pref_podcastlist_urls" translatable="false">
         <item>http://www.nhk.or.jp/rj/podcast/rss/english.xml</item>
         <item>http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml</item>
         <item>http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml</item>
-	<item>http://learningenglish.voanews.com/podcast/</item>
+        <item>http://learningenglish.voanews.com/podcast/</item>
     </string-array>
     
     <string-array name="pref_timeout_titles">
@@ -22,7 +22,7 @@
         <item>120 sec</item>
     </string-array>
     
-    <string-array name="pref_timeout_values">
+    <string-array name="pref_timeout_values" translatable="false">
         <item>0</item>
         <item>15</item>
         <item>30</item>
@@ -37,7 +37,7 @@
         <item>5</item>
    </string-array>
    
-   <string-array name="pref_episode_limit_values">
+   <string-array name="pref_episode_limit_values" translatable="false">
        <item>-1</item>
        <item>1</item>
        <item>2</item>
@@ -50,7 +50,7 @@
       <item>Reversed order of appearance</item>
     </string-array>
 
-    <string-array name="episode_item_order_entries_value">
+    <string-array name="episode_item_order_entries_value" translatable="false">
       <item>0</item>
       <item>1</item>
     </string-array>
