@@ -13,5 +13,5 @@ node {
   sh './gradlew assembleDebug lint'
 
   stage 'Report'
-  publishHTML(target: [reportDir: './app/build/outputs/' reportFiles: 'lint-results.html', reportName: 'Android Lint'])
+  publishHTML(target: [reportDir: './app/build/outputs/', reportFiles: 'lint-results.html', reportName: 'Android Lint'])
 }
