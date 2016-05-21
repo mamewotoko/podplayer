@@ -13,5 +13,5 @@ node {
   sh './gradlew assembleDebug lint'
 
   stage 'Report'
-  setp([$class: 'LintPublisher', pattern: './app/build/outputs/lint-results.xml'])
+  step([$class: 'LintPublisher', pattern: './app/build/outputs/lint-results.xml'])
 }
