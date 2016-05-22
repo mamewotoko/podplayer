@@ -174,13 +174,14 @@ public class PodplayerPreference
 				}
 			}
 			dialog = new AlertDialog.Builder(this)
-			.setMessage(licenseText.toString())
-			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					//nop
-				}
-			})
-			.create();
+				.setMessage(licenseText.toString())
+				//TODO: use resource for "OK"
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							//nop
+						}
+					})
+				.create();
 			break;
 		default:
 			dialog = null;

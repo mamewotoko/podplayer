@@ -358,7 +358,7 @@ public class PodplayerActivity
 			String title = (String)selector_.getSelectedItem();
 			int selected = podcastTitle2Index(title);
 			//addAll: api level 11
-			Log.d(TAG, "  updateListView: selected " + selected);
+			//Log.d(TAG, "  updateListView: selected " + selected);
 
 			l = state_.loadedEpisode_.get(selected);
 			if(currentOrder_ == REVERSE_APPEARANCE_ORDER){

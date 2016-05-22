@@ -1,13 +1,15 @@
 package com.mamewo.podplayer0.tests;
 
 import java.util.List;
+import java.io.File;
 
-//import com.jayway.android.robotium.solo.Solo;
 import com.robotium.solo.Solo;
 import com.robotium.solo.Solo.Config;
-import com.robotium.solo.Solo.Config.ScreenshotFileType;
+//import com.robotium.solo.Solo.Config.ScreenshotFileType;
 import android.os.Environment;
-import java.io.File;
+import android.content.res.Resources;
+
+import com.squareup.spoon.Spoon;
 
 import com.mamewo.podplayer0.PodcastListPreference;
 import com.mamewo.podplayer0.PodplayerActivity;
@@ -35,8 +37,9 @@ import android.widget.ToggleButton;
 public class TestPodplayerActivity
 	extends ActivityInstrumentationTestCase2<PodplayerActivity>
 {
-	//protected SciroccoSolo solo_;
 	protected Solo solo_;
+	protected Resources res_;
+		
 	final static
 	private String TAG = "podtest";
 
@@ -48,7 +51,6 @@ public class TestPodplayerActivity
 		TextView view = null;
 		solo_.waitForActivity("PodplayerPrefrence", 3000);
 		do {
-			//ArrayList<TextView> list = solo_.getCurrentTextViews(null);
 			List<TextView> list = solo_.getCurrentViews(TextView.class, false);
 			for (TextView listText : list) {
 				if(targetTitle.equals(listText.getText())){
@@ -69,12 +71,12 @@ public class TestPodplayerActivity
 	public void setUp() throws Exception {
 		//solo_ = new SciroccoSolo(getInstrumentation(), getActivity(), "com.mamewo.podtest");
 		Config config = new Config();
-		config.screenshotFileType = ScreenshotFileType.PNG;
-		config.screenshotSavePath = new File(Environment.getExternalStorageDirectory(), "Robotium-Screenshots").getPath();
-		Log.d(TAG, "screenshotpath:"+config.screenshotSavePath.toString());
-		config.shouldScroll = false;
-
+		// config.screenshotFileType = ScreenshotFileType.PNG;
+		// config.screenshotSavePath = new File(Environment.getExternalStorageDirectory(), "Robotium-Screenshots").getPath();
+		// Log.d(TAG, "screenshotpath:"+config.screenshotSavePath.toString());
+		// config.shouldScroll = false;
 		solo_ = new Solo(getInstrumentation(), config, getActivity());
+		res_ = getInstrumentation().getTargetContext().getResources();
 	}
 
 	@Override
@@ -92,17 +94,17 @@ public class TestPodplayerActivity
 		super.tearDown();
 	}
 
+	///////////////////////
+	
 	public void testPlay() throws Exception {
-		Log.d(TAG, "testPlay starts");
 		solo_.sleep(5000);
 		View playButton = solo_.getView(R.id.play_button);
-		Log.d(TAG, "testPlay: click play button");
 		solo_.clickOnView(playButton);
 		solo_.sleep(10000);
 		assertTrue(((ToggleButton)playButton).isChecked());
 		solo_.clickOnView(playButton);
 		solo_.sleep(500);
-		solo_.takeScreenshot("testPlay");
+		Spoon.screenshot(solo_.getCurrentActivity(), "play");
 	}
 	
 	public void testPlayItem() throws Exception {
@@ -113,33 +115,37 @@ public class TestPodplayerActivity
 		assertTrue(((ToggleButton)playButton).isChecked());
 		solo_.clickOnView(playButton);
 		solo_.sleep(500);
-		solo_.takeScreenshot("testPlayItem");
+		//solo_.takeScreenshot("testPlayItem");
+		Spoon.screenshot(solo_.getCurrentActivity(), "play_item");
 	}
 
 	public void testFilter() {
 		solo_.sleep(500);
 		solo_.pressSpinnerItem(0, 2);
 		solo_.sleep(3000);
-		solo_.takeScreenshot("testFilter");
+		//solo_.takeScreenshot("testFilter");
+		Spoon.screenshot(solo_.getCurrentActivity(), "filter");
 	}
 
 	public void testFinish() {
 		solo_.sleep(500);
 		//TODO: use resource
-		solo_.clickOnMenuItem("Exit");
+		solo_.clickOnMenuItem(res_.getString(R.string.exit_menu));
 	}
 
 	public void testSelectPodcast() throws Exception {
 		solo_.sleep(1000);
-		solo_.clickOnMenuItem("Preference");
-		selectPreference("Podcast list");
+		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+		selectPreference("Podcastリスト");
 		solo_.waitForActivity(PodcastListPreference.class.getName(), 3000);
-		solo_.clickInList(1);
-		solo_.sleep(500);
+		//podcast list
+		//solo_.clickInList(1);
+		//solo_.sleep(500);
 		solo_.clickInList(3);
 		// solo_.clickInList(5);
 		// solo_.sleep(500);
-		solo_.takeScreenshot("testSelectPodcast");
+		//solo_.takeScreenshot("testSelectPodcast");
+		Spoon.screenshot(solo_.getCurrentActivity(), "select_podcast");
 	}
 
 	//TODO: long click
@@ -151,16 +157,18 @@ public class TestPodplayerActivity
 	public void testAddPodcast() throws Exception {
 		String url = "http://www.tfm.co.jp/podcasts/avanti/podcast.xml";
 		solo_.sleep(1000);
-		solo_.clickOnMenuItem("Preference");
-		selectPreference("Podcast list");
+		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
 		solo_.waitForActivity(PodcastListPreference.class.getName(), 3000);
+		//podcast list
+		solo_.clickInList(1);
 		solo_.enterText(0, url);
 		solo_.sleep(500);
 		View addButton = solo_.getView(R.id.add_podcast_button);
 		solo_.clickOnView(addButton);
 		//TOOD: add assert
 		solo_.sleep(5000);
-		solo_.takeScreenshot("testAddPodcast");
+		//solo_.takeScreenshot("testAddPodcast");
+		Spoon.screenshot(solo_.getCurrentActivity(), "add_podcast");
 	}
 
 	public void testAbortReload() {
@@ -172,13 +180,16 @@ public class TestPodplayerActivity
 		//TODO: this does not work...
 		solo_.scrollUpList(0);
 		solo_.sleep(10000);
-		solo_.takeScreenshot("testAbortReload");
+		//solo_.takeScreenshot("testAbortReload");
+		Spoon.screenshot(solo_.getCurrentActivity(), "abort_reload");
 	}
 
 	public void testGestureScoreUp() throws Exception {
 		solo_.sleep(500);
-		solo_.clickOnMenuItem("Preference");
-		selectPreference("Threshold of score");
+		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+		solo_.waitForActivity(PodcastListPreference.class.getName(), 3000);
+		
+		selectPreference(res_.getString(R.string.pref_threshold_of_gesture_score));
 		solo_.sleep(500);
 		EditText edit = solo_.getEditText(0);
 		String beforeString = edit.getText().toString();
@@ -191,13 +202,14 @@ public class TestPodplayerActivity
 		assertTrue(Math.abs(diff) < 0.0001);
 		solo_.clickOnButton("OK");
 		//TODO: check summary and pref value
-		solo_.takeScreenshot("testGestureScoreUp");
+		//solo_.takeScreenshot("testGestureScoreUp");
+		Spoon.screenshot(solo_.getCurrentActivity(), "gesture_score_up");
 	}
 
 	public void testGestureScoreDown() throws Exception {
 		solo_.sleep(500);
-		solo_.clickOnMenuItem("Preference");
-		selectPreference("Threshold of score");
+		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+		selectPreference(res_.getString(R.string.pref_threshold_of_gesture_score));
 		solo_.sleep(500);
 		EditText edit = solo_.getEditText(0);
 		String beforeString = edit.getText().toString();
@@ -208,44 +220,45 @@ public class TestPodplayerActivity
 		double diff = Double.valueOf(beforeString) - Double.valueOf(afterString) - 0.1;
 		Log.d(TAG, "befere after diff: " + beforeString + " " + afterString + " " + diff);
 		assertTrue("scoreminused", Math.abs(diff) < 0.0001);
-		solo_.clickOnButton("Cancel");
+		solo_.clickOnButton(res_.getString(android.R.string.cancel));
 		//TODO: check summary and pref value
-		solo_.takeScreenshot("testGestureScoreDown");
+		//solo_.takeScreenshot("testGestureScoreDown");
+		Spoon.screenshot(solo_.getCurrentActivity(), "gesture_score_down");
 	}
 
 	public void testGestureDialog() throws Exception {
 		solo_.sleep(500);
-		solo_.clickOnMenuItem("Preference");
-		selectPreference("Gesture list");
+		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+		selectPreference(res_.getString(R.string.pref_gesture_list));
 		solo_.sleep(1000);
-		solo_.takeScreenshot("testGestureDialog");
+		//solo_.takeScreenshot("testGestureDialog");
+		Spoon.screenshot(solo_.getCurrentActivity(), "gesture_dialog");
 		//TODO: check that gesture list dialog is displayed
 	}
 	
 	public void testLicence() {
-		solo_.clickOnMenuItem("Preference");
-		selectPreference("License");
+		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+		selectPreference(res_.getString(R.string.pref_license));
 		//TODO: screen shot
 		solo_.sleep(2000);
 		//click ok button
 		solo_.clickOnButton(0);
 		solo_.sleep(200);
-		solo_.takeScreenshot("testLicence");
+		Spoon.screenshot(solo_.getCurrentActivity(), "license");
 	}
 
 	public void testVersion() {
-		solo_.clickOnMenuItem("Preference");
+		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
 		solo_.sleep(500);
-		Assert.assertTrue(selectPreference("Version"));
+		Assert.assertTrue(selectPreference(res_.getString(R.string.pref_version)));
 		solo_.sleep(500);
 		View githubView = solo_.getView(R.id.github_logo);
 		solo_.clickOnView(githubView);
 		solo_.sleep(5000);
 		//browser starts
-		solo_.takeScreenshot("testVersion");
+		Spoon.screenshot(solo_.getCurrentActivity(), "version");
 	}
 
-	//-----------------------
 	public void testMain() throws Exception {
 		solo_.sleep(500);
 		View playButton = solo_.getView(R.id.play_button);
@@ -257,15 +270,16 @@ public class TestPodplayerActivity
 		solo_.clickOnView(playButton);
 		solo_.sleep(300);
 		assertFalse(((ToggleButton)playButton).isChecked());
-		solo_.takeScreenshot("testMain");
+		//solo_.takeScreenshot("testMain");
+		Spoon.screenshot(solo_.getCurrentActivity(), "main");
 	}
 	
 	public void testPreference() throws Exception {
 		solo_.sleep(500);
-		solo_.clickOnMenuItem("Preference");
+		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
 		solo_.sleep(1000);
 		solo_.scrollDown();
 		solo_.sleep(500);
-		solo_.takeScreenshot("testPreference");
+		Spoon.screenshot(solo_.getCurrentActivity(), "preference");
 	}
 }

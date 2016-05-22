@@ -1,13 +1,11 @@
 podplayer
-Copyright (c) 2012-2015 Takashi Masuyama. All rights reserved.
+Copyright (c) 2012-2016 Takashi Masuyama. All rights reserved.
 
 This application is built using open source software:
 
 * pulltorefresh
 https://github.com/johannilsson/android-pulltorefresh
 Copyright (c) 2011 Johan Nilsson
-
-modified by Takashi Masuyama
 
 ---------------------
 Apache License

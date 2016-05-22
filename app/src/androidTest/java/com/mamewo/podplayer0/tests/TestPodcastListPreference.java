@@ -32,12 +32,7 @@ public class TestPodcastListPreference
 
 	@Override
 	public void setUp() {
-		//solo_ = new SciroccoSolo(getInstrumentation(), getActivity(), "com.mamewo.podtest");
 		Config config = new Config();
-		config.screenshotFileType = ScreenshotFileType.PNG;
-		config.screenshotSavePath = new File(Environment.getExternalStorageDirectory(), "Robotium-Screenshots").getPath();
-		config.shouldScroll = false;
-
 		solo_ = new Solo(getInstrumentation(), config, getActivity());
 	}
 	

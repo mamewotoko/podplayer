@@ -113,7 +113,7 @@ TODO
 
 License
 ----------
-* podplayer: Copyright (c) 2012-2015 Takashi Masuyama. All rights reserved. 
+* podplayer: Copyright (c) 2012-2016 Takashi Masuyama. All rights reserved. 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 * podplayer uses the following software which is licensed under the 
