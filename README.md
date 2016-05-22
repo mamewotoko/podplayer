@@ -8,7 +8,7 @@ A podcast player android application.
 
 Screenshot
 ----------
-![main screen](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/mainscreen.png)    
+![main screen](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/mainscreen.png)
 ![preference](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/preference.png)
 
 Google Play
@@ -21,10 +21,11 @@ https://play.google.com/store/apps/details?id=com.mamewo.podplayer0
 How to build
 ------------
 1. Clone source
-```
-git clone https://github.com/mamewotoko/podplayer.git
-git submodule update --init
-```
+
+    ```
+    git clone https://github.com/mamewotoko/podplayer.git
+    git submodule update --init
+    ```
 
 ### Gradle
 1. Build
@@ -50,6 +51,7 @@ How to run UI test using Robotium
 ---------------------------------
 1. connect android device or start android emulator
 2. start testing
+
     ```
     ./gradlew spoon
     ```
@@ -68,6 +70,10 @@ TODO
 * add/mark listened item list
     * ? not listened / ! listened
     * remember listened timestamp
+* spoon test
+   * add logcat to report
+   * test multiple test classes once
+     * current: freeze?
 * save latest few item to savedInstanceState
 * filter not listened item only (preference)
 * use database to manage loaded episodes
@@ -121,12 +127,9 @@ Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/
 Copyright (c) 2011 [Johan Nilsson](http://markupartist.com) 
 https://github.com/johannilsson/android-pulltorefresh
 
-* podtest uses nbandroid-utils to save JUnit test result as XML
-http://code.google.com/p/nbandroid-utils/wiki/InstrumentationTestRunner
-
 Keywords
 ----------
-Android, MediaPlayer, Podcast, AsyncTask, PullToRefresh, Gesture, JUnit, Robotium
+Android, MediaPlayer, Podcast, AsyncTask, PullToRefresh, Gesture, Spoon, Robotium
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
