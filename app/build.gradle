@@ -29,6 +29,7 @@ android {
 spoon {
   //className = 'com.mamewo.podplayer0.tests.TestPodplayerExpActivity'
   className = 'com.mamewo.podplayer0.tests.TestPodplayerActivity'
+  codeCoverage = true
 }
 
 dependencies {
