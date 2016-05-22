@@ -213,6 +213,7 @@ public class PlayerService
 	}
 	
 	public boolean isPlaying() {
+		Log.d(TAG, "PlayerService.isPlaying: player_: "+player_);
 		return (! stopOnPrepared_) && (isPreparing_ || player_.isPlaying());
 	}
 
@@ -370,6 +371,7 @@ public class PlayerService
 	@Override
 	public void onCreate(){
 		super.onCreate();
+		Log.d(TAG, "PlayerService.onCreate is called");
 		currentPlaylist_ = null;
 		currentPlaying_ = null;
 		listener_ = null;

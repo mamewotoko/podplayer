@@ -15,12 +15,10 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
-//import asia.sonix.scirocco.SciroccoSolo;
 
 public class TestMainActivity
 	extends ActivityInstrumentationTestCase2<MainActivity>
 {
-	//private SciroccoSolo solo_;
 	private Solo solo_;
 	static final
 	private String TAG = "podtest";
@@ -43,7 +41,6 @@ public class TestMainActivity
 	@Override
 	public void tearDown() throws Exception {
 		try {
-//			solo_.takeScreenShot();
 			solo_.finalize();
 		}
 		catch(Throwable e) {

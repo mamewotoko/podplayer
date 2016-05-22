@@ -55,6 +55,7 @@ public class TestPodcastListPreference
 	}
 	
 	public void testAddFail() {
+		solo_.sleep(1000);
 		ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
 		PodcastInfo prevInfo = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
 		String url = "http://www.google.co.jp/";
@@ -68,6 +69,7 @@ public class TestPodcastListPreference
 	}
 
 	public void testAddSuccess() {
+		solo_.sleep(1000);
 		ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
 		String url = "http://www.tfm.co.jp/podcasts/avanti/podcast.xml";
 		int prevCount = adapter.getCount();
@@ -82,6 +84,7 @@ public class TestPodcastListPreference
 	}
 
 	public void testAddWithBOMSuccess() {
+		solo_.sleep(1000);
 		ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
 		String url = "http://www.fmtoyama.co.jp/contents/podcast/podcast_24.xml";
 		int prevCount = adapter.getCount();
@@ -96,6 +99,7 @@ public class TestPodcastListPreference
 	}
 	
 	public void testDelete3() {
+		solo_.sleep(1000);
 		ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
 		int count = adapter.getCount();
 		solo_.clickLongInList(3);
@@ -106,6 +110,7 @@ public class TestPodcastListPreference
 	}
 	
 	public void testUp() {
+		solo_.sleep(1000);
 		ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
 		PodcastInfo info = (PodcastInfo)adapter.getItem(1);
 		solo_.clickLongInList(2);
@@ -116,6 +121,7 @@ public class TestPodcastListPreference
 	}
 	
 	public void testDown() {
+		solo_.sleep(1000);
 		ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
 		PodcastInfo info = (PodcastInfo)adapter.getItem(0);
 		solo_.clickLongInList(1);

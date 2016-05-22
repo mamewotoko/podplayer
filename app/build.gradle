@@ -26,6 +26,11 @@ android {
   }
 }
 
+spoon {
+  //className = 'com.mamewo.podplayer0.tests.TestPodplayerExpActivity'
+  className = 'com.mamewo.podplayer0.tests.TestPodplayerActivity'
+}
+
 dependencies {
   compile project(":podcast_parser")
   compile project(":pulltorefresh")

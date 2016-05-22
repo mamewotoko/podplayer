@@ -225,7 +225,7 @@ public class PodplayerActivity
 
 		@Override
 		public Object getItem(int position){
-			Log.d(TAG, "getItem " + position + " " + currentList_.get(position).title_);
+			//Log.d(TAG, "getItem " + position + " " + currentList_.get(position).title_);
 			return currentList_.get(position);
 		}
 		
