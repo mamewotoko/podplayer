@@ -38,7 +38,6 @@
     <string name="expand">広げる</string>
     <string name="collapse">たたむ</string>
     <string name="add">追加</string>
-    <string name="notify_playing_podcast">Podcast再生中</string>
     <string name="error_malformed_url">不正なURL</string>
     <string name="dialog_checking_podcast_url">URLを検証中</string>
     <string name="dialog_checking_podcast_url_body">中止するには、Backボタンを押すか、ダイアログの外をタッチしてください。</string>

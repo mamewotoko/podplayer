@@ -39,7 +39,6 @@
     <string name="expand">expandera</string>
     <string name="collapse">kollaps</string>
     <string name="add">Lägg</string>
-    <string name="notify_playing_podcast">Spela podcast</string>
     <string name="error_malformed_url">Felaktigt webbadress</string>
     <string name="dialog_checking_podcast_url">kontroll webbadress</string>
     <string name="dialog_checking_podcast_url_body">O Avbryt, Please Touch utanför den här dialogrutan eller tryck bakåtknappen</string>
