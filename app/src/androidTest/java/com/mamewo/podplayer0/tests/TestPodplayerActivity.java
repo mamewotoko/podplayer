@@ -115,7 +115,6 @@ public class TestPodplayerActivity
 		assertTrue(((ToggleButton)playButton).isChecked());
 		solo_.clickOnView(playButton);
 		solo_.sleep(500);
-		//solo_.takeScreenshot("testPlayItem");
 		Spoon.screenshot(solo_.getCurrentActivity(), "play_item");
 	}
 
@@ -123,7 +122,6 @@ public class TestPodplayerActivity
 		solo_.sleep(500);
 		solo_.pressSpinnerItem(0, 2);
 		solo_.sleep(3000);
-		//solo_.takeScreenshot("testFilter");
 		Spoon.screenshot(solo_.getCurrentActivity(), "filter");
 	}
 
@@ -144,7 +142,6 @@ public class TestPodplayerActivity
 		solo_.clickInList(3);
 		// solo_.clickInList(5);
 		// solo_.sleep(500);
-		//solo_.takeScreenshot("testSelectPodcast");
 		Spoon.screenshot(solo_.getCurrentActivity(), "select_podcast");
 	}
 
@@ -167,7 +164,6 @@ public class TestPodplayerActivity
 		solo_.clickOnView(addButton);
 		//TOOD: add assert
 		solo_.sleep(5000);
-		//solo_.takeScreenshot("testAddPodcast");
 		Spoon.screenshot(solo_.getCurrentActivity(), "add_podcast");
 	}
 
@@ -180,7 +176,6 @@ public class TestPodplayerActivity
 		//TODO: this does not work...
 		solo_.scrollUpList(0);
 		solo_.sleep(10000);
-		//solo_.takeScreenshot("testAbortReload");
 		Spoon.screenshot(solo_.getCurrentActivity(), "abort_reload");
 	}
 
@@ -202,7 +197,6 @@ public class TestPodplayerActivity
 		assertTrue(Math.abs(diff) < 0.0001);
 		solo_.clickOnButton("OK");
 		//TODO: check summary and pref value
-		//solo_.takeScreenshot("testGestureScoreUp");
 		Spoon.screenshot(solo_.getCurrentActivity(), "gesture_score_up");
 	}
 
@@ -222,7 +216,6 @@ public class TestPodplayerActivity
 		assertTrue("scoreminused", Math.abs(diff) < 0.0001);
 		solo_.clickOnButton(res_.getString(android.R.string.cancel));
 		//TODO: check summary and pref value
-		//solo_.takeScreenshot("testGestureScoreDown");
 		Spoon.screenshot(solo_.getCurrentActivity(), "gesture_score_down");
 	}
 
@@ -231,7 +224,6 @@ public class TestPodplayerActivity
 		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
 		selectPreference(res_.getString(R.string.pref_gesture_list));
 		solo_.sleep(1000);
-		//solo_.takeScreenshot("testGestureDialog");
 		Spoon.screenshot(solo_.getCurrentActivity(), "gesture_dialog");
 		//TODO: check that gesture list dialog is displayed
 	}
@@ -270,7 +262,6 @@ public class TestPodplayerActivity
 		solo_.clickOnView(playButton);
 		solo_.sleep(300);
 		assertFalse(((ToggleButton)playButton).isChecked());
-		//solo_.takeScreenshot("testMain");
 		Spoon.screenshot(solo_.getCurrentActivity(), "main");
 	}
 	
