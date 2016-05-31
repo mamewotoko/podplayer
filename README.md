@@ -14,7 +14,7 @@ Screenshot
 Google Play
 ------------
  [![my play page](http://www.android.com/images/brand/get_it_on_play_logo_small.png)](http://play.google.com/store/search?q=pub:mamewo)  
-<img src="https://github.com/mamewotoko/podplayer/raw/pullupdate/res/drawable/qr.png" width="86" height="86>
+<img src="https://github.com/mamewotoko/podplayer/raw/pullupdate/res/drawable/qr.png" width="86" height="86">
   
 https://play.google.com/store/apps/details?id=com.mamewo.podplayer0
 
@@ -66,7 +66,9 @@ TODO
     * when prepare error occurs, cursor moves to next episode
         * stop playing
         * or mark error item and try playing next unerror item
-   * when only one episode is registered, list is in tap to refresh mode after loaded
+    * when only one episode is registered, list is in tap to refresh mode after loaded
+* fix lint warnings
+    * contentDescription of image view
 * add/mark listened item list
     * ? not listened / ! listened
     * remember listened timestamp
