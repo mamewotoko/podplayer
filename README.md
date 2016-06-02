@@ -49,13 +49,13 @@ A file bin/podplayer-debug.apk is created if succeed.
 
 How to run UI test using Robotium
 ---------------------------------
-1. connect android device or start android emulator
-2. start testing
+1. Connect android device or start android emulator
+2. Start testing
 
     ```
     ./gradlew spoon
     ```
-3. test report is created as ` app/build/spoon/debug/index.html `
+3. A test report is created as ` app/build/spoon/debug/index.html `
 
 TODO
 ----
@@ -75,7 +75,8 @@ TODO
 * spoon test
    * add logcat to report
    * test multiple test classes once
-     * current: freeze?
+     * current situation: freeze?
+* add preference to display pubdate as "X days before"
 * save latest few item to savedInstanceState
 * filter not listened item only (preference)
 * use database to manage loaded episodes
@@ -87,6 +88,7 @@ TODO
     * remove array adapter contents?
 * use large notification
     * change notification icon for Android4.0
+    * avoid flicker when button on notification pressed
 * write additional podcast url to sd card?
 * add confirm dialog to open web site
 * cache podcast icon
@@ -101,22 +103,17 @@ TODO
 * improve UI to add podcast URL
     * update main activity when setting is changed
 * reset playing position after podcast selection is changed
-* translate
-    <string name="pref_episode_limit">Limit of episodes for each podcast</string>
-    <string name="pref_episode_limit_title">Limit of episodes</string>
 * optimize initialization of podplayer
     * setContentView takes long time
 * Autoload: load when create activity or when podcast list setting is changed
 * play episode which is clicked while preparing other episode
 * sort episode by date
+  * parse pubdate
 * add episode search UI
 * add cool widget to play episode
 * add slider to show current playing position
 * add error handling
 * write user guide?
-* check apk size
-* add Wifi only mode
-    * acquire [wifi lock](http://developer.android.com/reference/android/net/wifi/WifiManager.WifiLock.html)
 * display playing icon in group of expandable list
 
 License
