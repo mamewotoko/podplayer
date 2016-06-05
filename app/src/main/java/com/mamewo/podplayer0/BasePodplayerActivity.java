@@ -38,10 +38,12 @@ import android.preference.PreferenceManager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
+import android.support.v7.app.AppCompatActivity;
 
 //common activity + gesture
 abstract public class BasePodplayerActivity
-    extends Activity
+//extends Activity
+    extends AppCompatActivity
     implements OnSharedPreferenceChangeListener,
     OnGesturePerformedListener
 {
