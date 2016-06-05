@@ -54,6 +54,7 @@ dependencies {
   compile project(":podcast_parser")
   compile project(":pulltorefresh")
   compile 'com.android.support:support-v4:20.0.0'
+  compile 'com.github.bumptech.glide:glide:3.7.0'
   
   androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.5.2'
   androidTestCompile 'com.squareup.spoon:spoon-client:1.1.0'

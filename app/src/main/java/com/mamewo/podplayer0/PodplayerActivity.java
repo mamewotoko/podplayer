@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.net.URL;
 
 import static com.mamewo.podplayer0.Const.*;
 
@@ -40,6 +41,8 @@ import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
 import com.mamewo.lib.podcast_parser.PodcastInfo;
 import com.markupartist.android.widget.PullToRefreshListView;
+
+import com.bumptech.glide.Glide;
 
 public class PodplayerActivity
 	extends BasePodplayerActivity
@@ -243,6 +246,7 @@ public class PodplayerActivity
 			else {
 				view = convertView;
 			}
+            //TODO: get image url
 			EpisodeInfo info = (EpisodeInfo)getItem(position);
 			TextView titleView = (TextView)view.findViewById(R.id.episode_title);
 			TextView timeView = (TextView)view.findViewById(R.id.episode_time);
@@ -264,8 +268,19 @@ public class PodplayerActivity
 			else {
 				stateIcon.setVisibility(View.GONE);
 			}
-			if(showPodcastIcon_ && null != state_.podcastList_.get(info.index_).icon_){
-				episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
+
+            URL iconURL = state_.podcastList_.get(info.index_).getIconURL();
+            Log.d(TAG, "iconURL: " + state_.podcastList_.get(info.index_).getTitle() + " " + iconURL);
+			if(showPodcastIcon_ && null != iconURL){
+				//episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
+                //TODO: load
+                Log.d(TAG, "load icon with glide: " + iconURL.toString());
+                Glide
+                    .with(PodplayerActivity.this)
+                    .load(iconURL)
+                    //.centerCrop()
+                    //.placeholder(R.drawable.loading_spinner)
+                    .into(episodeIcon);
 				episodeIcon.setVisibility(View.VISIBLE);
 			}
 			else {

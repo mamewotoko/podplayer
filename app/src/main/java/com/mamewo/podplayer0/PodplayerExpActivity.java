@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.net.URL;
 
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
@@ -42,6 +43,8 @@ import android.widget.ExpandableListAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import com.bumptech.glide.Glide;
 
 public class PodplayerExpActivity
 	extends BasePodplayerActivity
@@ -394,8 +397,14 @@ public class PodplayerExpActivity
 				stateIcon.setVisibility(View.GONE);
 			}
 
-			if(showPodcastIcon_ && null != state_.podcastList_.get(info.index_).icon_){
-				episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
+            //TODO: use string or uri
+            URL iconURL = state_.podcastList_.get(info.index_).getIconURL();
+			if(showPodcastIcon_ && null != iconURL){
+				//episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
+                Glide
+                    .with(PodplayerExpActivity.this)
+                    .load(state_.podcastList_.get(info.index_).iconURL_)
+                    .into(episodeIcon);
 				episodeIcon.setVisibility(View.VISIBLE);
 			}
 			else {
