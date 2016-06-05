@@ -121,12 +121,12 @@ Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/
 * podplayer uses the following software 
   * Copyright (c) 2011 [Johan Nilsson](http://markupartist.com)  
     https://github.com/johannilsson/android-pulltorefresh
-  * [Glide](https://github.com/bumptech/glide)
+  * [Glide](https://github.com/bumptech/glide)  
     https://github.com/bumptech/glide
 
 Keywords
 ----------
-Android, MediaPlayer, Podcast, AsyncTask, PullToRefresh, Gesture, Spoon, Robotium
+Android, MediaPlayer, Podcast, AsyncTask, PullToRefresh, Gesture, Spoon, Robotium, Glide
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
