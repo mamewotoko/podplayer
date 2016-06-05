@@ -7,6 +7,10 @@ This application is built using open source software:
 https://github.com/johannilsson/android-pulltorefresh
 Copyright (c) 2011 Johan Nilsson
 
+* glide
+https://github.com/bumptech/glide
+Author: Sam Judd
+
 ---------------------
 Apache License
 
