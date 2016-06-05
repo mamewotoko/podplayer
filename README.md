@@ -63,6 +63,9 @@ TODO
     * fix memory leak (bitmap problem)
         * check heap size and class histogram
         * put scaled image on memory
+        * use image cache library
+            * [Glide](https://github.com/bumptech/glide)
+            * [Picasso](http://square.github.io/picasso/)
     * when prepare error occurs, cursor moves to next episode
         * stop playing
         * or mark error item and try playing next unerror item
