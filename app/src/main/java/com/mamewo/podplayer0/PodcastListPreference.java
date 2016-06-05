@@ -303,8 +303,7 @@ public class PodcastListPreference
 				Log.d(TAG, "get URL: " + url);
 				InputStream is = null;
 				int numItems = 0;
-				//BitmapDrawable bitmap = null;
-                URL iconURL = null;
+                String iconURL = null;
 				String title = null;
 				try {
 					///XXX
@@ -321,14 +320,8 @@ public class PodcastListPreference
 							}
 							else if("itunes:image".equalsIgnoreCase(currentName)) {
                                 if(null != iconURL){
-                                    iconURL = new URL(parser.getAttributeValue(null, "href"));
+                                    iconURL = parser.getAttributeValue(null, "href");
                                 }
-
-								//TODO: avoid out of memory
-								// if (null == bitmap) {
-								// 	URL iconURL = new URL(parser.getAttributeValue(null, "href"));
-								// 	bitmap = BaseGetPodcastTask.downloadIcon(PodcastListPreference.this, iconURL, 60, -1);
-								// }
 							}
 							else {
 								inTitle = "title".equalsIgnoreCase(currentName);
@@ -445,7 +438,7 @@ public class PodcastListPreference
 			JSONObject jsonValue = (new JSONObject())
                 .accumulate("title", info.getTitle())
                 .accumulate("url", info.getURL().toString())
-                .accumulate("icon_url", info.getIconURLString())
+                .accumulate("icon_url", info.getIconURL())
                 .accumulate("enabled", info.getEnabled());
 			array.put(jsonValue);
 		}
@@ -509,14 +502,7 @@ public class PodcastListPreference
 			//TODO: check key existance
 			String title  = value.getString("title");
 			URL url = new URL(value.getString("url"));
-            String iconURLString = value.getString("icon_url");
-            URL iconURL;
-            if(null == iconURLString){
-                iconURL = null;
-            }
-            else {
-                iconURL = new URL(value.getString("icon_url"));
-            }
+            String iconURL = value.getString("icon_url");
 			boolean enabled = value.getBoolean("enabled");
 			PodcastInfo info = new PodcastInfo(title, url, iconURL, enabled);
 			list.add(info);

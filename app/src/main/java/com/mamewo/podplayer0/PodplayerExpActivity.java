@@ -398,7 +398,7 @@ public class PodplayerExpActivity
 			}
 
             //TODO: use string or uri
-            URL iconURL = state_.podcastList_.get(info.index_).getIconURL();
+            String iconURL = state_.podcastList_.get(info.index_).getIconURL();
 			if(showPodcastIcon_ && null != iconURL){
 				//episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
                 Glide

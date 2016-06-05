@@ -269,12 +269,12 @@ public class PodplayerActivity
 				stateIcon.setVisibility(View.GONE);
 			}
 
-            URL iconURL = state_.podcastList_.get(info.index_).getIconURL();
+            String iconURL = state_.podcastList_.get(info.index_).getIconURL();
             Log.d(TAG, "iconURL: " + state_.podcastList_.get(info.index_).getTitle() + " " + iconURL);
 			if(showPodcastIcon_ && null != iconURL){
 				//episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
                 //TODO: load
-                Log.d(TAG, "load icon with glide: " + iconURL.toString());
+                Log.d(TAG, "load icon with glide: " + iconURL);
                 Glide
                     .with(PodplayerActivity.this)
                     .load(iconURL)
