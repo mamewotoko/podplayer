@@ -34,9 +34,12 @@ import android.widget.Toast;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
+import android.support.v7.app.AppCompatActivity;
+
 //common activity + gesture
 abstract public class BasePodplayerActivity
-	extends Activity
+//extends Activity
+    extends AppCompatActivity
 	implements OnSharedPreferenceChangeListener,
 	OnGesturePerformedListener
 {

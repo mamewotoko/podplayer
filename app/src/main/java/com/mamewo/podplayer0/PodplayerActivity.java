@@ -43,6 +43,7 @@ import com.mamewo.lib.podcast_parser.PodcastInfo;
 import com.markupartist.android.widget.PullToRefreshListView;
 
 import com.bumptech.glide.Glide;
+import android.support.v7.widget.Toolbar;
 
 public class PodplayerActivity
 	extends BasePodplayerActivity
@@ -70,8 +71,15 @@ public class PodplayerActivity
 	public void onCreate(Bundle savedInstanceState) {
 		//TODO: fix lint warning
 		super.onCreate(savedInstanceState, this, PodplayerActivity.class);
+       
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.main);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        //getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.drawable.ic_status);
+        getSupportActionBar().setTitle(R.string.app_name);
+        
 		playButton_ = (ToggleButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
 		playButton_.setOnLongClickListener(this);
