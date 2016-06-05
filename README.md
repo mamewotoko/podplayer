@@ -42,9 +42,9 @@ A file bin/podplayer-debug.apk is created if succeed.
 1. Import this directory, whose name is podplayer.
 2. Import the libsrc/pulltorefresh/pulltorefresh directory, whose name is pulltorefresh
 3. Add project reference
-    1. right click podplayer project -> properties. 
-    2. select Project References. 
-    3. check pulltorefresh. 
+  1. right click podplayer project -> properties. 
+  2. select Project References. 
+  3. check pulltorefresh. 
 4. Run podplayer project as Android Application
 
 How to run UI test using Robotium
@@ -60,52 +60,48 @@ How to run UI test using Robotium
 TODO
 ----
 * fix bugs
-    * fix memory leak (bitmap problem)
-        * use image cache library
-            * [Glide](https://github.com/bumptech/glide)
-            * [Picasso](http://square.github.io/picasso/)
-    * when prepare error occurs, cursor moves to next episode
-        * stop playing
-        * or mark error item and try playing next unerror item
-    * when only one episode is registered, list is in tap to refresh mode after loaded
+  * when prepare error occurs, cursor moves to next episode
+    * stop playing
+      * or mark error item and try playing next unerror item
+  * when only one episode is registered, list is in tap to refresh mode after loaded
 * fix lint warnings
-    * contentDescription of image view
+  * contentDescription of image view
 * add/mark listened item list
-    * ? not listened / ! listened
-    * remember listened timestamp
+  * ? not listened / ! listened
+  * remember listened timestamp
 * spoon test
-   * add logcat to report
-   * test multiple test classes once
-     * current situation: freeze?
+  * add logcat to report
+  * test multiple test classes once
+    * current situation: freeze?
 * add preference to display pubdate as "X days before"
 * save latest few item to savedInstanceState
 * filter not listened item only (preference)
 * use database to manage loaded episodes
-    * display mark which is already played, new item etc...
-    * to reduce reload of podcast
-    * show description of playing episode
-    * save podcast list and updated time as state
+  * display mark which is already played, new item etc...
+  * to reduce reload of podcast
+  * show description of playing episode
+  * save podcast list and updated time as state
 * move state to service
-    * remove array adapter contents?
+  * remove array adapter contents?
 * use large notification
-    * change notification icon for Android4.0
-    * avoid flicker when button on notification pressed
+  * change notification icon for Android4.0
+  * avoid flicker when button on notification pressed
 * write additional podcast url to sd card?
 * add confirm dialog to open web site
 * cache podcast icon
-    * avoid loading podcast when UI is switched (by rotation)
+  * avoid loading podcast when UI is switched (by rotation)
 * http://developer.android.com/intl/ja/training/improving-layouts/smooth-scrolling.html#ViewHolder
 * add / update test
-    * MainActivityTest, PodcastActivity then testAbortReload blocks...
-    * preference
-    * notification
-    * gesture?
-    * landscape UI
+  * MainActivityTest, PodcastActivity then testAbortReload blocks...
+  * preference
+  * notification
+  * gesture?
+  * landscape UI
 * improve UI to add podcast URL
-    * update main activity when setting is changed
+  * update main activity when setting is changed
 * reset playing position after podcast selection is changed
 * optimize initialization of podplayer
-    * setContentView takes long time
+  * setContentView takes long time
 * Autoload: load when create activity or when podcast list setting is changed
 * play episode which is clicked while preparing other episode
 * sort episode by date
@@ -122,10 +118,11 @@ License
 * podplayer: Copyright (c) 2012-2016 Takashi Masuyama. All rights reserved. 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-* podplayer uses the following software which is licensed under the 
-[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) 
-Copyright (c) 2011 [Johan Nilsson](http://markupartist.com) 
-https://github.com/johannilsson/android-pulltorefresh
+* podplayer uses the following software 
+  * Copyright (c) 2011 [Johan Nilsson](http://markupartist.com)  
+    https://github.com/johannilsson/android-pulltorefresh
+  * [Glide](https://github.com/bumptech/glide)
+    https://github.com/bumptech/glide
 
 Keywords
 ----------
