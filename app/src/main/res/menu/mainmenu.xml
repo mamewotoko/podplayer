@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/pref_menu" android:icon="@android:drawable/ic_menu_preferences" android:title="@string/preference_menu"></item>
-    <item android:id="@+id/exit_menu" android:title="@string/exit_menu" android:icon="@android:drawable/ic_menu_close_clear_cancel"></item>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+<!--
+  <item android:id="@+id/action_play_pause"
+        android:icon="@drawable/ic_play_arrow_white_24dp"
+        android:title="@string/play"
+        app:showAsAction="ifRoom"
+        />
+        -->
+  <item android:id="@+id/pref_menu"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/preference_menu"
+        />
+  <item android:id="@+id/exit_menu"
+        android:title="@string/exit_menu"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        />
 </menu>

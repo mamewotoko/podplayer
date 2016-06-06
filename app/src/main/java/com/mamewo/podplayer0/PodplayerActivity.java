@@ -34,7 +34,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 import android.widget.SeekBar;
 
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
@@ -44,6 +43,8 @@ import com.markupartist.android.widget.PullToRefreshListView;
 
 import com.bumptech.glide.Glide;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.app.ActionBar;
+import android.widget.ImageButton;
 
 public class PodplayerActivity
 	extends BasePodplayerActivity
@@ -55,15 +56,15 @@ public class PodplayerActivity
 	OnItemSelectedListener,
 	PlayerService.PlayerStateListener,
 	PullToRefreshListView.OnRefreshListener,
-    PullToRefreshListView.OnCancelListener,
-	SeekBar.OnSeekBarChangeListener		   
+    PullToRefreshListView.OnCancelListener
+               //SeekBar.OnSeekBarChangeListener		   
 {
-	private ToggleButton playButton_;
+	private ImageButton playButton_;
 	private Spinner selector_;
 	private PullToRefreshListView episodeListView_;
 	//adapter_: filtered view
 	//state_.loadedEpisode_: all data
-	private SeekBar currentPlayPosition_;
+	//private SeekBar currentPlayPosition_;
 	private EpisodeAdapter adapter_;
 	private List<EpisodeInfo> currentList_;
 
@@ -77,10 +78,12 @@ public class PodplayerActivity
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.drawable.ic_status);
-        getSupportActionBar().setTitle(R.string.app_name);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setLogo(R.drawable.ic_status);
+        actionbar.setDisplayShowTitleEnabled(false);
+        //actionbar.setTitle(R.string.app_name);
         
-		playButton_ = (ToggleButton) findViewById(R.id.play_button);
+		playButton_ = (ImageButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
 		playButton_.setOnLongClickListener(this);
 		playButton_.setEnabled(false);
@@ -94,8 +97,8 @@ public class PodplayerActivity
 		currentList_ = state_.latestList_;
 		adapter_ = new EpisodeAdapter();
 		episodeListView_.setAdapter(adapter_);
-		currentPlayPosition_ = (SeekBar) findViewById(R.id.seekbar);
-		currentPlayPosition_.setOnSeekBarChangeListener(this);
+		//currentPlayPosition_ = (SeekBar) findViewById(R.id.seekbar);
+		//currentPlayPosition_.setOnSeekBarChangeListener(this);
 	}
 
 	private void updateUI() {
@@ -103,7 +106,8 @@ public class PodplayerActivity
 			return;
 		}
 		adapter_.notifyDataSetChanged();
-		playButton_.setChecked(player_.isPlaying());
+		//playButton_.setChecked(player_.isPlaying());
+        updatePlayButton();
 	}
 
 	private void loadPodcast() {
@@ -121,7 +125,16 @@ public class PodplayerActivity
 		GetPodcastTask task = new GetPodcastTask(limit, timeoutSec, getIcon);
 		startLoading(task);
 	}
-	
+
+    private void updatePlayButton(){
+        if(player_.isPlaying()){
+            playButton_.setImageResource(android.R.drawable.ic_media_pause);
+        }
+        else {
+            playButton_.setImageResource(android.R.drawable.ic_media_play);
+        }
+    }
+    
 	@Override
 	public void onClick(View v) {
 		//add option to load onStart
@@ -138,7 +151,8 @@ public class PodplayerActivity
 					player_.playMusic();
 				}
 			}
-			playButton_.setChecked(player_.isPlaying());
+            updatePlayButton();
+			//playButton_.setChecked(player_.isPlaying());
 		}
 	}
 
@@ -203,9 +217,9 @@ public class PodplayerActivity
 	@Override
 	public void onStartMusic(EpisodeInfo info) {
 		setProgressBarIndeterminateVisibility(false);
-		currentPlayPosition_.setMax(player_.getDuration());
+		//currentPlayPosition_.setMax(player_.getDuration());
 		int pos = player_.getCurrentPositionMsec();
-		currentPlayPosition_.setProgress(pos);
+		//currentPlayPosition_.setProgress(pos);
 		//timer
 		updateUI();
 	}
@@ -488,21 +502,21 @@ public class PodplayerActivity
 		adapter_.notifyDataSetChanged();
 	}
 
-	@Override
-	public void onProgressChanged(SeekBar bar, int progress, boolean fromUser){
-		if(!fromUser){
-			return;
-		}
-		player_.seekTo(progress);
-	}
+	// @Override
+	// public void onProgressChanged(SeekBar bar, int progress, boolean fromUser){
+	// 	if(!fromUser){
+	// 		return;
+	// 	}
+	// 	player_.seekTo(progress);
+	// }
 
-	@Override
-	public void onStartTrackingTouch(SeekBar bar){
-		//nop
-	}
+	// @Override
+	// public void onStartTrackingTouch(SeekBar bar){
+	// 	//nop
+	// }
 
-	@Override
-	public void onStopTrackingTouch(SeekBar bar){
-		//nop
-	}
+	// @Override
+	// public void onStopTrackingTouch(SeekBar bar){
+	// 	//nop
+	// }
 }

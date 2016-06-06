@@ -11,29 +11,29 @@
       android:background="?attr/colorPrimary"
       android:elevation="4dp"
       android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-      />
-  
+      >
+    <ImageButton
+        android:id="@+id/play_button"
+        android:src="@android:drawable/ic_media_play"
+        android:layout_height="fill_parent"
+        android:layout_width="30dp"
+        android:background="@null"
+        />
+    <Spinner
+        android:id="@+id/podcast_selector"
+        android:textColor="#FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+  </android.support.v7.widget.Toolbar>
+
+  <!--
   <SeekBar
       android:id="@+id/seekbar"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       />
-  <LinearLayout
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content">
-    
-    <ToggleButton
-        android:id="@+id/play_button"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:textOff="@string/play"
-        android:textOn="@string/pause" />
-    <Spinner
-        android:id="@+id/podcast_selector"
-        android:layout_width="0dip"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
-    </LinearLayout>
+      -->
+
     <android.gesture.GestureOverlayView
         android:id="@+id/gesture_view"
         android:layout_width="match_parent"
