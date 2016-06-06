@@ -42,9 +42,12 @@ import android.widget.ImageView;
 import android.widget.ExpandableListAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
-import android.widget.ToggleButton;
+import android.widget.ImageButton;
+//import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.app.ActionBar;
 
 public class PodplayerExpActivity
 	extends BasePodplayerActivity
@@ -55,10 +58,10 @@ public class PodplayerExpActivity
 	PlayerService.PlayerStateListener,
 	OnChildClickListener
 {
-	private ToggleButton playButton_;
+	private ImageButton playButton_;
 	private ImageView reloadButton_;
-	private Button expandButton_;
-	private Button collapseButton_;
+	private ImageButton expandButton_;
+	private ImageButton collapseButton_;
 	private ExpandableListView expandableList_;
 	private ExpAdapter adapter_;
 	//private int currentOrder_;
@@ -69,9 +72,16 @@ public class PodplayerExpActivity
 		super.onCreate(savedInstanceState, this, PodplayerExpActivity.class);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.expandable_main);
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setLogo(R.drawable.ic_status);
+        actionbar.setDisplayShowTitleEnabled(false);
+        
 		reloadButton_ = (ImageView) findViewById(R.id.reload_button);
 		reloadButton_.setOnClickListener(this);
-		playButton_ = (ToggleButton) findViewById(R.id.play_button);
+		playButton_ = (ImageButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
 		playButton_.setOnLongClickListener(this);
 		playButton_.setEnabled(false);
@@ -82,20 +92,31 @@ public class PodplayerExpActivity
 		expandableList_.setOnItemLongClickListener(this);
 		adapter_ = new ExpAdapter();
 		expandableList_.setAdapter(adapter_);
-		expandButton_ = (Button) findViewById(R.id.expand_button);
+		expandButton_ = (ImageButton) findViewById(R.id.expand_button);
 		expandButton_.setOnClickListener(this);
-		collapseButton_ = (Button) findViewById(R.id.collapse_button);
+		collapseButton_ = (ImageButton) findViewById(R.id.collapse_button);
 		collapseButton_.setOnClickListener(this);
 		//groupData_ = new ArrayList<Map<String, String>>();
 		//childData_ = new ArrayList<List<Map<String, Object>>>();
 	}
+    
+    private void updatePlayButton(){
+        if(player_.isPlaying()){
+            playButton_.setImageResource(android.R.drawable.ic_media_pause);
+        }
+        else {
+            playButton_.setImageResource(android.R.drawable.ic_media_play);
+        }
+    }
+
 
 	private void updateUI() {
 		if(null == player_) {
 			return;
 		}
 		adapter_.notifyDataSetChanged();
-		playButton_.setChecked(player_.isPlaying());
+		//playButton_.setChecked(player_.isPlaying());
+        updatePlayButton();
 	}
 
 	// public void onSharedPreferenceChanged(SharePreference pref, String key){
@@ -139,7 +160,8 @@ public class PodplayerExpActivity
 					player_.playMusic();
 				}
 			}
-			playButton_.setChecked(player_.isPlaying());
+			//playButton_.setChecked(player_.isPlaying());
+            updatePlayButton();
 		}
 		else if (view == reloadButton_) {
 			if (isLoading()) {

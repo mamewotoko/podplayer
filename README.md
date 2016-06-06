@@ -59,6 +59,8 @@ How to run UI test using Robotium
 
 TODO
 ----
+* action bar
+  * add space between button of expandable ui
 * fix bugs
   * when prepare error occurs, cursor moves to next episode
     * stop playing
