@@ -83,6 +83,8 @@ TODO
 * fast load
   * pulltorefresh is not updated in incremental way?
 * cache podcast icon to disk (glide)
+* action bar
+  * add space between button of expandable ui
 * fix bugs
   * when prepare error occurs, cursor moves to next episode
     * stop playing

@@ -42,10 +42,11 @@ import android.widget.ImageView;
 import android.widget.ExpandableListAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
-//import android.widget.ToggleButton;
 import android.widget.ImageButton;
 
 import com.bumptech.glide.Glide;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.app.ActionBar;
 
 public class PodplayerExpActivity
     extends BasePodplayerActivity
@@ -57,7 +58,11 @@ public class PodplayerExpActivity
     OnChildClickListener
 {
     private ImageButton playButton_;
+<<<<<<< master
     private ImageButton reloadButton_;
+=======
+	private ImageView reloadButton_;
+>>>>>>> HEAD~32
     private ImageButton expandButton_;
     private ImageButton collapseButton_;
     private ExpandableListView expandableList_;
@@ -70,7 +75,18 @@ public class PodplayerExpActivity
         super.onCreate(savedInstanceState, this, PodplayerExpActivity.class);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.expandable_main);
+<<<<<<< master
         reloadButton_ = (ImageButton) findViewById(R.id.reload_button);
+=======
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setLogo(R.drawable.ic_status);
+        actionbar.setDisplayShowTitleEnabled(false);
+        
+		reloadButton_ = (ImageView) findViewById(R.id.reload_button);
+>>>>>>> HEAD~32
         reloadButton_.setOnClickListener(this);
         playButton_ = (ImageButton) findViewById(R.id.play_button);
         playButton_.setOnClickListener(this);
@@ -91,11 +107,22 @@ public class PodplayerExpActivity
         //childData_ = new ArrayList<List<Map<String, Object>>>();
     }
 
+    private void updatePlayButton(){
+        if(player_.isPlaying()){
+            playButton_.setImageResource(android.R.drawable.ic_media_pause);
+        }
+        else {
+            playButton_.setImageResource(android.R.drawable.ic_media_play);
+        }
+    }
+
+
     private void updateUI() {
         if(null == player_) {
             return;
         }
         adapter_.notifyDataSetChanged();
+<<<<<<< master
         if(player_.isPlaying()){
             playButton_.setContentDescription(getResources().getString(R.string.pause));
             playButton_.setImageResource(R.drawable.ic_pause_white_48dp);
@@ -104,6 +131,10 @@ public class PodplayerExpActivity
             playButton_.setContentDescription(getResources().getString(R.string.play));
             playButton_.setImageResource(R.drawable.ic_play_arrow_white_48dp);
         }
+=======
+		//playButton_.setChecked(player_.isPlaying());
+        updatePlayButton();
+>>>>>>> HEAD~32
     }
 
     // public void onSharedPreferenceChanged(SharePreference pref, String key){
@@ -148,7 +179,11 @@ public class PodplayerExpActivity
                 }
             }
             //playButton_.setChecked(player_.isPlaying());
+<<<<<<< master
             updateUI();
+=======
+            updatePlayButton();
+>>>>>>> HEAD~32
         }
         else if (view == reloadButton_) {
             if (isLoading()) {
