@@ -249,8 +249,7 @@ public class TestPodplayerActivity
 		solo_.sendKey(Solo.MENU);
 		solo_.sleep(300);
 		solo_.clickOnView(playButton);
-		solo_.sleep(20000);
-		//assertFalse(((ToggleButton)playButton).isChecked());
+		solo_.sleep(1000);
 		Spoon.screenshot(solo_.getCurrentActivity(), "main");
 	}
 	
