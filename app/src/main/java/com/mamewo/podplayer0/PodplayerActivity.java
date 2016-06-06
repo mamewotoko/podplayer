@@ -35,8 +35,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.ImageButton;
-//import android.widget.ToggleButton;
 //import android.widget.SeekBar;
 
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
@@ -46,6 +44,8 @@ import com.markupartist.android.widget.PullToRefreshListView;
 
 import com.bumptech.glide.Glide;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.app.ActionBar;
+import android.widget.ImageButton;
 
 public class PodplayerActivity
     extends BasePodplayerActivity
@@ -79,8 +79,10 @@ public class PodplayerActivity
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.drawable.ic_status);
-        getSupportActionBar().setTitle(R.string.app_name);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setLogo(R.drawable.ic_status);
+        actionbar.setDisplayShowTitleEnabled(false);
+        //actionbar.setTitle(R.string.app_name);
         
 		playButton_ = (ImageButton) findViewById(R.id.play_button);
         playButton_.setOnClickListener(this);
@@ -98,7 +100,6 @@ public class PodplayerActivity
         episodeListView_.setAdapter(adapter_);
         //currentPlayPosition_ = (SeekBar) findViewById(R.id.seekbar);
         //currentPlayPosition_.setOnSeekBarChangeListener(this);
-
     }
 
     private void updateUI() {
@@ -107,6 +108,7 @@ public class PodplayerActivity
         }
         adapter_.notifyDataSetChanged();
         //playButton_.setChecked(player_.isPlaying());
+
         if(player_.isPlaying()){
             //playButton_.setImageResource(R.
             playButton_.setContentDescription(getResources().getString(R.string.pause));
@@ -150,7 +152,6 @@ public class PodplayerActivity
                     player_.playMusic();
                 }
             }
-            //playButton_.setChecked(player_.isPlaying());
             updateUI();
         }
     }
@@ -215,9 +216,9 @@ public class PodplayerActivity
     //UI is updated in following callback methods
     @Override
     public void onStartMusic(EpisodeInfo info) {
-        //setProgressBarIndeterminateVisibility(false);
-        //currentPlayPosition_.setMax(player_.getDuration());
-        //int pos = player_.getCurrentPositionMsec();
+		//setProgressBarIndeterminateVisibility(false);
+		//currentPlayPosition_.setMax(player_.getDuration());
+		//int pos = player_.getCurrentPositionMsec();
         //currentPlayPosition_.setProgress(pos);
         //timer
         updateUI();
