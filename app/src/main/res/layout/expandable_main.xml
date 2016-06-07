@@ -16,21 +16,27 @@
         android:id="@+id/play_button"
         android:src="@android:drawable/ic_media_play"
         android:layout_height="fill_parent"
-        android:layout_width="30dp"
+        android:layout_width="48dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"       
         android:background="@null"
         />
     <ImageButton
         android:id="@+id/expand_button"
-        android:src="@drawable/ic_expand_less_white_24dp"
+        android:src="@drawable/ic_expand_less_white_48dp"
         android:layout_height="fill_parent"
-        android:layout_width="30dp"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
         android:background="@null"
         />
     <ImageButton
         android:id="@+id/collapse_button"
-        android:src="@drawable/ic_expand_more_white_24dp"
+        android:src="@drawable/ic_expand_more_white_48dp"
         android:layout_height="fill_parent"
-        android:layout_width="30dp"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
         android:background="@null"
         />
     <ImageView
