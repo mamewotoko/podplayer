@@ -128,9 +128,11 @@ public class PodplayerActivity
 
     private void updatePlayButton(){
         if(player_.isPlaying()){
+            playButton_.setContentDescription(getResources().getString(R.string.action_pause));
             playButton_.setImageResource(android.R.drawable.ic_media_pause);
         }
         else {
+            playButton_.setContentDescription(getResources().getString(R.string.action_play));
             playButton_.setImageResource(android.R.drawable.ic_media_play);
         }
     }
