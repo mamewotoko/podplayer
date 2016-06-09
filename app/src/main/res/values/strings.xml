@@ -36,7 +36,6 @@
     <string name="google_play_and_github">Google Play &amp; Github</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
-
     <string name="expand">Expand</string>
     <string name="collapse">Collapse</string>
 
@@ -70,4 +69,13 @@
     <string name="pref_episode_nolimit_summary">No limit</string>
 
     <string name="pref_episode_order">Episode order</string>
+
+    <string name="action_play">Play</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_collapse">Collapse</string>
+    <string name="action_expand">Expand</string>
+    <string name="action_reload">Reload</string>
+    <string name="action_abort">Abort</string>
+
+    
 </resources>
