@@ -102,9 +102,11 @@ public class PodplayerExpActivity
     
     private void updatePlayButton(){
         if(player_.isPlaying()){
+            playButton_.setContentDescription(getResources().getString(R.string.action_pause));
             playButton_.setImageResource(android.R.drawable.ic_media_pause);
         }
         else {
+            playButton_.setContentDescription(getResources().getString(R.string.action_play));
             playButton_.setImageResource(android.R.drawable.ic_media_play);
         }
     }
@@ -134,6 +136,7 @@ public class PodplayerExpActivity
 			Log.d(TAG, "Already loading");
 			return;
 		}
+        reloadButton_.setContentDescription(getResources().getString(R.string.action_abort));
 		reloadButton_.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
 		setProgressBarIndeterminateVisibility(true);
 		updateUI();
@@ -464,6 +467,7 @@ public class PodplayerExpActivity
 			setProgressBarIndeterminateVisibility(false);
 			//TODO: merge playlist
 			updatePlaylist();
+            reloadButton_.setContentDescription(getResources().getString(R.string.action_reload));
 			reloadButton_.setImageResource(android.R.drawable.ic_popup_sync);
 		}
 		
