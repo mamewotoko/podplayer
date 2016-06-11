@@ -85,7 +85,6 @@ TODO
 * cache podcast icon to disk (glide)
 * action bar
   * add space between button of expandable ui
-* modify style of dropdown box of list pulltorefresh ui
 * fix bugs
   * when prepare error occurs, cursor moves to next episode
     * stop playing

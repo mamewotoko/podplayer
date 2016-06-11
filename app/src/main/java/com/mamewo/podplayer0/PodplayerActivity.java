@@ -78,11 +78,14 @@ public class PodplayerActivity
         setContentView(R.layout.main);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //getSupportActionBar().setDisplayShowHomeEnabled(true);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setLogo(R.drawable.ic_status);
         actionbar.setDisplayShowTitleEnabled(false);
-        //actionbar.setTitle(R.string.app_name);
+
+        //debug: check
+        // View v = findViewById(R.id.podcast_selector);
+        // Log.d(TAG, "spinner class: "+v.getClass().getName());
+        //end debug
         
 		playButton_ = (ImageButton) findViewById(R.id.play_button);
         playButton_.setOnClickListener(this);
@@ -107,17 +110,7 @@ public class PodplayerActivity
             return;
         }
         adapter_.notifyDataSetChanged();
-        //playButton_.setChecked(player_.isPlaying());
-
-        if(player_.isPlaying()){
-            //playButton_.setImageResource(R.
-            playButton_.setContentDescription(getResources().getString(R.string.pause));
-            playButton_.setImageResource(R.drawable.ic_pause_white_48dp);
-        }
-        else {
-            playButton_.setContentDescription(getResources().getString(R.string.play));
-            playButton_.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-        }
+        updatePlayButton();
     }
 
     private void loadPodcast() {
@@ -134,6 +127,17 @@ public class PodplayerActivity
         boolean getIcon = pref.getBoolean("show_podcast_icon", res.getBoolean(R.bool.default_show_podcast_icon));
         GetPodcastTask task = new GetPodcastTask(limit, timeoutSec, getIcon);
         startLoading(task);
+    }
+
+    private void updatePlayButton(){
+        if(player_.isPlaying()){
+            playButton_.setContentDescription(getResources().getString(R.string.action_pause));
+            playButton_.setImageResource(android.R.drawable.ic_media_pause);
+        }
+        else {
+            playButton_.setContentDescription(getResources().getString(R.string.action_play));
+            playButton_.setImageResource(android.R.drawable.ic_media_play);
+        }
     }
     
     @Override
@@ -152,7 +156,7 @@ public class PodplayerActivity
                     player_.playMusic();
                 }
             }
-            updateUI();
+            updatePlayButton();
         }
     }
 
@@ -293,12 +297,9 @@ public class PodplayerActivity
 
             String iconURL = state_.podcastList_.get(info.index_).getIconURL();
             if(showPodcastIcon_ && null != iconURL){
-                //Log.d(TAG, "load icon with glide: " + iconURL);
                 Glide
                     .with(PodplayerActivity.this)
                     .load(iconURL)
-                    //.centerCrop()
-                    //.placeholder(R.drawable.loading_spinner)
                     .into(episodeIcon);
                 episodeIcon.setVisibility(View.VISIBLE);
             }
@@ -490,8 +491,8 @@ public class PodplayerActivity
         }
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-        //TODO: load if selected item is changed
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		adapter.setDropDownViewResource(android.support.v7.appcompat.R.layout.support_simple_spinner_dropdown_item);
+
         selector_.setAdapter(adapter);
         Resources res = getResources();
         boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
