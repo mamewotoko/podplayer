@@ -116,6 +116,17 @@ public class TestPodplayerActivity
 		Spoon.screenshot(solo_.getCurrentActivity(), "play_item");
 	}
 
+    //cannot take screen shot of dropdown
+    // https://github.com/square/spoon/issues/4
+	// public void testOpenFilter() {
+	// 	solo_.sleep(2000);
+	// 	solo_.clickOnView(solo_.getView(R.id.podcast_selector));
+    //     Spoon.screenshot(solo_.getCurrentActivity(), "open_filter0");
+	// 	solo_.sleep(3000);
+    //     Spoon.screenshot(solo_.getCurrentActivity(), "open_filter");
+    //     //TODO: assert text of spinner item is drawn with white
+    // }
+    
 	public void testFilter() {
 		solo_.sleep(500);
 		solo_.pressSpinnerItem(0, 2);

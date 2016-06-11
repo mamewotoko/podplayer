@@ -77,11 +77,14 @@ public class PodplayerActivity
 		setContentView(R.layout.main);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //getSupportActionBar().setDisplayShowHomeEnabled(true);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setLogo(R.drawable.ic_status);
         actionbar.setDisplayShowTitleEnabled(false);
-        //actionbar.setTitle(R.string.app_name);
+
+        //debug: check
+        // View v = findViewById(R.id.podcast_selector);
+        // Log.d(TAG, "spinner class: "+v.getClass().getName());
+        //end debug
         
 		playButton_ = (ImageButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
@@ -106,7 +109,6 @@ public class PodplayerActivity
 			return;
 		}
 		adapter_.notifyDataSetChanged();
-		//playButton_.setChecked(player_.isPlaying());
         updatePlayButton();
 	}
 
@@ -154,7 +156,6 @@ public class PodplayerActivity
 				}
 			}
             updatePlayButton();
-			//playButton_.setChecked(player_.isPlaying());
 		}
 	}
 
@@ -294,16 +295,10 @@ public class PodplayerActivity
 			}
 
             String iconURL = state_.podcastList_.get(info.index_).getIconURL();
-            Log.d(TAG, "iconURL: " + state_.podcastList_.get(info.index_).getTitle() + " " + iconURL);
 			if(showPodcastIcon_ && null != iconURL){
-				//episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
-                //TODO: load
-                Log.d(TAG, "load icon with glide: " + iconURL);
                 Glide
                     .with(PodplayerActivity.this)
                     .load(iconURL)
-                    //.centerCrop()
-                    //.placeholder(R.drawable.loading_spinner)
                     .into(episodeIcon);
 				episodeIcon.setVisibility(View.VISIBLE);
 			}
@@ -479,10 +474,10 @@ public class PodplayerActivity
 				list.add(info.title_);
 			}
 		}
-		ArrayAdapter<String> adapter =
-				new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-		//TODO: load if selected item is changed
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> adapter =
+              		new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
+		adapter.setDropDownViewResource(android.support.v7.appcompat.R.layout.support_simple_spinner_dropdown_item);
+
 		selector_.setAdapter(adapter);
 		Resources res = getResources();
 		boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
