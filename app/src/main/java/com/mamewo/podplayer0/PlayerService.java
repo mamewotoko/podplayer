@@ -213,7 +213,11 @@ public class PlayerService
 	}
 	
 	public boolean isPlaying() {
+        //TODO: why null?
 		Log.d(TAG, "PlayerService.isPlaying: player_: "+player_);
+        if(null == player_){
+            return false;
+        }
 		return (! stopOnPrepared_) && (isPreparing_ || player_.isPlaying());
 	}
 

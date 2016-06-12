@@ -438,7 +438,7 @@ public class PodcastListPreference
 			JSONObject jsonValue = (new JSONObject())
                 .accumulate("title", info.getTitle())
                 .accumulate("url", info.getURL().toString())
-                .accumulate("icon_url", info.getIconURL())
+                //.accumulate("icon_url", info.getIconURL())
                 .accumulate("enabled", info.getEnabled());
 			array.put(jsonValue);
 		}
@@ -502,9 +502,9 @@ public class PodcastListPreference
 			//TODO: check key existance
 			String title  = value.getString("title");
 			URL url = new URL(value.getString("url"));
-            String iconURL = value.getString("icon_url");
+            //String iconURL = value.getString("icon_url");
 			boolean enabled = value.getBoolean("enabled");
-			PodcastInfo info = new PodcastInfo(title, url, iconURL, enabled);
+			PodcastInfo info = new PodcastInfo(title, url, null, enabled);
 			list.add(info);
 		}
 		return list;

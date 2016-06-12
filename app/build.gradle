@@ -45,7 +45,13 @@ android {
 
 spoon {
   //className = 'com.mamewo.podplayer0.tests.TestPodplayerExpActivity'
-  className = 'com.mamewo.podplayer0.tests.TestPodplayerActivity'
+  if(project.hasProperty('spoonClassName')){
+    className = project.spoonClassName
+  }
+  else {
+    className = 'com.mamewo.podplayer0.tests.TestPodplayerActivity'
+  }
+  // com.mamewo.podplayer0.tests.TestPodplayerExpActivity
   //from 1.5.0?
   //codeCoverage = true
 }
