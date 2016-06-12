@@ -57,6 +57,11 @@ How to run UI test using Robotium
     ./gradlew spoon
     ```
 3. A test report is created as ` app/build/spoon/debug/index.html `
+4. To select test class, pass spoonClassName gradle property with test class name
+
+   ```
+   ./gradlew -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity spoon
+   ```
 
 TODO
 ----

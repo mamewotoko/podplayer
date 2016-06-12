@@ -205,13 +205,10 @@ public class PodplayerExpActivity
     
     @Override
     public void onServiceConnected(ComponentName name, IBinder binder) {
+        Log.d(TAG, "onServiceConnected: exp");
         player_ = ((PlayerService.LocalBinder)binder).getService();
         player_.setOnStartMusicListener(this);
         playButton_.setEnabled(true);
-        // List<EpisodeInfo> playlist = player_.getCurrentPlaylist();
-        // if (null != playlist) {
-        //     state_.loadedEpisode_ = playlist;
-        // }
         SharedPreferences pref =
                 PreferenceManager.getDefaultSharedPreferences(this);
         syncPreference(pref, "ALL");
