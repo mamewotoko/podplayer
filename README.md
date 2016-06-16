@@ -91,6 +91,7 @@ TODO
 * action bar
   * add space between button of expandable ui
 * fix bugs
+  * checkbox of preference is gray based
   * when prepare error occurs, cursor moves to next episode
     * stop playing
       * or mark error item and try playing next unerror item

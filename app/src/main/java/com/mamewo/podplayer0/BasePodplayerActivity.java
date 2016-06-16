@@ -42,7 +42,6 @@ import android.support.v7.app.AppCompatActivity;
 
 //common activity + gesture
 abstract public class BasePodplayerActivity
-//extends Activity
     extends AppCompatActivity
     implements OnSharedPreferenceChangeListener,
     OnGesturePerformedListener
