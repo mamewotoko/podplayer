@@ -40,8 +40,10 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-    <activity android:name="PodplayerPreference" />
-    <activity android:name="PodcastListPreference" />
+    <activity android:name="PodplayerPreference"
+              />
+    <activity android:name="PodcastListPreference"
+              />
     <receiver android:name="PlayerService$Receiver"
               android:exported="false">
       <intent-filter>

@@ -28,8 +28,11 @@ import android.util.Log;
 import android.view.View;
 import android.os.Build;
 
+//import android.support.v7.preference.PreferenceFragmentCompat;
+
 public class PodplayerPreference
-	extends PreferenceActivity
+    extends PreferenceActivity
+//    extends PreferenceFragmentCompat
 	implements OnPreferenceClickListener,
 	View.OnClickListener,
 	OnSharedPreferenceChangeListener

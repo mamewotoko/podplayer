@@ -65,6 +65,7 @@ How to run UI test using Robotium
 TODO
 ----
 * fix bugs
+  * checkbox of preference is gray based
   * when prepare error occurs, cursor moves to next episode
     * stop playing
       * or mark error item and try playing next unerror item

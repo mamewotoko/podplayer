@@ -38,7 +38,6 @@ import android.support.v7.app.AppCompatActivity;
 
 //common activity + gesture
 abstract public class BasePodplayerActivity
-//extends Activity
     extends AppCompatActivity
 	implements OnSharedPreferenceChangeListener,
 	OnGesturePerformedListener
@@ -308,7 +307,7 @@ abstract public class BasePodplayerActivity
 		//predictions is sorted by score
 		Prediction p = predictions.get(0);
 		if(p.score < gestureScoreThreshold_) {
-			showMessage(String.format("gesture with low score: %.2f", p.score));
+			//showMessage(String.format("gesture with low score: %.2f", p.score));
 			return;
 		}
 		if("next".equals(p.name)) {

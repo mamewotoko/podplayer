@@ -60,8 +60,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 
+import android.support.v7.app.AppCompatActivity;
+
 public class PodcastListPreference
-	extends Activity
+	extends AppCompatActivity
 	implements OnClickListener,
 	OnItemClickListener,
 	OnItemLongClickListener,
