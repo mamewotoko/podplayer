@@ -54,15 +54,15 @@ public class PodplayerActivity
 	OnItemSelectedListener,
 	PlayerService.PlayerStateListener,
 	PullToRefreshListView.OnRefreshListener,
-    PullToRefreshListView.OnCancelListener,
-	SeekBar.OnSeekBarChangeListener		   
+    PullToRefreshListView.OnCancelListener
+               //SeekBar.OnSeekBarChangeListener		   
 {
 	private ToggleButton playButton_;
 	private Spinner selector_;
 	private PullToRefreshListView episodeListView_;
 	//adapter_: filtered view
 	//state_.loadedEpisode_: all data
-	private SeekBar currentPlayPosition_;
+	//private SeekBar currentPlayPosition_;
 	private EpisodeAdapter adapter_;
 	private List<EpisodeInfo> currentList_;
 
@@ -86,8 +86,8 @@ public class PodplayerActivity
 		currentList_ = state_.latestList_;
 		adapter_ = new EpisodeAdapter();
 		episodeListView_.setAdapter(adapter_);
-		currentPlayPosition_ = (SeekBar) findViewById(R.id.seekbar);
-		currentPlayPosition_.setOnSeekBarChangeListener(this);
+		//currentPlayPosition_ = (SeekBar) findViewById(R.id.seekbar);
+		//currentPlayPosition_.setOnSeekBarChangeListener(this);
 	}
 
 	private void updateUI() {
@@ -194,10 +194,10 @@ public class PodplayerActivity
 	//UI is updated in following callback methods
 	@Override
 	public void onStartMusic(EpisodeInfo info) {
-		setProgressBarIndeterminateVisibility(false);
-		currentPlayPosition_.setMax(player_.getDuration());
-		int pos = player_.getCurrentPositionMsec();
-		currentPlayPosition_.setProgress(pos);
+		//setProgressBarIndeterminateVisibility(false);
+		//currentPlayPosition_.setMax(player_.getDuration());
+		//int pos = player_.getCurrentPositionMsec();
+		//currentPlayPosition_.setProgress(pos);
 		//timer
 		updateUI();
 	}
@@ -480,21 +480,21 @@ public class PodplayerActivity
 		adapter_.notifyDataSetChanged();
 	}
 
-	@Override
-	public void onProgressChanged(SeekBar bar, int progress, boolean fromUser){
-		if(!fromUser){
-			return;
-		}
-		player_.seekTo(progress);
-	}
+	// @Override
+	// public void onProgressChanged(SeekBar bar, int progress, boolean fromUser){
+	// 	if(!fromUser){
+	// 		return;
+	// 	}
+	// 	player_.seekTo(progress);
+	// }
 
-	@Override
-	public void onStartTrackingTouch(SeekBar bar){
-		//nop
-	}
+	// @Override
+	// public void onStartTrackingTouch(SeekBar bar){
+	// 	//nop
+	// }
 
-	@Override
-	public void onStopTrackingTouch(SeekBar bar){
-		//nop
-	}
+	// @Override
+	// public void onStopTrackingTouch(SeekBar bar){
+	// 	//nop
+	// }
 }
