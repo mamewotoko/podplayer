@@ -5,7 +5,6 @@ import java.io.File;
 
 import com.robotium.solo.Solo;
 import com.robotium.solo.Solo.Config;
-//import com.robotium.solo.Solo.Config.ScreenshotFileType;
 import android.os.Environment;
 import android.content.res.Resources;
 
@@ -21,18 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-//import android.widget.ToggleButton;
 
-/**
- * This is a simple framework for a test of an Application.  See
- * {@link android.test.ApplicationTestCase ApplicationTestCase} for more information on
- * how to write and extend Application tests.
- * <p/>
- * To run this test, you can type:
- * adb shell am instrument -w \
- * -e class com.mamewo.podplayer0.PodplayerActivityTest \
- * com.mamewo.podplayer0.tests/android.test.InstrumentationTestRunner
- */
 public class TestPodplayerActivity
 	extends ActivityInstrumentationTestCase2<PodplayerActivity>
 {

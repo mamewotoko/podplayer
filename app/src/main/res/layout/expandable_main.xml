@@ -8,32 +8,39 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
 
-        <ToggleButton
-            android:id="@+id/play_button"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:textOff="@string/play"
-            android:textOn="@string/pause" />
+      <ImageButton
+          android:id="@+id/play_button"
+          android:layout_width="wrap_content"
+          android:layout_height="fill_parent"
+          android:background="@null"
+          android:src="@drawable/ic_play_arrow_white_48dp"
+          android:contentDescription="@string/play"
+          />
 
-        <Button
+        <ImageButton
             android:id="@+id/expand_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/expand" />
+            android:background="@null"
+            android:src="@drawable/ic_expand_more_white_48dp"
+            android:contentDescription="@string/expand"
+            />
 
-        <Button
+        <ImageButton
             android:id="@+id/collapse_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/collapse" />
+            android:background="@null"
+            android:src="@drawable/ic_expand_less_white_48dp"
+            android:contentDescription="@string/collapse"
+            />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/reload_button"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:src="@android:drawable/ic_popup_sync" />
+            android:background="@null"
+            android:src="@drawable/ic_sync_white_48dp" />
     </LinearLayout>
 
     <android.gesture.GestureOverlayView
