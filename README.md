@@ -60,9 +60,7 @@ How to run UI test using Robotium
 TODO
 ----
 * improve UI with material icon
-  * use icon for play/stop button
-  * use icon for collapse/expand button
-  * use reload icon
+  * change loading icon of pulltorefresh
 * fix bugs
   * when prepare error occurs, cursor moves to next episode
     * stop playing
