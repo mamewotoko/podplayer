@@ -59,6 +59,9 @@ How to run UI test using Robotium
 
 TODO
 ----
+* improve UI
+  * use icon for play/stop button
+  * use icon for collapse/expand button
 * fix bugs
   * when prepare error occurs, cursor moves to next episode
     * stop playing
@@ -72,7 +75,7 @@ TODO
 * spoon test
   * add logcat to report
   * test multiple test classes once
-    * current situation: freeze?
+    * current situation: freeze? 
 * add preference to display pubdate as "X days before"
 * save latest few item to savedInstanceState
 * filter not listened item only (preference)
