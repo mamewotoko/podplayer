@@ -59,14 +59,20 @@ How to run UI test using Robotium
 
 TODO
 ----
-* improve UI
+* improve UI with material icon
   * use icon for play/stop button
   * use icon for collapse/expand button
+  * use reload icon
 * fix bugs
   * when prepare error occurs, cursor moves to next episode
     * stop playing
       * or mark error item and try playing next unerror item
   * when only one episode is registered, list is in tap to refresh mode after loaded
+* use database to manage loaded episodes
+  * display mark which is already played, new item etc...
+  * to reduce reload of podcast
+  * show description of playing episode
+  * save podcast list and updated time as state
 * fix lint warnings
   * contentDescription of image view
 * add/mark listened item list
@@ -79,11 +85,6 @@ TODO
 * add preference to display pubdate as "X days before"
 * save latest few item to savedInstanceState
 * filter not listened item only (preference)
-* use database to manage loaded episodes
-  * display mark which is already played, new item etc...
-  * to reduce reload of podcast
-  * show description of playing episode
-  * save podcast list and updated time as state
 * move state to service
   * remove array adapter contents?
 * use large notification

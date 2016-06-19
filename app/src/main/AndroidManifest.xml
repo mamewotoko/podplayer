@@ -21,6 +21,7 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
+
     <activity
         android:name="PodplayerExpActivity"
         android:label="podplayer_exp"
@@ -29,7 +30,7 @@
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
-    </activity>
+      </activity>
     <activity
         android:name="PodplayerActivity"
         android:label="podplayer_list"

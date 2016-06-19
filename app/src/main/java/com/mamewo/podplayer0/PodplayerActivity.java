@@ -34,8 +34,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.ToggleButton;
-import android.widget.SeekBar;
+import android.widget.ImageButton;
+//import android.widget.ToggleButton;
+//import android.widget.SeekBar;
 
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
@@ -57,7 +58,7 @@ public class PodplayerActivity
     PullToRefreshListView.OnCancelListener
                //SeekBar.OnSeekBarChangeListener		   
 {
-	private ToggleButton playButton_;
+	private ImageButton playButton_;
 	private Spinner selector_;
 	private PullToRefreshListView episodeListView_;
 	//adapter_: filtered view
@@ -72,7 +73,7 @@ public class PodplayerActivity
 		super.onCreate(savedInstanceState, this, PodplayerActivity.class);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.main);
-		playButton_ = (ToggleButton) findViewById(R.id.play_button);
+		playButton_ = (ImageButton) findViewById(R.id.play_button);
 		playButton_.setOnClickListener(this);
 		playButton_.setOnLongClickListener(this);
 		playButton_.setEnabled(false);
@@ -95,7 +96,16 @@ public class PodplayerActivity
 			return;
 		}
 		adapter_.notifyDataSetChanged();
-		playButton_.setChecked(player_.isPlaying());
+		//playButton_.setChecked(player_.isPlaying());
+        if(player_.isPlaying()){
+            //playButton_.setImageResource(R.
+            playButton_.setContentDescription(getResources().getString(R.string.pause));
+            playButton_.setImageResource(R.drawable.ic_pause_white_48dp);
+        }
+        else {
+            playButton_.setContentDescription(getResources().getString(R.string.play));
+            playButton_.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+        }
 	}
 
 	private void loadPodcast() {
@@ -130,7 +140,8 @@ public class PodplayerActivity
 					player_.playMusic();
 				}
 			}
-			playButton_.setChecked(player_.isPlaying());
+			//playButton_.setChecked(player_.isPlaying());
+            updateUI();
 		}
 	}
 
