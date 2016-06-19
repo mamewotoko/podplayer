@@ -97,6 +97,7 @@ TODO
   * notification
   * gesture?
   * landscape UI
+* gesture score histogram?
 * improve UI to add podcast URL
   * update main activity when setting is changed
 * reset playing position after podcast selection is changed
