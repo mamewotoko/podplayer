@@ -61,6 +61,10 @@ TODO
 ----
 * improve UI with material icon
   * change loading icon of pulltorefresh
+* modify icon
+  * use opaque color
+* sort by pubdate
+* fast load
 * fix bugs
   * when prepare error occurs, cursor moves to next episode
     * stop playing
