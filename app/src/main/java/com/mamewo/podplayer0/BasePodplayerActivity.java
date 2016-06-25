@@ -34,6 +34,10 @@ import android.widget.Toast;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.GlideBuilder;
+import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
+
 //common activity + gesture
 abstract public class BasePodplayerActivity
 	extends Activity
@@ -56,10 +60,11 @@ abstract public class BasePodplayerActivity
 	// 10 Mbyteq
 	static final
 	private long HTTP_CACHE_SIZE = 10 * 1024 * 1024;
+    static final
+    public int ICON_DISK_CACHE_BYTES = 128*1024*1024;
 	private File httpCacheDir_;
 	protected int currentOrder_;
 
-	//private int podcastIconSize_;
 	abstract protected void onPodcastListChanged(boolean start);
 	abstract protected void notifyOrderChanged(int order);
 
@@ -90,7 +95,15 @@ abstract public class BasePodplayerActivity
 		currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
 		httpCacheDir_ = null;
 		cacheObject_ = null;
-		//podcastIconSize_ = (int)(getResources().getDisplayMetrics().density * 54);
+
+
+        ExternalCacheDiskCacheFactory factory = new ExternalCacheDiskCacheFactory(this, "podcast_icon", ICON_DISK_CACHE_BYTES);
+        if(!Glide.isSetup() && factory != null){
+            GlideBuilder builder = new GlideBuilder(this).setDiskCache(factory);
+            //obsolete API....
+            Glide.setup(builder);
+        }
+
 	}
 
 	private Object enableHttpResponseCache(File cacheDir) {

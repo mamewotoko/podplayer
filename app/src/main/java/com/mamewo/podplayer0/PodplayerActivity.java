@@ -89,6 +89,7 @@ public class PodplayerActivity
 		episodeListView_.setAdapter(adapter_);
 		//currentPlayPosition_ = (SeekBar) findViewById(R.id.seekbar);
 		//currentPlayPosition_.setOnSeekBarChangeListener(this);
+
 	}
 
 	private void updateUI() {
@@ -281,10 +282,7 @@ public class PodplayerActivity
 			}
 
             String iconURL = state_.podcastList_.get(info.index_).getIconURL();
-            Log.d(TAG, "iconURL: " + state_.podcastList_.get(info.index_).getTitle() + " " + iconURL);
 			if(showPodcastIcon_ && null != iconURL){
-				//episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
-                //TODO: load
                 Log.d(TAG, "load icon with glide: " + iconURL);
                 Glide
                     .with(PodplayerActivity.this)

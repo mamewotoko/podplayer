@@ -65,6 +65,8 @@ TODO
   * use opaque color
 * sort by pubdate
 * fast load
+  * pulltorefresh is not updated in incremental way?
+* cache podcast icon to disk (glide)
 * fix bugs
   * when prepare error occurs, cursor moves to next episode
     * stop playing
@@ -94,8 +96,6 @@ TODO
   * avoid flicker when button on notification pressed
 * write additional podcast url to sd card?
 * add confirm dialog to open web site
-* cache podcast icon
-  * avoid loading podcast when UI is switched (by rotation)
 * http://developer.android.com/intl/ja/training/improving-layouts/smooth-scrolling.html#ViewHolder
 * add / update test
   * MainActivityTest, PodcastActivity then testAbortReload blocks...
