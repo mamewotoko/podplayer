@@ -502,7 +502,10 @@ public class PodcastListPreference
 			//TODO: check key existance
 			String title  = value.getString("title");
 			URL url = new URL(value.getString("url"));
-            String iconURL = value.getString("icon_url");
+            String iconURL = null;
+            if(value.has("icon_url")){
+                iconURL = value.getString("icon_url");
+            }
 			boolean enabled = value.getBoolean("enabled");
 			PodcastInfo info = new PodcastInfo(title, url, iconURL, enabled);
 			list.add(info);
