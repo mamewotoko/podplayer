@@ -96,7 +96,6 @@ public class PodplayerExpActivity
 			return;
 		}
 		adapter_.notifyDataSetChanged();
-		//playButton_.setChecked(player_.isPlaying());
         if(player_.isPlaying()){
             playButton_.setContentDescription(getResources().getString(R.string.pause));
             playButton_.setImageResource(R.drawable.ic_pause_white_48dp);
@@ -533,6 +532,7 @@ public class PodplayerExpActivity
 
 	@Override
 	public void notifyOrderChanged(int order){
+        updatePlaylist();
 		adapter_.notifyDataSetChanged();
 	}
 }

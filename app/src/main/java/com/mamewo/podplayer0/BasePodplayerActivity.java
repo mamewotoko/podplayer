@@ -2,6 +2,7 @@ package com.mamewo.podplayer0;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.io.File;
 
@@ -96,14 +97,12 @@ abstract public class BasePodplayerActivity
 		httpCacheDir_ = null;
 		cacheObject_ = null;
 
-
         ExternalCacheDiskCacheFactory factory = new ExternalCacheDiskCacheFactory(this, "podcast_icon", ICON_DISK_CACHE_BYTES);
         if(!Glide.isSetup() && factory != null){
             GlideBuilder builder = new GlideBuilder(this).setDiskCache(factory);
             //obsolete API....
             Glide.setup(builder);
         }
-
 	}
 
 	private Object enableHttpResponseCache(File cacheDir) {
@@ -173,8 +172,8 @@ abstract public class BasePodplayerActivity
 	// }
 
 	public void updatePlaylist() {
-		boolean reversed = currentOrder_ == REVERSE_APPEARANCE_ORDER;
-		player_.setPlaylist(state_.list(reversed));
+		//boolean reversed = currentOrder_ == REVERSE_APPEARANCE_ORDER;
+		player_.setPlaylist(state_.list(currentOrder_));
 	}
 
 	public boolean isLoading() {
@@ -358,10 +357,20 @@ abstract public class BasePodplayerActivity
 			latestList_ = new ArrayList<EpisodeInfo>();
 		}
 
-		public List<EpisodeInfo> list(boolean reversed){
+        static
+        public void sortEpisodeByDate(List<EpisodeInfo> lst, boolean latestFirst){
+            //dummy
+            Collections.sort(lst, new EpisodeInfo.PubdateComparator());
+            if(latestFirst){
+                Collections.reverse(lst);
+            }
+        }
+        
+		public List<EpisodeInfo> list(int orderSetting){
+            Log.d(TAG, "list: "+orderSetting);
 			List l = new ArrayList<EpisodeInfo>();
 			for(List<EpisodeInfo> loaded: loadedEpisode_){
-				if(reversed){
+				if(REVERSE_APPEARANCE_ORDER == orderSetting){
 					for(int i = 0; i < loaded.size(); i++){
 						l.add(loaded.get(loaded.size()-1-i));
 					}
@@ -370,6 +379,11 @@ abstract public class BasePodplayerActivity
 					l.addAll(loaded);
 				}
 			}
+            //l: filitered
+            //TODO:check config
+            if(PUBDATE_ORDER == orderSetting || REVERSE_PUBDATE_ORDER == orderSetting){
+                sortEpisodeByDate(l, REVERSE_PUBDATE_ORDER == orderSetting);
+            }
 			latestList_.clear();
 			latestList_.addAll(l);
 			return l;

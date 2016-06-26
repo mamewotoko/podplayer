@@ -2,6 +2,7 @@ package com.mamewo.podplayer0;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.net.URL;
@@ -328,8 +329,12 @@ public class PodplayerActivity
 			episodeListView_.onRefreshComplete();
 			episodeListView_.hideHeader();
 			loadTask_ = null;
+
+            //dummy
+            sortEpisodeByDate(true);
 			//TODO: Sync playlist
 			updatePlaylist();
+            updateUI();
 		}
 		
 		@Override
@@ -371,7 +376,16 @@ public class PodplayerActivity
 		startActivity(i);
 		return true;
 	}
-	
+
+    public void sortEpisodeByDate(boolean latestFirst){
+        //dummy
+        Log.d(TAG, "sort by pubdate");
+        Collections.sort(currentList_, new EpisodeInfo.PubdateComparator());
+        if(latestFirst){
+            Collections.reverse(currentList_);
+        }
+    }
+    
 	private void updateListView(){
 		List<EpisodeInfo> l;
 		if(selector_.getSelectedItemPosition() == 0){
@@ -395,6 +409,7 @@ public class PodplayerActivity
 			}
 		}
 		currentList_ = l;
+
 		if (! isLoading()) {
 			episodeListView_.hideHeader();
 		}
@@ -486,6 +501,7 @@ public class PodplayerActivity
 
 	@Override
 	public void notifyOrderChanged(int order){
+        updatePlaylist();
 		adapter_.notifyDataSetChanged();
 	}
 

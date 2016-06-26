@@ -48,10 +48,14 @@
     <string-array name="episode_item_order_entries">
       <item>Order of appearance</item>
       <item>Reversed order of appearance</item>
+      <item>Order of pubDate(oldest first)</item>
+      <item>Reversed order of pubDate(lastest first)</item>
     </string-array>
 
     <string-array name="episode_item_order_entries_value" translatable="false">
       <item>0</item>
       <item>1</item>
+      <item>2</item>
+      <item>3</item>
     </string-array>
 </resources>

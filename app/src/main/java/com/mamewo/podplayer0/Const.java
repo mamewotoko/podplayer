@@ -10,4 +10,8 @@ public class Const {
 	public int APPEARANCE_ORDER = 0;
 	static final
 	public int REVERSE_APPEARANCE_ORDER = 1;
+	static final
+	public int PUBDATE_ORDER = 2;
+	static final
+	public int REVERSE_PUBDATE_ORDER = 3;
 }
