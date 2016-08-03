@@ -255,9 +255,13 @@ public class TestPodplayerActivity
 	public void testPreference() throws Exception {
 		solo_.sleep(500);
 		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
-		solo_.sleep(1000);
+		solo_.sleep(500);
+		Spoon.screenshot(solo_.getCurrentActivity(), "preference0");
 		solo_.scrollDown();
 		solo_.sleep(500);
-		Spoon.screenshot(solo_.getCurrentActivity(), "preference");
+		Spoon.screenshot(solo_.getCurrentActivity(), "preference1");
+		solo_.scrollDown();
+		solo_.sleep(500);
+		Spoon.screenshot(solo_.getCurrentActivity(), "preference2");
 	}
 }

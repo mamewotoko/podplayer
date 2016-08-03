@@ -59,11 +59,14 @@ How to run UI test using Robotium
 
 TODO
 ----
+* support http auth for fetching podcast xml and episodes
+  * cache auth info for each host?
+* add test
+  * sort by pubdate
 * improve UI with material icon
   * change loading icon of pulltorefresh
 * modify icon
   * use opaque color
-* sort by pubdate
 * fast load
   * pulltorefresh is not updated in incremental way?
 * cache podcast icon to disk (glide)
