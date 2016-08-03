@@ -9,7 +9,7 @@
 
 ### Actual outcome 
 
-### How to repoduce (step-by-step)
+### How to reproduce (step-by-step)
 <!--
 Example: 
 1. start app
