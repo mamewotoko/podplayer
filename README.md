@@ -59,8 +59,13 @@ How to run UI test using Robotium
 
 TODO
 ----
-* support http auth for fetching podcast xml and episodes
+* fix #1
+  * content corrupted?
+  * debug: using TeeInputStream of Commons IO
+* support http auth for fetching podcast xml and episodes (#2)
   * cache auth info for each host?
+* build podcast parser with gradle
+  * commons-io dependency
 * add test
   * sort by pubdate
 * improve UI with material icon

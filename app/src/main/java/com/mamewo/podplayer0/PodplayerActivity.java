@@ -284,7 +284,7 @@ public class PodplayerActivity
 
             String iconURL = state_.podcastList_.get(info.index_).getIconURL();
 			if(showPodcastIcon_ && null != iconURL){
-                Log.d(TAG, "load icon with glide: " + iconURL);
+                //Log.d(TAG, "load icon with glide: " + iconURL);
                 Glide
                     .with(PodplayerActivity.this)
                     .load(iconURL)

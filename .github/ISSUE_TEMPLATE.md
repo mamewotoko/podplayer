@@ -1,15 +1,12 @@
 ### Description
 
-### Report type
-- [ ] bug
-- [ ] feature request
-- [ ] question
-
 ### Expected outcome
 
 ### Actual outcome 
 
-### Version
+### App version
+
+### Android version (and target device information)
 
 ### How to reproduce (step-by-step)
 <!--
