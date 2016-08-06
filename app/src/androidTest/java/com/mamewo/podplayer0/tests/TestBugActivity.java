@@ -12,6 +12,7 @@ import com.squareup.spoon.Spoon;
 import com.jraska.falcon.FalconSpoon;
 
 import com.mamewo.podplayer0.PodcastListPreference;
+import com.mamewo.podplayer0.PodplayerPreference;
 import com.mamewo.podplayer0.PodplayerActivity;
 import com.mamewo.podplayer0.R;
 
@@ -77,8 +78,7 @@ public class TestBugActivity
 		return true;
 	}
   
-    
-	public void testIssue1() throws Exception {
+	public void testIssue3() throws Exception {
 		solo_.sleep(10000);
 		FalconSpoon.screenshot(solo_.getCurrentActivity(), "main0");
         //TODO: scroll down?
@@ -94,8 +94,12 @@ public class TestBugActivity
 		solo_.sleep(300);
 		FalconSpoon.screenshot(solo_.getCurrentActivity(), "podcastlist_editor1");
         solo_.goBack();
+		solo_.sleep(300);
+		//solo_.waitForActivity(PodplayerPreference.class.getName(), 3000);     
         //TOOD: wait?
         solo_.goBack();
+		solo_.sleep(300);
+        //		solo_.waitForActivity(PodplayerActivity.class.getName(), 3000);
 		FalconSpoon.screenshot(solo_.getCurrentActivity(), "podcastlist_editor2");
         //
 
