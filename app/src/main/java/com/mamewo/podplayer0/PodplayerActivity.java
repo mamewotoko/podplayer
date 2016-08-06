@@ -281,11 +281,11 @@ public class PodplayerActivity
 			}
 
             String iconURL = state_.podcastList_.get(info.index_).getIconURL();
-            Log.d(TAG, "iconURL: " + state_.podcastList_.get(info.index_).getTitle() + " " + iconURL);
+            //Log.d(TAG, "iconURL: " + state_.podcastList_.get(info.index_).getTitle() + " " + iconURL);
 			if(showPodcastIcon_ && null != iconURL){
 				//episodeIcon.setImageDrawable(state_.podcastList_.get(info.index_).icon_);
                 //TODO: load
-                Log.d(TAG, "load icon with glide: " + iconURL);
+                //Log.d(TAG, "load icon with glide: " + iconURL);
                 Glide
                     .with(PodplayerActivity.this)
                     .load(iconURL)
@@ -462,10 +462,12 @@ public class PodplayerActivity
 		//stop loading?
 		for(int i = 0; i < state_.podcastList_.size(); i++) {
 			PodcastInfo info = state_.podcastList_.get(i);
+            Log.d(TAG, "onPodcastListChanged.info: " + info.title_ + " " + info.enabled_);
 			if (info.enabled_) {
 				list.add(info.title_);
 			}
 		}
+        Log.d(TAG, "onPodcastListChanged.size: "+list.size());
 		ArrayAdapter<String> adapter =
 				new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
 		//TODO: load if selected item is changed

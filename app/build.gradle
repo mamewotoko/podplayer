@@ -49,7 +49,8 @@ spoon {
     className = project.spoonClassName
   }
   else {
-    className = 'com.mamewo.podplayer0.tests.TestPodplayerActivity'
+    //className = 'com.mamewo.podplayer0.tests.TestPodplayerActivity'
+    className = 'com.mamewo.podplayer0.tests.TestBugActivity'
   }
   // com.mamewo.podplayer0.tests.TestPodplayerExpActivity
   //from 1.5.0?
@@ -64,4 +65,5 @@ dependencies {
   
   androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.5.2'
   androidTestCompile 'com.squareup.spoon:spoon-client:1.1.0'
+  androidTestCompile 'com.jraska:falcon-spoon-compat:1.0.3'
 }

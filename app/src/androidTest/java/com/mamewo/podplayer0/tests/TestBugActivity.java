@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.content.res.Resources;
 
 import com.squareup.spoon.Spoon;
+import com.jraska.falcon.FalconSpoon;
 
 import com.mamewo.podplayer0.PodcastListPreference;
 import com.mamewo.podplayer0.PodplayerActivity;
@@ -36,12 +37,7 @@ public class TestBugActivity
 
 	@Override
 	public void setUp() throws Exception {
-		//solo_ = new SciroccoSolo(getInstrumentation(), getActivity(), "com.mamewo.podtest");
 		Config config = new Config();
-		// config.screenshotFileType = ScreenshotFileType.PNG;
-		// config.screenshotSavePath = new File(Environment.getExternalStorageDirectory(), "Robotium-Screenshots").getPath();
-		// Log.d(TAG, "screenshotpath:"+config.screenshotSavePath.toString());
-		// config.shouldScroll = false;
 		solo_ = new Solo(getInstrumentation(), config, getActivity());
 		res_ = getInstrumentation().getTargetContext().getResources();
 	}
@@ -84,33 +80,27 @@ public class TestBugActivity
     
 	public void testIssue1() throws Exception {
 		solo_.sleep(10000);
-		//View playButton = solo_.getView(R.id.play_button);
-		//solo_.clickOnView(playButton);
-		// solo_.sendKey(Solo.MENU);
-		// solo_.sleep(1000);
-		// solo_.sendKey(Solo.MENU);
-		// solo_.sleep(300);
-		// solo_.clickOnView(playButton);
-		// solo_.sleep(300);
-		//assertFalse(((ToggleButton)playButton).isChecked());
-		Spoon.screenshot(solo_.getCurrentActivity(), "main0");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "main0");
         //TODO: scroll down?
-
+		solo_.sendKey(Solo.MENU);
 		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+		solo_.waitForActivity(PodcastListPreference.class.getName(), 3000);
+        Log.d(TAG, "title: "+res_.getString(R.string.pref_podcastlist_title));
         selectPreference(res_.getString(R.string.pref_podcastlist_title));
         //TODO: uncheck
 		solo_.sleep(300);
-		Spoon.screenshot(solo_.getCurrentActivity(), "podcastlist_editor0");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "podcastlist_editor0");
 		solo_.clickInList(1);
 		solo_.sleep(300);
-		Spoon.screenshot(solo_.getCurrentActivity(), "podcastlist_editor1");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "podcastlist_editor1");
         solo_.goBack();
+        //TOOD: wait?
         solo_.goBack();
-		Spoon.screenshot(solo_.getCurrentActivity(), "podcastlist_editor2");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "podcastlist_editor2");
         //
 
 		View selector = solo_.getView(R.id.podcast_selector);
         solo_.clickOnView(selector);
-		Spoon.screenshot(solo_.getCurrentActivity(), "spinner");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "spinner");
 	}
 }
