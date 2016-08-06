@@ -121,7 +121,8 @@ public class TestPodplayerActivity
 	public void testSelectPodcast() throws Exception {
 		solo_.sleep(1000);
 		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
-		selectPreference("Podcastリスト");
+		//selectPreference("Podcastリスト");
+        selectPreference(res_.getString(R.string.pref_podcastlist_title));
 		solo_.waitForActivity(PodcastListPreference.class.getName(), 3000);
 		//podcast list
 		//solo_.clickInList(1);
