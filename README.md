@@ -1,5 +1,8 @@
-podplayer - An android podcast player [![Build Status](https://travis-ci.org/mamewotoko/podplayer.svg?branch=gradle)](https://travis-ci.org/mamewotoko/podplayer)
+podplayer - An android podcast player
 =====================================
+
+[![Build Status](https://travis-ci.org/mamewotoko/podplayer.svg?branch=gradle)](https://travis-ci.org/mamewotoko/podplayer)
+[![License](https://img.shields.io/badge/license-Apache%202.0-green.svg) ](https://github.com/mamewotoko/podplayer/blob/master/LICENSE.txt)
 
 What?
 ----------
@@ -129,7 +132,7 @@ Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/
 
 Keywords
 ----------
-Android, MediaPlayer, Podcast, AsyncTask, PullToRefresh, Gesture, Spoon, Robotium, Glide
+Android, MediaPlayer, Podcast, AsyncTask, PullToRefresh, Gesture, Spoon, Falcons, Robotium, Glide
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
