@@ -1,5 +1,6 @@
-podplayer - An android podcast player [![Build Status](https://travis-ci.org/mamewotoko/podplayer.svg?branch=gradle)](https://travis-ci.org/mamewotoko/podplayer)
+podplayer - An android podcast player
 =====================================
+[![Build Status](https://travis-ci.org/mamewotoko/podplayer.svg?branch=gradle)](https://travis-ci.org/mamewotoko/podplayer)
 
 What?
 ----------
@@ -59,6 +60,7 @@ How to run UI test using Robotium
 
 TODO
 ----
+* merge commits from rel_v1.0.0_posttest
 * fix #1
   * content corrupted?
   * debug: using TeeInputStream of Commons IO

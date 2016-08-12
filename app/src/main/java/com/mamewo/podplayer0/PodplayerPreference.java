@@ -48,7 +48,7 @@ public class PodplayerPreference
 	private Preference gestureTable_;
 	private ListPreference readTimeout_;
 	private Preference scoreThreshold_;
-	private Preference clearCache_;
+	//private Preference clearCache_;
 	private Preference episodeLimit_;
 	private SharedPreferences pref_;
 	private ListPreference episodeOrder_;
@@ -78,19 +78,19 @@ public class PodplayerPreference
 		version_.setOnPreferenceClickListener(this);
 		license_ = findPreference("license");
 		license_.setOnPreferenceClickListener(this);
-		CheckBoxPreference cachePreference = (CheckBoxPreference)findPreference("use_response_cache");
+		//CheckBoxPreference cachePreference = (CheckBoxPreference)findPreference("use_response_cache");
 		//Build.VERSION_CODES.HONEYCOMB_MR2;
-		clearCache_ = findPreference("clear_response_cache");
+		//clearCache_ = findPreference("clear_response_cache");
 
-		boolean cacheSupported = Build.VERSION.SDK_INT >= 13;
-		cachePreference.setEnabled(cacheSupported);
-		clearCache_.setEnabled(cacheSupported);
-		if(!cacheSupported){
-			cachePreference.setChecked(false);
-		}
-		else {
-			clearCache_.setOnPreferenceClickListener(this);
-		}
+		// boolean cacheSupported = Build.VERSION.SDK_INT >= 13;
+		// cachePreference.setEnabled(cacheSupported);
+		// clearCache_.setEnabled(cacheSupported);
+		// if(!cacheSupported){
+		// 	cachePreference.setChecked(false);
+		// }
+		// else {
+		// 	clearCache_.setOnPreferenceClickListener(this);
+		// }
 		pref_ = PreferenceManager.getDefaultSharedPreferences(this);
 		pref_.registerOnSharedPreferenceChangeListener(this);
 		updateSummary(pref_, "ALL");
@@ -109,14 +109,14 @@ public class PodplayerPreference
 			startActivity(i);
 			return true;
 		}
-		if (item == clearCache_){
-			//dummy field....
-			boolean flag = pref_.getBoolean("clear_response_cache", true);
-			pref_.edit()
-				.putBoolean("clear_response_cache", !flag)
-				.apply();
-			return true;
-		}
+		// if (item == clearCache_){
+		// 	//dummy field....
+		// 	boolean flag = pref_.getBoolean("clear_response_cache", true);
+		// 	pref_.edit()
+		// 		.putBoolean("clear_response_cache", !flag)
+		// 		.apply();
+		// 	return true;
+		// }
 		if (item == gestureTable_) {
 			showDialog(GESTURE_TABLE_DIALOG);
 			return true;
