@@ -59,18 +59,18 @@ abstract public class BasePodplayerActivity
 
 	//TODO: add preference
 	// 10 Mbyteq
-	static final
-	private long HTTP_CACHE_SIZE = 10 * 1024 * 1024;
+    static final
+    private long HTTP_CACHE_SIZE = 10 * 1024 * 1024;
     static final
     public int ICON_DISK_CACHE_BYTES = 128*1024*1024;
-	private File httpCacheDir_;
+	//private File httpCacheDir_;
 	protected int currentOrder_;
 
 	abstract protected void onPodcastListChanged(boolean start);
 	abstract protected void notifyOrderChanged(int order);
 
-	Object cacheObject_ = null;
-	static final public int CACHERESPONSE_API_LEVEL = 13;
+    //	Object cacheObject_ = null;
+	//static final public int CACHERESPONSE_API_LEVEL = 13;
 
 	public void onCreate(Bundle savedInstanceState, ServiceConnection conn, Class<?> userClass) {
 		super.onCreate(savedInstanceState);
@@ -79,7 +79,8 @@ abstract public class BasePodplayerActivity
 		finishServiceOnExit_ = false;
 		state_ = null;
 		uiSettingChanged_ = false;
-		
+
+        initClearCache();
 		// if(null != savedInstanceState){
 		//  	state_ = (PodplayerState) savedInstanceState.get("state");
 		// }
@@ -94,8 +95,8 @@ abstract public class BasePodplayerActivity
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
 		currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
-		httpCacheDir_ = null;
-		cacheObject_ = null;
+		// httpCacheDir_ = null;
+		// cacheObject_ = null;
 
         ExternalCacheDiskCacheFactory factory = new ExternalCacheDiskCacheFactory(this, "podcast_icon", ICON_DISK_CACHE_BYTES);
         if(!Glide.isSetup() && factory != null){
@@ -225,7 +226,26 @@ abstract public class BasePodplayerActivity
 		Log.d(TAG, "onSharedPreferneceChanged: " + key);
 		syncPreference(pref, key);
 	}
-	
+
+    //WORKAROUND: remove cache dir
+    private void initClearCache(){
+        File httpCacheDir = new File(getCacheDir(), "http");
+        if(httpCacheDir.exists()){
+            Object cacheObject = enableHttpResponseCache(httpCacheDir);
+            try{
+                Log.d(TAG, "clear cache");
+                Class.forName("android.net.http.HttpResponseCache")
+                    .getMethod("delete")
+                    .invoke(cacheObject);
+            }
+            catch(Exception e){
+                Log.d(TAG, "cache delete method", e);
+            }
+            disableHttpResponseCache(cacheObject);
+        }
+        //END OF WORKAROUND
+    }
+    
 	protected void syncPreference(SharedPreferences pref, String key){
 		Log.d(TAG, "syncPreference: " + key);
 		boolean updateAll = "ALL".equals(key);
@@ -259,32 +279,33 @@ abstract public class BasePodplayerActivity
 			showPodcastIcon_ = pref.getBoolean("show_podcast_icon", 
 												res.getBoolean(R.bool.default_show_podcast_icon));
 		}
-		if (updateAll || "use_reponse_cache".equals(key)){
-			boolean useCache = pref.getBoolean("use_reponse_cache", 
-												res.getBoolean(R.bool.default_use_response_cache));
-			if(useCache){
-				if(null == httpCacheDir_){
-					httpCacheDir_ = new File(getCacheDir(), "http");
-				}
-				cacheObject_ = enableHttpResponseCache(httpCacheDir_);
-			}
-			else {
-				disableHttpResponseCache(cacheObject_);
-			}
-		}
-		if("clear_response_cache".equals(key)){
-			if(null != cacheObject_){
-				try{
-					Log.d(TAG, "clear cache");
-					Class.forName("android.net.http.HttpResponseCache")
-						.getMethod("delete")
-						.invoke(cacheObject_);
-				}
-				catch(Exception e){
-					Log.d(TAG, "cache delete method", e);
-				}
-			}
-		}
+      
+        // if (updateAll || "use_reponse_cache".equals(key)){
+		// 	boolean useCache = pref.getBoolean("use_reponse_cache", 
+		// 										res.getBoolean(R.bool.default_use_response_cache));
+		// 	if(useCache){
+		// 		if(null == httpCacheDir_){
+		// 			httpCacheDir_ = new File(getCacheDir(), "http");
+		// 		}
+		// 		cacheObject_ = enableHttpResponseCache(httpCacheDir_);
+		// 	}
+		// 	else {
+		// 		disableHttpResponseCache(cacheObject_);
+		// 	}
+		// }
+		// if("clear_response_cache".equals(key)){
+		// 	if(null != cacheObject_){
+		// 		try{
+		// 			Log.d(TAG, "clear cache");
+		// 			Class.forName("android.net.http.HttpResponseCache")
+		// 				.getMethod("delete")
+		// 				.invoke(cacheObject_);
+		// 		}
+		// 		catch(Exception e){
+		// 			Log.d(TAG, "cache delete method", e);
+		// 		}
+		// 	}
+		// }
 		if(updateAll || "episode_order".equals(key)){
 			currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
 			notifyOrderChanged(currentOrder_);
