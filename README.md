@@ -60,12 +60,19 @@ How to run UI test using Robotium
 
 TODO
 ----
+* fix #1
+* use spaces to indent instead of tab
 * merge commits from rel_v1.0.0_posttest
 * fix #1
   * content corrupted?
   * debug: using TeeInputStream of Commons IO
 * support http auth for fetching podcast xml and episodes (#2)
   * cache auth info for each host?
+  * support preemptive authentication: http://hc.apache.org/httpclient-3.x/authentication.html
+    * use username and password for podcast xml to get episode file
+    * ver1: simple authenticator
+      host,port,realm,user,password,auth_method
+    * ver2: use AccountManager to manage host, username, password
 * build podcast parser with gradle
   * commons-io dependency
 * add test

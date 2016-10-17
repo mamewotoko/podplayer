@@ -51,6 +51,8 @@ spoon {
   else {
     className = 'com.mamewo.podplayer0.tests.TestPodplayerActivity'
   }
+  //test
+  methodName = 'testSelectPodcast'
   // com.mamewo.podplayer0.tests.TestPodplayerExpActivity
   //from 1.5.0?
   //codeCoverage = true

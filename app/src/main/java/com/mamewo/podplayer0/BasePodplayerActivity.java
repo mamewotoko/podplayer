@@ -79,8 +79,34 @@ abstract public class BasePodplayerActivity
 		finishServiceOnExit_ = false;
 		state_ = null;
 		uiSettingChanged_ = false;
-
+        
         initClearCache();
+
+		final Resources res = getResources();
+
+        //http auth
+        // Authenticator.setDefault(new SimpleAuthenticator(new SimpleAuthenticator.PasswordPromptFuture(){
+        //         public void startPasswordPrompt(){
+        //             // //TODO: set password
+        //             // public void startPasswordPrompt(URL url, String prompt){
+        //             //     AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext())
+        //             //         .setTitle("Password prompt")
+        //             //         //.setMesage("Please enter username and password for " + prompt)
+        //             //         .setPositiveButton(R.string.sign_in, new DialogInterface.OnClickListener() {
+        //             //                 @Override
+        //             //                 public void onClick(DialogInterface dialog, int id) {
+        //             //                     // sign in the user ...
+        //             //                 }
+        //             //             });
+        //             //     ilder.create();
+
+        //         }
+        //         public void startPasswordPrompt(URL url, String prompt){
+        //             //showDialog
+        //         }
+        //     }));
+
+        
 		// if(null != savedInstanceState){
 		//  	state_ = (PodplayerState) savedInstanceState.get("state");
 		// }

@@ -250,10 +250,10 @@ public class PodcastListPreference
 			items.add(getString(R.string.down_operation));
 			ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, items);
 			dialog = new AlertDialog.Builder(this)
-			.setTitle("xxx")
-			.setCancelable(true)
-			.setAdapter(adapter, this)
-			.create();
+                .setTitle("xxx")
+                .setCancelable(true)
+                .setAdapter(adapter, this)
+                .create();
 			break;
 		default:
 			break;
