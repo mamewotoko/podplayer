@@ -26,9 +26,11 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.view.LayoutInflater;
 import android.os.Build;
 
-//import android.support.v7.preference.PreferenceFragmentCompat;
+import android.widget.LinearLayout;
+import android.support.v7.widget.Toolbar;
 
 public class PodplayerPreference
     extends PreferenceActivity
@@ -98,6 +100,20 @@ public class PodplayerPreference
 		pref_.registerOnSharedPreferenceChangeListener(this);
 		updateSummary(pref_, "ALL");
 	}
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState){
+        super.onPostCreate(savedInstanceState);
+        LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
+        Toolbar bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.preference_toolbar, root, false);
+        root.addView(bar, 0); // insert at top
+        bar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+     }
 	
 	@Override
 	public void onDestroy() {

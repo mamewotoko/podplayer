@@ -45,6 +45,7 @@
     <string name="msg_add_podcast_failed">Det gick inte att lägga till podcast</string>
     <string name="msg_add_podcast_cancelled">Avbruten</string>
     <string name="preference_menu">Företräde</string>
+    <string name="preference_title">Företräde</string>
     <string name="exit_menu">Avsluta</string>
     <string name="selector_all">Alla</string>
     <string name="remove_operation">Ta bort</string>

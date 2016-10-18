@@ -44,6 +44,7 @@
     <string name="msg_add_podcast_failed">追加失敗しました</string>
     <string name="msg_add_podcast_cancelled">キャンセルされました</string>
     <string name="preference_menu">設定</string>
+    <string name="preference_title">設定</string>
     <string name="exit_menu">終了</string>
     <string name="selector_all">すべて</string>
     <string name="remove_operation">削除</string>
