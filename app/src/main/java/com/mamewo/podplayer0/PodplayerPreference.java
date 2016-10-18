@@ -32,7 +32,7 @@ import android.os.Build;
 
 public class PodplayerPreference
     extends PreferenceActivity
-//    extends PreferenceFragmentCompat
+            //extends PreferenceFragmentCompat
 	implements OnPreferenceClickListener,
 	View.OnClickListener,
 	OnSharedPreferenceChangeListener
