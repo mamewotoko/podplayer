@@ -27,6 +27,7 @@
         android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
+
     </LinearLayout>
     <android.gesture.GestureOverlayView
         android:id="@+id/gesture_view"

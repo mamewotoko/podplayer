@@ -61,7 +61,6 @@ How to run UI test using Robotium
 TODO
 ----
 * fix #1
-* use spaces to indent instead of tab
 * merge commits from rel_v1.0.0_posttest
 * fix #1
   * content corrupted?
@@ -80,7 +79,7 @@ TODO
 * improve UI with material icon
   * change loading icon of pulltorefresh
 * modify icon
-  * use opaque color
+  * use opaque orange
 * fast load
   * pulltorefresh is not updated in incremental way?
 * cache podcast icon to disk (glide)
@@ -142,11 +141,12 @@ License
 * podplayer: Copyright (c) 2012-2016 Takashi Masuyama. All rights reserved. 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-* podplayer uses the following software 
+* podplayer uses the following software and resource
   * Copyright (c) 2011 [Johan Nilsson](http://markupartist.com)  
     https://github.com/johannilsson/android-pulltorefresh
   * [Glide](https://github.com/bumptech/glide)  
     https://github.com/bumptech/glide
+  * [Meterial icons](https://design.google.com/icons/)
 
 Keywords
 ----------
