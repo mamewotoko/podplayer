@@ -92,6 +92,7 @@ TODO
   * add space between button of expandable ui
 * fix bugs
   * checkbox of preference is gray based
+    * http://stackoverflow.com/questions/27091845/android-appcompat-dark-theme-settings-checkbox
   * when prepare error occurs, cursor moves to next episode
     * stop playing
       * or mark error item and try playing next unerror item
