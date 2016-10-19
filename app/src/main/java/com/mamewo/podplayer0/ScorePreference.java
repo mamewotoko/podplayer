@@ -2,13 +2,14 @@ package com.mamewo.podplayer0;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.preference.DialogPreference;
+//import android.support.v7.preference.DialogPreference;
 
 public class ScorePreference
 	extends DialogPreference

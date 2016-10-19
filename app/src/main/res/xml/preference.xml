@@ -85,10 +85,12 @@
             android:summaryOff="@string/pref_gesture_off"
             android:summaryOn="@string/pref_gesture_on"
             android:title="@string/pref_use_gesture" />
+        <!--
         <com.mamewo.podplayer0.ScorePreference
             android:key="gesture_score_threshold"
             android:defaultValue="3.0"
             android:title="@string/pref_threshold_of_gesture_score" />
+            -->
 
         <PreferenceScreen
             xmlns:android="http://schemas.android.com/apk/res/android"
