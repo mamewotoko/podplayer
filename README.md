@@ -147,6 +147,11 @@ TODO
 * write user guide?
 * display playing icon in group of expandable list
 
+Note
+----
+* checkbox of preference is gray based
+  * http://stackoverflow.com/questions/27091845/android-appcompat-dark-theme-settings-checkbox
+
 License
 ----------
 * podplayer: Copyright (c) 2012-2016 Takashi Masuyama. All rights reserved. 
