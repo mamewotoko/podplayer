@@ -64,9 +64,6 @@ How to run UI test using Robotium
 
 TODO
 ----
-* fix bugs
-  * checkbox of preference is gray based
-    * http://stackoverflow.com/questions/27091845/android-appcompat-dark-theme-settings-checkbox
 * add action bar to podcast editor activity
 * fix bugs
   * when prepare error occurs, cursor moves to next episode
@@ -121,6 +118,11 @@ TODO
 * add error handling
 * write user guide?
 * display playing icon in group of expandable list
+
+Note
+----
+* checkbox of preference is gray based
+  * http://stackoverflow.com/questions/27091845/android-appcompat-dark-theme-settings-checkbox
 
 License
 ----------
