@@ -70,6 +70,7 @@ TODO
     * stop playing
       * or mark error item and try playing next unerror item
   * when only one episode is registered, list is in tap to refresh mode after loaded
+* add score thershold prefrence dialog 
 * fix lint warnings
   * contentDescription of image view
 * add/mark listened item list
