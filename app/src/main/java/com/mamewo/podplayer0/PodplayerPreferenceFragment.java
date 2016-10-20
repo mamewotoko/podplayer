@@ -143,14 +143,17 @@ public class PodplayerPreferenceFragment
 			return true;
 		}
 		if (item == gestureTable_) {
+            //TODO: implement
 			//showDialog(GESTURE_TABLE_DIALOG);
 			return true;
 		}
 		if (item == version_) {
+            //TODO: implement
 			//showDialog(VERSION_DIALOG);
 			return true;
 		}
 		if(item == license_) {
+            //TODO: implement
 			//showDialog(LICENSE_DIALOG);
 			return true;
 		}

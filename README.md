@@ -104,6 +104,7 @@ TODO
   * to reduce reload of podcast
   * show description of playing episode
   * save podcast list and updated time as state
+* add score thershold prefrence dialog 
 * fix lint warnings
   * contentDescription of image view
 * add/mark listened item list
