@@ -18,10 +18,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-//import android.preference.ListPreference;
-//import android.preference.Preference;
-//import android.preference.CheckBoxPreference;
-//import android.preference.PreferenceActivity;
 //import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -37,8 +33,9 @@ import android.support.v7.preference.Preference.OnPreferenceClickListener;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.ListPreference;
 
+import android.support.v4.app.DialogFragment;
+
 public class PodplayerPreferenceFragment
-//extends PreferenceActivity
     extends PreferenceFragmentCompat
 	implements OnPreferenceClickListener,
 	View.OnClickListener,
@@ -51,7 +48,10 @@ public class PodplayerPreferenceFragment
 	private int GESTURE_TABLE_DIALOG = 2;
 	static final
 	private int LICENSE_DIALOG = 3;
-	
+
+    static final
+        private String DIALOG_FRAGMENT_TAG = "com.mamewo.podplayer.pref.dialogtag";
+    
 	private Preference podcastList_;
 	private Preference version_;
 	private Preference license_;
@@ -258,4 +258,20 @@ public class PodplayerPreferenceFragment
 	public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
 		updateSummary(pref, key);
 	}
+
+    @Override
+    public void onDisplayPreferenceDialog(Preference preference){
+        //TODO: check exist
+        if(preference instanceof GestureTableDialogPreference){
+            DialogFragment f = GestureTableDialogPreferenceFragment.newInstance(preference.getKey());
+            f.setTargetFragment(this, 0);
+            f.setCancelable(false);
+            //f.setNegativeButtonText(null);
+            f.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
+            f.show(getFragmentManager(), DIALOG_FRAGMENT_TAG);
+        }
+        else {
+            super.onDisplayPreferenceDialog(preference);
+        }
+    }
 }
