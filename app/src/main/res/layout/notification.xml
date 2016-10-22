@@ -14,7 +14,7 @@
       android:layout_height="wrap_content"
       android:drawableLeft="@drawable/ic_status"
       android:maxLines="3"
-      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:textAppearance="?android:attr/textAppearanceSmall"
       />
   <ImageView android:id="@+id/notification_previous"
 	       android:layout_width="0dp"
