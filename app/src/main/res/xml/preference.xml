@@ -106,5 +106,10 @@
             android:key="version"
             android:selectable="false"
             android:title="@string/pref_version" />
+        <Preference
+            android:key="mail_to_author"
+            android:summary="@string/author_name"
+            android:selectable="true"
+            android:title="@string/mail_to_author" />
     </PreferenceCategory>
 </PreferenceScreen>
