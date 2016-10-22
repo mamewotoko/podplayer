@@ -94,12 +94,9 @@
             android:title="@string/pref_threshold_of_gesture_score" />
             -->
 
-        <!-- com.mamewo.podplayer0.GestureTableDialogPreference-->
-        <!-- android.support.v7.preference.ListPreference -->
         <com.mamewo.podplayer0.GestureTableDialogPreference
             android:key="gesture_list"
             android:title="@string/pref_gesture_list"
-            android:dialogLayout="@layout/gesture_table"
             />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_other_category" >
