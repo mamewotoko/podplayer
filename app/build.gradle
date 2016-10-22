@@ -51,6 +51,7 @@ spoon {
   else {
     className = 'com.mamewo.podplayer0.tests.TestPodplayerActivity'
   }
+  methodName = 'testSelectPodcast'
   // com.mamewo.podplayer0.tests.TestPodplayerExpActivity
   //from 1.5.0?
   //codeCoverage = true
@@ -64,6 +65,6 @@ dependencies {
   compile 'com.android.support:preference-v7:23.3.0'
   compile 'com.github.bumptech.glide:glide:3.7.0'
   
-  androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.5.2'
+  androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.6.3'
   androidTestCompile 'com.squareup.spoon:spoon-client:1.1.0'
 }

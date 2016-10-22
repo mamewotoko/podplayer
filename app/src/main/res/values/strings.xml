@@ -78,7 +78,5 @@
     <string name="action_collapse">Collapse</string>
     <string name="action_expand">Expand</string>
     <string name="action_reload">Reload</string>
-    <string name="action_abort">Abort</string>
-
-    
+    <string name="action_abort">Abort</string>    
 </resources>
