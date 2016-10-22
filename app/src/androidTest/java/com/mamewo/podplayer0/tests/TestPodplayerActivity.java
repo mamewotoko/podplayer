@@ -27,6 +27,11 @@ public class TestPodplayerActivity
 	protected Solo solo_;
 	protected Resources res_;
 		
+    static final
+    private int INIT_SLEEP = 5000;
+    static final
+    private int UI_SLEEP = 5000;
+    
 	final static
 	private String TAG = "podtest";
 
@@ -35,33 +40,35 @@ public class TestPodplayerActivity
 	}
 
 	public boolean selectPreference(String targetTitle) {
-		TextView view = null;
-		solo_.waitForActivity("PodplayerPrefrence", 3000);
-		do {
-			List<TextView> list = solo_.getCurrentViews(TextView.class, false);
-			for (TextView listText : list) {
-				if(targetTitle.equals(listText.getText())){
-					view = listText;
-					break;
-				}
-			}
-		}
-		while(null == view && solo_.scrollDownList(0));
-		if (view == null) {
-			return false;
-		}
-		solo_.clickOnView(view);
+		// TextView view = null;
+		//Assert.assertTrue(solo_.waitForActivity("PodplayerPrefrence", UI_SLEEP));
+        solo_.sleep(UI_SLEEP);
+        Log.d(TAG, "current activity: "+solo_.getCurrentActivity().getTitle().toString());
+        Assert.assertEquals(res_.getString(R.string.preference_title), solo_.getCurrentActivity().getTitle().toString());
+        //TODO: check
+        //TODO: scroll?
+        solo_.clickOnText(targetTitle);
+		// do {
+		// 	List<TextView> list = solo_.getCurrentViews(TextView.class, false);
+		// 	for (TextView listText : list) {
+        //         Log.d(TAG, "target, list: " + targetTitle + ": " + listText.getText());
+		// 		if(targetTitle.equals(listText.getText())){
+		// 			view = listText;
+		// 			break;
+		// 		}
+		// 	}
+		// }
+		// while(null == view && solo_.scrollDownList(0));
+		// if (view == null) {
+		// 	return false;
+		// }
+		// solo_.clickOnView(view);
 		return true;
 	}
 
 	@Override
 	public void setUp() throws Exception {
-		//solo_ = new SciroccoSolo(getInstrumentation(), getActivity(), "com.mamewo.podtest");
 		Config config = new Config();
-		// config.screenshotFileType = ScreenshotFileType.PNG;
-		// config.screenshotSavePath = new File(Environment.getExternalStorageDirectory(), "Robotium-Screenshots").getPath();
-		// Log.d(TAG, "screenshotpath:"+config.screenshotSavePath.toString());
-		// config.shouldScroll = false;
 		solo_ = new Solo(getInstrumentation(), config, getActivity());
 		res_ = getInstrumentation().getTargetContext().getResources();
 	}
@@ -82,9 +89,8 @@ public class TestPodplayerActivity
 	}
 
 	///////////////////////
-	
 	public void testPlay() throws Exception {
-		solo_.sleep(5000);
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
 		View playButton = solo_.getView(R.id.play_button);
 		solo_.clickOnView(playButton);
 		solo_.sleep(10000);
@@ -117,31 +123,31 @@ public class TestPodplayerActivity
     // }
     
 	public void testFilter() {
-		solo_.sleep(500);
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
 		solo_.pressSpinnerItem(0, 2);
 		solo_.sleep(3000);
 		Spoon.screenshot(solo_.getCurrentActivity(), "filter");
 	}
 
 	public void testFinish() {
-		solo_.sleep(500);
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
 		//TODO: use resource
 		solo_.clickOnMenuItem(res_.getString(R.string.exit_menu));
 	}
 
 	public void testSelectPodcast() throws Exception {
-		solo_.sleep(1000);
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
 		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
-		//selectPreference("Podcastリスト");
+        //false...
+        //Assert.assertTrue(solo_.waitForActivity("PodplayerPrefrence", UI_SLEEP));
+        // solo_.sleep(5000);
+        // solo_.clickOnText(res_.getString(R.string.pref_podcastlist_title));
         selectPreference(res_.getString(R.string.pref_podcastlist_title));
-		solo_.waitForActivity(PodcastListPreference.class.getName(), 3000);
-        //TODO: check title
-		//podcast list
-		//solo_.clickInList(1);
-		//solo_.sleep(500);
+		solo_.waitForActivity(PodcastListPreference.class.getName(), UI_SLEEP);
+		Spoon.screenshot(solo_.getCurrentActivity(), "select_podcast");       
 		solo_.clickInList(3);
-		// solo_.clickInList(5);
-		solo_.sleep(1000);
+        solo_.sleep(500);
+
 		Spoon.screenshot(solo_.getCurrentActivity(), "select_podcast");
 	}
 
@@ -153,9 +159,9 @@ public class TestPodplayerActivity
 	//TODO: add testAddPodcast
 	public void testAddPodcast() throws Exception {
 		String url = "http://www.tfm.co.jp/podcasts/avanti/podcast.xml";
-		solo_.sleep(1000);
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
 		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
-		solo_.waitForActivity(PodcastListPreference.class.getName(), 3000);
+        Assert.assertTrue(solo_.waitForActivity("PodplayerPrefrence", UI_SLEEP));
 		//podcast list
 		solo_.clickInList(1);
 		solo_.enterText(0, url);
@@ -179,48 +185,48 @@ public class TestPodplayerActivity
 		Spoon.screenshot(solo_.getCurrentActivity(), "abort_reload");
 	}
 
-	public void testGestureScoreUp() throws Exception {
-		solo_.sleep(500);
-		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
-		solo_.waitForActivity(PodcastListPreference.class.getName(), 3000);
+	// public void testGestureScoreUp() throws Exception {
+	// 	solo_.sleep(500);
+	// 	solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+	// 	solo_.waitForActivity(PodcastListPreference.class.getName(), 3000);
 		
-		selectPreference(res_.getString(R.string.pref_threshold_of_gesture_score));
-		solo_.sleep(500);
-		EditText edit = solo_.getEditText(0);
-		String beforeString = edit.getText().toString();
-		View plusButton = solo_.getView(R.id.double_plus_button);
-		solo_.clickOnView(plusButton);
-		solo_.sleep(100);
-		String afterString = edit.getText().toString();
-		double diff = Double.valueOf(afterString) - Double.valueOf(beforeString) - 0.1;
-		Log.d(TAG, "diff:  " + diff);
-		assertTrue(Math.abs(diff) < 0.0001);
-		solo_.clickOnButton("OK");
-		//TODO: check summary and pref value
-		Spoon.screenshot(solo_.getCurrentActivity(), "gesture_score_up");
-	}
+	// 	selectPreference(res_.getString(R.string.pref_threshold_of_gesture_score));
+	// 	solo_.sleep(500);
+	// 	EditText edit = solo_.getEditText(0);
+	// 	String beforeString = edit.getText().toString();
+	// 	View plusButton = solo_.getView(R.id.double_plus_button);
+	// 	solo_.clickOnView(plusButton);
+	// 	solo_.sleep(100);
+	// 	String afterString = edit.getText().toString();
+	// 	double diff = Double.valueOf(afterString) - Double.valueOf(beforeString) - 0.1;
+	// 	Log.d(TAG, "diff:  " + diff);
+	// 	assertTrue(Math.abs(diff) < 0.0001);
+	// 	solo_.clickOnButton("OK");
+	// 	//TODO: check summary and pref value
+	// 	Spoon.screenshot(solo_.getCurrentActivity(), "gesture_score_up");
+	// }
 
-	public void testGestureScoreDown() throws Exception {
-		solo_.sleep(500);
-		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
-		selectPreference(res_.getString(R.string.pref_threshold_of_gesture_score));
-		solo_.sleep(500);
-		EditText edit = solo_.getEditText(0);
-		String beforeString = edit.getText().toString();
-		View minusButton = solo_.getView(R.id.double_minus_button);
-		solo_.clickOnView(minusButton);
-		solo_.sleep(100);
-		String afterString = edit.getText().toString();
-		double diff = Double.valueOf(beforeString) - Double.valueOf(afterString) - 0.1;
-		Log.d(TAG, "befere after diff: " + beforeString + " " + afterString + " " + diff);
-		assertTrue("scoreminused", Math.abs(diff) < 0.0001);
-		solo_.clickOnButton(res_.getString(android.R.string.cancel));
-		//TODO: check summary and pref value
-		Spoon.screenshot(solo_.getCurrentActivity(), "gesture_score_down");
-	}
+	// public void testGestureScoreDown() throws Exception {
+	// 	solo_.sleep(500);
+	// 	solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+	// 	selectPreference(res_.getString(R.string.pref_threshold_of_gesture_score));
+	// 	solo_.sleep(500);
+	// 	EditText edit = solo_.getEditText(0);
+	// 	String beforeString = edit.getText().toString();
+	// 	View minusButton = solo_.getView(R.id.double_minus_button);
+	// 	solo_.clickOnView(minusButton);
+	// 	solo_.sleep(100);
+	// 	String afterString = edit.getText().toString();
+	// 	double diff = Double.valueOf(beforeString) - Double.valueOf(afterString) - 0.1;
+	// 	Log.d(TAG, "befere after diff: " + beforeString + " " + afterString + " " + diff);
+	// 	assertTrue("scoreminused", Math.abs(diff) < 0.0001);
+	// 	solo_.clickOnButton(res_.getString(android.R.string.cancel));
+	// 	//TODO: check summary and pref value
+	// 	Spoon.screenshot(solo_.getCurrentActivity(), "gesture_score_down");
+	// }
 
 	public void testGestureDialog() throws Exception {
-		solo_.sleep(500);
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
 		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
 		selectPreference(res_.getString(R.string.pref_gesture_list));
 		solo_.sleep(1000);
@@ -229,6 +235,7 @@ public class TestPodplayerActivity
 	}
 	
 	public void testLicence() {
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
 		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
 		selectPreference(res_.getString(R.string.pref_license));
 		//TODO: screen shot
@@ -240,6 +247,7 @@ public class TestPodplayerActivity
 	}
 
 	public void testVersion() {
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
 		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
 		solo_.sleep(500);
 		Assert.assertTrue(selectPreference(res_.getString(R.string.pref_version)));
@@ -265,7 +273,7 @@ public class TestPodplayerActivity
 	}
 	
 	public void testPreference() throws Exception {
-		solo_.sleep(500);
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
 		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
 		solo_.sleep(500);
 		Spoon.screenshot(solo_.getCurrentActivity(), "preference0");

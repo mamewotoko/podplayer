@@ -18,7 +18,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-//import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
@@ -50,7 +49,7 @@ public class PodplayerPreferenceFragment
     private int LICENSE_DIALOG = 3;
 
     static final
-        private String DIALOG_FRAGMENT_TAG = "com.mamewo.podplayer.pref.dialogtag";
+    private String DIALOG_FRAGMENT_TAG = "com.mamewo.podplayer.pref.dialogtag";
     
     private Preference podcastList_;
     private Preference version_;
@@ -63,21 +62,21 @@ public class PodplayerPreferenceFragment
     private Preference episodeLimit_;
     private SharedPreferences pref_;
     private ListPreference episodeOrder_;
+    private String versionStr_;
     
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        //super.onCreatePreferences(savedInstanceState, rootKey);
-        //setTitle(R.string.app_podcastpref_title);
         addPreferencesFromResource(R.xml.preference);
         version_ = findPreference("version");
         PackageInfo pi;
         try {
             pi = getActivity().getPackageManager().getPackageInfo(PodplayerPreferenceFragment.class.getPackage().getName(), 0);
-            version_.setSummary(pi.versionName);
+            versionStr_ = pi.versionName;
         }
         catch (NameNotFoundException e) {
-            version_.setSummary("unknown");
+            versionStr_ = "unknown";
         }
+        version_.setSummary(versionStr_);
         podcastList_ = findPreference("podcastlist");
         podcastList_.setOnPreferenceClickListener(this);
         readTimeout_ = (ListPreference)findPreference("read_timeout");
@@ -91,6 +90,7 @@ public class PodplayerPreferenceFragment
         license_.setOnPreferenceClickListener(this);
         mailToAuthor_ = findPreference("mail_to_author");
         mailToAuthor_.setOnPreferenceClickListener(this);
+        
         CheckBoxPreference cachePreference = (CheckBoxPreference)findPreference("use_response_cache");
         //Build.VERSION_CODES.HONEYCOMB_MR2;
         clearCache_ = findPreference("clear_response_cache");
@@ -134,7 +134,7 @@ public class PodplayerPreferenceFragment
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("message/rfc822");
             i.putExtra(Intent.EXTRA_EMAIL, new String[]{"mamewotoko@gmail.com"});
-            i.putExtra(Intent.EXTRA_SUBJECT, "[podplayer] ");
+            i.putExtra(Intent.EXTRA_SUBJECT, "[podplayer "+versionStr_+"] ");
             startActivity(i);
             return true;
         }
