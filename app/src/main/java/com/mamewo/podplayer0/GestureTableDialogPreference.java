@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.app.Dialog;
 
 public class GestureTableDialogPreference
-
     extends DialogPreference
 {
     private Dialog dialog_;
