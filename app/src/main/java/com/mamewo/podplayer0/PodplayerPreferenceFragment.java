@@ -106,21 +106,6 @@ public class PodplayerPreferenceFragment
 		updateSummary(pref_, "ALL");
 	}
 
-    // @Override
-    // protected void onPostCreate(Bundle savedInstanceState){
-    //     super.onPostCreate(savedInstanceState);
-    //     //TODO: check getParent.getParent...
-    //     LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
-    //     Toolbar bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.preference_toolbar, root, false);
-    //     root.addView(bar, 0); // insert at top
-    //     bar.setNavigationOnClickListener(new View.OnClickListener() {
-    //         @Override
-    //         public void onClick(View v) {
-    //             finish();
-    //         }
-    //     });
-    //  }
-	
 	@Override
 	public void onDestroy() {
 		pref_.unregisterOnSharedPreferenceChangeListener(this);
@@ -142,81 +127,8 @@ public class PodplayerPreferenceFragment
 				.apply();
 			return true;
 		}
-		if (item == gestureTable_) {
-            //TODO: implement
-			//showDialog(GESTURE_TABLE_DIALOG);
-			return true;
-		}
-		if (item == version_) {
-            //TODO: implement
-			//showDialog(VERSION_DIALOG);
-			return true;
-		}
-		if(item == license_) {
-            //TODO: implement
-			//showDialog(LICENSE_DIALOG);
-			return true;
-		}
 		return false;
 	}
-
-	// @Override
-	// protected Dialog onCreateDialog(int id) {
-	// 	Dialog dialog;
-
-	// 	switch(id) {
-	// 	case GESTURE_TABLE_DIALOG:
-	// 		dialog = new Dialog(getActivity());
-	// 		dialog.setContentView(R.layout.gesture_table);
-	// 		dialog.setTitle(R.string.pref_gesture_list);
-	// 		dialog.show();
-	// 		break;
-	// 	case VERSION_DIALOG:
-	// 		dialog = new Dialog(getActivity());
-	// 		dialog.setContentView(R.layout.version_dialog);
-	// 		dialog.setTitle(R.string.google_play_and_github);
-	// 		logo_ = dialog.findViewById(R.id.github_logo);
-	// 		logo_.setOnClickListener(this);
-	// 		break;
-	// 	case LICENSE_DIALOG:
-	// 		StringBuffer licenseText = new StringBuffer();
-	// 		Resources res = getResources();
-	// 		InputStream is = res.openRawResource(R.raw.apache20);
-	// 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
-	// 		String line;
-	// 		try {
-	// 			while((line = br.readLine()) != null) {
-	// 				licenseText.append(line+"\n");
-	// 			}
-	// 		}
-	// 		catch(IOException e) {
-	// 			Log.d(TAG, "cannot read license", e);
-	// 		}
-	// 		finally {
-	// 			try{
-	// 				br.close();
-	// 				is.close();
-	// 			}
-	// 			catch(IOException e) {
-					
-	// 			}
-	// 		}
-	// 		dialog = new AlertDialog.Builder(getActivity())
-	// 			.setMessage(licenseText.toString())
-	// 			//TODO: use resource for "OK"
-	// 			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-	// 					public void onClick(DialogInterface dialog, int whichButton) {
-	// 						//nop
-	// 					}
-	// 				})
-	// 			.create();
-	// 		break;
-	// 	default:
-	// 		dialog = null;
-	// 		break;
-	// 	}
-	// 	return dialog;
-	// }
 	
 	@Override
 	public void onClick(View view) {
@@ -262,12 +174,9 @@ public class PodplayerPreferenceFragment
     @Override
     public void onDisplayPreferenceDialog(Preference preference){
         //TODO: check exist
-        if(preference instanceof GestureTableDialogPreference){
-            DialogFragment f = GestureTableDialogPreferenceFragment.newInstance(preference.getKey());
+        if(preference instanceof SimpleDialogPreference){
+            DialogFragment f = SimpleDialogPreferenceFragment.newInstance(preference.getKey());
             f.setTargetFragment(this, 0);
-            f.setCancelable(false);
-            //f.setNegativeButtonText(null);
-            f.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
             f.show(getFragmentManager(), DIALOG_FRAGMENT_TAG);
         }
         else {

@@ -94,19 +94,19 @@
             android:title="@string/pref_threshold_of_gesture_score" />
             -->
 
-        <com.mamewo.podplayer0.GestureTableDialogPreference
+        <com.mamewo.podplayer0.SimpleDialogPreference
             android:key="gesture_list"
             android:title="@string/pref_gesture_list"
             />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_other_category" >
-        <Preference
+        <com.mamewo.podplayer0.SimpleDialogPreference
             android:key="license"
             android:selectable="true"
             android:title="@string/pref_license" />
         <Preference
             android:key="version"
-            android:selectable="true"
+            android:selectable="false"
             android:title="@string/pref_version" />
     </PreferenceCategory>
 </PreferenceScreen>
