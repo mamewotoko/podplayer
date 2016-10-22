@@ -21,20 +21,28 @@ android {
     versionName "1.0.2"
   }
 
-  // signingConfigs {
-  //    release {
-  //        storeFile file(System.getenv("KEYSTORE"))
-  //        storePassword System.getenv("KEYSTORE_PASSWORD")
-  //        keyAlias System.getenv("KEY_ALIAS")
-  //        keyPassword System.getenv("KEY_PASSWORD")
-  //    }
-  // }
+  signingConfigs {
+    release {
+      if(System.getenv("KEYSTORE") != null){
+        storeFile file(System.getenv("KEYSTORE"))
+        storePassword System.getenv("KEYSTORE_PASSWORD")
+        keyAlias System.getenv("KEY_ALIAS")
+        keyPassword System.getenv("KEY_PASSWORD")
+      }
+      else {
+        storeFile null
+        storePassword ""
+        keyAlias ""
+        keyPassword ""
+      }
+    }
+  }
   
   buildTypes {
     release {
-      minifyEnabled false
-      proguardFile getDefaultProguardFile('proguard-android.txt')
-      //signingConfig signingConfigs.release
+      minifyEnabled true
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+      signingConfig signingConfigs.release
     }
   }
   
@@ -51,8 +59,7 @@ spoon {
   else {
     className = 'com.mamewo.podplayer0.tests.TestPodplayerActivity'
   }
-  //test
-  //methodName = 'testSelectPodcast'
+  //methodName = 'testAddPodcast'
   // com.mamewo.podplayer0.tests.TestPodplayerExpActivity
   //from 1.5.0?
   //codeCoverage = true
