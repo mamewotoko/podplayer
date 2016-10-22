@@ -25,7 +25,9 @@
         android:id="@+id/podcast_selector"
         android:textColor="#FFFFFF"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        />
   </android.support.v7.widget.Toolbar>
 
 <!--  
