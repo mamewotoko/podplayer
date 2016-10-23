@@ -229,6 +229,7 @@ public class TestPodplayerActivity
 	public void testGestureDialog() throws Exception {
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
 		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+		solo_.sleep(UI_SLEEP);
 		selectPreference(res_.getString(R.string.pref_gesture_list));
 		solo_.sleep(UI_SLEEP);
 		Spoon.screenshot(solo_.getCurrentActivity(), "gesture_dialog");
