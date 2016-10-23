@@ -78,7 +78,6 @@ public class PodplayerActivity
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
-        actionbar.setLogo(R.drawable.ic_status);
         actionbar.setDisplayShowTitleEnabled(false);
 
         //debug: check
@@ -131,11 +130,11 @@ public class PodplayerActivity
     private void updatePlayButton(){
         if(player_.isPlaying()){
             playButton_.setContentDescription(getResources().getString(R.string.action_pause));
-            playButton_.setImageResource(android.R.drawable.ic_media_pause);
+            playButton_.setImageResource(R.drawable.ic_pause_white_48dp);
         }
         else {
             playButton_.setContentDescription(getResources().getString(R.string.action_play));
-            playButton_.setImageResource(android.R.drawable.ic_media_play);
+            playButton_.setImageResource(R.drawable.ic_play_arrow_white_48dp);
         }
     }
     
@@ -284,10 +283,10 @@ public class PodplayerActivity
             if(current != null && current.url_.equals(info.url_)) {
                 //cache!
                 if(player_.isPlaying()) {
-                    stateIcon.setImageResource(android.R.drawable.ic_media_play);
+                    stateIcon.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                 }
                 else {
-                    stateIcon.setImageResource(android.R.drawable.ic_media_pause);
+                    stateIcon.setImageResource(R.drawable.ic_pause_white_48dp);
                 }
                 stateIcon.setVisibility(View.VISIBLE);
             }
