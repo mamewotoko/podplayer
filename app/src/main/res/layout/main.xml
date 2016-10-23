@@ -14,7 +14,6 @@
         android:id="@+id/play_button"
         android:src="@drawable/ic_play_arrow_white_48dp"
         android:layout_height="fill_parent"
-        android:layout_marginLeft="8dp"
         android:layout_width="36dp"
         android:background="@null"
         android:contentDescription="@string/action_play"
