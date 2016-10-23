@@ -59,7 +59,7 @@ spoon {
   else {
     className = 'com.mamewo.podplayer0.tests.TestPodplayerActivity'
   }
-  //methodName = 'testAddPodcast'
+  //methodName = 'testGestureDialog'
   // com.mamewo.podplayer0.tests.TestPodplayerExpActivity
   //from 1.5.0?
   //codeCoverage = true
