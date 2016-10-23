@@ -230,7 +230,7 @@ public class TestPodplayerActivity
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
 		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
 		selectPreference(res_.getString(R.string.pref_gesture_list));
-		solo_.sleep(1000);
+		solo_.sleep(UI_SLEEP);
 		Spoon.screenshot(solo_.getCurrentActivity(), "gesture_dialog");
 		//TODO: check that gesture list dialog is displayed
 	}
