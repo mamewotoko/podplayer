@@ -239,7 +239,9 @@ public class TestPodplayerActivity
 	public void testLicence() {
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
 		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+		solo_.sleep(UI_SLEEP);
 		selectPreference(res_.getString(R.string.pref_license));
+		solo_.sleep(UI_SLEEP);
         Spoon.screenshot(solo_.getCurrentActivity(), "license");
 	}
 

@@ -65,7 +65,6 @@ public class SimpleDialogPreferenceFragment
 			}
             builder.setTitle(R.string.pref_license);
             builder.setMessage(licenseText.toString());
-            builder.setView(null);
         }
         builder.setPositiveButton("OK", null);
         return builder.create();
