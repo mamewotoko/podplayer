@@ -73,6 +73,6 @@ public class SimpleDialogPreferenceFragment
    
     @Override
     public void onDialogClosed(boolean positiveResult){
-        dismiss();
+        
     }
 }
