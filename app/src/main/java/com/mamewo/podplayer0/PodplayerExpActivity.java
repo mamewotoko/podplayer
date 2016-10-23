@@ -57,6 +57,7 @@ public class PodplayerExpActivity
     PlayerService.PlayerStateListener,
     OnChildClickListener
 {
+
     private ImageButton playButton_;
 	private ImageView reloadButton_;
     private ImageButton expandButton_;

@@ -35,7 +35,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-//import android.widget.SeekBar;
 
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
@@ -140,6 +139,7 @@ public class PodplayerActivity
         }
     }
     
+
     @Override
     public void onClick(View v) {
         //add option to load onStart

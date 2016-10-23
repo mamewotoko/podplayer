@@ -26,7 +26,6 @@ public class TestPodplayerActivity
 {
 	protected Solo solo_;
 	protected Resources res_;
-		
     static final
     private int INIT_SLEEP = 5000;
     static final
@@ -148,7 +147,6 @@ public class TestPodplayerActivity
 		Spoon.screenshot(solo_.getCurrentActivity(), "select_podcast");       
 		solo_.clickInList(3);
         solo_.sleep(500);
-
 		Spoon.screenshot(solo_.getCurrentActivity(), "select_podcast");
 	}
 
@@ -242,7 +240,7 @@ public class TestPodplayerActivity
 		solo_.sleep(UI_SLEEP);
 		selectPreference(res_.getString(R.string.pref_license));
 		solo_.sleep(UI_SLEEP);
-		Spoon.screenshot(solo_.getCurrentActivity(), "license");
+        Spoon.screenshot(solo_.getCurrentActivity(), "license");
 	}
 
 	// public void testVersion() {

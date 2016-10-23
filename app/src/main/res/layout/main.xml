@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="vertical" >
   <android.support.v7.widget.Toolbar
       android:id="@+id/toolbar"
       android:layout_width="match_parent"
@@ -20,7 +20,7 @@
         android:layout_width="30dp"
         android:background="@null"
         android:contentDescription="@string/action_play"
-      />
+        />
     <Spinner
         android:id="@+id/podcast_selector"
         android:textColor="#FFFFFF"
@@ -29,15 +29,7 @@
         android:layout_marginRight="8dp"
         />
   </android.support.v7.widget.Toolbar>
-
-<!--  
-  <SeekBar
-      android:id="@+id/seekbar"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      />
-      -->
-    <android.gesture.GestureOverlayView
+  <android.gesture.GestureOverlayView
         android:id="@+id/gesture_view"
         android:layout_width="match_parent"
         android:layout_height="0dip"
