@@ -106,11 +106,11 @@ public class PodplayerExpActivity
         adapter_.notifyDataSetChanged();
         if(player_.isPlaying()){
             playButton_.setContentDescription(getResources().getString(R.string.pause));
-            playButton_.setImageResource(R.drawable.ic_pause_white_48dp);
+            playButton_.setImageResource(R.drawable.ic_pause_white_24dp);
         }
         else {
             playButton_.setContentDescription(getResources().getString(R.string.play));
-            playButton_.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+            playButton_.setImageResource(R.drawable.ic_play_arrow_white_24dp);
         }
     }
 
@@ -401,10 +401,10 @@ public class PodplayerExpActivity
             if(current != null && current.url_.equals(info.url_)) {
                 //cache!
                 if(player_.isPlaying()) {
-                    stateIcon.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                    stateIcon.setImageResource(R.drawable.ic_play_arrow_white_24dp);
                 }
                 else {
-                    stateIcon.setImageResource(R.drawable.ic_pause_white_48dp);
+                    stateIcon.setImageResource(R.drawable.ic_pause_white_24dp);
                 }
                 stateIcon.setVisibility(View.VISIBLE);
             }

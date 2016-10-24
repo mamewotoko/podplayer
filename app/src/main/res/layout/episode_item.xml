@@ -25,7 +25,7 @@
           android:focusable="false"
           android:layout_height="36dp"
           android:layout_width="36dp"
-          android:src="@drawable/ic_play_arrow_white_48dp"
+          android:src="@drawable/ic_play_arrow_white_24dp"
           android:tint="#9E9"
           android:visibility="gone" />
       <TextView
