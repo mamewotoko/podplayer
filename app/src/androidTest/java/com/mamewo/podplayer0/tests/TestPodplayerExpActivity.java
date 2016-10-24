@@ -32,13 +32,11 @@ public class TestPodplayerExpActivity
 
 	@Override
 	public void setUp() throws Exception {
-		//solo_ = new SciroccoSolo(getInstrumentation(), getActivity(), "com.mamewo.podtest");
 		Config config = new Config();
 		config.screenshotFileType = ScreenshotFileType.PNG;
 		config.screenshotSavePath = new File(Environment.getExternalStorageDirectory(), "Robotium-Screenshots").getPath();
 		config.shouldScroll = false;
 		res_ = getInstrumentation().getTargetContext().getResources();
-
 		solo_ = new Solo(getInstrumentation(), config, getActivity());
 	}
 
