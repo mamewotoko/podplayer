@@ -19,7 +19,6 @@ import android.view.View;
 public class TestPodplayerExpActivity
 	extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
 {
-	//protected SciroccoSolo solo_;
 	protected Solo solo_;
 	protected Resources res_;
 
@@ -72,8 +71,8 @@ public class TestPodplayerExpActivity
 
 	public void testFinish() {
 		solo_.sleep(500);
-		//TODO: use resource
 		solo_.clickOnMenuItem(res_.getString(R.string.exit_menu));
+		solo_.sleep(500);
 	}
 
 	public void testAbortReload() throws Exception {
@@ -89,21 +88,21 @@ public class TestPodplayerExpActivity
 		Spoon.screenshot(solo_.getCurrentActivity(), "abort_reload");
 	}
 
-	public void testExpandAll() throws Exception {
+	public void testExpandCollapse() throws Exception {
 		solo_.sleep(2500);
-		View expandButton = solo_.getView(R.id.expand_button);
-		solo_.clickOnView(expandButton);
-		solo_.sleep(500);
 		Spoon.screenshot(solo_.getCurrentActivity(), "expand_1");
 		View collapseButton = solo_.getView(R.id.collapse_button);
 		solo_.clickOnView(collapseButton);
 		solo_.sleep(500);
 		Spoon.screenshot(solo_.getCurrentActivity(), "expand_2");
+		View expandButton = solo_.getView(R.id.expand_button);
+		solo_.clickOnView(expandButton);
+		solo_.sleep(500);
+		Spoon.screenshot(solo_.getCurrentActivity(), "expand_3");
 	}
 	//TODO: expand/collapse prefrence test
 	
 	//-----------------------
-	
 	public void testMainScreenshot() throws Exception {
 		solo_.sleep(500);
 		View playButton = solo_.getView(R.id.play_button);
