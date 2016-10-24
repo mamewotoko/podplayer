@@ -111,9 +111,9 @@ TODO
   * ? not listened / ! listened
   * remember listened timestamp
 * spoon test
-  * add logcat to report
-  * test multiple test classes once
-    * current situation: freeze? 
+   * test multiple test classes once
+    * current situation: freeze?
+    * set "package" instrumentationArgs to start all test classes
 * add preference to display pubdate as "X days before"
 * save latest few item to savedInstanceState
 * filter not listened item only (preference)
