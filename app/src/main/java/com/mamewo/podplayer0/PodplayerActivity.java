@@ -340,7 +340,7 @@ public class PodplayerActivity
             loadTask_ = null;
 
             //dummy
-            sortEpisodeByDate(true);
+            //sortEpisodeByDate(true);
             //TODO: Sync playlist
             updatePlaylist();
             updateUI();
@@ -386,14 +386,14 @@ public class PodplayerActivity
         return true;
     }
 
-    public void sortEpisodeByDate(boolean latestFirst){
-        //dummy
-        Log.d(TAG, "sort by pubdate");
-        Collections.sort(currentList_, new EpisodeInfo.PubdateComparator());
-        if(latestFirst){
-            Collections.reverse(currentList_);
-        }
-    }
+    // public void sortEpisodeByDate(boolean latestFirst){
+    //     //dummy
+    //     Log.d(TAG, "sort by pubdate");
+    //     Collections.sort(currentList_, new EpisodeInfo.PubdateComparator());
+    //     if(latestFirst){
+    //         Collections.reverse(currentList_);
+    //     }
+    // }
     
     private void updateListView(){
         List<EpisodeInfo> l;

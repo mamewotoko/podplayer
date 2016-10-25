@@ -26,8 +26,10 @@
     <string-array name="episode_item_order_entries">
       <item>Ordningsföljden</item>
       <item>Omvänd ordning utseende</item>
+      <!--
       <item>Äldsta först</item>      
       <item>Senaste först</item>
+      -->
     </string-array>
    
 </resources>

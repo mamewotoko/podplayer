@@ -65,7 +65,6 @@ How to run UI test using Robotium
 
 TODO
 ----
-* fix #1
 * merge commits from rel_v1.0.0_posttest
 * fix #1
   * content corrupted?
@@ -79,8 +78,10 @@ TODO
     * ver2: use AccountManager to manage host, username, password
 * build podcast parser with gradle
   * commons-io dependency
-* add test
-  * sort by pubdate
+* sort by pubdate
+  * fix sort crash
+    * or sort on database
+  * add test
 * improve UI with material icon
   * change loading icon of pulltorefresh
 * modify icon

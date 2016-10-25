@@ -405,14 +405,14 @@ abstract public class BasePodplayerActivity
             latestList_ = new ArrayList<EpisodeInfo>();
         }
 
-        static
-        public void sortEpisodeByDate(List<EpisodeInfo> lst, boolean latestFirst){
-            //dummy
-            Collections.sort(lst, new EpisodeInfo.PubdateComparator());
-            if(latestFirst){
-                Collections.reverse(lst);
-            }
-        }
+        // static
+        // public void sortEpisodeByDate(List<EpisodeInfo> lst, boolean latestFirst){
+        //     //dummy
+        //     Collections.sort(lst, new EpisodeInfo.PubdateComparator());
+        //     if(latestFirst){
+        //         Collections.reverse(lst);
+        //     }
+        // }
         
         public List<EpisodeInfo> list(int orderSetting){
             Log.d(TAG, "list: "+orderSetting);
@@ -429,9 +429,9 @@ abstract public class BasePodplayerActivity
             }
             //l: filitered
             //TODO:check config
-            if(PUBDATE_ORDER == orderSetting || REVERSE_PUBDATE_ORDER == orderSetting){
-                sortEpisodeByDate(l, REVERSE_PUBDATE_ORDER == orderSetting);
-            }
+            // if(PUBDATE_ORDER == orderSetting || REVERSE_PUBDATE_ORDER == orderSetting){
+            //     sortEpisodeByDate(l, REVERSE_PUBDATE_ORDER == orderSetting);
+            // }
             latestList_.clear();
             latestList_.addAll(l);
             return l;

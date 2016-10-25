@@ -26,7 +26,9 @@
     <string-array name="episode_item_order_entries">
       <item>出現順</item>
       <item>出現順の逆</item>
+      <!--
       <item>pubDate順(古いものから)</item>
       <item>pubDate順の逆(新しいものから)</item>
+      -->
     </string-array>
 </resources>
