@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.content.res.Resources;
 
 import com.squareup.spoon.Spoon;
+import com.jraska.falcon.FalconSpoon;
 
 import com.mamewo.podplayer0.PodcastListPreference;
 import com.mamewo.podplayer0.PodplayerActivity;
@@ -96,7 +97,7 @@ public class TestPodplayerActivity
 		//assertTrue(((ToggleButton)playButton).isChecked());
 		solo_.clickOnView(playButton);
 		solo_.sleep(500);
-		Spoon.screenshot(solo_.getCurrentActivity(), "play");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "play");
 	}
 	
 	public void testPlayItem() throws Exception {
@@ -107,7 +108,7 @@ public class TestPodplayerActivity
 		//assertTrue(((ToggleButton)playButton).isChecked());
 		solo_.clickOnView(playButton);
 		solo_.sleep(500);
-		Spoon.screenshot(solo_.getCurrentActivity(), "play_item");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_item");
 	}
 
     //cannot take screen shot of dropdown
@@ -115,9 +116,9 @@ public class TestPodplayerActivity
 	// public void testOpenFilter() {
 	// 	solo_.sleep(2000);
 	// 	solo_.clickOnView(solo_.getView(R.id.podcast_selector));
-    //     Spoon.screenshot(solo_.getCurrentActivity(), "open_filter0");
+    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "open_filter0");
 	// 	solo_.sleep(3000);
-    //     Spoon.screenshot(solo_.getCurrentActivity(), "open_filter");
+    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "open_filter");
     //     //TODO: assert text of spinner item is drawn with white
     // }
     
@@ -125,7 +126,7 @@ public class TestPodplayerActivity
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
 		solo_.pressSpinnerItem(0, 2);
 		solo_.sleep(3000);
-		Spoon.screenshot(solo_.getCurrentActivity(), "filter");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "filter");
 	}
 
 	public void testFinish() {
@@ -144,10 +145,10 @@ public class TestPodplayerActivity
         selectPreference(res_.getString(R.string.pref_podcastlist_title));
 		//solo_.waitForActivity(PodcastListPreference.class.getName(), UI_SLEEP);
         solo_.sleep(UI_SLEEP);
-		Spoon.screenshot(solo_.getCurrentActivity(), "select_podcast");       
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "select_podcast");       
 		solo_.clickInList(3);
         solo_.sleep(500);
-		Spoon.screenshot(solo_.getCurrentActivity(), "select_podcast");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "select_podcast");
 	}
 
 	//TODO: long click
@@ -169,7 +170,7 @@ public class TestPodplayerActivity
 		View addButton = solo_.getView(R.id.add_podcast_button);
 		solo_.clickOnView(addButton);
 		solo_.sleep(10000);
-		Spoon.screenshot(solo_.getCurrentActivity(), "add_podcast");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_podcast");
 	}
 
 	public void testAbortReload() {
@@ -181,7 +182,7 @@ public class TestPodplayerActivity
 		//TODO: this does not work...
 		solo_.scrollUpList(0);
 		solo_.sleep(10000);
-		Spoon.screenshot(solo_.getCurrentActivity(), "abort_reload");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "abort_reload");
 	}
 
 	// public void testGestureScoreUp() throws Exception {
@@ -202,7 +203,7 @@ public class TestPodplayerActivity
 	// 	assertTrue(Math.abs(diff) < 0.0001);
 	// 	solo_.clickOnButton("OK");
 	// 	//TODO: check summary and pref value
-	// 	Spoon.screenshot(solo_.getCurrentActivity(), "gesture_score_up");
+	// 	FalconSpoon.screenshot(solo_.getCurrentActivity(), "gesture_score_up");
 	// }
 
 	// public void testGestureScoreDown() throws Exception {
@@ -221,7 +222,7 @@ public class TestPodplayerActivity
 	// 	assertTrue("scoreminused", Math.abs(diff) < 0.0001);
 	// 	solo_.clickOnButton(res_.getString(android.R.string.cancel));
 	// 	//TODO: check summary and pref value
-	// 	Spoon.screenshot(solo_.getCurrentActivity(), "gesture_score_down");
+	// 	FalconSpoon.screenshot(solo_.getCurrentActivity(), "gesture_score_down");
 	// }
 
 	public void testGestureDialog() throws Exception {
@@ -230,7 +231,7 @@ public class TestPodplayerActivity
 		solo_.sleep(UI_SLEEP);
 		selectPreference(res_.getString(R.string.pref_gesture_list));
 		solo_.sleep(UI_SLEEP);
-		Spoon.screenshot(solo_.getCurrentActivity(), "gesture_dialog");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "gesture_dialog");
 		//TODO: check that gesture list dialog is displayed
 	}
 	
@@ -240,7 +241,7 @@ public class TestPodplayerActivity
 		solo_.sleep(UI_SLEEP);
 		selectPreference(res_.getString(R.string.pref_license));
 		solo_.sleep(UI_SLEEP);
-        Spoon.screenshot(solo_.getCurrentActivity(), "license");
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "license");
 	}
 
 	// public void testVersion() {
@@ -253,7 +254,7 @@ public class TestPodplayerActivity
 	// 	solo_.clickOnView(githubView);
 	// 	solo_.sleep(5000);
 	// 	//browser starts
-	// 	Spoon.screenshot(solo_.getCurrentActivity(), "version");
+	// 	FalconSpoon.screenshot(solo_.getCurrentActivity(), "version");
 	// }
 
 	public void testMain() throws Exception {
@@ -266,19 +267,19 @@ public class TestPodplayerActivity
 		solo_.sleep(300);
 		solo_.clickOnView(playButton);
 		solo_.sleep(1000);
-		Spoon.screenshot(solo_.getCurrentActivity(), "main");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "main");
 	}
 	
 	public void testPreference() throws Exception {
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
 		solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
 		solo_.sleep(500);
-		Spoon.screenshot(solo_.getCurrentActivity(), "preference0");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "preference0");
 		solo_.scrollDown();
 		solo_.sleep(500);
-		Spoon.screenshot(solo_.getCurrentActivity(), "preference1");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "preference1");
 		solo_.scrollDown();
 		solo_.sleep(500);
-		Spoon.screenshot(solo_.getCurrentActivity(), "preference2");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "preference2");
 	}
 }

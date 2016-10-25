@@ -18,6 +18,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.squareup.spoon.Spoon;
+import com.jraska.falcon.FalconSpoon;
 
 public class TestPodcastListPreference
 	extends ActivityInstrumentationTestCase2<PodcastListPreference>
@@ -55,12 +56,12 @@ public class TestPodcastListPreference
 		PodcastInfo prevInfo = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
 		String url = "http://www.google.co.jp/";
 		int prevCount = adapter.getCount();
-		solo_.enterText(solo_.getEditText(0), url);
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_fail");
 		Spoon.screenshot(solo_.getCurrentActivity(), "add_fail");
 		solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
 		solo_.waitForDialogToClose(10000);
 		Assert.assertEquals(prevCount, adapter.getCount());
-		PodcastInfo info = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_fail");
 		Spoon.screenshot(solo_.getCurrentActivity(), "add_fail");
 		Assert.assertEquals("check url", prevInfo, info);
 	}
@@ -71,13 +72,13 @@ public class TestPodcastListPreference
 		String url = "http://www.tfm.co.jp/podcasts/avanti/podcast.xml";
 		int prevCount = adapter.getCount();
 		solo_.enterText(solo_.getEditText(0), url);
-		solo_.sleep(500);
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_success");       
 		Spoon.screenshot(solo_.getCurrentActivity(), "add_success");       
 		solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
 		solo_.waitForDialogToClose(20000);
 		Assert.assertEquals(prevCount+1, adapter.getCount());
 		PodcastInfo info = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
-		Log.d(TAG, "add succ: " + info.title_);
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_success");
 		Spoon.screenshot(solo_.getCurrentActivity(), "add_success");
 		Assert.assertEquals("check url", url, info.url_.toString());
 	}
@@ -88,13 +89,13 @@ public class TestPodcastListPreference
 		String url = "http://www.fmtoyama.co.jp/contents/podcast/podcast_24.xml";
 		int prevCount = adapter.getCount();
 		solo_.enterText(solo_.getEditText(0), url);
-		solo_.sleep(500);
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_with_bom_success");       
 		Spoon.screenshot(solo_.getCurrentActivity(), "add_with_bom_success");       
 		solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
 		solo_.waitForDialogToClose(20000);
 		Assert.assertEquals(prevCount+1, adapter.getCount());
 		PodcastInfo info = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
-		Log.d(TAG, "add succ: " + info.title_);
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_with_bom_success");
 		Spoon.screenshot(solo_.getCurrentActivity(), "add_with_bom_success");
 		Assert.assertEquals("check url", url, info.url_.toString());
 	}
@@ -104,10 +105,10 @@ public class TestPodcastListPreference
 		ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
 		int count = adapter.getCount();
 		solo_.clickLongInList(3);
-		solo_.sleep(200);
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete3");
 		Spoon.screenshot(solo_.getCurrentActivity(), "delete3");
 		solo_.clickInList(PodcastListPreference.REMOVE_OPERATION+1);
-		solo_.sleep(200);
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete3");
 		Spoon.screenshot(solo_.getCurrentActivity(), "delete3");
 		Assert.assertEquals(count-1, adapter.getCount());
 	}
@@ -117,10 +118,10 @@ public class TestPodcastListPreference
 		ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
 		PodcastInfo info = (PodcastInfo)adapter.getItem(1);
 		solo_.clickLongInList(2);
-		solo_.sleep(200);
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "up");
 		Spoon.screenshot(solo_.getCurrentActivity(), "up");
 		solo_.clickInList(PodcastListPreference.UP_OPERATION+1);
-		solo_.sleep(200);
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "up");
 		Spoon.screenshot(solo_.getCurrentActivity(), "up");
 		Assert.assertEquals(info, adapter.getItem(0));
 	}
@@ -130,10 +131,10 @@ public class TestPodcastListPreference
 		ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
 		PodcastInfo info = (PodcastInfo)adapter.getItem(0);
 		solo_.clickLongInList(1);
-		solo_.sleep(200);
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "down");      
 		Spoon.screenshot(solo_.getCurrentActivity(), "down");      
 		solo_.clickInList(PodcastListPreference.DOWN_OPERATION+1);
-		solo_.sleep(200);
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "down");        
 		Spoon.screenshot(solo_.getCurrentActivity(), "down");        
 		Assert.assertEquals(info, adapter.getItem(1));
 	}

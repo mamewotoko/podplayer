@@ -8,6 +8,7 @@ import android.content.res.Resources;
 
 import java.io.File;
 import com.squareup.spoon.Spoon;
+import com.jraska.falcon.FalconSpoon;
 
 import com.mamewo.podplayer0.PodplayerExpActivity;
 import com.mamewo.podplayer0.R;
@@ -66,7 +67,7 @@ public class TestPodplayerExpActivity
 		//pause for next test
 		solo_.clickOnView(playButton);
 		solo_.sleep(1000);
-		Spoon.screenshot(solo_.getCurrentActivity(), "play");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "play");
 	}
 
 	public void testFinish() {
@@ -85,20 +86,20 @@ public class TestPodplayerExpActivity
 		//TODO: this does not work...
 		solo_.scrollUpList(0);
 		solo_.sleep(10000);
-		Spoon.screenshot(solo_.getCurrentActivity(), "abort_reload");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "abort_reload");
 	}
 
 	public void testExpandCollapse() throws Exception {
 		solo_.sleep(2500);
-		Spoon.screenshot(solo_.getCurrentActivity(), "expand_1");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "expand_1");
 		View collapseButton = solo_.getView(R.id.collapse_button);
 		solo_.clickOnView(collapseButton);
 		solo_.sleep(500);
-		Spoon.screenshot(solo_.getCurrentActivity(), "expand_2");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "expand_2");
 		View expandButton = solo_.getView(R.id.expand_button);
 		solo_.clickOnView(expandButton);
 		solo_.sleep(500);
-		Spoon.screenshot(solo_.getCurrentActivity(), "expand_3");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "expand_3");
 	}
 	//TODO: expand/collapse prefrence test
 	
@@ -109,11 +110,11 @@ public class TestPodplayerExpActivity
 		solo_.clickOnView(playButton);
 		solo_.sendKey(Solo.MENU);
 		solo_.sleep(200);
-		Spoon.screenshot(solo_.getCurrentActivity(), "main");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "main");
 		solo_.sendKey(Solo.MENU);
 		solo_.sleep(200);
 		solo_.clickOnView(playButton);
 		solo_.sleep(2000);
-        Spoon.screenshot(solo_.getCurrentActivity(), "main2");
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "main2");
 	}
 }
