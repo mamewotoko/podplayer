@@ -13,12 +13,19 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import android.content.res.Resources;
 import android.util.Log;
+import android.net.Uri;
+import android.content.Intent;
 
 import static com.mamewo.podplayer0.Const.*;
 
 public class SimpleDialogPreferenceFragment
     extends PreferenceDialogFragmentCompat
+    implements View.OnClickListener
+
 {
+	static final
+	public String GITHUB_URL = "https://github.com/mamewotoko/podplayer";
+    
     static
     public SimpleDialogPreferenceFragment newInstance(String key){
         SimpleDialogPreferenceFragment fragment = new SimpleDialogPreferenceFragment();
@@ -66,6 +73,14 @@ public class SimpleDialogPreferenceFragment
             builder.setTitle(R.string.pref_license);
             builder.setMessage(licenseText.toString());
         }
+        else if("version".equals(key)){
+            View view = inflater.inflate(R.layout.version_dialog, null, false);
+            View logo = view.findViewById(R.id.github_logo);
+            view.setOnClickListener(this);
+            logo.setOnClickListener(this);
+            builder.setView(view);
+            builder.setTitle(R.string.pref_version);
+        }
         builder.setPositiveButton("OK", null);
         return builder.create();
     }
@@ -73,5 +88,13 @@ public class SimpleDialogPreferenceFragment
     @Override
     public void onDialogClosed(boolean positiveResult){
         
+    }
+
+    @Override
+    public void onClick(View view) {
+        //TODO: check clicked view
+        Intent i =
+            new Intent(Intent.ACTION_VIEW, Uri.parse(GITHUB_URL));
+        startActivity(new Intent(i));
     }
 }

@@ -244,18 +244,18 @@ public class TestPodplayerActivity
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "license");
     }
 
-    // public void testVersion() {
-    //     Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
-    //     solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
-    //     solo_.sleep(500);
-    //     Assert.assertTrue(selectPreference(res_.getString(R.string.pref_version)));
-    //     solo_.sleep(500);
-    //     View githubView = solo_.getView(R.id.github_logo);
-    //     solo_.clickOnView(githubView);
-    //     solo_.sleep(5000);
-    //     //browser starts
-    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "version");
-    // }
+    public void testVersion() {
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
+        solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+        solo_.sleep(500);
+        Assert.assertTrue(selectPreference(res_.getString(R.string.pref_version)));
+        solo_.sleep(500);
+        View githubView = solo_.getView(R.id.github_logo);
+        solo_.clickOnView(githubView);
+        solo_.sleep(5000);
+        //browser starts
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "version");
+    }
 
     public void testMain() throws Exception {
         solo_.sleep(500);

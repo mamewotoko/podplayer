@@ -104,9 +104,9 @@
             android:key="license"
             android:selectable="true"
             android:title="@string/pref_license" />
-        <Preference
+        <com.mamewo.podplayer0.SimpleDialogPreference
             android:key="version"
-            android:selectable="false"
+            android:selectable="true"
             android:title="@string/pref_version" />
         <Preference
             android:key="mail_to_author"
