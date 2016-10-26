@@ -17,8 +17,8 @@ android {
     applicationId "com.mamewo.podplayer0"
     minSdkVersion 10
     targetSdkVersion 19
-    versionCode 12
-    versionName "1.1.0"
+    versionCode 13
+    versionName "1.1.1"
   }
 
   signingConfigs {
