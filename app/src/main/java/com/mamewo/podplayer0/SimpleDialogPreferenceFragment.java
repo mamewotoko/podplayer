@@ -76,7 +76,6 @@ public class SimpleDialogPreferenceFragment
         else if("version".equals(key)){
             View view = inflater.inflate(R.layout.version_dialog, null, false);
             View logo = view.findViewById(R.id.github_logo);
-            view.setOnClickListener(this);
             logo.setOnClickListener(this);
             builder.setView(view);
             builder.setTitle(R.string.pref_version);
