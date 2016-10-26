@@ -101,9 +101,11 @@ public class TestPodplayerActivity
     }
     
     public void testPlayItem() throws Exception {
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
         solo_.sleep(10000);
         solo_.clickInList(2);
         solo_.sleep(10000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_item_before");
         View playButton = solo_.getView(R.id.play_button);
         //assertTrue(((ToggleButton)playButton).isChecked());
         solo_.clickOnView(playButton);
