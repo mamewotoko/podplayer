@@ -5,7 +5,7 @@
 Screenshot
 ----------
 ![main screen](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/mainscreen.png)
-![preference](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/preference.png)
+![gestures](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/gesture_dialog.png)
 
 Google Play
 ------------
@@ -60,7 +60,11 @@ How to run UI test using Robotium
 
 TODO
 ----
-* license dialog
+* fast load
+  * pulltorefresh is not updated in incremental way?
+* thanks dialog?
+  * FIXED: checkbox of preference is gray based
+    * http://stackoverflow.com/questions/27091845/android-appcompat-dark-theme-settings-checkbox
 * fix #1
   * content corrupted?
   * debug: using TeeInputStream of Commons IO
@@ -72,8 +76,8 @@ TODO
       host,port,realm,user,password,auth_method
     * ver2: use AccountManager to manage host, username, password
 * build podcast parser with gradle
-  * commons-io dependency
-* improbe performance
+  * fix commons-io dependency
+* improve performance
   * initial load
 * sort by pubdate
   * fix sort crash
@@ -83,8 +87,6 @@ TODO
   * change loading icon of pulltorefresh
 * modify icon
   * use opaque orange
-* fast load
-  * pulltorefresh is not updated in incremental way?
 * cache podcast icon to disk (glide)
 * action bar
   * add space between button of expandable ui
@@ -146,11 +148,6 @@ TODO
 * write user guide?
 * display playing icon in group of expandable list
 
-Note
-----
-* checkbox of preference is gray based
-  * http://stackoverflow.com/questions/27091845/android-appcompat-dark-theme-settings-checkbox
-
 License
 ----------
 * podplayer: Copyright (c) 2012-2016 Takashi Masuyama. All rights reserved. 
@@ -165,7 +162,7 @@ Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/
 
 Keywords
 ----------
-Android, MediaPlayer, Podcast, AsyncTask, PullToRefresh, Gesture, Spoon, Robotium, Glide
+Android, MediaPlayer, Podcast, AsyncTask, PullToRefresh, Gesture, Gradle, Spoon, FalconSpoon, Robotium, Glide, TravisCI
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
