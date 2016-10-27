@@ -4,8 +4,8 @@
 
 Screenshot
 ----------
-![main screen](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/mainscreen.png)
-![gestures](https://github.com/mamewotoko/podplayer/raw/pullupdate/doc/gesture_dialog.png)
+![main screen](https://raw.githubusercontent.com/mamewotoko/podplayer/master/doc/mainscreen.png)
+![gestures](https://raw.githubusercontent.com/mamewotoko/podplayer/master/doc/gesture_dialog.png)
 
 Google Play
 ------------
