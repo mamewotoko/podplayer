@@ -1,0 +1,8 @@
+avoid reload on onStart
+-----------------------
+* conditions
+load all podcast
+  pulled (pull to refresh ui)
+  reload button is pressed
+load added podcast
+load when enough time passed over some seconds
