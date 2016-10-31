@@ -63,6 +63,12 @@ TODO
 * avoid frequent loading
 * fast load
   * pulltorefresh is not updated in incremental way?
+* handle opml
+* share podcast with friend / author (add to preset)
+  * bluetooth
+  * IR code
+  * mail?
+  * post to website
 * thanks dialog?
   * FIXED: checkbox of preference is gray based
     * http://stackoverflow.com/questions/27091845/android-appcompat-dark-theme-settings-checkbox
