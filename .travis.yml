@@ -8,4 +8,4 @@ android:
     licences:
         - '.+'
 script:
-    - ./gradlew assembleDebug
+    - ./gradlew assembleDebug assembleDebugAndroidTest
