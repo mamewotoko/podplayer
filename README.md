@@ -60,6 +60,7 @@ How to run UI test using Robotium
 
 TODO
 ----
+* avoid frequent loading
 * fast load
   * pulltorefresh is not updated in incremental way?
 * thanks dialog?
@@ -68,6 +69,9 @@ TODO
 * fix #1
   * content corrupted?
   * debug: using TeeInputStream of Commons IO
+* improve UI
+  * design layout with AndroidStudio
+  * add back icon to aciton bar
 * support http auth for fetching podcast xml and episodes (#2)
   * cache auth info for each host?
   * support preemptive authentication: http://hc.apache.org/httpclient-3.x/authentication.html
@@ -77,8 +81,6 @@ TODO
     * ver2: use AccountManager to manage host, username, password
 * build podcast parser with gradle
   * fix commons-io dependency
-* improve performance
-  * initial load
 * sort by pubdate
   * fix sort crash
     * or sort on database
@@ -88,13 +90,9 @@ TODO
 * modify icon
   * use opaque orange
 * cache podcast icon to disk (glide)
-* action bar
-  * add space between button of expandable ui
 * fix bugs
   * checkbox of preference is gray based
     * http://stackoverflow.com/questions/27091845/android-appcompat-dark-theme-settings-checkbox
-* add action bar to podcast editor activity
-* fix bugs
   * when prepare error occurs, cursor moves to next episode
     * stop playing
       * or mark error item and try playing next unerror item
