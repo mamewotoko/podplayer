@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.io.File;
+import java.util.Date;
 
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
@@ -63,7 +64,7 @@ abstract public class BasePodplayerActivity
     static final
     private long HTTP_CACHE_SIZE = 10 * 1024 * 1024;
     static final
-    public int ICON_DISK_CACHE_BYTES = 128*1024*1024;
+    public int ICON_DISK_CACHE_BYTES = 64*1024*1024;
     //private File httpCacheDir_;
     protected int currentOrder_;
 
@@ -395,13 +396,13 @@ abstract public class BasePodplayerActivity
         protected List<PodcastInfo> podcastList_;
         //same order with podcastList_
         protected List<List<EpisodeInfo>> loadedEpisode_;
-        protected String lastUpdated_;
+        protected Date lastUpdatedDate_;
         protected List<EpisodeInfo> latestList_;
         
         private PodplayerState() {
             loadedEpisode_ = new ArrayList<List<EpisodeInfo>>();
             podcastList_ = new ArrayList<PodcastInfo>();
-            lastUpdated_ = "";
+            lastUpdatedDate_ = null;
             latestList_ = new ArrayList<EpisodeInfo>();
         }
 

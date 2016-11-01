@@ -331,8 +331,8 @@ public class PodplayerActivity
             else {
                 DateFormat df = DateFormat.getDateTimeInstance();
                 //TODO: change format of date
-                state_.lastUpdated_ = df.format(new Date());
-                episodeListView_.setLastUpdated(getString(R.string.header_lastupdated) + state_.lastUpdated_);
+                state_.lastUpdatedDate_ = new Date();
+                episodeListView_.setLastUpdated(getString(R.string.header_lastupdated) + df.format(state_.lastUpdatedDate_));
             }
             setProgressBarIndeterminateVisibility(false);
             episodeListView_.onRefreshComplete();
@@ -476,7 +476,7 @@ public class PodplayerActivity
 
     @Override
     protected void onPodcastListChanged(boolean start) {
-        Log.d(TAG, "onPodcastListChanged");
+        Log.d(TAG, "onPodcastListChanged " + start);
         SharedPreferences pref=
                 PreferenceManager.getDefaultSharedPreferences(this);
         List<String> list = new ArrayList<String>();
@@ -496,14 +496,15 @@ public class PodplayerActivity
         Resources res = getResources();
         boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
         List<EpisodeInfo> playlist = state_.latestList_;
-        if (!start || doLoad) {
+        if ((!start) || doLoad) {
             //reload
             episodeListView_.startRefresh();
         }
         else if (playlist != null && ! playlist.isEmpty()) {
             //update list by loaded items
             updateListView();
-            episodeListView_.onRefreshComplete(state_.lastUpdated_);
+            DateFormat df = DateFormat.getDateTimeInstance();
+            episodeListView_.onRefreshComplete(df.format(state_.lastUpdatedDate_));
         }
         updateUI();
     }

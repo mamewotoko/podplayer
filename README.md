@@ -60,9 +60,18 @@ How to run UI test using Robotium
 
 TODO
 ----
-* avoid frequent loading
 * fast load
   * pulltorefresh is not updated in incremental way?
+* cache
+  * podcast icon to disk (glide)
+  * podcast xml
+* select http lib
+  * HttpURLConnection
+  * OkHTTP 2.x
+  * OkHTTP 3.x
+  * Volley
+  * Android Asynchronous Http Client
+    http://loopj.com/android-async-http/
 * handle opml
 * share podcast with friend / author (add to preset)
   * bluetooth
@@ -72,12 +81,15 @@ TODO
 * thanks dialog?
   * FIXED: checkbox of preference is gray based
     * http://stackoverflow.com/questions/27091845/android-appcompat-dark-theme-settings-checkbox
+* set default item / show notification in paused state
+  * start player service
 * fix #1
   * content corrupted?
   * debug: using TeeInputStream of Commons IO
 * improve UI
   * design layout with AndroidStudio
   * add back icon to aciton bar
+  * material icon: change loading icon of pulltorefresh  
 * support http auth for fetching podcast xml and episodes (#2)
   * cache auth info for each host?
   * support preemptive authentication: http://hc.apache.org/httpclient-3.x/authentication.html
@@ -91,11 +103,8 @@ TODO
   * fix sort crash
     * or sort on database
   * add test
-* improve UI with material icon
-  * change loading icon of pulltorefresh
 * modify icon
   * use opaque orange
-* cache podcast icon to disk (glide)
 * fix bugs
   * checkbox of preference is gray based
     * http://stackoverflow.com/questions/27091845/android-appcompat-dark-theme-settings-checkbox
@@ -108,12 +117,12 @@ TODO
   * to reduce reload of podcast
   * show description of playing episode
   * save podcast list and updated time as state
-* add score thershold prefrence dialog 
+  * add/mark listened item list
+    * ? not listened / ! listened
+    * remember listened timestamp
+* add score thershold preference dialog 
 * fix lint warnings
   * contentDescription of image view
-* add/mark listened item list
-  * ? not listened / ! listened
-  * remember listened timestamp
 * spoon test
    * test multiple test classes once
     * current situation: freeze?
@@ -134,6 +143,7 @@ TODO
   * preference
   * notification
   * gesture?
+    * gesture command
   * landscape UI
 * gesture score histogram?
 * improve UI to add podcast URL
@@ -143,14 +153,13 @@ TODO
   * setContentView takes long time
 * Autoload: load when create activity or when podcast list setting is changed
 * play episode which is clicked while preparing other episode
-* sort episode by date
-  * parse pubdate
 * add episode search UI
 * add cool widget to play episode
 * add slider to show current playing position
 * add error handling
 * write user guide?
 * display playing icon in group of expandable list
+* upload demo movie to youtube
 
 License
 ----------
@@ -163,6 +172,8 @@ Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/
   * [Glide](https://github.com/bumptech/glide)  
     https://github.com/bumptech/glide
   * [Meterial icons](https://design.google.com/icons/)
+
+* Gesture data is built using GestureBuilder sample application of android (legacy/GestureBuilder)
 
 Keywords
 ----------
