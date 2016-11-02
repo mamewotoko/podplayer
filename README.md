@@ -63,9 +63,13 @@ TODO
 * fast load
   * improbe incremental update algorith to reduce cpu usage
     * problem: displayed episode is not played by click while loading episodes
+* add option to exit by pressing back button
+  * display confirm dialog: exit or playing background, live as servcie and display notification
 * cache
   * podcast icon to disk (glide)
   * podcast xml
+  * episode item
+    * introduce simple memory based cache
 * select http lib
   * point of view
     * http response cache

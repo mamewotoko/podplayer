@@ -13,6 +13,7 @@
         android:summaryOff="@string/pref_play_after_unplugged"
         android:summaryOn="@string/pref_pause_on_unplugged"
         android:title="@string/pref_pause_on_unplugged_title" />
+
     <CheckBoxPreference
         android:defaultValue="@bool/default_enable_long_click"
         android:key="enable_long_click"
