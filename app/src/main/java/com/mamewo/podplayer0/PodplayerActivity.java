@@ -67,8 +67,9 @@ public class PodplayerActivity
     //private SeekBar currentPlayPosition_;
     private EpisodeAdapter adapter_;
     private List<EpisodeInfo> currentList_;
+    //number of items for one screen (small phone)
     static final
-    public int EPISODE_BUF_SIZE = 5;
+    public int EPISODE_BUF_SIZE = 10;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -323,7 +324,7 @@ public class PodplayerActivity
                 state_.mergeEpisode(values[i]);
                 //adapter_.add(values[i]);
             }
-            Log.d(TAG, "onProgressUpdate");
+            //Log.d(TAG, "onProgressUpdate");
             filterSelectedPodcast();
             //adapter_.notifyDataSetChanged();
         }
@@ -424,7 +425,7 @@ public class PodplayerActivity
             }
         }
         currentList_ = l;
-        Log.d(TAG, "filterSelectedPodcast: "+ currentList_.size());
+        //Log.d(TAG, "filterSelectedPodcast: "+ currentList_.size());
         if (! isLoading()) {
             episodeListView_.hideHeader();
         }
@@ -482,7 +483,6 @@ public class PodplayerActivity
 
     @Override
     protected void onPodcastListChanged(boolean start) {
-        Log.d(TAG, "onPodcastListChanged " + start);
         SharedPreferences pref=
                 PreferenceManager.getDefaultSharedPreferences(this);
         List<String> list = new ArrayList<String>();

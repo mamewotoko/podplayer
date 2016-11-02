@@ -416,7 +416,7 @@ abstract public class BasePodplayerActivity
         // }
         
         public List<EpisodeInfo> list(int orderSetting){
-            Log.d(TAG, "list: "+orderSetting);
+            //Log.d(TAG, "list: "+orderSetting);
             List l = new ArrayList<EpisodeInfo>();
             for(List<EpisodeInfo> loaded: loadedEpisode_){
                 if(REVERSE_APPEARANCE_ORDER == orderSetting){

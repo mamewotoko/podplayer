@@ -62,6 +62,7 @@ TODO
 ----
 * fast load
   * improbe incremental update algorith to reduce cpu usage
+    * problem: displayed episode is not played by click while loading episodes
 * cache
   * podcast icon to disk (glide)
   * podcast xml
