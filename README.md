@@ -61,17 +61,22 @@ How to run UI test using Robotium
 TODO
 ----
 * fast load
-  * pulltorefresh is not updated in incremental way?
+  * improbe incremental update algorith to reduce cpu usage
 * cache
   * podcast icon to disk (glide)
   * podcast xml
 * select http lib
-  * HttpURLConnection
-  * OkHTTP 2.x
-  * OkHTTP 3.x
-  * Volley
-  * Android Asynchronous Http Client
-    http://loopj.com/android-async-http/
+  * point of view
+    * http response cache
+    * authentication (w/ cache?)
+  * libraries
+    * HttpURLConnection
+    * OkHTTP 2.x
+    * OkHTTP 3.x
+    * Volley
+    * Android Asynchronous Http Client
+      http://loopj.com/android-async-http/
+* display toast when network error ocurr
 * handle opml
 * share podcast with friend / author (add to preset)
   * bluetooth
@@ -134,6 +139,7 @@ TODO
   * remove array adapter contents?
 * use large notification
   * change notification icon for Android4.0
+  * show both podcast title and episode title
   * avoid flicker when button on notification pressed
 * write additional podcast url to sd card?
 * add confirm dialog to open web site

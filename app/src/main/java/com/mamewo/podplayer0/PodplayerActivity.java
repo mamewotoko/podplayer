@@ -67,7 +67,9 @@ public class PodplayerActivity
     //private SeekBar currentPlayPosition_;
     private EpisodeAdapter adapter_;
     private List<EpisodeInfo> currentList_;
-
+    static final
+    public int EPISODE_BUF_SIZE = 5;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         //TODO: fix lint warning
@@ -253,7 +255,6 @@ public class PodplayerActivity
 
         @Override
         public Object getItem(int position){
-            //Log.d(TAG, "getItem " + position + " " + currentList_.get(position).title_);
             return currentList_.get(position);
         }
         
@@ -313,15 +314,18 @@ public class PodplayerActivity
         extends BaseGetPodcastTask
     {
         public GetPodcastTask(int limit, int timeoutSec, boolean getIcon) {
-            super(PodplayerActivity.this, limit, timeoutSec, getIcon);
+            super(PodplayerActivity.this, limit, timeoutSec, getIcon, EPISODE_BUF_SIZE);
         }
 
         @Override
         protected void onProgressUpdate(EpisodeInfo... values){
             for (int i = 0; i < values.length; i++) {
                 state_.mergeEpisode(values[i]);
+                //adapter_.add(values[i]);
             }
-            adapter_.notifyDataSetChanged();
+            Log.d(TAG, "onProgressUpdate");
+            filterSelectedPodcast();
+            //adapter_.notifyDataSetChanged();
         }
 
         private void onFinished() {
@@ -395,17 +399,19 @@ public class PodplayerActivity
     //     }
     // }
     
-    private void updateListView(){
+    private void filterSelectedPodcast(){
         List<EpisodeInfo> l;
+        //TODO: design incremnetal add 
         if(selector_.getSelectedItemPosition() == 0){
             //-1: all
+
+            //TODO: reduce call?
+            updatePlaylist();
             l = state_.latestList_;
         }
         else {
             String title = (String)selector_.getSelectedItem();
             int selected = podcastTitle2Index(title);
-            //addAll: api level 11
-            //Log.d(TAG, "  updateListView: selected " + selected);
 
             l = state_.loadedEpisode_.get(selected);
             if(currentOrder_ == REVERSE_APPEARANCE_ORDER){
@@ -418,7 +424,7 @@ public class PodplayerActivity
             }
         }
         currentList_ = l;
-
+        Log.d(TAG, "filterSelectedPodcast: "+ currentList_.size());
         if (! isLoading()) {
             episodeListView_.hideHeader();
         }
@@ -427,12 +433,12 @@ public class PodplayerActivity
 
     @Override
     public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
-        updateListView();
+        filterSelectedPodcast();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapter) {
-        updateListView();
+        filterSelectedPodcast();
     }
     
     private int podcastTitle2Index(String title){
@@ -502,7 +508,7 @@ public class PodplayerActivity
         }
         else if (playlist != null && ! playlist.isEmpty()) {
             //update list by loaded items
-            updateListView();
+            filterSelectedPodcast();
             DateFormat df = DateFormat.getDateTimeInstance();
             episodeListView_.onRefreshComplete(df.format(state_.lastUpdatedDate_));
         }
