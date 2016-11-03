@@ -16,7 +16,8 @@ https://play.google.com/store/apps/details?id=com.mamewo.podplayer0
 
 How to build
 ------------
-1. Clone source
+1. Install "Android support repository" using [Android SDK Manager](https://developer.android.com/studio/intro/update.html?hl=ja#sdk-manager)
+2. Clone source
 
     ```
     git clone https://github.com/mamewotoko/podplayer.git
@@ -63,6 +64,7 @@ TODO
 * fast load
   * improbe incremental update algorith to reduce cpu usage
     * problem: displayed episode is not played by click while loading episodes
+    * fix flicker while loading episode
 * add option to exit by pressing back button
   * display confirm dialog: exit or playing background, live as servcie and display notification
 * cache
