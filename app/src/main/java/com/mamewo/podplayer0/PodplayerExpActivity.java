@@ -139,7 +139,7 @@ public class PodplayerExpActivity
         int limit = Integer.valueOf(pref.getString("episode_limit", res.getString(R.string.default_episode_limit)));
         int timeoutSec = Integer.valueOf(pref.getString("read_timeout", res.getString(R.string.default_read_timeout)));
         boolean getIcon = pref.getBoolean("show_podcast_icon", res.getBoolean(R.bool.default_show_podcast_icon));
-        GetPodcastTask task = new GetPodcastTask(limit, timeoutSec, getIcon);
+        GetPodcastTask task = new GetPodcastTask(limit, getIcon);
         startLoading(task);
     }
 
@@ -438,8 +438,8 @@ public class PodplayerExpActivity
     private class GetPodcastTask
         extends BaseGetPodcastTask
     {
-        public GetPodcastTask(int limit, int timeoutSec, boolean getIcon) {
-            super(PodplayerExpActivity.this, limit, timeoutSec, getIcon);
+        public GetPodcastTask(int limit, boolean getIcon) {
+            super(PodplayerExpActivity.this, client_, limit, getIcon);
         }
 
         @Override

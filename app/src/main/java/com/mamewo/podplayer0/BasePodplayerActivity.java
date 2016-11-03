@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.io.File;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
@@ -36,6 +37,9 @@ import android.widget.Toast;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Cache;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
@@ -49,6 +53,12 @@ abstract public class BasePodplayerActivity
 {
     final static
     protected PodcastInfo[] DUMMY_INFO_LIST = new PodcastInfo[0];
+    final static
+    public String HTTP_CACHE_DIR = "http_cache";
+    //16mbyte
+    final static
+    public long HTTP_CACHE_SIZE = 16*1024*1024; 
+    
     protected PlayerService player_ = null;
     protected GestureLibrary gestureLib_;
     protected double gestureScoreThreshold_;
@@ -59,10 +69,8 @@ abstract public class BasePodplayerActivity
     protected boolean showPodcastIcon_;
     private boolean uiSettingChanged_;
 
-    //TODO: add preference
-    // 10 Mbyteq
-    static final
-    private long HTTP_CACHE_SIZE = 10 * 1024 * 1024;
+    public OkHttpClient client_;
+
     static final
     public int ICON_DISK_CACHE_BYTES = 64*1024*1024;
     //private File httpCacheDir_;
@@ -82,36 +90,8 @@ abstract public class BasePodplayerActivity
         state_ = null;
         uiSettingChanged_ = false;
         
-        initClearCache();
-
         final Resources res = getResources();
 
-        //http auth
-        // Authenticator.setDefault(new SimpleAuthenticator(new SimpleAuthenticator.PasswordPromptFuture(){
-        //         public void startPasswordPrompt(){
-        //             // //TODO: set password
-        //             // public void startPasswordPrompt(URL url, String prompt){
-        //             //     AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext())
-        //             //         .setTitle("Password prompt")
-        //             //         //.setMesage("Please enter username and password for " + prompt)
-        //             //         .setPositiveButton(R.string.sign_in, new DialogInterface.OnClickListener() {
-        //             //                 @Override
-        //             //                 public void onClick(DialogInterface dialog, int id) {
-        //             //                     // sign in the user ...
-        //             //                 }
-        //             //             });
-        //             //     ilder.create();
-
-        //         }
-        //         public void startPasswordPrompt(URL url, String prompt){
-        //             //showDialog
-        //         }
-        //     }));
-
-        
-        // if(null != savedInstanceState){
-        //      state_ = (PodplayerState) savedInstanceState.get("state");
-        // }
         if(null == state_){
             state_ = new PodplayerState();
         }
@@ -123,8 +103,6 @@ abstract public class BasePodplayerActivity
                 PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);
         currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
-        // httpCacheDir_ = null;
-        // cacheObject_ = null;
 
         ExternalCacheDiskCacheFactory factory = new ExternalCacheDiskCacheFactory(this, "podcast_icon", ICON_DISK_CACHE_BYTES);
         if(!Glide.isSetup() && factory != null){
@@ -132,33 +110,12 @@ abstract public class BasePodplayerActivity
             //obsolete API....
             Glide.setup(builder);
         }
-    }
-
-    private Object enableHttpResponseCache(File cacheDir) {
-        try {
-            return Class.forName("android.net.http.HttpResponseCache")
-                .getMethod("install", File.class, long.class)
-                .invoke(null, cacheDir, HTTP_CACHE_SIZE);
-        }
-        catch (Exception e) {
-            //nop
-        }
-        return null;
-    }
-    
-    private boolean disableHttpResponseCache(Object cacheObj){
-        if(null == cacheObj){
-            return false;
-        }
-        try {
-            Class.forName("android.net.http.HttpResponseCache")
-                .getMethod("close")
-                .invoke(cacheObj);
-            return true;
-        } catch (Exception e) {
-            //nop
-        }
-        return false;
+        long timeoutSec = (long)Integer.valueOf(pref.getString("read_timeout", res.getString(R.string.default_read_timeout)));
+        File cacheDir = new File(getExternalCacheDir(), HTTP_CACHE_DIR);
+        client_ = new OkHttpClient.Builder()
+            .readTimeout(timeoutSec, TimeUnit.SECONDS)
+            .cache(new Cache(cacheDir, HTTP_CACHE_SIZE))
+            .build();
     }
 
     @Override
@@ -255,25 +212,6 @@ abstract public class BasePodplayerActivity
         syncPreference(pref, key);
     }
 
-    //WORKAROUND: remove cache dir
-    private void initClearCache(){
-        File httpCacheDir = new File(getCacheDir(), "http");
-        if(httpCacheDir.exists()){
-            Object cacheObject = enableHttpResponseCache(httpCacheDir);
-            try{
-                Log.d(TAG, "clear cache");
-                Class.forName("android.net.http.HttpResponseCache")
-                    .getMethod("delete")
-                    .invoke(cacheObject);
-            }
-            catch(Exception e){
-                Log.d(TAG, "cache delete method", e);
-            }
-            disableHttpResponseCache(cacheObject);
-        }
-        //END OF WORKAROUND
-    }
-    
     protected void syncPreference(SharedPreferences pref, String key){
         Log.d(TAG, "syncPreference: " + key);
         boolean updateAll = "ALL".equals(key);
@@ -322,16 +260,11 @@ abstract public class BasePodplayerActivity
         //     }
         // }
         // if("clear_response_cache".equals(key)){
-        //     if(null != cacheObject_){
-        //         try{
-        //             Log.d(TAG, "clear cache");
-        //             Class.forName("android.net.http.HttpResponseCache")
-        //                 .getMethod("delete")
-        //                 .invoke(cacheObject_);
-        //         }
-        //         catch(Exception e){
-        //             Log.d(TAG, "cache delete method", e);
-        //         }
+        //     try{
+        //         client_.cache().delete();
+        //     }
+        //     catch(IOException e){
+        //         Log.d(TAG, "cache remove failed");
         //     }
         // }
         if(updateAll || "episode_order".equals(key)){

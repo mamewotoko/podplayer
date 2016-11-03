@@ -14,6 +14,10 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,6 +64,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 
+import okhttp3.OkHttpClient;
+
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -94,6 +100,7 @@ public class PodcastListPreference
     public int DOWN_OPERATION = 2;
     final static
     private String PODCAST_SITE_URL = "http://mamewo.ddo.jp/podcast/podcast.html";
+    private OkHttpClient client_;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,8 +117,9 @@ public class PodcastListPreference
         podcastListView_.setOnItemLongClickListener(this);
         podcastListView_.setOnItemClickListener(this);
         bundle_ = null;
+        client_ = new OkHttpClient();
+       
         //show back button ono toolbar
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -320,9 +328,25 @@ public class PodcastListPreference
                 int numItems = 0;
                 String iconURL = null;
                 String title = null;
+                Response response = null;
                 try {
                     ///XXX
-                    is = BaseGetPodcastTask.getInputStreamFromURL(url, 60*1000, true);
+                    //is = BaseGetPodcastTask.getInputStreamFromURL(url, 60*1000, true);
+                    Request request = new Request.Builder()
+                        .url(url)
+                        .build();
+                    response = client_.newCall(request).execute();
+                    if(response.code() == 401){
+                        //TODO: queue auth request and retry
+                        Log.i(TAG, "auth required: "+url);
+                        continue;
+                    }
+                    if(!response.isSuccessful()){
+                        Log.i(TAG, "http error: "+response.message()+", "+url.toString());
+                        continue;
+                    }
+                    is = response.body().byteStream();
+                    
                     XmlPullParser parser = factory.newPullParser();
                     parser.setInput(is, "UTF-8");
                     boolean inTitle = false;
@@ -372,6 +396,9 @@ public class PodcastListPreference
                         catch (IOException e) {
                             Log.i(TAG, "input stream cannot be close", e);
                         }
+                    }
+                    if(null != response){
+                        response.close();
                     }
                 }
             }

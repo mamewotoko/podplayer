@@ -35,15 +35,6 @@ apk file created in ` ./app/build/outputs/apk/app-debug.apk `
 
 A file bin/podplayer-debug.apk is created if succeed.
 
-### Eclipse
-1. Import this directory, whose name is podplayer.
-2. Import the libsrc/pulltorefresh/pulltorefresh directory, whose name is pulltorefresh
-3. Add project reference
-  1. right click podplayer project -> properties. 
-  2. select Project References. 
-  3. check pulltorefresh. 
-4. Run podplayer project as Android Application
-
 How to run UI test using Robotium
 ---------------------------------
 1. Connect android device or start android emulator
@@ -68,7 +59,6 @@ TODO
 * add option to exit by pressing back button
   * display confirm dialog: exit or playing background, live as servcie and display notification
 * cache
-  * podcast icon to disk (glide)
   * podcast xml
   * episode item
     * introduce simple memory based cache
@@ -76,13 +66,23 @@ TODO
   * point of view
     * http response cache
     * authentication (w/ cache?)
+      * preemptive
   * libraries
     * HttpURLConnection
     * OkHTTP 2.x
     * OkHTTP 3.x
+      https://github.com/square/okhttp/wiki/Recipes
+      * cache
+      * auth, counting retry
     * Volley
+      * cache
+      * customize http header to implement authentication
     * Android Asynchronous Http Client
       http://loopj.com/android-async-http/
+* http authenticate for MediaPlayer
+  * add username, password into url
+    http://user:password@hostname/path
+    * supports only basic authentication
 * display toast when network error ocurr
 * handle opml
 * share podcast with friend / author (add to preset)
@@ -109,7 +109,9 @@ TODO
       host,port,realm,user,password,auth_method
     * ver2: use AccountManager to manage host, username, password
 * build podcast parser with gradle
-  * fix commons-io dependency
+  * fix dependency
+    * commons-io
+    * okhttp3 (linked with podcast_parser)
 * sort by pubdate
   * fix sort crash
     * or sort on database
