@@ -79,9 +79,6 @@ abstract public class BasePodplayerActivity
     abstract protected void onPodcastListChanged(boolean start);
     abstract protected void notifyOrderChanged(int order);
 
-    //    Object cacheObject_ = null;
-    //static final public int CACHERESPONSE_API_LEVEL = 13;
-
     public void onCreate(Bundle savedInstanceState, ServiceConnection conn, Class<?> userClass) {
         super.onCreate(savedInstanceState);
         Intent intent = new Intent(this, PlayerService.class);
