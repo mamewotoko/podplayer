@@ -61,6 +61,7 @@ import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 public class PodcastListPreference
 	extends AppCompatActivity
@@ -109,6 +110,18 @@ public class PodcastListPreference
         podcastListView_.setOnItemLongClickListener(this);
         podcastListView_.setOnItemClickListener(this);
         bundle_ = null;
+        //show back button ono toolbar
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
     
     static

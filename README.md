@@ -98,7 +98,6 @@ TODO
   * debug: using TeeInputStream of Commons IO
 * improve UI
   * design layout with AndroidStudio
-  * add back icon to aciton bar
   * material icon: change loading icon of pulltorefresh  
 * support http auth for fetching podcast xml and episodes (#2)
   * cache auth info for each host?
