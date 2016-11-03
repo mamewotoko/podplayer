@@ -62,6 +62,7 @@ TODO
   * podcast xml
   * episode item
     * introduce simple memory based cache
+* reduce apk file size
 * select http lib
   * point of view
     * http response cache

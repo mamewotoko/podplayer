@@ -12,7 +12,9 @@
     <string name="pref_do_not_load_automatically">自動的に読み込まない</string>
     <string name="pref_load_podcasts_when_app_starts">アプリ起動時に読み込む</string>
     <string name="pref_read_timeout">読み込みのタイムアウト</string>
-    <string name="pref_appearance">UI</string>
+    <string name="pref_appearance_category">UI</string>
+    <string name="pref_general_category">一般</string>
+    <string name="pref_network_category">ネットワーク</string> 
     <string name="pref_use_expandable_list_ui">折りたたみリストを使う</string>
     <string name="pref_pull_to_update_ui">引き下げて更新するリストを使う</string>
     <string name="pref_expandable_list_ui">折りたたみリストを使う</string>

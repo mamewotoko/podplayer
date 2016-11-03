@@ -13,7 +13,9 @@
     <string name="pref_do_not_load_automatically">Fyll inte automatiskt</string>
     <string name="pref_load_podcasts_when_app_starts">Fyll podcasts när appen startar</string>
     <string name="pref_read_timeout">Läs timeout</string>
-    <string name="pref_appearance">UI</string>
+    <string name="pref_general_category">allmän</string>
+    <string name="pref_appearance_category">UI</string>
+    <string name="pref_network_category">nätverk</string>
     <string name="pref_use_expandable_list_ui">Använd utbyggbart lista UI</string>
     <string name="pref_pull_to_update_ui">dra att uppdatera UI</string>
     <string name="pref_expandable_list_ui">utbyggbart lista UI</string>
