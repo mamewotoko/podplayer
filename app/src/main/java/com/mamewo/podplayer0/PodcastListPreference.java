@@ -324,7 +324,6 @@ public class PodcastListPreference
                 Response response = null;
                 try {
                     ///XXX
-                    //is = BaseGetPodcastTask.getInputStreamFromURL(url, 60*1000, true);
                     Request request = new Request.Builder()
                         .url(url)
                         .build();
@@ -339,6 +338,7 @@ public class PodcastListPreference
                         continue;
                     }
                     is = response.body().byteStream();
+                    is = new BOMInputStream(is, false);
                     
                     XmlPullParser parser = factory.newPullParser();
                     parser.setInput(is, "UTF-8");
