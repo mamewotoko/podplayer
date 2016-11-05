@@ -13,6 +13,8 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.input.BOMInputStream;
+
 import okhttp3.Request;
 import okhttp3.Response;
 
