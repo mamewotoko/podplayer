@@ -3,20 +3,24 @@
     android:id="@+id/layout_root"
     android:layout_width="fill_parent"
     android:weightSum="1"
-     android:orientation="vertical"
-     android:layout_height="wrap_content">
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/dialog_image_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="center"
-        android:src="@drawable/qr" />
+        android:src="@drawable/qr"
+        android:contentDescription="@string/icon_desc_qrcode"
+        />
     <ImageView
         android:id="@+id/github_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="#CCC"
-        android:src="@drawable/github" />
+        android:src="@drawable/github"
+        android:contentDescription="@string/icon_desc_github"
+        />
 </LinearLayout>

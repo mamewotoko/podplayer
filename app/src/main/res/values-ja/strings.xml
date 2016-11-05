@@ -82,4 +82,14 @@
     <string name="icon_desc_playing">再生中</string>
     <string name="icon_desc_pausing">停止中</string>
     <string name="icon_desc_episode_none">アイコンなし</string>
+
+    <string name="notification_icon_desc_previous">前</string>
+    <string name="notification_icon_desc_pause">一時停止</string>
+    <string name="notification_icon_desc_play">再生</string>
+    <string name="notification_icon_desc_next">次</string>
+
+    <string name="icon_desc_gesture_table">ジェスチャー表</string>
+    <string name="icon_desc_qrcode">Google playのウェブサイトへのQRコードです。ぜひ、友達に教えてあげてください。</string>
+    <string name="icon_desc_github">GitHubへのリンク</string>
+
 </resources>

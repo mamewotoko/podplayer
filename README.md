@@ -146,6 +146,7 @@ TODO
    * test multiple test classes once
     * current situation: freeze?
     * set "package" instrumentationArgs to start all test classes
+   * add test of content description
 * add preference to display pubdate as "X days before"
 * save latest few item to savedInstanceState
 * filter not listened item only (preference)

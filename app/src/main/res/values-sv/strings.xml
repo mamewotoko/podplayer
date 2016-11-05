@@ -82,4 +82,14 @@
     <string name="icon_desc_playing">Spelar</string>
     <string name="icon_desc_pausing">Pausa</string>
     <string name="icon_desc_episode_none">Ingen ikon</string>
+
+    <string name="notification_icon_desc_previous">Tidigare</string>
+    <string name="notification_icon_desc_pause">paus</string>
+    <string name="notification_icon_desc_play">Spela</string>
+    <string name="notification_icon_desc_next">Nästa</string>
+
+    <string name="icon_desc_gesture_table">gest tabell</string>
+    <string name="icon_desc_qrcode">QR-kod till Google Play sida, vänligen dela podplayer med dina vänner</string>
+    <string name="icon_desc_github">Länk i GitHub</string>
+
 </resources>

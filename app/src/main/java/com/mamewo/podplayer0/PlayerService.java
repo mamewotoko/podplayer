@@ -426,10 +426,12 @@ public class PlayerService
 		if(isPlaying()){
 			pauseIntent.setAction(STOP_MUSIC_ACTION);
 			rvs.setImageViewResource(R.id.notification_pause, android.R.drawable.ic_media_pause);
+            rvs.setContentDescription(R.id.notification_pause, getString(R.string.notification_icon_desc_pause));
 		}
 		else {
 			pauseIntent.setAction(START_MUSIC_ACTION);
 			rvs.setImageViewResource(R.id.notification_pause, android.R.drawable.ic_media_play);
+            rvs.setContentDescription(R.id.notification_pause, getString(R.string.notification_icon_desc_play));
 		}
 		PendingIntent pausePendingIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
 		rvs.setOnClickPendingIntent(R.id.notification_pause, pausePendingIntent);

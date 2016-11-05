@@ -21,17 +21,20 @@
 	       android:layout_weight="1"
 	       android:layout_height="wrap_content"
 	       android:src="@android:drawable/ic_media_previous"
+               android:contentDescription="@string/notification_icon_desc_previous"
 	       />
   <ImageView android:id="@+id/notification_pause"
 	       android:layout_width="0dp"
 	       android:layout_weight="1"
 	       android:layout_height="wrap_content"
 	       android:src="@android:drawable/ic_media_pause"
+               android:contentDescription="@string/notification_icon_desc_pause"
 	       />
   <ImageView android:id="@+id/notification_next"
 	     android:layout_width="0dp"
 	       android:layout_weight="1"
 	       android:layout_height="wrap_content"
 	       android:src="@android:drawable/ic_media_next"
+               android:contentDescription="@string/notification_icon_desc_next"
 	       />
 </LinearLayout>
