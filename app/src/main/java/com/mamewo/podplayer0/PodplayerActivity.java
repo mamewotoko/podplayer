@@ -200,7 +200,7 @@ public class PodplayerActivity
 
     private boolean playByInfo(EpisodeInfo info) {
         //umm...
-        int playPos = -1;
+        int playPos;
         for(playPos = 0; playPos < state_.latestList_.size(); playPos++) {
             if(state_.latestList_.get(playPos) == info) {
                 break;

@@ -129,7 +129,6 @@ public class PodplayerExpActivity
                 PreferenceManager.getDefaultSharedPreferences(this);
         Resources res = getResources();
         int limit = Integer.valueOf(pref.getString("episode_limit", res.getString(R.string.default_episode_limit)));
-        int timeoutSec = Integer.valueOf(pref.getString("read_timeout", res.getString(R.string.default_read_timeout)));
         boolean getIcon = pref.getBoolean("show_podcast_icon", res.getBoolean(R.bool.default_show_podcast_icon));
         GetPodcastTask task = new GetPodcastTask(limit, getIcon);
         startLoading(task);
@@ -359,7 +358,7 @@ public class PodplayerExpActivity
             PodcastInfo info = state_.podcastList_.get(filteredItemIndex_.get(groupPosition));
             titleView.setText(info.title_);
             int childNum = state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition)).size();
-            String numStr = "";
+            String numStr;
             if (childNum <= 1) {
                 //TODO: localize
                 numStr = childNum + " item";

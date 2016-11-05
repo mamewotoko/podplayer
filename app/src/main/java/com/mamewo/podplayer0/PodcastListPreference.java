@@ -134,15 +134,14 @@ public class PodcastListPreference
         List<PodcastInfo> list = new ArrayList<PodcastInfo>();
         for (int i = 0; i < allTitles.length; i++) {
             String title = allTitles[i];
-            URL url = null;
             try {
-                url = new URL(allURLs[i]);
+                URL url = new URL(allURLs[i]);
                 //TODO: get config and fetch icon
                 PodcastInfo info = new PodcastInfo(title, url, null, true);
                 list.add(info);
             }
             catch (MalformedURLException e) {
-                e.printStackTrace();
+                Log.d(TAG, "malformed", e);
             }
         }
         return list;
@@ -211,9 +210,8 @@ public class PodcastListPreference
                 if(urlStr.isEmpty()){
                     continue;
                 }
-                URL url = null;
                 try {
-                    url = new URL(urlStr);
+                    URL url = new URL(urlStr);
                     urlList.add(url);
                 }
                 catch (MalformedURLException e) {
@@ -367,7 +365,7 @@ public class PodcastListPreference
                                 Log.d(TAG, "Title: " + title);
                             }
                         }
-                        eventType = parser.next();
+                        parser.next();
                     }
                     if (numItems > 0 && null != title) {
                         Log.d(TAG, "publish: " + title);
@@ -544,7 +542,7 @@ public class PodcastListPreference
                 iconURL = value.getString("icon_url");
             }
             boolean enabled = value.getBoolean("enabled");
-			PodcastInfo info = new PodcastInfo(title, url, null, enabled);
+			PodcastInfo info = new PodcastInfo(title, url, iconURL, enabled);
             list.add(info);
         }
         return list;

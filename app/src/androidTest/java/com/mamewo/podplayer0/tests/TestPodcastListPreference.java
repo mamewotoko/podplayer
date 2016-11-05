@@ -49,9 +49,10 @@ public class TestPodcastListPreference
     public void testAddFail() {
         solo_.sleep(1000);
         ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
-        PodcastInfo prevInfo = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
+        //PodcastInfo prevInfo = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
         String url = "http://www.google.co.jp/";
         int prevCount = adapter.getCount();
+        solo_.enterText(solo_.getEditText(0), url);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_fail");
         solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
         solo_.waitForDialogToClose(10000);

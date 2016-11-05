@@ -82,14 +82,11 @@ abstract public class BasePodplayerActivity
         Intent intent = new Intent(this, PlayerService.class);
         startService(intent);
         finishServiceOnExit_ = false;
-        state_ = null;
         uiSettingChanged_ = false;
         
         final Resources res = getResources();
 
-        if(null == state_){
-            state_ = new PodplayerState();
-        }
+        state_ = new PodplayerState();
         connection_ = conn;
         //TODO: handle error
         bindService(intent, conn, Context.BIND_AUTO_CREATE);
@@ -100,7 +97,7 @@ abstract public class BasePodplayerActivity
         currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
 
         ExternalCacheDiskCacheFactory factory = new ExternalCacheDiskCacheFactory(this, "podcast_icon", ICON_DISK_CACHE_BYTES);
-        if(!Glide.isSetup() && factory != null){
+        if(!Glide.isSetup()){
             GlideBuilder builder = new GlideBuilder(this).setDiskCache(factory);
             //obsolete API....
             Glide.setup(builder);
