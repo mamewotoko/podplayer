@@ -71,8 +71,7 @@ TODO
       * preemptive
   * libraries
     * HttpURLConnection
-    * OkHTTP 2.x
-    * OkHTTP 3.x
+    * OkHTTP
       https://github.com/square/okhttp/wiki/Recipes
       * cache
       * auth, counting retry
@@ -95,6 +94,7 @@ TODO
 * thanks dialog?
   * FIXED: checkbox of preference is gray based
     * http://stackoverflow.com/questions/27091845/android-appcompat-dark-theme-settings-checkbox
+  * Travis CI, Jenkins, Sakura VPS
 * set default item / show notification in paused state
   * start player service
 * use minifyEnabled option of build.gradle
