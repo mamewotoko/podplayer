@@ -9,9 +9,10 @@
       android:adjustViewBounds="true"
       android:maxHeight="54dp"
       android:maxWidth="54dp"
-      android:layout_marginLeft="2dp"
+      android:layout_marginRight="4dp"
       android:contentDescription="@string/icon_desc_episode_none"
-      android:focusable="false" />
+      android:focusable="false"
+      />
 
   <LinearLayout 
       android:layout_width="wrap_content"

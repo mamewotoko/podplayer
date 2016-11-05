@@ -22,6 +22,7 @@ import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -212,8 +213,6 @@ public class PlayerService
 	}
 	
 	public boolean isPlaying() {
-        //TODO: why null?
-		Log.d(TAG, "PlayerService.isPlaying: player_: "+player_);
         if(null == player_){
             return false;
         }
@@ -425,12 +424,16 @@ public class PlayerService
 		if(isPlaying()){
 			pauseIntent.setAction(STOP_MUSIC_ACTION);
 			rvs.setImageViewResource(R.id.notification_pause, android.R.drawable.ic_media_pause);
-            rvs.setContentDescription(R.id.notification_pause, getString(R.string.notification_icon_desc_pause));
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+				rvs.setContentDescription(R.id.notification_pause, getString(R.string.notification_icon_desc_pause));
+			}
 		}
 		else {
 			pauseIntent.setAction(START_MUSIC_ACTION);
 			rvs.setImageViewResource(R.id.notification_pause, android.R.drawable.ic_media_play);
-            rvs.setContentDescription(R.id.notification_pause, getString(R.string.notification_icon_desc_play));
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+				rvs.setContentDescription(R.id.notification_pause, getString(R.string.notification_icon_desc_play));
+			}
 		}
 		PendingIntent pausePendingIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
 		rvs.setOnClickPendingIntent(R.id.notification_pause, pausePendingIntent);
@@ -590,26 +593,26 @@ public class PlayerService
 		listener_ = listener;
 	}
 
-	public int getDuration(){
-		return player_.getDuration();
-	}
-
-	public int getCurrentPositionMsec(){
-		return player_.getCurrentPosition();
-	}
-
-	public void seekTo(int msec){
-		player_.seekTo(msec);
-	}
+//	public int getDuration(){
+//		return player_.getDuration();
+//	}
+//
+//	public int getCurrentPositionMsec(){
+//		return player_.getCurrentPosition();
+//	}
+//
+//	public void seekTo(int msec){
+//		player_.seekTo(msec);
+//	}
 
 	public void clearOnStartMusicListener() {
 		listener_ = null;
 	}
 	
 	public interface PlayerStateListener {
-		public void onStartLoadingMusic(EpisodeInfo info);
-		public void onStartMusic(EpisodeInfo info);
-		public void onStopMusic(int mode);
+		void onStartLoadingMusic(EpisodeInfo info);
+		void onStartMusic(EpisodeInfo info);
+		void onStopMusic(int mode);
 	}
 
 	final static

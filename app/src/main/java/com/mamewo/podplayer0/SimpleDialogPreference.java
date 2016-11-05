@@ -8,7 +8,6 @@ import android.app.Dialog;
 public class SimpleDialogPreference
     extends DialogPreference
 {
-    private Dialog dialog_;
     public SimpleDialogPreference(Context context){
         super(context);
     }

@@ -8,10 +8,9 @@ import java.util.List;
 import static com.mamewo.podplayer0.Const.*;
 
 import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -46,7 +45,6 @@ public class PodplayerActivity
     extends BasePodplayerActivity
     implements OnClickListener,
     OnLongClickListener,
-    ServiceConnection,
     OnItemClickListener,
     OnItemLongClickListener,
     OnItemSelectedListener,
@@ -69,8 +67,7 @@ public class PodplayerActivity
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        //TODO: fix lint warning
-        super.onCreate(savedInstanceState, this, PodplayerActivity.class);
+        super.onCreate(savedInstanceState);
        
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.main);
@@ -120,8 +117,7 @@ public class PodplayerActivity
                 PreferenceManager.getDefaultSharedPreferences(this);
         Resources res = getResources();
         int limit = Integer.valueOf(pref.getString("episode_limit", res.getString(R.string.default_episode_limit)));
-        boolean getIcon = pref.getBoolean("show_podcast_icon", res.getBoolean(R.bool.default_show_podcast_icon));
-        GetPodcastTask task = new GetPodcastTask(limit, getIcon);
+        GetPodcastTask task = new GetPodcastTask(limit);
         startLoading(task);
     }
 
@@ -313,8 +309,8 @@ public class PodplayerActivity
     private class GetPodcastTask
         extends BaseGetPodcastTask
     {
-        public GetPodcastTask(int limit, boolean getIcon) {
-            super(PodplayerActivity.this, client_, limit, getIcon, EPISODE_BUF_SIZE);
+        public GetPodcastTask(int limit) {
+            super(PodplayerActivity.this, client_, limit, EPISODE_BUF_SIZE);
         }
 
         @Override

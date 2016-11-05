@@ -10,10 +10,9 @@ import com.mamewo.lib.podcast_parser.PodcastInfo;
 import static com.mamewo.podplayer0.Const.*;
 
 import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -44,7 +43,6 @@ public class PodplayerExpActivity
     extends BasePodplayerActivity
     implements OnClickListener,
     OnLongClickListener,
-    ServiceConnection,
     OnItemLongClickListener,
     PlayerService.PlayerStateListener,
     OnChildClickListener
@@ -61,7 +59,7 @@ public class PodplayerExpActivity
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState, this, PodplayerExpActivity.class);
+        super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.expandable_main);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -129,8 +127,7 @@ public class PodplayerExpActivity
                 PreferenceManager.getDefaultSharedPreferences(this);
         Resources res = getResources();
         int limit = Integer.valueOf(pref.getString("episode_limit", res.getString(R.string.default_episode_limit)));
-        boolean getIcon = pref.getBoolean("show_podcast_icon", res.getBoolean(R.bool.default_show_podcast_icon));
-        GetPodcastTask task = new GetPodcastTask(limit, getIcon);
+        GetPodcastTask task = new GetPodcastTask(limit);
         startLoading(task);
     }
 
@@ -431,8 +428,8 @@ public class PodplayerExpActivity
     private class GetPodcastTask
         extends BaseGetPodcastTask
     {
-        public GetPodcastTask(int limit, boolean getIcon) {
-            super(PodplayerExpActivity.this, client_, limit, getIcon);
+        public GetPodcastTask(int limit) {
+            super(PodplayerExpActivity.this, client_, limit);
         }
 
         @Override

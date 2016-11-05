@@ -29,12 +29,6 @@ public class PodplayerPreferenceFragment
     OnSharedPreferenceChangeListener
 {
     private View logo_;
-    static final
-    private int VERSION_DIALOG = 1;
-    static final
-    private int GESTURE_TABLE_DIALOG = 2;
-    static final
-    private int LICENSE_DIALOG = 3;
 
     static final
     private String DIALOG_FRAGMENT_TAG = "com.mamewo.podplayer.pref.dialogtag";
@@ -45,7 +39,7 @@ public class PodplayerPreferenceFragment
     private Preference mailToAuthor_;
     private Preference gestureTable_;
     private ListPreference readTimeout_;
-    private Preference scoreThreshold_;
+    //private Preference scoreThreshold_;
     //private Preference clearCache_;
     private Preference episodeLimit_;
     private SharedPreferences pref_;

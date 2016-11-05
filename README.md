@@ -53,7 +53,7 @@ How to run UI test using Robotium
 TODO
 ----
 * fast load
-  * improbe incremental update algorith to reduce cpu usage
+  * improve incremental update algorithm to reduce cpu usage
     * problem: displayed episode is not played by click while loading episodes
     * fix flicker while loading episode
 * add option to exit by pressing back button
@@ -84,7 +84,7 @@ TODO
   * add username, password into url
     http://user:password@hostname/path
     * supports only basic authentication
-* display toast when network error ocurr
+* display toast when network error occurs
 * handle opml
 * share podcast with friend / author (add to preset)
   * bluetooth

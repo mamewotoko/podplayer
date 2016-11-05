@@ -47,10 +47,11 @@ import android.support.v7.app.AppCompatActivity;
 abstract public class BasePodplayerActivity
     extends AppCompatActivity
     implements OnSharedPreferenceChangeListener,
-    OnGesturePerformedListener
+    OnGesturePerformedListener,
+    ServiceConnection
 {
     final static
-    protected PodcastInfo[] DUMMY_INFO_LIST = new PodcastInfo[0];
+    private PodcastInfo[] DUMMY_INFO_LIST = new PodcastInfo[0];
     final static
     public String HTTP_CACHE_DIR = "http_cache";
     //16mbyte
@@ -71,14 +72,15 @@ abstract public class BasePodplayerActivity
 
     static final
     public int ICON_DISK_CACHE_BYTES = 64*1024*1024;
-    //private File httpCacheDir_;
     protected int currentOrder_;
 
     abstract protected void onPodcastListChanged(boolean start);
     abstract protected void notifyOrderChanged(int order);
 
-    public void onCreate(Bundle savedInstanceState, ServiceConnection conn, Class<?> userClass) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ServiceConnection conn = this;
+        Class<?> userClass = this.getClass();
         Intent intent = new Intent(this, PlayerService.class);
         startService(intent);
         finishServiceOnExit_ = false;

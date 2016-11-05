@@ -23,7 +23,7 @@
     </activity>
 
     <activity
-        android:name="PodplayerExpActivity"
+        android:name="com.mamewo.podplayer0.PodplayerExpActivity"
         android:label="podplayer_exp"
         android:launchMode="singleTask">
       <!-- comment this before release -->
@@ -33,7 +33,7 @@
         </intent-filter>
       </activity>
     <activity
-        android:name="PodplayerActivity"
+        android:name="com.mamewo.podplayer0.PodplayerActivity"
         android:label="podplayer_list"
         android:launchMode="singleTask">
       <!-- comment this before release -->
@@ -42,10 +42,10 @@
           <category android:name="android.intent.category.LAUNCHER" />
           </intent-filter>
       </activity>
-    <activity android:name="PodplayerPreference"
+    <activity android:name="com.mamewo.podplayer0.PodplayerPreference"
 
               />
-    <activity android:name="PodcastListPreference"
+    <activity android:name="com.mamewo.podplayer0.PodcastListPreference"
               />
     <receiver android:name="PlayerService$Receiver"
               android:exported="false">

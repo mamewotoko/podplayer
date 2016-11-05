@@ -50,7 +50,7 @@
       <item>Reversed order of appearance</item>
       <!--
       <item>Order of pubDate(oldest first)</item>
-      <item>Reversed order of pubDate(lastest first)</item>
+      <item>Reversed order of pubDate(latest first)</item>
       -->
     </string-array>
 

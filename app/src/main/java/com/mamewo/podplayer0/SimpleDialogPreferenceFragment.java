@@ -67,7 +67,7 @@ public class SimpleDialogPreferenceFragment
 					is.close();
 				}
 				catch(IOException e) {
-					
+					//nop
 				}
 			}
             builder.setTitle(R.string.pref_license);
