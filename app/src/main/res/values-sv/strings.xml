@@ -78,5 +78,8 @@
     <string name="action_expand">bygga ut</string>
     <string name="action_reload">ladda om</string>
     <string name="action_abort">avbryta</string>
-   
+
+    <string name="icon_desc_playing">Spelar</string>
+    <string name="icon_desc_pausing">Pausa</string>
+    <string name="icon_desc_episode_none">Ingen ikon</string>
 </resources>

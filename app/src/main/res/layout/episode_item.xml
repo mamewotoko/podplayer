@@ -10,6 +10,7 @@
       android:maxHeight="54dp"
       android:maxWidth="54dp"
       android:layout_marginLeft="2dp"
+      android:contentDescription="@string/icon_desc_episode_none"
       android:focusable="false" />
 
   <LinearLayout 
@@ -27,6 +28,7 @@
           android:layout_width="36dp"
           android:src="@drawable/ic_play_arrow_white_24dp"
           android:tint="#9E9"
+          android:contentDescription="@string/icon_desc_playing"
           android:visibility="gone" />
       <TextView
           android:id="@+id/episode_title"

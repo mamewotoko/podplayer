@@ -81,4 +81,8 @@
     <string name="action_expand">Expand</string>
     <string name="action_reload">Reload</string>
     <string name="action_abort">Abort</string>
+
+    <string name="icon_desc_playing">Playing</string>
+    <string name="icon_desc_pausing">Pausing</string>
+    <string name="icon_desc_episode_none">No icon</string>
 </resources>

@@ -285,9 +285,11 @@ public class PodplayerActivity
                 //cache!
                 if(player_.isPlaying()) {
                     stateIcon.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+                    stateIcon.setContentDescription(getString(R.string.icon_desc_playing));
                 }
                 else {
                     stateIcon.setImageResource(R.drawable.ic_pause_white_24dp);
+                    stateIcon.setContentDescription(getString(R.string.icon_desc_pausing));
                 }
                 stateIcon.setVisibility(View.VISIBLE);
             }
@@ -301,9 +303,11 @@ public class PodplayerActivity
                     .with(PodplayerActivity.this)
                     .load(iconURL)
                     .into(episodeIcon);
+                episodeIcon.setContentDescription(info.title_);
                 episodeIcon.setVisibility(View.VISIBLE);
             }
             else {
+                episodeIcon.setContentDescription(getString(R.string.icon_desc_episode_none));
                 episodeIcon.setVisibility(View.GONE);
             }
             return view;

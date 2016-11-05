@@ -402,9 +402,11 @@ public class PodplayerExpActivity
                 //cache!
                 if(player_.isPlaying()) {
                     stateIcon.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+                    stateIcon.setContentDescription(getString(R.string.icon_desc_playing));
                 }
                 else {
                     stateIcon.setImageResource(R.drawable.ic_pause_white_24dp);
+                    stateIcon.setContentDescription(getString(R.string.icon_desc_pausing));
                 }
                 stateIcon.setVisibility(View.VISIBLE);
             }

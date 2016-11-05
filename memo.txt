@@ -1,0 +1,2 @@
+Auth test site
+http://mamewo.ddo.jp/podcast/auth/

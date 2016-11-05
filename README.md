@@ -58,6 +58,7 @@ TODO
     * fix flicker while loading episode
 * add option to exit by pressing back button
   * display confirm dialog: exit or playing background, live as servcie and display notification
+* avoid infinite try playing loop when network is not available
 * cache
   * podcast xml
   * episode item
@@ -99,6 +100,10 @@ TODO
 * fix #1
   * content corrupted?
   * debug: using TeeInputStream of Commons IO
+* fix lint warnings
+  * contentDescription of image view
+  * review lint.xml and enable appropriate options
+  * enable Google App Indexing
 * improve UI
   * design layout with AndroidStudio
   * material icon: change loading icon of pulltorefresh  
@@ -135,8 +140,6 @@ TODO
     * ? not listened / ! listened
     * remember listened timestamp
 * add score thershold preference dialog 
-* fix lint warnings
-  * contentDescription of image view
 * spoon test
    * test multiple test classes once
     * current situation: freeze?
