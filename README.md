@@ -97,6 +97,8 @@ TODO
     * http://stackoverflow.com/questions/27091845/android-appcompat-dark-theme-settings-checkbox
 * set default item / show notification in paused state
   * start player service
+* use minifyEnabled option of build.gradle
+  * disable logging
 * fix #1
   * content corrupted?
   * debug: using TeeInputStream of Commons IO
