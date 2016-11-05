@@ -8,7 +8,6 @@ import com.mamewo.lib.podcast_parser.EpisodeInfo;
 import static com.mamewo.podplayer0.Const.*;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;

@@ -1,10 +1,7 @@
 package com.mamewo.podplayer0;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.net.URL;
 
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
@@ -13,16 +10,13 @@ import com.mamewo.lib.podcast_parser.PodcastInfo;
 import static com.mamewo.podplayer0.Const.*;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -35,11 +29,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ImageView;
-import android.widget.ExpandableListAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.ImageButton;

@@ -4,9 +4,6 @@ import junit.framework.Assert;
 
 import com.robotium.solo.Solo;
 import com.robotium.solo.Solo.Config;
-import com.robotium.solo.Solo.Config.ScreenshotFileType;
-import android.os.Environment;
-import java.io.File;
 
 import com.mamewo.lib.podcast_parser.PodcastInfo;
 import com.mamewo.podplayer0.PodcastListPreference;
@@ -17,7 +14,6 @@ import android.util.Log;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import com.squareup.spoon.Spoon;
 import com.jraska.falcon.FalconSpoon;
 
 public class TestPodcastListPreference

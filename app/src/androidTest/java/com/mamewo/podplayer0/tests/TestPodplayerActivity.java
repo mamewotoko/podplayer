@@ -1,17 +1,12 @@
 package com.mamewo.podplayer0.tests;
 
-import java.util.List;
-import java.io.File;
-
 import com.robotium.solo.Solo;
 import com.robotium.solo.Solo.Config;
-import android.os.Environment;
+
 import android.content.res.Resources;
 
-import com.squareup.spoon.Spoon;
 import com.jraska.falcon.FalconSpoon;
 
-import com.mamewo.podplayer0.PodcastListPreference;
 import com.mamewo.podplayer0.PodplayerActivity;
 import com.mamewo.podplayer0.R;
 
@@ -19,8 +14,6 @@ import junit.framework.Assert;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 
 public class TestPodplayerActivity
     extends ActivityInstrumentationTestCase2<PodplayerActivity>

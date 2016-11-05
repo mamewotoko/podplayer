@@ -2,7 +2,6 @@ package com.mamewo.podplayer0;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.io.File;
 import java.util.Date;
@@ -15,7 +14,6 @@ import com.mamewo.lib.podcast_parser.PodcastInfo;
 import static com.mamewo.podplayer0.Const.*;
 
 import android.media.AudioManager;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;

@@ -2,15 +2,12 @@ package com.mamewo.podplayer0;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.net.URL;
 
 import static com.mamewo.podplayer0.Const.*;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -18,7 +15,6 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;

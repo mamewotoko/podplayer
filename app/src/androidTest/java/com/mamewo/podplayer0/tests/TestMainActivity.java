@@ -6,9 +6,6 @@ import com.mamewo.podplayer0.PodplayerExpActivity;
 
 import com.robotium.solo.Solo;
 import com.robotium.solo.Solo.Config;
-import com.robotium.solo.Solo.Config.ScreenshotFileType;
-import android.os.Environment;
-import java.io.File;
 
 import android.app.Activity;
 import android.content.SharedPreferences;

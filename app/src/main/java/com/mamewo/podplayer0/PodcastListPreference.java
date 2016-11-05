@@ -9,12 +9,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -26,16 +24,13 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.PodcastInfo;
 
 import static com.mamewo.podplayer0.Const.*;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;

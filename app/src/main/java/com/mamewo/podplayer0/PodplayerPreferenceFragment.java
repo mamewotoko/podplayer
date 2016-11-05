@@ -2,14 +2,8 @@ package com.mamewo.podplayer0;
 
 import static com.mamewo.podplayer0.Const.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.MessageFormat;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -19,17 +13,11 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
-import android.view.LayoutInflater;
-import android.os.Build;
 
-import android.widget.LinearLayout;
-import android.support.v7.widget.Toolbar;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.Preference.OnPreferenceClickListener;
-import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.ListPreference;
 
 import android.support.v4.app.DialogFragment;
