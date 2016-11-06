@@ -23,7 +23,7 @@ public class TestPodplayerActivity
     static final
     private int INIT_SLEEP = 5000;
     static final
-    private int UI_SLEEP = 2000;
+    private int UI_SLEEP = 1000;
     
     final static
     private String TAG = "podtest";
@@ -224,11 +224,33 @@ public class TestPodplayerActivity
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
         solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         solo_.sleep(UI_SLEEP);
-        selectPreference(res_.getString(R.string.clear_response_cache_title));
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "image_disable_enable");
+        selectPreference(res_.getString(R.string.pref_show_podcast_icon));
         solo_.sleep(UI_SLEEP);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "gesture_dialog");
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "image_disable_enable");
+        solo_.goBack();
+        //TODO: reload
+        solo_.sleep(UI_SLEEP);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "image_disable_enable");
+        //
+        // int[] pos = new int[2];
+        // View v = solo_.getCurrentActivity().findViewById(R.id.list);
+        // v.getLocationOnScreen(pos);
+        // solo_.drag(pos[0]+10, pos[1]+10, pos[0]+10, pos[1]+30, 4);
+        
+        solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+        solo_.sleep(UI_SLEEP);
+        selectPreference(res_.getString(R.string.pref_show_podcast_icon));
+        solo_.sleep(UI_SLEEP);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "image_disable_enable");
         solo_.goBack();
         solo_.sleep(UI_SLEEP);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "image_disable_enable");
+
+        // v = solo_.getCurrentActivity().findViewById(R.id.list);
+        // v.getLocationOnScreen(pos);
+        // solo_.drag(pos[0]+10, pos[1]+10, pos[0]+10, pos[1]+30, 4);
+        // FalconSpoon.screenshot(solo_.getCurrentActivity(), "image_disable_enable");
     }
     
     public void testLicence() {
