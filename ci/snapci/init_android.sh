@@ -19,7 +19,9 @@ if [ ! -e ${INITIALIZATION_FILE} ]; then
     echo y | android update sdk --no-ui --filter extra-android-m2repository > /dev/null
 
     echo y | android update sdk --no-ui --filter sys-img-armeabi-v7a-google_apis-10 --all > /dev/null
-    sudo yum update
-    sudo yum install -y glibc.i686
+
+    ## give up
+    #sudo yum update
+    #sudo yum install -y glibc.i686
     touch ${INITIALIZATION_FILE}
 fi
