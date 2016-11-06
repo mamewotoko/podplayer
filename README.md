@@ -85,6 +85,7 @@ TODO
   * add username, password into url
     http://user:password@hostname/path
     * supports only basic authentication
+* add + action icon to add podcast    
 * display toast when network error occurs
 * handle opml
 * share podcast with friend / author (add to preset)
@@ -104,8 +105,8 @@ TODO
   * content corrupted?
   * debug: using TeeInputStream of Commons IO
 * fix lint warnings
-  * contentDescription of image view
   * review lint.xml and enable appropriate options
+  * check report of code inspection of Android Studio
   * enable Google App Indexing
 * improve UI
   * design layout with AndroidStudio
@@ -127,6 +128,7 @@ TODO
   * add test
 * modify icon
   * use opaque orange
+  * make white status icon?
 * fix bugs
   * checkbox of preference is gray based
     * http://stackoverflow.com/questions/27091845/android-appcompat-dark-theme-settings-checkbox
@@ -144,7 +146,7 @@ TODO
     * remember listened timestamp
 * add score thershold preference dialog 
 * spoon test
-   * test multiple test classes once
+   * test multiple test classes once / merge test result
     * current situation: freeze?
     * set "package" instrumentationArgs to start all test classes
    * add test of content description
