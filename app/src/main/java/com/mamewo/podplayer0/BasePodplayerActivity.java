@@ -238,8 +238,10 @@ abstract public class BasePodplayerActivity
         if (updateAll || "show_podcast_icon".equals(key)) {
             showPodcastIcon_ = pref.getBoolean("show_podcast_icon", 
                                                 res.getBoolean(R.bool.default_show_podcast_icon));
+            //TODO: modify interface........
+            currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
+            notifyOrderChanged(currentOrder_);
         }
-      
         // if (updateAll || "use_reponse_cache".equals(key)){
         //     boolean useCache = pref.getBoolean("use_reponse_cache", 
         //                                         res.getBoolean(R.bool.default_use_response_cache));

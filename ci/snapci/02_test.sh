@@ -2,7 +2,7 @@
 set -e
 
 # add avd
-echo no | android create avd -n emu-10 -g armeabi-v7a -t android-10 -c 32M
+echo no | android create avd -n emu-10 -g armeabi -t android-10 -c 32M 
 emulator -avd emu-10 -no-window &
 sleep 90
 

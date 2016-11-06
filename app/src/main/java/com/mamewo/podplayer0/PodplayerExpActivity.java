@@ -65,7 +65,6 @@ public class PodplayerExpActivity
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
-        //actionbar.setLogo(R.drawable.ic_status);
         actionbar.setDisplayShowTitleEnabled(false);
         
 		reloadButton_ = (ImageView) findViewById(R.id.reload_button);
