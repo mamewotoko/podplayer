@@ -9,3 +9,4 @@ adb logcat > logcat.log &
 ./gradlew spoonDebug
 
 adb shell reboot -p
+sleep 90
