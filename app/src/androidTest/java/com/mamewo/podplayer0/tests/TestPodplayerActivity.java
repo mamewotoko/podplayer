@@ -32,31 +32,10 @@ public class TestPodplayerActivity
         super("com.mamewo.podplayer0", PodplayerActivity.class);
     }
 
-    public boolean selectPreference(String targetTitle) {
-        // TextView view = null;
-        //Assert.assertTrue(solo_.waitForActivity("PodplayerPrefrence", UI_SLEEP));
+    public void selectPreference(String targetTitle) {
         solo_.sleep(UI_SLEEP);
         Log.d(TAG, "current activity: "+solo_.getCurrentActivity().getTitle().toString());
-        //Assert.assertEquals(res_.getString(R.string.preference_title), solo_.getCurrentActivity().getTitle().toString());
-        //TODO: check
-        //TODO: scroll?
         solo_.clickOnText(targetTitle);
-        // do {
-        //     List<TextView> list = solo_.getCurrentViews(TextView.class, false);
-        //     for (TextView listText : list) {
-        //         Log.d(TAG, "target, list: " + targetTitle + ": " + listText.getText());
-        //         if(targetTitle.equals(listText.getText())){
-        //             view = listText;
-        //             break;
-        //         }
-        //     }
-        // }
-        // while(null == view && solo_.scrollDownList(0));
-        // if (view == null) {
-        //     return false;
-        // }
-        // solo_.clickOnView(view);
-        return true;
     }
 
     @Override
@@ -265,7 +244,7 @@ public class TestPodplayerActivity
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
         solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         solo_.sleep(500);
-        Assert.assertTrue(selectPreference(res_.getString(R.string.pref_version)));
+        selectPreference(res_.getString(R.string.pref_version));
         solo_.sleep(500);
         View githubView = solo_.getView(R.id.github_logo);
         solo_.clickOnView(githubView);

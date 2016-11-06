@@ -5,6 +5,7 @@ import com.robotium.solo.Solo.Config;
 import com.robotium.solo.Solo.Config.ScreenshotFileType;
 import android.os.Environment;
 import android.content.res.Resources;
+import junit.framework.Assert;
 
 import java.io.File;
 
@@ -30,6 +31,12 @@ public class TestPodplayerExpActivity
     final static
     private String TAG = "podtest";
 
+    public void selectPreference(String targetTitle) {
+        solo_.sleep(UI_SLEEP);
+        Log.d(TAG, "current activity: "+solo_.getCurrentActivity().getTitle().toString());
+        solo_.clickOnText(targetTitle);
+    }
+    
     public TestPodplayerExpActivity() {
         super("com.mamewo.podplayer0", PodplayerExpActivity.class);
     }
