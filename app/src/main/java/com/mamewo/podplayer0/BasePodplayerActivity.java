@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -99,6 +100,7 @@ abstract public class BasePodplayerActivity
         currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
 
         ExternalCacheDiskCacheFactory factory = new ExternalCacheDiskCacheFactory(this, "podcast_icon", ICON_DISK_CACHE_BYTES);
+        //TODO: use new api
         if(!Glide.isSetup()){
             GlideBuilder builder = new GlideBuilder(this).setDiskCache(factory);
             //obsolete API....
@@ -242,27 +244,28 @@ abstract public class BasePodplayerActivity
             currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
             notifyOrderChanged(currentOrder_);
         }
-        // if (updateAll || "use_reponse_cache".equals(key)){
-        //     boolean useCache = pref.getBoolean("use_reponse_cache", 
-        //                                         res.getBoolean(R.bool.default_use_response_cache));
-        //     if(useCache){
-        //         if(null == httpCacheDir_){
-        //             httpCacheDir_ = new File(getCacheDir(), "http");
-        //         }
-        //         cacheObject_ = enableHttpResponseCache(httpCacheDir_);
-        //     }
-        //     else {
-        //         disableHttpResponseCache(cacheObject_);
-        //     }
-        // }
-        // if("clear_response_cache".equals(key)){
-        //     try{
-        //         client_.cache().delete();
-        //     }
-        //     catch(IOException e){
-        //         Log.d(TAG, "cache remove failed");
-        //     }
-        // }
+        if("clear_response_cache".equals(key)){
+            try{
+                Log.d(TAG, "HTTP response cache is cleared");
+                client_.cache().evictAll();
+                Glide.get(this).clearMemory();
+                final Context context = this;
+                new Thread(){
+                    public void run(){
+                        try{
+                            Glide.get(context).clearDiskCache();
+                        }
+                        catch(Exception e){
+                            Log.d(TAG, "clearDiskCache: ", e);
+                        }
+                    }
+                }.start();
+                //Toast
+            }
+            catch(IOException e){
+                Log.d(TAG, "cache remove failed");
+            }
+        }
         if(updateAll || "episode_order".equals(key)){
             currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
             notifyOrderChanged(currentOrder_);

@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.util.Log;
 
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.Preference;
@@ -25,11 +26,8 @@ import android.support.v4.app.DialogFragment;
 public class PodplayerPreferenceFragment
     extends PreferenceFragmentCompat
     implements OnPreferenceClickListener,
-    View.OnClickListener,
     OnSharedPreferenceChangeListener
 {
-    private View logo_;
-
     static final
     private String DIALOG_FRAGMENT_TAG = "com.mamewo.podplayer.pref.dialogtag";
     
@@ -40,7 +38,7 @@ public class PodplayerPreferenceFragment
     private Preference gestureTable_;
     private ListPreference readTimeout_;
     //private Preference scoreThreshold_;
-    //private Preference clearCache_;
+    private Preference clearCache_;
     private Preference episodeLimit_;
     private SharedPreferences pref_;
     private ListPreference episodeOrder_;
@@ -75,7 +73,8 @@ public class PodplayerPreferenceFragment
         
         //CheckBoxPreference cachePreference = (CheckBoxPreference)findPreference("use_response_cache");
         //Build.VERSION_CODES.HONEYCOMB_MR2;
-        //clearCache_ = findPreference("clear_response_cache");
+        clearCache_ = findPreference("clear_response_cache");
+        clearCache_.setOnPreferenceClickListener(this);
 
         // boolean cacheSupported = Build.VERSION.SDK_INT >= 13;
         // cachePreference.setEnabled(cacheSupported);
@@ -104,14 +103,15 @@ public class PodplayerPreferenceFragment
             startActivity(i);
             return true;
         }
-        // if (item == clearCache_){
-        //     //dummy field....
-        //     boolean flag = pref_.getBoolean("clear_response_cache", true);
-        //     pref_.edit()
-        //         .putBoolean("clear_response_cache", !flag)
-        //         .apply();
-        //     return true;
-        // }
+        if (item == clearCache_){
+            Log.d(TAG, "onPreferenceClick: clearCache_");
+            //dummy field to clear cache later
+            boolean flag = pref_.getBoolean("clear_response_cache", true);
+            pref_.edit()
+                .putBoolean("clear_response_cache", !flag)
+                .commit();
+            return true;
+        }
         if(item == mailToAuthor_){
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("message/rfc822");
@@ -123,15 +123,6 @@ public class PodplayerPreferenceFragment
         return false;
     }
     
-    @Override
-    public void onClick(View view) {
-        if (view == logo_) {
-            Intent i =
-                    new Intent(Intent.ACTION_VIEW, Uri.parse(GIT_URL));
-            startActivity(new Intent(i));
-        }
-    }
-
     public void updateSummary(SharedPreferences pref, String key) {
         boolean updateAll = "ALL".equals(key);
         Resources res = getResources();

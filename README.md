@@ -65,6 +65,7 @@ TODO
   * episode item
     * introduce simple memory based cache
 * reduce apk file size
+* use unified date format
 * select http lib
   * point of view
     * http response cache

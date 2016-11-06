@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
   <PreferenceCategory android:title="@string/pref_general_category" >
     <Preference
         android:key="podcastlist"
@@ -8,7 +9,6 @@
         android:key="pause_on_unplugged"
         android:defaultValue="@bool/default_pause_on_unplugged"
         android:enabled="true"
-        android:selectable="true"
         android:summaryOff="@string/pref_play_after_unplugged"
         android:summaryOn="@string/pref_pause_on_unplugged"
         android:title="@string/pref_pause_on_unplugged_title" />
@@ -80,18 +80,9 @@
         android:title="@string/pref_show_podcast_icon" />
   </PreferenceCategory>
   <PreferenceCategory android:title="@string/pref_network_category" >
-
-    <!--
-        <CheckBoxPreference
-        android:key="use_response_cache"
-        android:defaultValue="@bool/default_use_response_cache"
-        android:summaryOff="@string/use_response_cache_summary_off"
-        android:summaryOn="@string/use_response_cache_summary_on"
-        android:title="@string/use_response_cache_title" />
-        <Preference
+    <Preference
         android:key="clear_response_cache"
         android:title="@string/clear_response_cache_title" />
-    -->
     <ListPreference
         android:key="read_timeout"
         android:defaultValue="@string/default_read_timeout"
@@ -100,19 +91,17 @@
         android:entryValues="@array/pref_timeout_values"
         android:title="@string/pref_read_timeout" />
   </PreferenceCategory>
-  <PreferenceCategory android:title="@string/pref_other_category" >
+  <PreferenceCategory
+      android:title="@string/pref_other_category" >
     <com.mamewo.podplayer0.SimpleDialogPreference
         android:key="license"
-        android:selectable="true"
         android:title="@string/pref_license" />
     <com.mamewo.podplayer0.SimpleDialogPreference
         android:key="version"
-        android:selectable="true"
         android:title="@string/pref_version" />
     <Preference
         android:key="mail_to_author"
         android:summary="@string/author_name"
-        android:selectable="true"
         android:title="@string/mail_to_author" />
   </PreferenceCategory>
 </PreferenceScreen>

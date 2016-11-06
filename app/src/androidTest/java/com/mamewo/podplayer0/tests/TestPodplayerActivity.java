@@ -23,7 +23,7 @@ public class TestPodplayerActivity
     static final
     private int INIT_SLEEP = 5000;
     static final
-    private int UI_SLEEP = 5000;
+    private int UI_SLEEP = 2000;
     
     final static
     private String TAG = "podtest";
@@ -219,7 +219,7 @@ public class TestPodplayerActivity
     //     //TODO: check summary and pref value
     //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "gesture_score_down");
     // }
-
+   
     public void testGestureDialog() throws Exception {
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
         solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
@@ -228,6 +228,17 @@ public class TestPodplayerActivity
         solo_.sleep(UI_SLEEP);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "gesture_dialog");
         //TODO: check that gesture list dialog is displayed
+    }
+
+    public void testClearCache() throws Exception {
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
+        solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+        solo_.sleep(UI_SLEEP);
+        selectPreference(res_.getString(R.string.clear_response_cache_title));
+        solo_.sleep(UI_SLEEP);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "gesture_dialog");
+        solo_.goBack();
+        solo_.sleep(UI_SLEEP);
     }
     
     public void testLicence() {

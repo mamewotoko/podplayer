@@ -117,4 +117,15 @@ public class TestPodplayerExpActivity
         solo_.sleep(2000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "main2");
     }
+
+    public void testClearCache() throws Exception {
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
+        solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+        solo_.sleep(UI_SLEEP);
+        selectPreference(res_.getString(R.string.clear_response_cache_title));
+        solo_.sleep(UI_SLEEP);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "gesture_dialog");
+        solo_.goBack();
+        solo_.sleep(UI_SLEEP);
+    }
 }
