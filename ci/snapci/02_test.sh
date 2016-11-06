@@ -1,4 +1,5 @@
 #! /bin/bash
+set -e
 
 # add avd
 echo no | android create avd -n emu-10 -g armeabi-v7a -t android-10 -c 32M

@@ -3,6 +3,7 @@
 # raise an error if any command fails!
 set -e
 cat /proc/cpuinfo
+cat /etc/issue
 
 # existance of this file indicates that all dependencies were previously installed, and any changes to this file will use a different filename.
 INITIALIZATION_FILE="$ANDROID_HOME/.initialized-dependencies-$(git log -n 1 --format=%h -- $0)"
@@ -18,6 +19,7 @@ if [ ! -e ${INITIALIZATION_FILE} ]; then
     echo y | android update sdk --no-ui --filter extra-android-m2repository > /dev/null
 
     echo y | android update sdk --no-ui --filter sys-img-armeabi-v7a-google_apis-10 --all > /dev/null
+    sudo yum update
     sudo yum install -y glibc.i686
     touch ${INITIALIZATION_FILE}
 fi
