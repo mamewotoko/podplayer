@@ -53,6 +53,10 @@ How to run UI test using Robotium
 
 TODO
 ----
+* http authenticate for MediaPlayer
+  * add username, password into url
+    http://user:password@hostname/path
+    * supports only basic authentication
 * fast load
   * improve incremental update algorithm to reduce cpu usage
     * problem: displayed episode is not played by click while loading episodes
@@ -82,10 +86,6 @@ TODO
       * customize http header to implement authentication
     * Android Asynchronous Http Client
       http://loopj.com/android-async-http/
-* http authenticate for MediaPlayer
-  * add username, password into url
-    http://user:password@hostname/path
-    * supports only basic authentication
 * add + action icon to add podcast    
 * display toast when network error occurs
 * handle opml
@@ -151,6 +151,7 @@ TODO
     * current situation: freeze?
     * set "package" instrumentationArgs to start all test classes
    * add test of content description
+   * pull down
 * add preference to display pubdate as "X days before"
 * save latest few item to savedInstanceState
 * filter not listened item only (preference)
