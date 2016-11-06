@@ -23,6 +23,10 @@ public class TestPodplayerExpActivity
     protected Solo solo_;
     protected Resources res_;
 
+    static final
+    private int INIT_SLEEP = 5000;
+    static final
+    private int UI_SLEEP = 2000;
     final static
     private String TAG = "podtest";
 
