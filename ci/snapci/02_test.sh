@@ -1,4 +1,6 @@
 #! /bin/bash
+
+### cannot run on Aurora
 set -e
 
 # add avd

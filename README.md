@@ -1,6 +1,7 @@
 <img src="https://github.com/mamewotoko/podplayer/raw/pullupdate/res/drawable-hdpi/ic_launcher.png" width="40" height="40">podplayer - An android podcast player
 =====================================
 [![Build Status](https://travis-ci.org/mamewotoko/podplayer.svg?branch=gradle)](https://travis-ci.org/mamewotoko/podplayer)
+[![Build Status](https://snap-ci.com/mamewotoko/podplayer/branch/master/build_image)](https://snap-ci.com/mamewotoko/podplayer/branch/master)
 
 Screenshot
 ----------
