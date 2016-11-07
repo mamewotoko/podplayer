@@ -91,5 +91,5 @@
     <string name="icon_desc_gesture_table">Gesture table</string>
     <string name="icon_desc_qrcode">QR code to google play site, please share podplayer with your friends</string>
     <string name="icon_desc_github">Link to GitHub</string>
-    
+    <string name="icon_desc_podcast_detail">Display detail of podcast</string>
 </resources>

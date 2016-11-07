@@ -457,10 +457,16 @@ public class PodcastListPreference
             TextView label = (TextView) view.findViewById(R.id.podcast_title_label);
             //add check
             String title = info.title_;
+            String urlStr = info.url_.toString();
             if (null == title) {
-                title = info.url_.toString();
+                title = urlStr;
+            }
+            else {
+                TextView urlView = (TextView) view.findViewById(R.id.podcast_url);
+                urlView.setText(urlStr);
             }
             label.setText(title);
+            
             check.setChecked(info.enabled_);
             return view;
         }
