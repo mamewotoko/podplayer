@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-     xmlns:tools="http://schemas.android.com/tools"
+              xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:weightSum="6"
+	android:weightSum="7"
 	android:orientation="horizontal" >
   <!-- height: 64dp -->
    
   <TextView
       android:id="@+id/notification_title"
       android:layout_width="0dp"
-      android:layout_weight="3"
-      android:layout_height="wrap_content"
+      android:layout_weight="4"
+      android:layout_height="fill_parent"
       android:drawableLeft="@drawable/ic_status"
+      android:singleLine="false"
+      android:lines="3"
       android:maxLines="3"
       android:textAppearance="?android:attr/textAppearanceSmall"
       />
