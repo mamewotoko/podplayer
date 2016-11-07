@@ -119,7 +119,7 @@ public class PodplayerExpActivity
             return;
         }
         reloadButton_.setContentDescription(getResources().getString(R.string.action_abort));
-		reloadButton_.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+		reloadButton_.setImageResource(R.drawable.ic_clear_white_24dp);
         setProgressBarIndeterminateVisibility(true);
         updateUI();
         SharedPreferences pref=
@@ -446,7 +446,7 @@ public class PodplayerExpActivity
             //TODO: merge playlist
             updatePlaylist();
             reloadButton_.setContentDescription(getResources().getString(R.string.action_reload));
-			reloadButton_.setImageResource(android.R.drawable.ic_popup_sync);
+			reloadButton_.setImageResource(R.drawable.ic_sync_white_24dp);
         }
         
         @Override
