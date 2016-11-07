@@ -61,6 +61,7 @@ TODO
   * improve incremental update algorithm to reduce cpu usage
     * problem: displayed episode is not played by click while loading episodes
     * fix flicker while loading episode
+* change color of category text in preference screen   
 * add option to exit by pressing back button
   * display confirm dialog: exit or playing background, live as servcie and display notification
 * avoid infinite try playing loop when network is not available
@@ -111,6 +112,9 @@ TODO
   * enable Google App Indexing
 * improve UI
   * design layout with AndroidStudio
+  * notificatin layout
+  * use CardView?
+    https://developer.android.com/training/material/lists-cards.html
   * material icon: change loading icon of pulltorefresh  
 * support http auth for fetching podcast xml and episodes (#2)
   * cache auth info for each host?

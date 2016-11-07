@@ -370,7 +370,7 @@ public class PodcastListPreference
                         parser.next();
                     }
                     if (numItems > 0 && null != title) {
-                        Log.d(TAG, "publish: " + title);
+                        //Log.d(TAG, "publish: " + title);
                         publishProgress(new PodcastInfo(title, url, iconURL, true));
                         result = true;
                     }

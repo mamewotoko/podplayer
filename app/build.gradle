@@ -53,7 +53,6 @@ android {
 
 spoon {
   //instrumentationArgs = ["package=com.mamewo.podplayer0.tests"]
-  //className = 'com.mamewo.podplayer0.tests.TestPodplayerExpActivity'
   if(project.hasProperty('spoonClassName')){
     className = project.spoonClassName
   }
@@ -63,6 +62,7 @@ spoon {
   if(project.hasProperty('spoonOutput')){
     baseOutputDir = file("$buildDir/"+project.spoonOutput)
   }
+  //className = 'com.mamewo.podplayer0.tests.TestPodplayerExpActivity'  
   //methodName = 'testImageDisableEnable'
   // com.mamewo.podplayer0.tests.TestPodplayerExpActivity
   //from 1.5.0?
@@ -74,6 +74,8 @@ dependencies {
   compile project(":pulltorefresh")
   compile 'com.android.support:support-v4:23.3.0'
   compile 'com.android.support:appcompat-v7:23.3.0'
+  //com.android.support:appcompat-v7:25.0.0
+
   compile 'com.android.support:preference-v7:23.3.0'
   compile 'com.github.bumptech.glide:glide:3.7.0'
   

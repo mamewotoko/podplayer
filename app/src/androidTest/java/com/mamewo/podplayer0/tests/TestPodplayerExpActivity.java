@@ -130,7 +130,7 @@ public class TestPodplayerExpActivity
     }
 
     public void testClearCache() throws Exception {
-        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
+        Assert.assertTrue(solo_.waitForActivity("PodplayerExpActivity", INIT_SLEEP));
         solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         solo_.sleep(UI_SLEEP);
         selectPreference(res_.getString(R.string.clear_response_cache_title));

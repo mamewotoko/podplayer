@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent">
+              
+<LinearLayout 
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-
     <CheckBox
         android:id="@+id/checkbox"
         android:layout_width="wrap_content"
@@ -21,4 +25,45 @@
         android:maxLength="200"
         android:singleLine="false"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+</LinearLayout>
+<LinearLayout
+    android:id="@+id/podcast_detail"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+  <Button
+      android:id="@+id/remove"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="remove" />
+  <Button
+      android:id="@+id/move_down"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="move down" />
+  <Button
+      android:id="@+id/move_up"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="move up" />
+  <Button
+      android:id="@+id/auth_info"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="enter password"
+      />
+</LinearLayout>
+  <!--TODO:  add androd:hint -->
+  <EditText
+      android:id="@+id/username"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:hint="user name if required"
+      android:text="" />
+  <EditText
+      android:id="@+id/password"
+      android:password="true"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:hint="password if required"
+      android:text="" />
 </LinearLayout>
