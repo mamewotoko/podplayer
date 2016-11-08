@@ -26,10 +26,12 @@ echo no | android create avd -n $AVD_NAME -b armeabi -t $TARGET -c 32M --skin $S
 emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -no-window &
 sleep 90
 STATUS=$(adb wait-for-device shell getprop init.svc.bootanim)
+echo STATUS1: $STATUS
 if [ "$STATUS" != "stopped" ]; then
     sleep 60
     STATUS=$(adb wait-for-device shell getprop init.svc.bootanim)
 fi
+echo STATUS2: $STATUS
 if [ "$STATUS" != "stopped" ]; then
     echo emulator does not start
     exit 1
