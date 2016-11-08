@@ -1,15 +1,44 @@
 #! /bin/bash
-
-### cannot run on Aurora
 set -e
 
-# add avd
-echo no | android create avd -n emu-10 --abi armeabi -t android-10 -c 32M 
-emulator -avd emu-10 -no-window &
-sleep 90
+LANGUAGE=$1
+if [ -z "$LANG" ]; then
+    LANGUAGE=en
+fi
 
-adb logcat > logcat.log &
+COUNTRY=$2
+if [ -z "$COUNTRY" ]; then
+    COUNTRY=us
+fi
+
+SCREEN_SIZE=$3
+if [ -z "$SCREEN_SIZE" ]; then
+    SCREEN_SIZE=480x800
+fi
+
+TARGET=$4
+if [ -z "$TARGET" ]; then
+    TARGET=android-10
+fi
+
+AVD_NAME=emu-$TARGET
+echo no | android create avd -n $AVD_NAME -b armeabi -t $TARGET -c 32M --skin $SCREEN_SIZE
+emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -no-window &
+sleep 90
+STATUS=$(adb wait-for-device shell getprop init.svc.bootanim)
+if [ "$STATUS" != "stopped" ]; then
+    sleep 60
+    STATUS=$(adb wait-for-device shell getprop init.svc.bootanim)
+fi
+if [ "$STATUS" != "stopped" ]; then
+    echo emulator does not start
+    exit 1
+fi
+adb logcat > app/build/logcat.log &
+
 ./gradlew spoonDebug
+./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity -PspoonOutput=spoon_exp
+./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodcastListPreference -PspoonOutput=spoon_podlist
 
 adb shell reboot -p
 sleep 90
