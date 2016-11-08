@@ -23,6 +23,6 @@ if [ ! -e ${INITIALIZATION_FILE} ]; then
     ## give up
     #sudo yum update
     #sudo yum install -y glibc.i686
-    curl -L ci/spoon-runner.jar
+    #curl -L ci/spoon-runner.jar
     touch ${INITIALIZATION_FILE}
 fi
