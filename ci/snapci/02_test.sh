@@ -1,6 +1,9 @@
 #! /bin/bash
 #set -e
 
+## usage
+# lang country screen_size target abi
+
 LANGUAGE=$1
 if [ -z "$LANG" ]; then
     LANGUAGE=en
@@ -21,9 +24,14 @@ if [ -z "$TARGET" ]; then
     TARGET=android-10
 fi
 
+ABI=$5
+if [ -z "$TARGET" ]; then
+    ABI=armeabi-v7a
+fi
+
 AVD_NAME=emu_${TARGET}_${SCREEN_SIZE}_${LANGUAGE}_${COUNTRY}
 
-echo no | android create avd -n $AVD_NAME -b armeabi-v7a -t $TARGET -c 32M --skin $SCREEN_SIZE
+echo no | android create avd -n $AVD_NAME -b $ABI -t $TARGET -c 32M --skin $SCREEN_SIZE
 emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -no-window &
 sleep 90
 STATUS=$(adb wait-for-device shell getprop init.svc.bootanim)
