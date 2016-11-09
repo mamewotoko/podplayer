@@ -5,17 +5,15 @@ node {
   sh 'git submodule update --init'  
 
   stage 'Build'	      
-  //TODO: use docker....
-  //env.ANDROID_HOME='/opt/android-sdk-linux/'
-  //env.JAVA_HOME='/opt/jdk1.7.0_05/'
-  env.PATH="${env.JAVA_HOME}/bin:${env.ANDROID_HOME}/tools:${env.PATH}"
+   env.PATH="${env.JAVA_HOME}/bin:${env.ANDROID_HOME}/tools:${env.PATH}"
 
   sh './gradlew assembleDebug lint'
 
   stage 'Build test'
   sh './gradlew assembleAndroidTest'
 
-  #stage 'Run test'
+  stage 'Run test'
+  sh ci/snapci/02_test.sh
 
   stage 'Report'
   step([$class: 'LintPublisher'])
