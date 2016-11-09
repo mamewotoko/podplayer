@@ -53,6 +53,7 @@ import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.CheckBox;
 import android.content.Context;
@@ -479,8 +480,13 @@ public class PodcastListPreference
                 urlView.setText(urlStr);
             }
             label.setText(title);
-            
             check.setChecked(info.enabled_);
+
+            ImageButton upButton = (ImageButton) view.findViewById(R.id.move_up);
+            ImageButton downButton = (ImageButton) view.findViewById(R.id.move_down);
+            ImageButton deleteButton = (ImageButton) view.findViewById(R.id.remove);
+            deleteButton.setTag(info);
+            deleteButton.setOnClickListener(new RemoveButtonListener());
             return view;
         }
     }
@@ -646,5 +652,16 @@ public class PodcastListPreference
     public void onItemClick(AdapterView<?> adapter, View parent, int pos, long id) {
         CheckBox checkbox = (CheckBox) parent.findViewById(R.id.checkbox);
         onCheckboxClicked(checkbox);
+    }
+
+    private class RemoveButtonListener
+        implements View.OnClickListener
+    {
+        @Override
+        public void onClick(View v){
+            PodcastInfo info = (PodcastInfo)v.getTag();
+            adapter_.remove(info);
+            adapter_.notifyDataSetChanged();
+        }
     }
 }
