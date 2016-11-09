@@ -1,5 +1,5 @@
 #! /bin/bash
-set -e
+#set -e
 
 LANGUAGE=$1
 if [ -z "$LANG" ]; then
