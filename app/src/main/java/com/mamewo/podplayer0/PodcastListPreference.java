@@ -495,7 +495,8 @@ public class PodcastListPreference
                 .accumulate("title", info.getTitle())
                 .accumulate("url", info.getURL().toString())
                 //.accumulate("icon_url", info.getIconURL())
-                .accumulate("enabled", info.getEnabled());
+                .accumulate("enabled", info.getEnabled())
+                .accumulate("status", info.getStatus());
             array.put(jsonValue);
         }
         String json = array.toString();
@@ -559,8 +560,17 @@ public class PodcastListPreference
             String title  = value.getString("title");
             URL url = new URL(value.getString("url"));
             String iconURL = null;
+            PodcastInfo.Status status = PodcastInfo.Status.UNKNOWN;
             if(value.has("icon_url")){
                 iconURL = value.getString("icon_url");
+            }
+            if(value.has("status")){
+                try{
+                    status = PodcastInfo.Status.valueOf(value.getString("status"));
+                }
+                catch(Exception e){
+                    //nop
+                }
             }
             boolean enabled = value.getBoolean("enabled");
 			PodcastInfo info = new PodcastInfo(title, url, iconURL, enabled);

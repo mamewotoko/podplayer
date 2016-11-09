@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.EditText;
+//import android.support.test.filters.SmallTest;
 
 import com.jraska.falcon.FalconSpoon;
 
@@ -91,6 +92,7 @@ public class TestPodcastListPreference
         Assert.assertEquals("check url", url, info.url_.toString());
     }
 
+    //@SmallTest
     public void testAddDuplicate() {
         solo_.sleep(1000);
         ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
