@@ -4,29 +4,34 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
   <LinearLayout 
-      android:layout_width="wrap_content"
-      android:layout_height="fill_parent">
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:orientation="horizontal"
+      android:layout_weight="8"
+      >
     <CheckBox
         android:id="@+id/checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
+	android:layout_width="0dp"
+	android:layout_weight="1"       
         />
     <TextView
         android:id="@+id/podcast_title_label"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:singleLine="false"
         android:textAppearance="?android:attr/textAppearanceMedium"
+	android:layout_width="0dp"
+	android:layout_weight="6"
         />
     <ImageButton
         android:id="@+id/detail_button"
         android:src="@drawable/ic_expand_more_white_24dp"
-        android:layout_height="36dp"
-        android:layout_width="36dp"
-        android:background="@null"
+        android:layout_height="fill_parent"
+	android:layout_width="0dp"
+	android:layout_weight="1"
         android:contentDescription="@string/icon_desc_podcast_detail"
         />
   </LinearLayout>
@@ -88,7 +93,7 @@
       android:text="" />
   <EditText
       android:id="@+id/password"
-      android:password="true"
+      android:inputType="textPassword"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:hint="password if required"
