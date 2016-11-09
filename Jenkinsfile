@@ -13,7 +13,7 @@ node {
   sh './gradlew assembleAndroidTest'
 
   stage 'Run test'
-  sh ci/snapci/02_test.sh
+  sh 'sh ci/snapci/02_test.sh'
 
   stage 'Report'
   step([$class: 'LintPublisher'])
