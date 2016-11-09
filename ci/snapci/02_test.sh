@@ -25,12 +25,13 @@ if [ -z "$TARGET" ]; then
 fi
 
 ABI=$5
-if [ -z "$TARGET" ]; then
+if [ -z "$ABI" ]; then
     ABI=armeabi-v7a
 fi
 
 AVD_NAME=emu_${TARGET}_${SCREEN_SIZE}_${LANGUAGE}_${COUNTRY}
 
+echo "android create avd -n $AVD_NAME -b $ABI -t $TARGET -c 32M --skin $SCREEN_SIZE"
 echo no | android create avd -n $AVD_NAME -b $ABI -t $TARGET -c 32M --skin $SCREEN_SIZE
 emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -no-window &
 sleep 90
