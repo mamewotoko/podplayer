@@ -23,7 +23,7 @@ fi
 
 AVD_NAME=emu_${TARGET}_${SCREEN_SIZE}_${LANGUAGE}_${COUNTRY}
 
-echo no | android create avd -n $AVD_NAME -b armeabi -t $TARGET -c 32M --skin $SCREEN_SIZE
+echo no | android create avd -n $AVD_NAME -b armeabi-v7a -t $TARGET -c 32M --skin $SCREEN_SIZE
 emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -no-window &
 sleep 90
 STATUS=$(adb wait-for-device shell getprop init.svc.bootanim)
