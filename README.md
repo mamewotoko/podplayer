@@ -112,7 +112,8 @@ TODO
   * enable Google App Indexing
 * improve UI
   * design layout with AndroidStudio
-  * notificatin layout
+  * use com.android.support:design (material design)
+  * notification layout
   * use CardView?
     https://developer.android.com/training/material/lists-cards.html
   * material icon: change loading icon of pulltorefresh  
@@ -207,7 +208,8 @@ Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/
 
 Keywords
 ----------
-Android, MediaPlayer, Podcast, AsyncTask, PullToRefresh, Gesture, Gradle, Spoon, FalconSpoon, Robotium, Glide, TravisCI
+Android, MediaPlayer, Podcast, AsyncTask, PullToRefresh, Gesture, Gradle,
+Spoon, FalconSpoon, Robotium, Glide, Travis CI, Snap CI
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
