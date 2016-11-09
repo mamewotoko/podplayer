@@ -12,13 +12,14 @@ if [ ! -e ${INITIALIZATION_FILE} ]; then
     # fetch and initialize $ANDROID_HOME
     download-android
 
-    echo y | android update sdk --no-ui --filter android-23,android-10 > /dev/null
+    echo y | android update sdk --no-ui --filter android-19,android-10 > /dev/null
     echo y | android update sdk --no-ui --filter tools,platform-tools > /dev/null
     echo y | android update sdk --no-ui --all --filter build-tools-23.0.1 > /dev/null
     echo y | android update sdk --no-ui --filter extra-android-support > /dev/null
     echo y | android update sdk --no-ui --filter extra-android-m2repository > /dev/null
 
-    echo y | android update sdk --no-ui --filter sys-img-armeabi-v7a-google_apis-10 --all > /dev/null
+    echo y | android update sdk --no-ui --filter sys-img-armeabi-v7a-google_apis-10 > /dev/null
+    echo y | android update sdk --no-ui --filter sys-img-armeabi-v7a-google_apis-19 > /dev/null
 
     ## give up
     #sudo yum update

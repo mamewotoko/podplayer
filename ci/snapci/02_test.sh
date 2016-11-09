@@ -21,7 +21,8 @@ if [ -z "$TARGET" ]; then
     TARGET=android-10
 fi
 
-AVD_NAME=emu-$TARGET
+AVD_NAME=emu_${TARGET}_${SCREEN_SIZE}_${LANGUAGE}_${COUNTRY}
+
 echo no | android create avd -n $AVD_NAME -b armeabi -t $TARGET -c 32M --skin $SCREEN_SIZE
 emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -no-window &
 sleep 90
@@ -40,9 +41,9 @@ echo STATUS: stopped is expected: $STATUS
 # fi
 adb logcat > app/build/logcat.log &
 
-./gradlew spoonDebug
-./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity -PspoonOutput=spoon_exp
-./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodcastListPreference -PspoonOutput=spoon_podlist
+./gradlew spoonDebug -PspoonOutput=spoon_${AVD_NAME}
+./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity -PspoonOutput=spoon_exp_${AVD_NAME}
+./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodcastListPreference -PspoonOutput=spoon_podlist_${AVD_NAME}
 
 adb shell reboot -p
 sleep 90
