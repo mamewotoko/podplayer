@@ -62,8 +62,8 @@ spoon {
   if(project.hasProperty('spoonOutput')){
     baseOutputDir = file("$buildDir/"+project.spoonOutput)
   }
-  //className = 'com.mamewo.podplayer0.tests.TestPodplayerExpActivity'  
-  //methodName = 'testImageDisableEnable'
+  className = 'com.mamewo.podplayer0.tests.TestPodcastListPreference'
+  methodName = 'testAddDuplicate'
   // com.mamewo.podplayer0.tests.TestPodplayerExpActivity
   //from 1.5.0?
   //codeCoverage = true

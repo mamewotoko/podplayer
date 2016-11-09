@@ -13,6 +13,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.EditText;
 
 import com.jraska.falcon.FalconSpoon;
 
@@ -88,6 +89,19 @@ public class TestPodcastListPreference
         PodcastInfo info = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_with_bom_success");
         Assert.assertEquals("check url", url, info.url_.toString());
+    }
+
+    public void testAddDuplicate() {
+        solo_.sleep(1000);
+        ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
+        String url = "http://www.nhk.or.jp/rj/podcast/rss/english.xml";
+        int prevCount = adapter.getCount();
+        solo_.enterText((EditText)solo_.getView(R.id.url_edit), url);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_duplicate");       
+        solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
+        solo_.waitForDialogToClose(20000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_duplicate");
+        Assert.assertEquals(prevCount, adapter.getCount());
     }
     
     public void testDelete3() {

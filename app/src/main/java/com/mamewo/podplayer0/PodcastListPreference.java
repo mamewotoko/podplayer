@@ -212,6 +212,19 @@ public class PodcastListPreference
                 if(urlStr.isEmpty()){
                     continue;
                 }
+                //TODO: use hash
+                boolean duplicate = false;
+                for(int i = 0; i < adapter_.getCount(); i++){
+                    if(urlStr.equals(adapter_.getItem(i).url_.toString())){
+                        //TODO: show toast
+                        Log.d(TAG, "duplicate: " + urlStr);
+                        duplicate = true;
+                        continue;
+                    }
+                }
+                if(duplicate){
+                    continue;
+                }
                 try {
                     URL url = new URL(urlStr);
                     urlList.add(url);
