@@ -15,6 +15,8 @@ node {
   stage 'Build test'
   sh './gradlew assembleAndroidTest'
 
+  #stage 'Run test'
+
   stage 'Report'
   step([$class: 'LintPublisher'])
 }
