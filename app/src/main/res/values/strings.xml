@@ -49,6 +49,8 @@
     <string name="dialog_checking_podcast_url_body">To cancel, please touch outside of this dialog or press back button</string>
     <string name="msg_add_podcast_failed">failed</string>
     <string name="msg_add_podcast_cancelled">cancelled</string>
+
+    <string name="podcast_list_menu">Add podcast</string>
     <string name="preference_menu">Preference</string>
     <string name="preference_title">Preference</string>
     <string name="exit_menu">Exit</string>

@@ -188,6 +188,10 @@ abstract public class BasePodplayerActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled = false;
         switch(item.getItemId()) {
+        case R.id.podcast_list_menu:
+            startActivity(new Intent(this, PodcastListPreference.class));
+            handled = true;
+            break;
         case R.id.exit_menu:
             finishServiceOnExit_ = true;
             finish();
