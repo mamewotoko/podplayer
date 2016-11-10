@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import org.json.JSONException;
 
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
@@ -102,7 +103,7 @@ abstract public class BasePodplayerActivity
         ExternalCacheDiskCacheFactory factory = new ExternalCacheDiskCacheFactory(this, "podcast_icon", ICON_DISK_CACHE_BYTES);
         //TODO: use new api
         if(!Glide.isSetup()){
-            GlideBuilder builder = new GlideBuilder(this).setDiskCache(factory);
+            GlideBuilder builder = new GlideBuilder(getApplicationContext()).setDiskCache(factory);
             //obsolete API....
             Glide.setup(builder);
         }
@@ -208,6 +209,18 @@ abstract public class BasePodplayerActivity
         syncPreference(pref, key);
     }
 
+    public void savePodcastList() {
+        try{
+            PodcastListPreference.saveSetting(this, state_.podcastList_);
+        }
+        catch(JSONException e){
+            Log.d(TAG, "saveError", e);
+        }
+        catch(IOException e){
+            Log.d(TAG, "saveError", e);
+        }
+    }
+ 
     protected void syncPreference(SharedPreferences pref, String key){
         Log.d(TAG, "syncPreference: " + key);
         boolean updateAll = "ALL".equals(key);
@@ -248,8 +261,8 @@ abstract public class BasePodplayerActivity
             try{
                 Log.d(TAG, "HTTP response cache is cleared");
                 client_.cache().evictAll();
-                Glide.get(this).clearMemory();
-                final Context context = this;
+                Glide.get(getApplicationContext()).clearMemory();
+                final Context context = getApplicationContext();
                 new Thread(){
                     public void run(){
                         try{
@@ -338,6 +351,7 @@ abstract public class BasePodplayerActivity
             latestList_ = new ArrayList<EpisodeInfo>();
         }
 
+        
         // static
         // public void sortEpisodeByDate(List<EpisodeInfo> lst, boolean latestFirst){
         //     //dummy

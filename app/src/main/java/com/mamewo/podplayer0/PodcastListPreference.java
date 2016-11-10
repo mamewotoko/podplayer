@@ -56,6 +56,8 @@ import android.widget.TextView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.CheckBox;
+import android.widget.ImageView;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -63,6 +65,7 @@ import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 
 import okhttp3.OkHttpClient;
+import com.bumptech.glide.Glide;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -103,6 +106,7 @@ public class PodcastListPreference
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         setContentView(R.layout.podlist_editor);
         setTitle(R.string.app_podcastlist_title);
         addButton_ = (Button) findViewById(R.id.add_podcast_button);
@@ -160,7 +164,11 @@ public class PodcastListPreference
     public void onStop() {
         super.onStop();
         try {
-            saveSetting();
+            List<PodcastInfo> lst = new ArrayList<PodcastInfo>();
+            for(int i = 0; i < adapter_.getCount(); i++){
+                lst.add(adapter_.getItem(i));
+            }
+            saveSetting(this, lst);
         }
         catch (JSONException e) {
             Log.d(TAG, "failed to save podcast list setting");
@@ -465,6 +473,19 @@ public class PodcastListPreference
                 view = convertView;
             }
             PodcastInfo info = getItem(position);
+            String iconURL = info.getIconURL();
+            Log.d(TAG, "getView: icon: " + iconURL);
+            ImageView icon = (ImageView)view.findViewById(R.id.podcast_icon);
+            if(null != iconURL){
+                Glide.with(getApplicationContext())
+                    .load(iconURL)
+                    .into(icon);
+                icon.setVisibility(View.VISIBLE);
+            }
+            else{
+                //set dummy image?
+                icon.setVisibility(View.GONE);
+            }
             CheckBox check = (CheckBox) view.findViewById(R.id.checkbox);
             check.setOnClickListener(PodcastListPreference.this);
             check.setTag(info);
@@ -495,23 +516,25 @@ public class PodcastListPreference
         }
     }
 
-    private void saveSetting() throws
+    static
+    public void saveSetting(Context context, List<PodcastInfo> lst) throws
         JSONException, IOException
     {
         JSONArray array = new JSONArray();
-        for (int i = 0; i < adapter_.getCount(); i++) {
-            PodcastInfo info = adapter_.getItem(i);
+        //for (int i = 0; i < adapter_.getCount(); i++) {
+        //PodcastInfo info = adapter_.getItem(i);
+        for(PodcastInfo info: lst){
             JSONObject jsonValue = (new JSONObject())
                 .accumulate("title", info.getTitle())
                 .accumulate("url", info.getURL().toString())
-                //.accumulate("icon_url", info.getIconURL())
+                .accumulate("icon_url", info.getIconURL())
                 .accumulate("enabled", info.getEnabled())
                 .accumulate("status", info.getStatus());
             array.put(jsonValue);
         }
         String json = array.toString();
         //Log.d(TAG, "JSON: " + json);
-        FileOutputStream fos = openFileOutput(CONFIG_FILENAME, MODE_PRIVATE);
+        FileOutputStream fos = context.getApplicationContext().openFileOutput(CONFIG_FILENAME, MODE_PRIVATE);
         try{
             fos.write(json.getBytes());
         }
@@ -548,7 +571,7 @@ public class PodcastListPreference
             throws IOException, JSONException
     {
         //TODO: move to podcastinfo
-        FileInputStream fis = context.openFileInput(CONFIG_FILENAME);
+        FileInputStream fis = context.getApplicationContext().openFileInput(CONFIG_FILENAME);
         StringBuffer sb = new StringBuffer();
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(fis));

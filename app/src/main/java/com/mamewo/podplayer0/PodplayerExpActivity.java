@@ -405,7 +405,8 @@ public class PodplayerExpActivity
             String iconURL = state_.podcastList_.get(info.index_).getIconURL();
             if(showPodcastIcon_ && null != iconURL){
                 Glide
-                    .with(PodplayerExpActivity.this)
+                    //.with(PodplayerExpActivity.this)
+                    .with(getApplicationContext())
                     .load(state_.podcastList_.get(info.index_).iconURL_)
                     .into(episodeIcon);
                 episodeIcon.setVisibility(View.VISIBLE);
@@ -442,11 +443,12 @@ public class PodplayerExpActivity
 
         private void onFinished(){
             loadTask_ = null;
+            savePodcastList();
             setProgressBarIndeterminateVisibility(false);
             //TODO: merge playlist
             updatePlaylist();
             reloadButton_.setContentDescription(getResources().getString(R.string.action_reload));
-			reloadButton_.setImageResource(R.drawable.ic_sync_white_24dp);
+			reloadButton_.setImageResource(R.drawable.ic_sync_white_24dp);            
         }
         
         @Override

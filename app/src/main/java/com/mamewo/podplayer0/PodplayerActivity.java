@@ -292,7 +292,7 @@ public class PodplayerActivity
             String iconURL = state_.podcastList_.get(info.index_).getIconURL();
             if(showPodcastIcon_ && null != iconURL){
                 Glide
-                    .with(PodplayerActivity.this)
+                    .with(getApplicationContext())
                     .load(iconURL)
                     .into(episodeIcon);
                 episodeIcon.setContentDescription(info.title_);
@@ -338,7 +338,7 @@ public class PodplayerActivity
             episodeListView_.onRefreshComplete();
             episodeListView_.hideHeader();
             loadTask_ = null;
-
+            savePodcastList();
             //dummy
             //sortEpisodeByDate(true);
             //TODO: Sync playlist
