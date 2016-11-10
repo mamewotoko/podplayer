@@ -12,7 +12,7 @@ if [ ! -e ${INITIALIZATION_FILE} ]; then
     # fetch and initialize $ANDROID_HOME
     download-android
 
-    echo y | android update sdk --no-ui --filter android-19,android-10 > /dev/null
+    echo y | android update sdk --no-ui --filter android-19,android-10,android-23 > /dev/null
     echo y | android update sdk --no-ui --filter tools,platform-tools > /dev/null
     echo y | android update sdk --no-ui --all --filter build-tools-23.0.1 > /dev/null
     echo y | android update sdk --no-ui --filter extra-android-support > /dev/null
