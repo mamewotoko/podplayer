@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
-              android:layout_width="match_parent"
+              android:layout_width="fill_parent"
               android:layout_height="wrap_content">
   <LinearLayout 
       android:layout_width="fill_parent"
@@ -20,11 +20,13 @@
         />
     <TextView
         android:id="@+id/podcast_title_label"
+        android:layout_width="0dp"
         android:layout_height="fill_parent"
+        android:layout_weight="6"
         android:singleLine="false"
+        android:maxLines="2"
+        android:gravity="center_vertical|left"
         android:textAppearance="?android:attr/textAppearanceMedium"
-	android:layout_width="0dp"
-	android:layout_weight="6"
         />
     <ImageButton
         android:id="@+id/detail_button"
@@ -50,15 +52,8 @@
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
       android:layout_weight="4"
+      android:visibility="gone"
       >
-    <ImageButton
-        android:id="@+id/remove"
-	android:layout_width="0dp"
-	android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_delete_white_24dp"
-        android:contentDescription="remove"
-        />
     <ImageButton
         android:id="@+id/move_down"
 	android:layout_width="0dp"
@@ -76,6 +71,14 @@
         android:contentDescription="move up"
         />
     <ImageButton
+        android:id="@+id/remove"
+	android:layout_width="0dp"
+	android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_delete_white_24dp"
+        android:contentDescription="remove"
+        />
+    <ImageButton
         android:id="@+id/status_icon"
 	android:layout_width="0dp"
 	android:layout_weight="1"
@@ -85,6 +88,12 @@
         />
   </LinearLayout>
   <!--TODO:  add androd:hint -->
+  <LinearLayout 
+      android:orientation="vertical"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:visibility="gone">
+
   <EditText
       android:id="@+id/username"
       android:layout_width="wrap_content"
@@ -104,4 +113,5 @@
       android:layout_height="wrap_content"
       android:text="enter password"
       />
+  </LinearLayout>
 </LinearLayout>

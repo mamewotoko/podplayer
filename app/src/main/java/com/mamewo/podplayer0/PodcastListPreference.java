@@ -487,6 +487,10 @@ public class PodcastListPreference
             ImageButton deleteButton = (ImageButton) view.findViewById(R.id.remove);
             deleteButton.setTag(info);
             deleteButton.setOnClickListener(new RemoveButtonListener());
+            upButton.setTag(info);
+            upButton.setOnClickListener(new MoveupButtonListener());
+            downButton.setTag(info);
+            downButton.setOnClickListener(new MovedownButtonListener());
             return view;
         }
     }
@@ -661,6 +665,43 @@ public class PodcastListPreference
         public void onClick(View v){
             PodcastInfo info = (PodcastInfo)v.getTag();
             adapter_.remove(info);
+            adapter_.notifyDataSetChanged();
+        }
+    }
+
+    private class MoveupButtonListener
+        implements View.OnClickListener
+    {
+        @Override
+        public void onClick(View v){
+            PodcastInfo info = (PodcastInfo)v.getTag();
+            int pos = adapter_.getPosition(info);
+            adapter_.remove(info);
+            if(pos > 0){
+                adapter_.insert(info, pos-1);
+            }
+            else {
+                adapter_.add(info);
+            }
+            adapter_.notifyDataSetChanged();
+        }
+    }
+
+    private class MovedownButtonListener
+        implements View.OnClickListener
+    {
+        @Override
+        public void onClick(View v){
+            PodcastInfo info = (PodcastInfo)v.getTag();
+            int pos = adapter_.getPosition(info);
+            int len = adapter_.getCount();
+            adapter_.remove(info);
+            if(pos < len-1){
+                adapter_.insert(info, pos+1);
+            }
+            else {
+                adapter_.insert(info, 0);
+            }
             adapter_.notifyDataSetChanged();
         }
     }
