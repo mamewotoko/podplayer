@@ -26,13 +26,13 @@ fi
 
 ABI=$5
 if [ -z "$ABI" ]; then
-    ABI=armeabi
+    ABI=default/armeabi-v7a
 fi
 
 AVD_NAME=emu_${TARGET}_${SCREEN_SIZE}_${LANGUAGE}_${COUNTRY}
 
 echo ----
-andriod list sdk -e --all
+android list sdk -e --all
 echo ----
 
 echo "android create avd -n $AVD_NAME -b $ABI -t $TARGET -c 32M --skin $SCREEN_SIZE"
