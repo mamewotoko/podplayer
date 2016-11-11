@@ -158,6 +158,7 @@ TODO
    * add test of content description
    * pull down
 * add preference to display pubdate as "X days before"
+* add activity for tv?
 * save latest few item to savedInstanceState
 * filter not listened item only (preference)
 * move state to service

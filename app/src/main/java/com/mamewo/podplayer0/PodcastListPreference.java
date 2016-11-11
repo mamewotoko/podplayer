@@ -48,7 +48,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,14 +75,11 @@ public class PodcastListPreference
 	extends AppCompatActivity
     implements OnClickListener,
     OnItemClickListener,
-    OnItemLongClickListener,
-    DialogInterface.OnClickListener,
     OnCancelListener
 {
     private Button addButton_;
     private EditText urlEdit_;
     private CheckTask task_;
-    private Dialog dialog_;
     private PodcastInfoAdapter adapter_;
     private ListView podcastListView_;
     private Bundle bundle_;
@@ -94,15 +90,9 @@ public class PodcastListPreference
     private int CHECKING_DIALOG = 0;
     static final
     private int DIALOG_REMOVE_PODCAST = 1;
-    //position on dialog
-    static final
-    public int REMOVE_OPERATION = 0;
-    static final
-    public int UP_OPERATION = 1;
-    static final
-    public int DOWN_OPERATION = 2;
     final static
     private String PODCAST_SITE_URL = "http://mamewo.ddo.jp/podcast/podcast.html";
+    private Dialog dialog_;
     private OkHttpClient client_;
     private Map<String, Option> optionMap_;
 
@@ -122,15 +112,12 @@ public class PodcastListPreference
         addButton_ = (Button) findViewById(R.id.add_podcast_button);
         addButton_.setOnClickListener(this);
         urlEdit_ = (EditText) findViewById(R.id.url_edit);
+        dialog_ = null;
         List<PodcastInfo> list = loadSetting(this);
-        // for(PodcastInfo info: list){
-        //     optionMap_.put(info.getURL().toString(), new Option);
-        // }
         optionMap_ = new HashMap<String, Option>();
         adapter_ = new PodcastInfoAdapter(this, list);
         podcastListView_ = (ListView) findViewById(R.id.podlist);
         podcastListView_.setAdapter(adapter_);
-        podcastListView_.setOnItemLongClickListener(this);
         podcastListView_.setOnItemClickListener(this);
         bundle_ = null;
         client_ = new OkHttpClient();
@@ -295,23 +282,11 @@ public class PodcastListPreference
             progressDialog.setTitle(R.string.dialog_checking_podcast_url);
             progressDialog.setMessage(getString(R.string.dialog_checking_podcast_url_body));
             dialog = progressDialog;
-            dialog_ = progressDialog;
-            break;
-        case DIALOG_REMOVE_PODCAST:
-            List<String> items = new ArrayList<String>();
-            items.add(getString(R.string.remove_operation));
-            items.add(getString(R.string.up_operation));
-            items.add(getString(R.string.down_operation));
-            ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, items);
-            dialog = new AlertDialog.Builder(this)
-                .setTitle("xxx")
-                .setCancelable(true)
-                .setAdapter(adapter, this)
-                .create();
             break;
         default:
             break;
         }
+        dialog_ = dialog;
         return dialog;
     }
     
@@ -321,13 +296,6 @@ public class PodcastListPreference
         switch(id){
         case CHECKING_DIALOG:
             dialog_ = dialog;
-            break;
-        case DIALOG_REMOVE_PODCAST:
-            Log.d(TAG, "onPrepareDialog(bundle): " + args.getInt("position"));
-            int pos = args.getInt("position");
-            PodcastInfo info = adapter_.getItem(pos);
-            dialog.setTitle(info.title_);
-            //TODO: disable up/down?
             break;
         default:
             break;
@@ -656,58 +624,6 @@ public class PodcastListPreference
         if (null != task_) {
             task_.cancel(true);
         }
-    }
-
-    @Override
-    public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos,
-            long id) {
-        Log.d(TAG, "onLongItemClick: " + pos);
-        Bundle bundle = new Bundle();
-        bundle.putInt("position", pos);
-        showDialog(DIALOG_REMOVE_PODCAST, bundle);
-        return true;
-    }
-
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        if (null == bundle_) {
-            Log.d(TAG, "onClick bundle is null!");
-            return;
-        }
-        int pos = bundle_.getInt("position");
-        PodcastInfo info = adapter_.getItem(pos);
-        Log.d(TAG, "DialogInterface: " + which + " pos: " + pos + " " + info.title_);
-        switch(which) {
-        case REMOVE_OPERATION:
-            Log.d(TAG, "onClick REMOVE: " + pos + " " + info.title_);
-            adapter_.remove(info);
-            adapter_.notifyDataSetChanged();
-            isChanged_ = true;
-            break;
-        case UP_OPERATION:
-            Log.d(TAG, "dialog.onClick UP");
-            if(pos == 0){
-                break;
-            }
-            adapter_.remove(info);
-            adapter_.insert(info, pos - 1);
-            adapter_.notifyDataSetChanged();
-            isChanged_ = true;
-            break;
-        case DOWN_OPERATION:
-            Log.d(TAG, "dialog.onClick DOWN");
-            if(pos == adapter_.getCount() - 1){
-                break;
-            }
-            adapter_.remove(info);
-            adapter_.insert(info, pos + 1);
-            adapter_.notifyDataSetChanged();
-            isChanged_ = true;
-            break;
-        default:
-            break;
-        }
-        bundle_ = null;
     }
 
     @Override
