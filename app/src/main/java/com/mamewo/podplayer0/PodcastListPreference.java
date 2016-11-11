@@ -12,6 +12,8 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.commons.io.input.BOMInputStream;
 
@@ -102,6 +104,14 @@ public class PodcastListPreference
     final static
     private String PODCAST_SITE_URL = "http://mamewo.ddo.jp/podcast/podcast.html";
     private OkHttpClient client_;
+    private Map<String, Option> optionMap_;
+
+    private class Option {
+        public boolean expand_;
+        public Option(){
+            expand_ = false;
+        }
+    }
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,6 +123,10 @@ public class PodcastListPreference
         addButton_.setOnClickListener(this);
         urlEdit_ = (EditText) findViewById(R.id.url_edit);
         List<PodcastInfo> list = loadSetting(this);
+        // for(PodcastInfo info: list){
+        //     optionMap_.put(info.getURL().toString(), new Option);
+        // }
+        optionMap_ = new HashMap<String, Option>();
         adapter_ = new PodcastInfoAdapter(this, list);
         podcastListView_ = (ListView) findViewById(R.id.podlist);
         podcastListView_.setAdapter(adapter_);
@@ -503,15 +517,32 @@ public class PodcastListPreference
             label.setText(title);
             check.setChecked(info.enabled_);
 
-            ImageButton upButton = (ImageButton) view.findViewById(R.id.move_up);
-            ImageButton downButton = (ImageButton) view.findViewById(R.id.move_down);
-            ImageButton deleteButton = (ImageButton) view.findViewById(R.id.remove);
-            deleteButton.setTag(info);
-            deleteButton.setOnClickListener(new RemoveButtonListener());
-            upButton.setTag(info);
-            upButton.setOnClickListener(new MoveupButtonListener());
-            downButton.setTag(info);
-            downButton.setOnClickListener(new MovedownButtonListener());
+            ImageButton detailButton = (ImageButton)view.findViewById(R.id.detail_button);
+            detailButton.setTag(info);
+            detailButton.setOnClickListener(new DetailButtonListener());
+            
+            Option opt = optionMap_.get(urlStr);
+            View v = view.findViewById(R.id.podcast_detail_view);
+            
+            if(null != opt && opt.expand_){
+                ImageButton upButton = (ImageButton) view.findViewById(R.id.move_up);
+                ImageButton downButton = (ImageButton) view.findViewById(R.id.move_down);
+                ImageButton deleteButton = (ImageButton) view.findViewById(R.id.remove);
+                deleteButton.setTag(info);
+                deleteButton.setOnClickListener(new RemoveButtonListener());
+                upButton.setTag(info);
+                upButton.setOnClickListener(new MoveupButtonListener());
+                downButton.setTag(info);
+                downButton.setOnClickListener(new MovedownButtonListener());
+
+                detailButton.setImageResource(R.drawable.ic_expand_less_white_24dp);
+                v.setVisibility(View.VISIBLE);
+            }
+            else {
+                //TODO: remove listener?
+                detailButton.setImageResource(R.drawable.ic_expand_more_white_24dp);
+                v.setVisibility(View.GONE);
+            }
             return view;
         }
     }
@@ -725,6 +756,22 @@ public class PodcastListPreference
             else {
                 adapter_.insert(info, 0);
             }
+            adapter_.notifyDataSetChanged();
+        }
+    }
+
+    private class DetailButtonListener
+        implements View.OnClickListener
+    {
+        @Override
+        public void onClick(View v){
+            PodcastInfo info = (PodcastInfo)v.getTag();
+            Option opt = optionMap_.get(info.getURL().toString());
+            if(opt == null){
+                opt = new Option();
+                optionMap_.put(info.getURL().toString(), opt);
+            }
+            opt.expand_ = !opt.expand_;
             adapter_.notifyDataSetChanged();
         }
     }
