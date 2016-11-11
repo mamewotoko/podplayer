@@ -31,12 +31,12 @@ fi
 
 AVD_NAME=emu_${TARGET}_${SCREEN_SIZE}_${LANGUAGE}_${COUNTRY}
 
-echo ----
-android list sdk -e --all
-echo ----
+#echo ----
+#android list sdk -e --all
+#echo ----
 
 echo "android create avd -n $AVD_NAME -b $ABI -t $TARGET -c 32M --skin $SCREEN_SIZE"
-echo no | android create avd -n $AVD_NAME --abi $ABI -t $TARGET -c 32M --skin $SCREEN_SIZE || exit 1
+echo no | android create avd --force -n $AVD_NAME --abi $ABI -t $TARGET -c 32M --skin $SCREEN_SIZE || exit 1
 emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -no-window &
 sleep 90
 STATUS=$(adb wait-for-device shell getprop init.svc.bootanim)
