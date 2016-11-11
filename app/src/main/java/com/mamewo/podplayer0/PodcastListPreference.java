@@ -503,18 +503,17 @@ public class PodcastListPreference
             CheckBox check = (CheckBox) view.findViewById(R.id.checkbox);
             check.setOnClickListener(PodcastListPreference.this);
             check.setTag(info);
-            TextView label = (TextView) view.findViewById(R.id.podcast_title_label);
+            
+            TextView urlView = (TextView) view.findViewById(R.id.podcast_url);
             //add check
             String title = info.title_;
             String urlStr = info.url_.toString();
+            TextView label = (TextView) view.findViewById(R.id.podcast_title_label);
             if (null == title) {
                 title = urlStr;
             }
-            else {
-                TextView urlView = (TextView) view.findViewById(R.id.podcast_url);
-                urlView.setText(urlStr);
-            }
             label.setText(title);
+            
             check.setChecked(info.enabled_);
 
             ImageButton detailButton = (ImageButton)view.findViewById(R.id.detail_button);
@@ -525,6 +524,9 @@ public class PodcastListPreference
             View v = view.findViewById(R.id.podcast_detail_view);
             
             if(null != opt && opt.expand_){
+                urlView.setText(urlStr);
+                urlView.setVisibility(View.VISIBLE);
+                
                 ImageButton upButton = (ImageButton) view.findViewById(R.id.move_up);
                 ImageButton downButton = (ImageButton) view.findViewById(R.id.move_down);
                 ImageButton deleteButton = (ImageButton) view.findViewById(R.id.remove);
@@ -539,6 +541,8 @@ public class PodcastListPreference
                 v.setVisibility(View.VISIBLE);
             }
             else {
+                urlView.setVisibility(View.GONE);
+                
                 //TODO: remove listener?
                 detailButton.setImageResource(R.drawable.ic_expand_more_white_24dp);
                 v.setVisibility(View.GONE);
