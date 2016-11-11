@@ -333,14 +333,24 @@ public class PodcastListPreference
                     Request request = new Request.Builder()
                         .url(url)
                         .build();
-                    response = client_.newCall(request).execute();
+                    //TODO: cancel?
+                    try{
+                        response = client_.newCall(request).execute();
+                    }
+                    catch(IOException e){
+                        showMessage(getString(R.string.network_error));
+                        continue;
+                    }
                     if(response.code() == 401){
                         //TODO: queue auth request and retry
-                        Log.i(TAG, "auth required: "+url);
+                        publishProgress(new PodcastInfo(title, url, iconURL, true, null, null, PodcastInfo.Status.AUTH_REQUIRED));
+                        //Log.i(TAG, "auth required: "+url);
+                        showMessage(getString(R.string.auth_required));
                         continue;
                     }
                     if(!response.isSuccessful()){
                         Log.i(TAG, "http error: "+response.message()+", "+url.toString());
+                        publishProgress(new PodcastInfo(title, url, iconURL, true, null, null, PodcastInfo.Status.ERROR));
                         continue;
                     }
                     is = response.body().byteStream();
@@ -375,7 +385,7 @@ public class PodcastListPreference
                     }
                     if (numItems > 0 && null != title) {
                         //Log.d(TAG, "publish: " + title);
-                        publishProgress(new PodcastInfo(title, url, iconURL, true));
+                        publishProgress(new PodcastInfo(title, url, iconURL, true, null, null, PodcastInfo.Status.PUBLIC));
                         result = true;
                     }
                 }

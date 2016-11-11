@@ -94,4 +94,7 @@
     <string name="icon_desc_qrcode">QR code to google play site, please share podplayer with your friends</string>
     <string name="icon_desc_github">Link to GitHub</string>
     <string name="icon_desc_podcast_detail">Display detail of podcast</string>
+
+    <string name="auth_required">Username and password are required</string>
+    <string name="network_error">Network error</string>
 </resources>
