@@ -10,6 +10,7 @@
       android:maxHeight="54dp"
       android:maxWidth="54dp"
       android:layout_marginRight="4dp"
+      android:layout_gravity="center_vertical"
       android:contentDescription="@string/icon_desc_episode_none"
       android:focusable="false"
       />
