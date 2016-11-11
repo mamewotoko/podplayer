@@ -58,5 +58,6 @@ adb logcat > app/build/logcat.log &
 ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity -PspoonOutput=spoon_exp_${AVD_NAME}
 ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodcastListPreference -PspoonOutput=spoon_podlist_${AVD_NAME}
 
-adb shell reboot -p
-sleep 90
+## TODO: get serial id
+adb -s emulator-5554 emu kill
+sleep 30
