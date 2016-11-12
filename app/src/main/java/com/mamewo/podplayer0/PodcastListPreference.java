@@ -15,8 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import android.util.Base64;
+import android.graphics.PorterDuff;
 import org.apache.commons.io.input.BOMInputStream;
-
+    
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -72,6 +73,7 @@ import android.content.DialogInterface.OnCancelListener;
 import okhttp3.OkHttpClient;
 import com.bumptech.glide.Glide;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -553,34 +555,42 @@ public class PodcastListPreference
                 enterPasswordButton.setOnClickListener(new EnterPasswordButtonListener());
 
                 int imageId = R.drawable.ic_lock_outline_white_24dp;
+                Context context = PodcastListPreference.this;
+                int imageColor = ContextCompat.getColor(context, R.color.green);
                 ImageButton statusIcon = (ImageButton)view.findViewById(R.id.status_icon);
+                Log.d(TAG, "status: " + info.getTitle() + " " + info.getStatus());
                 switch(info.getStatus()){
                 case UNKNOWN:
                     //TODO: change icon
                     authView.setVisibility(View.GONE);
-                    imageId = R.drawable.ic_public_white_24dp;
+                    imageId = R.drawable.ic_error_outline_white_24dp;
+                    imageColor = ContextCompat.getColor(context, R.color.white);
                     break;
                 case PUBLIC:
                     authView.setVisibility(View.GONE);
                     imageId = R.drawable.ic_public_white_24dp;
+                    imageColor = ContextCompat.getColor(context, R.color.green);
                     break;
                 case AUTH_REQUIRED_LOCKED:
                     authView.setVisibility(View.VISIBLE);
                     imageId = R.drawable.ic_lock_outline_white_24dp;
+                    imageColor = ContextCompat.getColor(context, R.color.yellow);
                     break;
                 case AUTH_REQUIRED_UNLOCKED:
                     authView.setVisibility(View.VISIBLE);
                     imageId = R.drawable.ic_lock_open_white_24dp;
+                    imageColor = ContextCompat.getColor(context, R.color.green);
                     break;
                 case ERROR:
                     authView.setVisibility(View.GONE);
                     imageId = R.drawable.ic_error_outline_white_24dp;
+                    imageColor = ContextCompat.getColor(context, R.color.pink);
                     break;
                 default:
                     break;
                 }
                 statusIcon.setImageResource(imageId);
-                
+                statusIcon.getDrawable().setColorFilter(imageColor, PorterDuff.Mode.SRC_IN);
                 detailButton.setImageResource(R.drawable.ic_expand_less_white_24dp);
                 v.setVisibility(View.VISIBLE);
             }
