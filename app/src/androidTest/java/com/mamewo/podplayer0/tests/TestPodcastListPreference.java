@@ -106,36 +106,36 @@ public class TestPodcastListPreference
         Assert.assertEquals(prevCount, adapter.getCount());
     }
     
-    public void testDelete3() {
-        solo_.sleep(1000);
-        ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
-        int count = adapter.getCount();
-        solo_.clickLongInList(3);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete3");
-        solo_.clickInList(PodcastListPreference.REMOVE_OPERATION+1);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete3");
-        Assert.assertEquals(count-1, adapter.getCount());
-    }
+    // public void testDelete3() {
+    //     solo_.sleep(1000);
+    //     ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
+    //     int count = adapter.getCount();
+    //     solo_.clickLongInList(3);
+    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete3");
+    //     solo_.clickInList(PodcastListPreference.REMOVE_OPERATION+1);
+    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete3");
+    //     Assert.assertEquals(count-1, adapter.getCount());
+    // }
     
-    public void testUp() {
-        solo_.sleep(1000);
-        ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
-        PodcastInfo info = (PodcastInfo)adapter.getItem(1);
-        solo_.clickLongInList(2);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "up");
-        solo_.clickInList(PodcastListPreference.UP_OPERATION+1);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "up");
-        Assert.assertEquals(info, adapter.getItem(0));
-    }
+    // public void testUp() {
+    //     solo_.sleep(1000);
+    //     ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
+    //     PodcastInfo info = (PodcastInfo)adapter.getItem(1);
+    //     solo_.clickLongInList(2);
+    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "up");
+    //     solo_.clickInList(PodcastListPreference.UP_OPERATION+1);
+    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "up");
+    //     Assert.assertEquals(info, adapter.getItem(0));
+    // }
     
-    public void testDown() {
-        solo_.sleep(1000);
-        ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
-        PodcastInfo info = (PodcastInfo)adapter.getItem(0);
-        solo_.clickLongInList(1);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "down");      
-        solo_.clickInList(PodcastListPreference.DOWN_OPERATION+1);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "down");        
-        Assert.assertEquals(info, adapter.getItem(1));
-    }
+    // public void testDown() {
+    //     solo_.sleep(1000);
+    //     ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
+    //     PodcastInfo info = (PodcastInfo)adapter.getItem(0);
+    //     solo_.clickLongInList(1);
+    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "down");      
+    //     solo_.clickInList(PodcastListPreference.DOWN_OPERATION+1);
+    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "down");        
+    //     Assert.assertEquals(info, adapter.getItem(1));
+    // }
 }

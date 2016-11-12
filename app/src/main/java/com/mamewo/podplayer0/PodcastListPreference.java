@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-
+import android.util.Base64;
 import org.apache.commons.io.input.BOMInputStream;
 
 import okhttp3.Request;
@@ -29,6 +29,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import com.mamewo.lib.podcast_parser.PodcastInfo;
+import com.mamewo.lib.podcast_parser.PodcastInfo.Status.*;
 
 import static com.mamewo.podplayer0.Const.*;
 
@@ -46,6 +47,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -58,6 +61,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -169,6 +173,7 @@ public class PodcastListPreference
             for(int i = 0; i < adapter_.getCount(); i++){
                 lst.add(adapter_.getItem(i));
             }
+            Log.d(TAG, "onStop: saveSetting");
             saveSetting(this, lst);
         }
         catch (JSONException e) {
@@ -249,10 +254,13 @@ public class PodcastListPreference
             if(urlList.size() == 0){
                 return;
             }
-            //URL[] urlList = urlList;
             showDialog(CHECKING_DIALOG);
             task_ = new CheckTask();
-            task_.execute(urlList.toArray(new URL[urlList.size()]));
+            SimpleRequest[] reqlist = new SimpleRequest[urlList.size()];
+            for(int i = 0; i < urlList.size(); i++){
+                reqlist[i] = new SimpleRequest(urlList.get(i), null, null);
+            }
+            task_.execute(reqlist);
         }
         else if (view.getId() == R.id.checkbox) {
             CheckBox checkbox = (CheckBox) view;
@@ -304,10 +312,21 @@ public class PodcastListPreference
     
     //check that podcast XML is valid
     public class CheckTask
-        extends AsyncTask<URL, PodcastInfo, Boolean>
+    //extends AsyncTask<URL, PodcastInfo, Boolean>
+        extends AsyncTask<SimpleRequest, PodcastInfo, Boolean>
     {
+        private boolean addItem_;
+        
+        public CheckTask(boolean addItem){
+            addItem_ = addItem;
+        }
+
+        public CheckTask(){
+            this(true);
+        }
+
         @Override
-        protected Boolean doInBackground(URL... urllist) {
+        protected Boolean doInBackground(SimpleRequest... reqlist) {
             XmlPullParserFactory factory;
             try {
                 factory = XmlPullParserFactory.newInstance();
@@ -317,11 +336,15 @@ public class PodcastListPreference
                 return false;
             }
             boolean result = false;
-            for(int i = 0; i < urllist.length; i++) {
-                URL url = urllist[i];
+            for(int i = 0; i < reqlist.length; i++) {
                 if(isCancelled()){
                     break;
                 }
+                SimpleRequest req = reqlist[i];
+                URL url = req.getURL();
+                String username = req.getUsername();
+                String password = req.getPassword();
+
                 Log.d(TAG, "get URL: " + url);
                 InputStream is = null;
                 int numItems = 0;
@@ -330,22 +353,30 @@ public class PodcastListPreference
                 Response response = null;
                 try {
                     ///XXX
-                    Request request = new Request.Builder()
-                        .url(url)
-                        .build();
+                    Request.Builder builder = new Request.Builder();
+                    builder.url(url);
+                    if(null != username && null != password){
+
+                        String data = username+":"+password;
+                        String encoded = Base64.encodeToString(data.getBytes(), Base64.NO_WRAP);
+                        Log.d(TAG, "AUTH: "+encoded + " : "+ username + " " + password);
+                        builder.addHeader("Authorization", "Basic "+encoded);
+                    }
+                    Request request = builder.build();
                     //TODO: cancel?
                     try{
                         response = client_.newCall(request).execute();
                     }
                     catch(IOException e){
-                        showMessage(getString(R.string.network_error));
+                        //showMessage(getString(R.string.network_error));
+                        Log.d(TAG, "network error", e);
                         continue;
                     }
                     if(response.code() == 401){
                         //TODO: queue auth request and retry
-                        publishProgress(new PodcastInfo(title, url, iconURL, true, null, null, PodcastInfo.Status.AUTH_REQUIRED));
-                        //Log.i(TAG, "auth required: "+url);
-                        showMessage(getString(R.string.auth_required));
+                        publishProgress(new PodcastInfo(title, url, iconURL, true, null, null, PodcastInfo.Status.AUTH_REQUIRED_LOCKED));
+                        Log.i(TAG, "auth required: "+url);
+                        //showMessage(getString(R.string.auth_required));
                         continue;
                     }
                     if(!response.isSuccessful()){
@@ -353,6 +384,7 @@ public class PodcastListPreference
                         publishProgress(new PodcastInfo(title, url, iconURL, true, null, null, PodcastInfo.Status.ERROR));
                         continue;
                     }
+                    //TODO: check content-type
                     is = response.body().byteStream();
                     is = new BOMInputStream(is, false);
                     
@@ -500,6 +532,7 @@ public class PodcastListPreference
             
             Option opt = optionMap_.get(urlStr);
             View v = view.findViewById(R.id.podcast_detail_view);
+            View authView = view.findViewById(R.id.podcast_auth_view);
             
             if(null != opt && opt.expand_){
                 urlView.setText(urlStr);
@@ -515,12 +548,45 @@ public class PodcastListPreference
                 downButton.setTag(info);
                 downButton.setOnClickListener(new MovedownButtonListener());
 
+                Button enterPasswordButton = (Button)view.findViewById(R.id.auth_info);
+                enterPasswordButton.setTag(info);
+                enterPasswordButton.setOnClickListener(new EnterPasswordButtonListener());
+
+                int imageId = R.drawable.ic_lock_outline_white_24dp;
+                ImageButton statusIcon = (ImageButton)view.findViewById(R.id.status_icon);
+                switch(info.getStatus()){
+                case UNKNOWN:
+                    //TODO: change icon
+                    authView.setVisibility(View.GONE);
+                    imageId = R.drawable.ic_public_white_24dp;
+                    break;
+                case PUBLIC:
+                    authView.setVisibility(View.GONE);
+                    imageId = R.drawable.ic_public_white_24dp;
+                    break;
+                case AUTH_REQUIRED_LOCKED:
+                    authView.setVisibility(View.VISIBLE);
+                    imageId = R.drawable.ic_lock_outline_white_24dp;
+                    break;
+                case AUTH_REQUIRED_UNLOCKED:
+                    authView.setVisibility(View.VISIBLE);
+                    imageId = R.drawable.ic_lock_open_white_24dp;
+                    break;
+                case ERROR:
+                    authView.setVisibility(View.GONE);
+                    imageId = R.drawable.ic_error_outline_white_24dp;
+                    break;
+                default:
+                    break;
+                }
+                statusIcon.setImageResource(imageId);
+                
                 detailButton.setImageResource(R.drawable.ic_expand_less_white_24dp);
                 v.setVisibility(View.VISIBLE);
             }
             else {
                 urlView.setVisibility(View.GONE);
-                
+                authView.setVisibility(View.GONE);
                 //TODO: remove listener?
                 detailButton.setImageResource(R.drawable.ic_expand_more_white_24dp);
                 v.setVisibility(View.GONE);
@@ -703,6 +769,58 @@ public class PodcastListPreference
             }
             opt.expand_ = !opt.expand_;
             adapter_.notifyDataSetChanged();
+        }
+    }
+
+    private class EnterPasswordButtonListener
+        implements View.OnClickListener
+    {
+        @Override
+        public void onClick(View v){
+            PodcastInfo info = (PodcastInfo)v.getTag();
+            ViewParent parent = v.getParent();
+            if(null == parent){
+                Log.d(TAG, "parent is null");
+                return;
+            }
+            if(parent instanceof LinearLayout){
+                LinearLayout layout = (LinearLayout)parent;
+                EditText usernameView = (EditText)layout.findViewById(R.id.username);
+                EditText passwordView = (EditText)layout.findViewById(R.id.password);
+                info.setUsername(usernameView.getText().toString());
+                info.setPassword(passwordView.getText().toString());
+                Log.d(TAG, "url, user, pass: " + info.getURL() + " " + info.getUsername() + " " + info.getPassword());
+                //TODO: start check
+                //TODO check task
+                showDialog(CHECKING_DIALOG);
+                task_ = new CheckTask();
+                task_.execute(new SimpleRequest(info.getURL(), info.getUsername(), info.getPassword()));
+            }
+        }
+    }
+
+    private class SimpleRequest
+    {
+        private URL url_;
+        private String username_;
+        private String password_;
+        
+        public SimpleRequest(URL url, String username, String password){
+            url_ = url;
+            username_ = username;
+            password_ = password;
+        }
+
+        public URL getURL(){
+            return url_;
+        }
+
+        public String getUsername(){
+            return username_;
+        }
+
+        public String getPassword(){
+            return password_;
         }
     }
 }
