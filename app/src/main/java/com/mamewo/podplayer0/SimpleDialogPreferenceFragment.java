@@ -43,7 +43,7 @@ public class SimpleDialogPreferenceFragment
         String key = getArguments().getString(ARG_KEY);
 
         if("gesture_list".equals(key)){
-            View view = inflater.inflate(R.layout.gesture_table, null, false);
+            View view = inflater.inflate(R.layout.gesture_table, null);
             builder.setView(view);
             builder.setTitle(R.string.pref_gesture_list);
         }
@@ -74,7 +74,7 @@ public class SimpleDialogPreferenceFragment
             builder.setMessage(licenseText.toString());
         }
         else if("version".equals(key)){
-            View view = inflater.inflate(R.layout.version_dialog, null, false);
+            View view = inflater.inflate(R.layout.version_dialog, null);
             View logo = view.findViewById(R.id.github_logo);
             logo.setOnClickListener(this);
             builder.setView(view);

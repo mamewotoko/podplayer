@@ -314,17 +314,24 @@ public class PlayerService
 		currentPlaying_ = currentPlaylist_.get(playCursor_);
 		Log.d(TAG, "playMusic: " + playCursor_ + ": " + currentPlaying_.getURL());
 		try {
-            Uri uri = Uri.parse(currentPlaying_.getURL());
-            Map<String, String> header = null;
-            String username = currentPlaying_.getUsername();
-            String password = currentPlaying_.getPassword();
-            if(null != username && null != password){
-                String authHeader = Util.makeHTTPAuthorizationHeader(username, password);
-                header = new HashMap<String,String>();
-                header.put("Authorization", authHeader);
+            player_.reset();
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                Uri uri = Uri.parse(currentPlaying_.getURL());
+                Map<String, String> header = null;
+                String username = currentPlaying_.getUsername();
+                String password = currentPlaying_.getPassword();
+                if(null != username && null != password){
+                    String authHeader = Util.makeHTTPAuthorizationHeader(username, password);
+                    header = new HashMap<String,String>();
+                    header.put("Authorization", authHeader);
+                }
+                player_.setDataSource(this, uri, header);
             }
-			player_.reset();
-			player_.setDataSource(this, uri, header);
+            else {
+                //TODO: try add auth info to url
+                player_.setDataSource(currentPlaying_.getURL());
+            }
 			player_.prepareAsync();
 			isPreparing_ = true;
 			isPausing_ = false;
