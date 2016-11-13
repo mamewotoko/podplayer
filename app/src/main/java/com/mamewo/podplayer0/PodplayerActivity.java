@@ -322,6 +322,7 @@ public class PodplayerActivity
             //Log.d(TAG, "onProgressUpdate");
             filterSelectedPodcast();
             //adapter_.notifyDataSetChanged();
+            savePodcastList();
         }
 
         private void onFinished() {
@@ -338,6 +339,7 @@ public class PodplayerActivity
             episodeListView_.onRefreshComplete();
             episodeListView_.hideHeader();
             loadTask_ = null;
+            Log.d(TAG, "onFinished: savePodcastList");
             savePodcastList();
             //dummy
             //sortEpisodeByDate(true);

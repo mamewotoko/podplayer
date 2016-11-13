@@ -119,11 +119,8 @@ public class PodcastListPreference
         addButton_.setOnClickListener(this);
         urlEdit_ = (EditText) findViewById(R.id.url_edit);
         dialog_ = null;
-        List<PodcastInfo> list = loadSetting(this);
         optionMap_ = new HashMap<String, Option>();
-        adapter_ = new PodcastInfoAdapter(this, list);
         podcastListView_ = (ListView) findViewById(R.id.podlist);
-        podcastListView_.setAdapter(adapter_);
         podcastListView_.setOnItemClickListener(this);
         bundle_ = null;
         client_ = new OkHttpClient();
@@ -165,6 +162,9 @@ public class PodcastListPreference
     public void onStart() {
         super.onStart();
         isChanged_ = false;
+        List<PodcastInfo> list = loadSetting(this);
+        adapter_ = new PodcastInfoAdapter(this, list);
+        podcastListView_.setAdapter(adapter_);
     }
     
     @Override
@@ -618,11 +618,13 @@ public class PodcastListPreference
                 .accumulate("url", info.getURL().toString())
                 .accumulate("icon_url", info.getIconURL())
                 .accumulate("enabled", info.getEnabled())
+                .accumulate("username", info.getUsername())
+                .accumulate("password", info.getPassword())
                 .accumulate("status", info.getStatus());
             array.put(jsonValue);
         }
         String json = array.toString();
-        //Log.d(TAG, "JSON: " + json);
+        Log.d(TAG, "saveSetting JSON: " + json);
         FileOutputStream fos = context.getApplicationContext().openFileOutput(CONFIG_FILENAME, MODE_PRIVATE);
         try{
             fos.write(json.getBytes());
@@ -666,6 +668,7 @@ public class PodcastListPreference
             BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
             String line;
             while (null != (line = reader.readLine())) {
+                Log.d(TAG, "loadSettingFromJSONFile: JSON "+line);
                 sb.append(line);
             }
         }
@@ -691,11 +694,19 @@ public class PodcastListPreference
                     status = PodcastInfo.Status.valueOf(value.getString("status"));
                 }
                 catch(Exception e){
-                    //nop
+                    Log.d(TAG, "read status failed: ", e);
                 }
             }
+            String username  = null;
+            if(value.has("username")){
+                username = value.getString("username");
+            }
+            String password = null;
+            if(value.has("password")){
+                password  = value.getString("password");
+            }
             boolean enabled = value.getBoolean("enabled");
-			PodcastInfo info = new PodcastInfo(title, url, iconURL, enabled);
+			PodcastInfo info = new PodcastInfo(title, url, iconURL, enabled, username, password, status);
             list.add(info);
         }
         return list;
