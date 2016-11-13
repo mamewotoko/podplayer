@@ -37,7 +37,7 @@
     <string name="pref_version">Version</string>
     <string name="mail_to_author">Mail to author</string>
     <string name="author_name">mamewotoko@gmail.com</string>
-    <string name="google_play_and_github">Google Play &amp; Github</string>
+
     <string name="play">Play</string>
     <string name="pause">Pause</string>
     <string name="expand"> &lt; </string>
@@ -93,8 +93,17 @@
     <string name="icon_desc_gesture_table">Gesture table</string>
     <string name="icon_desc_qrcode">QR code to google play site, please share podplayer with your friends</string>
     <string name="icon_desc_github">Link to GitHub</string>
-    <string name="icon_desc_podcast_detail">Display detail of podcast</string>
 
+    <string name="icon_desc_podcast_detail">Display detail of podcast</string>
     <string name="auth_required">Username and password are required</string>
     <string name="network_error">Network error</string>
+    <string name="podcast_icon">Podcast icon</string>
+
+    <string name="podcast_move_down">Move down</string>
+    <string name="podcast_move_up">Move up</string>
+    <string name="podcast_delete">Move down</string>
+
+    <string name="username">User name</string>
+    <string name="password">Password</string>
+    <string name="login">login</string>
 </resources>

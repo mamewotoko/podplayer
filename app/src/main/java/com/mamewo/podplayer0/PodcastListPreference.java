@@ -547,7 +547,7 @@ public class PodcastListPreference
                 
                 ImageButton upButton = (ImageButton) view.findViewById(R.id.move_up);
                 ImageButton downButton = (ImageButton) view.findViewById(R.id.move_down);
-                ImageButton deleteButton = (ImageButton) view.findViewById(R.id.remove);
+                ImageButton deleteButton = (ImageButton) view.findViewById(R.id.delete);
                 deleteButton.setTag(info);
                 deleteButton.setOnClickListener(new RemoveButtonListener());
                 upButton.setTag(info);

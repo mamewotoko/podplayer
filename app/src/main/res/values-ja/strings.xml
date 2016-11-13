@@ -37,7 +37,6 @@
     <string name="mail_to_author">作者にメールを送る</string>
     <string name="author_name">mamewotoko@gmail.com</string>
    
-    <string name="google_play_and_github">Google Play &amp; Github</string>
     <string name="play">再生</string>
     <string name="pause">停止</string>
     <string name="expand">広げる</string>
@@ -48,6 +47,8 @@
     <string name="dialog_checking_podcast_url_body">中止するには、Backボタンを押すか、ダイアログの外をタッチしてください。</string>
     <string name="msg_add_podcast_failed">追加できませんでした</string>
     <string name="msg_add_podcast_cancelled">キャンセルされました</string>
+
+    <string name="podcast_list_menu">ポッドキャストを追加</string>
     <string name="preference_menu">設定</string>
     <string name="preference_title">設定</string>
     <string name="exit_menu">終了</string>
@@ -89,4 +90,12 @@
     <string name="icon_desc_qrcode">Google playのウェブサイトへのQRコードです。ぜひ、友達に教えてあげてください。</string>
     <string name="icon_desc_github">GitHubへのリンク</string>
 
+    <string name="icon_desc_podcast_detail">ポッドキャストの詳細を表示</string>
+    <string name="auth_required">ユーザ名とパスワードが必要です。</string>
+    <string name="network_error">ネットワークエラー</string>
+    <string name="podcast_icon">ポッドキャストアイコン</string>
+
+    <string name="username">ユーザ名</string>
+    <string name="password">パスワード</string>
+    <string name="login">ログイン</string>
 </resources>

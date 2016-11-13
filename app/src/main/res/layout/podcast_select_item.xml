@@ -17,7 +17,7 @@
         android:maxHeight="54dp"
         android:maxWidth="54dp"
         android:layout_marginRight="4dp"
-        android:contentDescription="xxx"
+        android:contentDescription="@string/podcast_icon"
         android:focusable="false"
       />
     <CheckBox
@@ -71,7 +71,7 @@
 	android:layout_weight="1"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_arrow_downward_white_24dp"
-        android:contentDescription="move down"
+        android:contentDescription="@string/podcast_move_down"
         />
     <ImageButton
         android:id="@+id/move_up"
@@ -79,15 +79,15 @@
 	android:layout_weight="1"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_arrow_upward_white_24dp"
-        android:contentDescription="move up"
+        android:contentDescription="@string/podcast_move_up"
         />
     <ImageButton
-        android:id="@+id/remove"
+        android:id="@+id/delete"
 	android:layout_width="0dp"
 	android:layout_weight="1"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_delete_white_24dp"
-        android:contentDescription="remove"
+        android:contentDescription="@string/podcast_delete"
         />
     <ImageButton
         android:id="@+id/status_icon"
@@ -95,7 +95,6 @@
 	android:layout_weight="1"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_public_white_24dp"
-        android:contentDescription="status"
         />
   </LinearLayout>
   <!--TODO:  add androd:hint -->
@@ -110,7 +109,7 @@
       android:id="@+id/username"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:hint="user name if required"
+      android:hint="@string/username"
       android:focusable="true" 
       android:text="" />
   <EditText
@@ -118,7 +117,7 @@
       android:inputType="textPassword"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:hint="password if required"
+      android:hint="@string/password"
       android:focusable="true" 
       android:text="" />
   <Button
