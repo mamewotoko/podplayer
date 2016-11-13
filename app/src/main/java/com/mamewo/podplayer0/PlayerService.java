@@ -2,8 +2,11 @@ package com.mamewo.podplayer0;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
+import com.mamewo.lib.podcast_parser.Util;
 
 import static com.mamewo.podplayer0.Const.*;
 
@@ -20,6 +23,7 @@ import android.content.res.Resources;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.Build;
@@ -308,15 +312,25 @@ public class PlayerService
 			return false;
 		}
 		currentPlaying_ = currentPlaylist_.get(playCursor_);
-		Log.d(TAG, "playMusic: " + playCursor_ + ": " + currentPlaying_.url_);
+		Log.d(TAG, "playMusic: " + playCursor_ + ": " + currentPlaying_.getURL());
 		try {
+            Uri uri = Uri.parse(currentPlaying_.getURL());
+            Map<String, String> header = null;
+            String username = currentPlaying_.getUsername();
+            String password = currentPlaying_.getPassword();
+            if(null != username && null != password){
+                String authHeader = Util.makeHTTPAuthorizationHeader(username, password);
+                header = new HashMap<String,String>();
+                header.put("Authorization", authHeader);
+            }
 			player_.reset();
-			player_.setDataSource(currentPlaying_.url_);
+			player_.setDataSource(this, uri, header);
 			player_.prepareAsync();
 			isPreparing_ = true;
 			isPausing_ = false;
 		}
 		catch (IOException e) {
+            Log.d(TAG, "playMusic IOException", e);
 			return false;
 		}
 		if(null != listener_){
@@ -548,7 +562,7 @@ public class PlayerService
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 		String code = ErrorCode2String(extra);
 		EpisodeInfo info = currentPlaying_;
-		Log.i(TAG, "onError: what: " + what + " error code: " + code + " url: " + info.url_);
+		Log.i(TAG, "onError: what: " + what + " error code: " + code + " url: " + info.getURL());
 		//TODO: show error message to GUI
 		isPreparing_ = false;
 		//TODO: localize

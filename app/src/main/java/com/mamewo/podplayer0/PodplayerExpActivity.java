@@ -18,9 +18,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -252,32 +249,6 @@ public class PodplayerExpActivity
             return;
         }
         player_.playNth(playPos);
-    }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.mainmenu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        boolean handled = false;
-        switch(item.getItemId()) {
-        case R.id.exit_menu:
-            finishServiceOnExit_ = true;
-            finish();
-            handled = true;
-            break;
-        case R.id.pref_menu:
-            startActivity(new Intent(this, PodplayerPreference.class));
-            handled = true;
-            break;
-        default:
-            break;
-        }
-        return handled;
     }
     
     public class ExpAdapter

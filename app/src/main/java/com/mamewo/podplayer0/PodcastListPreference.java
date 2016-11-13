@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import android.util.Base64;
 import android.graphics.PorterDuff;
 import org.apache.commons.io.input.BOMInputStream;
     
@@ -30,6 +29,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import com.mamewo.lib.podcast_parser.PodcastInfo;
+import com.mamewo.lib.podcast_parser.Util;
 import com.mamewo.lib.podcast_parser.PodcastInfo.Status.*;
 
 import static com.mamewo.podplayer0.Const.*;
@@ -358,11 +358,7 @@ public class PodcastListPreference
                     Request.Builder builder = new Request.Builder();
                     builder.url(url);
                     if(null != username && null != password){
-
-                        String data = username+":"+password;
-                        String encoded = Base64.encodeToString(data.getBytes(), Base64.NO_WRAP);
-                        Log.d(TAG, "AUTH: "+encoded + " : "+ username + " " + password);
-                        builder.addHeader("Authorization", "Basic "+encoded);
+                        builder.addHeader("Authorization", Util.makeHTTPAuthorizationHeader(username, password));
                     }
                     Request request = builder.build();
                     //TODO: cancel?
@@ -375,15 +371,15 @@ public class PodcastListPreference
                         continue;
                     }
                     if(response.code() == 401){
-                        //TODO: queue auth request and retry
-                        publishProgress(new PodcastInfo(title, url, iconURL, true, null, null, PodcastInfo.Status.AUTH_REQUIRED_LOCKED));
+                        //TODO: show messge
+                        publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, PodcastInfo.Status.AUTH_REQUIRED_LOCKED));
                         Log.i(TAG, "auth required: "+url);
                         //showMessage(getString(R.string.auth_required));
                         continue;
                     }
                     if(!response.isSuccessful()){
                         Log.i(TAG, "http error: "+response.message()+", "+url.toString());
-                        publishProgress(new PodcastInfo(title, url, iconURL, true, null, null, PodcastInfo.Status.ERROR));
+                        publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, PodcastInfo.Status.ERROR));
                         continue;
                     }
                     //TODO: check content-type
@@ -419,16 +415,25 @@ public class PodcastListPreference
                     }
                     if (numItems > 0 && null != title) {
                         //Log.d(TAG, "publish: " + title);
-                        publishProgress(new PodcastInfo(title, url, iconURL, true, null, null, PodcastInfo.Status.PUBLIC));
+                        PodcastInfo.Status status;
+                        if(null != username && null != password){
+                            status = PodcastInfo.Status.AUTH_REQUIRED_UNLOCKED;
+                        }
+                        else {
+                            status = PodcastInfo.Status.PUBLIC;
+                        }
+                        publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, status));
                         result = true;
                     }
                 }
                 catch (IOException e) {
                     Log.i(TAG, "IOException", e);
+                    publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, PodcastInfo.Status.ERROR));
                     //continue
                 }
                 catch (XmlPullParserException e) {
                     Log.i(TAG, "XmlPullParserException", e);
+                    publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, PodcastInfo.Status.ERROR));
                     //continue
                 }
                 finally {
