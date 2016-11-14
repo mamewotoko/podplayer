@@ -214,7 +214,7 @@ public class PodplayerExpActivity
     {
         EpisodeInfo info = (EpisodeInfo)adapter_.getChild(groupPosition, childPosition);
         EpisodeInfo current = player_.getCurrentPodInfo();
-        if(current != null && current.url_.equals(info.url_)) {
+        if(current != null && current.getURL().equals(info.getURL())) {
             if(player_.isPlaying()) {
                 player_.pauseMusic();
             }
@@ -245,7 +245,7 @@ public class PodplayerExpActivity
             }
         }
         if (playPos < 0){
-            Log.i(TAG, "playByInfo: info is not found: " + info.url_);
+            Log.i(TAG, "playByInfo: info is not found: " + info.getURL());
             return;
         }
         player_.playNth(playPos);
@@ -323,7 +323,7 @@ public class PodplayerExpActivity
             TextView titleView = (TextView)view.findViewById(R.id.text1);
             TextView countView = (TextView)view.findViewById(R.id.text2);
             PodcastInfo info = state_.podcastList_.get(filteredItemIndex_.get(groupPosition));
-            titleView.setText(info.title_);
+            titleView.setText(info.getTitle());
             int childNum = state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition)).size();
             String numStr;
             if (childNum <= 1) {
@@ -351,12 +351,12 @@ public class PodplayerExpActivity
             EpisodeInfo info = (EpisodeInfo)getChild(groupPosition, childPosition);
             TextView titleView = (TextView)view.findViewById(R.id.episode_title);
             TextView timeView = (TextView)view.findViewById(R.id.episode_time);
-            titleView.setText(info.title_);
-            timeView.setText(info.pubdate_);
+            titleView.setText(info.getTitle());
+            timeView.setText(info.getPubdateString());
             ImageView stateIcon = (ImageView)view.findViewById(R.id.play_icon);
             ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
             EpisodeInfo current = player_.getCurrentPodInfo();
-            if(current != null && current.url_.equals(info.url_)) {
+            if(current != null && current.getURL().equals(info.getURL())) {
                 //cache!
                 if(player_.isPlaying()) {
                     stateIcon.setImageResource(R.drawable.ic_play_arrow_white_24dp);
@@ -373,12 +373,12 @@ public class PodplayerExpActivity
             }
 
             //TODO: use string or uri
-            String iconURL = state_.podcastList_.get(info.index_).getIconURL();
+            String iconURL = state_.podcastList_.get(info.getIndex()).getIconURL();
             if(showPodcastIcon_ && null != iconURL){
                 Glide
                     //.with(PodplayerExpActivity.this)
                     .with(getApplicationContext())
-                    .load(state_.podcastList_.get(info.index_).iconURL_)
+                    .load(state_.podcastList_.get(info.getIndex()).getIconURL())
                     .into(episodeIcon);
                 episodeIcon.setVisibility(View.VISIBLE);
             }
@@ -449,14 +449,14 @@ public class PodplayerExpActivity
         int childPosition = ExpandableListView.getPackedPositionChild(id);
 
         EpisodeInfo info = (EpisodeInfo)adapter_.getChild(groupPosition, childPosition);
-        if(info.link_ == null){
+        if(info.getLink() == null){
             return true;
         }
         //TODO: use link of podcast.xml (global one)
         //TODO: display url before connect
         //episode.link refers audio file...
         Intent i =
-            new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
+            new Intent(Intent.ACTION_VIEW, Uri.parse(info.getLink()));
         startActivity(i);
         return true;
     }
@@ -466,7 +466,7 @@ public class PodplayerExpActivity
     protected void onPodcastListChanged(boolean start) {
         filteredItemIndex_.clear();
         for(int i = 0; i < state_.podcastList_.size(); i++) {
-            if(state_.podcastList_.get(i).enabled_){
+            if(state_.podcastList_.get(i).getEnabled()){
                 filteredItemIndex_.add(i);
             }
         }

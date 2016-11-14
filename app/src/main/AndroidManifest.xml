@@ -46,6 +46,7 @@
 
               />
     <activity android:name="com.mamewo.podplayer0.PodcastListPreference"
+              android:windowSoftInputMode="adjustPan"
               />
     <receiver android:name="PlayerService$Receiver"
               android:exported="false">

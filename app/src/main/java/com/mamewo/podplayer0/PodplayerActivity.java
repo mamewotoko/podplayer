@@ -173,8 +173,8 @@ public class PodplayerActivity
         //refresh header is added....
         EpisodeInfo info = (EpisodeInfo)adapter_.getItem(pos-1);
         EpisodeInfo current = player_.getCurrentPodInfo();
-        if(current != null && current.url_.equals(info.url_)) {
-            Log.d(TAG, "onItemClick: URL: " + current.url_);
+        if(current != null && current.getURL().equals(info.getURL())) {
+            Log.d(TAG, "onItemClick: URL: " + current.getURL());
             if(player_.isPlaying()) {
                 Log.d(TAG, "onItemClick1");
                 player_.pauseMusic();
@@ -203,7 +203,7 @@ public class PodplayerActivity
             }
         }
         if (playPos < 0){
-            Log.i(TAG, "playByInfo: info is not found: " + info.url_);
+            Log.i(TAG, "playByInfo: info is not found: " + info.getURL());
             return false;
         }
 
@@ -268,12 +268,12 @@ public class PodplayerActivity
             EpisodeInfo info = (EpisodeInfo)getItem(position);
             TextView titleView = (TextView)view.findViewById(R.id.episode_title);
             TextView timeView = (TextView)view.findViewById(R.id.episode_time);
-            titleView.setText(info.title_);
+            titleView.setText(info.getTitle());
             timeView.setText(info.getPubdateString());
             ImageView stateIcon = (ImageView)view.findViewById(R.id.play_icon);
             ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
             EpisodeInfo current = player_.getCurrentPodInfo();
-            if(current != null && current.url_.equals(info.url_)) {
+            if(current != null && current.getURL().equals(info.getURL())) {
                 //cache!
                 if(player_.isPlaying()) {
                     stateIcon.setImageResource(R.drawable.ic_play_arrow_white_24dp);
@@ -295,7 +295,7 @@ public class PodplayerActivity
                     .with(getApplicationContext())
                     .load(iconURL)
                     .into(episodeIcon);
-                episodeIcon.setContentDescription(info.title_);
+                episodeIcon.setContentDescription(info.getTitle());
                 episodeIcon.setVisibility(View.VISIBLE);
             }
             else {
@@ -379,11 +379,11 @@ public class PodplayerActivity
                 PreferenceManager.getDefaultSharedPreferences(this);
         Resources res = getResources();
         boolean enableLongClick = pref.getBoolean("enable_long_click", res.getBoolean(R.bool.default_enable_long_click));
-        if ((! enableLongClick) || null == info.link_) {
+        if ((! enableLongClick) || null == info.getLink()) {
             return false;
         }
         //TODO: skip if url does not refer html?
-        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(info.link_));
+        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(info.getLink()));
         startActivity(i);
         return true;
     }
@@ -443,7 +443,7 @@ public class PodplayerActivity
         List<PodcastInfo> list = state_.podcastList_;
         for(int i = 0; i < list.size(); i++) {
             PodcastInfo info = list.get(i);
-            if(title.equals(info.title_)) {
+            if(title.equals(info.getTitle())) {
                 return i;
             }
         }
@@ -487,8 +487,8 @@ public class PodplayerActivity
         //stop loading?
         for(int i = 0; i < state_.podcastList_.size(); i++) {
             PodcastInfo info = state_.podcastList_.get(i);
-            if (info.enabled_) {
-                list.add(info.title_);
+            if (info.getEnabled()) {
+                list.add(info.getTitle());
             }
         }
         ArrayAdapter<String> adapter =

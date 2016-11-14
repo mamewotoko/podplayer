@@ -15,6 +15,7 @@
   <ListView
       android:id="@+id/podlist"
       android:layout_width="match_parent"
+      android:descendantFocusability="beforeDescendants"
       android:layout_height="0dip"
       android:layout_weight="1.0" />
   <LinearLayout

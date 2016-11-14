@@ -293,7 +293,7 @@ public class PlayerService
 		if(null != listener_){
 			listener_.onStartMusic(currentPlaylist_.get(playCursor_));
 		}
-		showNotification(info.title_);
+		showNotification(info.getTitle());
 		return true;
 	}
 
@@ -315,12 +315,12 @@ public class PlayerService
 		Log.d(TAG, "playMusic: " + playCursor_ + ": " + currentPlaying_.getURL());
 		try {
             player_.reset();
-
+            String username = currentPlaying_.getUsername();
+            String password = currentPlaying_.getPassword();
+                
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                 Uri uri = Uri.parse(currentPlaying_.getURL());
                 Map<String, String> header = null;
-                String username = currentPlaying_.getUsername();
-                String password = currentPlaying_.getPassword();
                 if(null != username && null != password){
                     String authHeader = Util.makeHTTPAuthorizationHeader(username, password);
                     header = new HashMap<String,String>();
@@ -329,8 +329,18 @@ public class PlayerService
                 player_.setDataSource(this, uri, header);
             }
             else {
+                String url = currentPlaying_.getURL();
                 //TODO: try add auth info to url
-                player_.setDataSource(currentPlaying_.getURL());
+                // Uri uri;
+                // if(null != username && null != password){
+                //     uri = Uri.parse(currentPlaying_.getURLWithAuthInfo());
+                //     Log.d(TAG, "setDatasource: input: "+uri.toString()+" "+uri.getUserInfo());
+                // }
+                // else {
+                //     uri = Uri.parse(url);
+                // }
+                // player_.setDataSource(this, uri);
+                player_.setDataSource(url);
             }
 			player_.prepareAsync();
 			isPreparing_ = true;
@@ -343,7 +353,7 @@ public class PlayerService
 		if(null != listener_){
 			listener_.onStartLoadingMusic(currentPlaying_);
 		}
-		showNotification(currentPlaying_.title_);
+		showNotification(currentPlaying_.getTitle());
 		return true;
 	}
 	
@@ -377,7 +387,7 @@ public class PlayerService
 		}
 		isPausing_ = true;
 		stopForeground(false);
-		showNotification(currentPlaying_.title_);
+		showNotification(currentPlaying_.getTitle());
 		if(null != listener_){
 			listener_.onStopMusic(PAUSE);
 		}

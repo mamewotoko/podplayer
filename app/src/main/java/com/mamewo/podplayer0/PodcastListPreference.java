@@ -232,7 +232,7 @@ public class PodcastListPreference
                 //TODO: use hash
                 boolean duplicate = false;
                 for(int i = 0; i < adapter_.getCount(); i++){
-                    if(urlStr.equals(adapter_.getItem(i).url_.toString())){
+                    if(urlStr.equals(adapter_.getItem(i).getURL().toString())){
                         //TODO: show toast
                         Log.d(TAG, "duplicate: " + urlStr);
                         duplicate = true;
@@ -275,8 +275,8 @@ public class PodcastListPreference
         //umm...
         isChanged_ = true;
         PodcastInfo info = (PodcastInfo) checkbox.getTag();
-        info.enabled_ = !info.enabled_;
-        checkbox.setChecked(info.enabled_);
+        info.setEnabled(!info.getEnabled());
+        checkbox.setChecked(info.getEnabled());
     }
     
     @Override
@@ -458,7 +458,7 @@ public class PodcastListPreference
             PodcastInfo info = values[0];
             adapter_.add(info);
             String msg =
-                    MessageFormat.format(getString(R.string.podcast_added), info.title_);
+                MessageFormat.format(getString(R.string.podcast_added), info.getTitle());
             showMessage(msg);
             urlEdit_.setText("");
             urlEdit_.clearFocus();
@@ -523,15 +523,15 @@ public class PodcastListPreference
             
             TextView urlView = (TextView) view.findViewById(R.id.podcast_url);
             //add check
-            String title = info.title_;
-            String urlStr = info.url_.toString();
+            String title = info.getTitle();
+            String urlStr = info.getURL().toString();
             TextView label = (TextView) view.findViewById(R.id.podcast_title_label);
             if (null == title) {
                 title = urlStr;
             }
             label.setText(title);
             
-            check.setChecked(info.enabled_);
+            check.setChecked(info.getEnabled());
 
             ImageButton detailButton = (ImageButton)view.findViewById(R.id.detail_button);
             detailButton.setTag(info);
@@ -687,7 +687,10 @@ public class PodcastListPreference
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject value = jsonArray.getJSONObject(i);
             //TODO: check key existance
-            String title  = value.getString("title");
+            String title  = "xxx";
+            if(value.has("title")){
+                title = value.getString("title");
+            }
             URL url = new URL(value.getString("url"));
             String iconURL = null;
             PodcastInfo.Status status = PodcastInfo.Status.UNKNOWN;
