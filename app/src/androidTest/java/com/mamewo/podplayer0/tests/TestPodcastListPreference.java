@@ -74,7 +74,7 @@ public class TestPodcastListPreference
         Assert.assertEquals(prevCount+1, adapter.getCount());
         PodcastInfo info = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_success");
-        Assert.assertEquals("check url", url, info.url_.toString());
+        Assert.assertEquals("check url", url, info.getURL().toString());
     }
 
     public void testAddWithBOMSuccess() {
@@ -89,7 +89,7 @@ public class TestPodcastListPreference
         Assert.assertEquals(prevCount+1, adapter.getCount());
         PodcastInfo info = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_with_bom_success");
-        Assert.assertEquals("check url", url, info.url_.toString());
+        Assert.assertEquals("check url", url, info.getURL().toString());
     }
 
     //@SmallTest

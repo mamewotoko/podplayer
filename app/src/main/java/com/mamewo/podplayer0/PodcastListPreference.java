@@ -40,6 +40,7 @@ import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -564,6 +565,8 @@ public class PodcastListPreference
                 int imageColor = ContextCompat.getColor(context, R.color.green);
                 ImageButton statusIcon = (ImageButton)view.findViewById(R.id.status_icon);
                 Log.d(TAG, "status: " + info.getTitle() + " " + info.getStatus());
+                EditText usernameEdit = (EditText)view.findViewById(R.id.username);
+                EditText passwordEdit = (EditText)view.findViewById(R.id.password);
                 switch(info.getStatus()){
                 case UNKNOWN:
                     //TODO: change icon
@@ -577,12 +580,46 @@ public class PodcastListPreference
                     imageColor = ContextCompat.getColor(context, R.color.green);
                     break;
                 case AUTH_REQUIRED_LOCKED:
-                    authView.setVisibility(View.VISIBLE);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
+                        authView.setVisibility(View.VISIBLE);
+                        if(null != info.getUsername()){
+                            usernameEdit.setText(info.getUsername());
+                        }
+                        else {
+                            usernameEdit.setText("");
+                        }
+                        if(null != info.getPassword()){
+                            passwordEdit.setText(info.getPassword());
+                        }
+                        else {
+                            passwordEdit.setText("");
+                        }
+                    }
+                    else {
+                        authView.setVisibility(View.GONE);
+                    }
                     imageId = R.drawable.ic_lock_outline_white_24dp;
                     imageColor = ContextCompat.getColor(context, R.color.yellow);
                     break;
                 case AUTH_REQUIRED_UNLOCKED:
-                    authView.setVisibility(View.VISIBLE);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
+                        authView.setVisibility(View.VISIBLE);
+                        if(null != info.getUsername()){
+                            usernameEdit.setText(info.getUsername());
+                        }
+                        else {
+                            usernameEdit.setText("");
+                        }
+                        if(null != info.getPassword()){
+                            passwordEdit.setText(info.getPassword());
+                        }
+                        else {
+                            passwordEdit.setText("");
+                        }
+                    }
+                    else {
+                        authView.setVisibility(View.GONE);
+                    }
                     imageId = R.drawable.ic_lock_open_white_24dp;
                     imageColor = ContextCompat.getColor(context, R.color.green);
                     break;
@@ -687,7 +724,7 @@ public class PodcastListPreference
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject value = jsonArray.getJSONObject(i);
             //TODO: check key existance
-            String title  = "xxx";
+            String title  = null;
             if(value.has("title")){
                 title = value.getString("title");
             }

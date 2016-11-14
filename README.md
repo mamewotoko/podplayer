@@ -57,6 +57,7 @@ TODO
   * add username, password into url
     http://user:password@hostname/path
     * supports only basic authentication
+* podcast title should be nullable?   
 * fast load
   * improve incremental update algorithm to reduce cpu usage
     * problem: displayed episode is not played by click while loading episodes
