@@ -40,8 +40,6 @@
     
     <string name="play">Spela</string>
     <string name="pause">Paus</string>
-    <string name="expand">expandera</string>
-    <string name="collapse">kollaps</string>
     <string name="add">Lägg</string>
     <string name="error_malformed_url">Felaktigt webbadress</string>
     <string name="dialog_checking_podcast_url">kontroll webbadress</string>
@@ -54,11 +52,7 @@
     <string name="preference_title">Företräde</string>
     <string name="exit_menu">Avsluta</string>
     <string name="selector_all">Alla</string>
-    <string name="remove_operation">Ta bort</string>
-    <string name="up_operation">Flytta upp</string>
-    <string name="down_operation">Flytta ner</string>
     <string name="app_podcastlist_title">Redigera podcast lista</string>
-    <string name="app_podcastpref_title">Podplayer föredrar</string>
     <string name="podcast_added">Podcast: {0} läggs</string>
     <string name="header_lastupdated">Senast uppdaterad: </string>
     <string name="podcast_webpage_menu">Öppna podcast webbplats</string>

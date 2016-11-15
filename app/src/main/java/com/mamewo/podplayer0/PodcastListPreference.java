@@ -367,15 +367,16 @@ public class PodcastListPreference
                         response = client_.newCall(request).execute();
                     }
                     catch(IOException e){
-                        //showMessage(getString(R.string.network_error));
+                        showMessage(getString(R.string.network_error));
                         Log.d(TAG, "network error", e);
                         continue;
                     }
                     if(response.code() == 401){
                         //TODO: show messge
-                        publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, PodcastInfo.Status.AUTH_REQUIRED_LOCKED));
-                        Log.i(TAG, "auth required: "+url);
-                        //showMessage(getString(R.string.auth_required));
+                        publishProgress(new PodcastInfo(title, url, null, true, username, password, PodcastInfo.Status.AUTH_REQUIRED_LOCKED));
+                        Log.i(TAG, "auth required: "+url.toString());
+                        //TODO: show supported or not
+                        showMessage(getString(R.string.auth_required));
                         continue;
                     }
                     if(!response.isSuccessful()){
@@ -434,6 +435,7 @@ public class PodcastListPreference
                 }
                 catch (XmlPullParserException e) {
                     Log.i(TAG, "XmlPullParserException", e);
+                    //TODO: showMessage();
                     publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, PodcastInfo.Status.ERROR));
                     //continue
                 }
@@ -443,7 +445,7 @@ public class PodcastListPreference
                             is.close();
                         }
                         catch (IOException e) {
-                            Log.i(TAG, "input stream cannot be close", e);
+                            Log.i(TAG, "input stream cannot be closed", e);
                         }
                     }
                     if(null != response){

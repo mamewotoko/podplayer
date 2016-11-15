@@ -39,8 +39,6 @@
    
     <string name="play">再生</string>
     <string name="pause">停止</string>
-    <string name="expand">広げる</string>
-    <string name="collapse">たたむ</string>
     <string name="add">追加</string>
     <string name="error_malformed_url">不正なURL</string>
     <string name="dialog_checking_podcast_url">URLを検証中</string>
@@ -53,11 +51,7 @@
     <string name="preference_title">設定</string>
     <string name="exit_menu">終了</string>
     <string name="selector_all">すべて</string>
-    <string name="remove_operation">削除</string>
-    <string name="up_operation">上に移動</string>
-    <string name="down_operation">下に移動</string>
     <string name="app_podcastlist_title">Podcastリストを編集</string>
-    <string name="app_podcastpref_title">Podplayer設定</string>
     <string name="podcast_added">{0} を追加しました</string>
     <string name="header_lastupdated">最終更新: </string>
     <string name="podcast_webpage_menu">Podcastサイトを開く</string>

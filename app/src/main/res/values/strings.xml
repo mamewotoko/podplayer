@@ -42,8 +42,6 @@
 
     <string name="play">Play</string>
     <string name="pause">Pause</string>
-    <string name="expand"> &lt; </string>
-    <string name="collapse"> &gt; </string>
 
     <string name="add">Add</string>
     <string name="error_malformed_url">Malformed URL</string>
@@ -57,11 +55,7 @@
     <string name="preference_title">Preference</string>
     <string name="exit_menu">Exit</string>
     <string name="selector_all">All</string>
-    <string name="remove_operation">Remove</string>
-    <string name="up_operation">Move up</string>
-    <string name="down_operation">Move down</string>
     <string name="app_podcastlist_title">Podcast List Editor</string>
-    <string name="app_podcastpref_title">Podplayer Preferences</string>
     <string name="podcast_added">Podcast: {0} is added</string>
     <string name="header_lastupdated">Last updated: </string>
     <string name="podcast_webpage_menu">Open podcast site</string>
