@@ -96,6 +96,10 @@
     <string name="network_error">Nätverksfel</string>
     <string name="podcast_icon">Podcast icon</string>
 
+    <string name="podcast_move_down">Flytta ner</string>
+    <string name="podcast_move_up">Flytta upp</string>
+    <string name="podcast_delete">Radera</string>
+    
     <string name="username">Användarnamn</string>
     <string name="password">Lösenord</string>
     <string name="login">Logga in</string>

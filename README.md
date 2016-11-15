@@ -65,6 +65,7 @@ TODO
 ----
 * http authenticate for MediaPlayer
   * add test
+* bug: podcast order is not changed in expandable ui 
 * podcast title should be nullable?
 * podcast detail as activity
 * fast load

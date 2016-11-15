@@ -95,6 +95,10 @@
     <string name="network_error">ネットワークエラー</string>
     <string name="podcast_icon">ポッドキャストアイコン</string>
 
+    <string name="podcast_move_down">下に移動</string>
+    <string name="podcast_move_up">上に移動</string>
+    <string name="podcast_delete">削除</string>
+    
     <string name="username">ユーザ名</string>
     <string name="password">パスワード</string>
     <string name="login">ログイン</string>

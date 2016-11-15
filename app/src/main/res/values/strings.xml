@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:locale="en">
     <string name="app_name">Podplayer</string>
     <string name="pref_podcastlist_title">Podcast list</string>
     <string name="pref_pause_on_unplugged_title">Pause on unplugged</string>
@@ -101,7 +103,7 @@
 
     <string name="podcast_move_down">Move down</string>
     <string name="podcast_move_up">Move up</string>
-    <string name="podcast_delete">Move down</string>
+    <string name="podcast_delete">Delete</string>
 
     <string name="username">User name</string>
     <string name="password">Password</string>
