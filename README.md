@@ -51,13 +51,22 @@ How to run UI test using Robotium
    ./gradlew -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity spoon
    ```
 
+DONE
+----
+* http authenticate for MediaPlayer
+  * now support android-14 and above
+  * supports only basic authentication
+  * used MediaPlayser.setDataSource(Context, Uri, Map<String,String)
+    * to set HTTP header
+    * api from android-14
+  * uri with user info does not work... (android-10 xperia)
+
 TODO
 ----
 * http authenticate for MediaPlayer
-  * add username, password into url
-    http://user:password@hostname/path
-    * supports only basic authentication
-* podcast title should be nullable?   
+  * add test
+* podcast title should be nullable?
+* podcast detail as activity
 * fast load
   * improve incremental update algorithm to reduce cpu usage
     * problem: displayed episode is not played by click while loading episodes
