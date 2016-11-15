@@ -383,6 +383,8 @@ public class PodplayerExpActivity
                 episodeIcon.setVisibility(View.VISIBLE);
             }
             else {
+                Log.d(TAG, "item gone: "+info.getTitle());
+                Glide.clear(episodeIcon);
                 episodeIcon.setVisibility(View.GONE);
             }
             return view;
