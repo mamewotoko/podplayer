@@ -101,7 +101,7 @@ public class TestPodcastListPreference
         String url = "http://www.nhk.or.jp/rj/podcast/rss/english.xml";
         int prevCount = adapter.getCount();
         solo_.enterText((EditText)solo_.getView(R.id.url_edit), url);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_duplicate");       
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_duplicate");
         solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
         solo_.waitForDialogToClose(20000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_duplicate");
@@ -122,16 +122,27 @@ public class TestPodcastListPreference
         Assert.assertEquals(urllabel.getVisibility(), View.VISIBLE);
     }
 
-    // public void testDelete3() {
-    //     solo_.sleep(1000);
-    //     ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
-    //     int count = adapter.getCount();
-    //     solo_.clickLongInList(3);
-    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete3");
-    //     solo_.clickInList(PodcastListPreference.REMOVE_OPERATION+1);
-    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete3");
-    //     Assert.assertEquals(count-1, adapter.getCount());
-    // }
+    public void testDelete3() {
+        solo_.sleep(1000);
+        ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
+        int count = adapter.getCount();
+        solo_.clickLongInList(3);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete3");
+        //solo_.clickInList(PodcastListPreference.REMOVE_OPERATION+1);
+
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete3");
+        Assert.assertEquals(count-1, adapter.getCount());
+    }
+
+    public void testAddAuth(){
+        solo_.sleep(200);
+        String url = "http://mamewo.ddo.jp/podcast/auth/sample_podcast.xml";
+        solo_.enterText((EditText)solo_.getView(R.id.url_edit), url);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
+        solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
+        solo_.sleep(10000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
+    }
     
     // public void testUp() {
     //     solo_.sleep(1000);
