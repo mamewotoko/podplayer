@@ -13,6 +13,8 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Button;
+import android.view.View;
 import android.widget.EditText;
 //import android.support.test.filters.SmallTest;
 
@@ -54,7 +56,7 @@ public class TestPodcastListPreference
         //PodcastInfo prevInfo = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
         String url = "http://www.google.co.jp/";
         int prevCount = adapter.getCount();
-        solo_.enterText(solo_.getEditText(0), url);
+        solo_.enterText((EditText)solo_.getView(R.id.url_edit), url);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_fail");
         solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
         solo_.waitForDialogToClose(10000);
@@ -67,7 +69,7 @@ public class TestPodcastListPreference
         ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
         String url = "http://www.tfm.co.jp/podcasts/avanti/podcast.xml";
         int prevCount = adapter.getCount();
-        solo_.enterText(solo_.getEditText(0), url);
+        solo_.enterText((EditText)solo_.getView(R.id.url_edit), url);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_success");
         solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
         solo_.waitForDialogToClose(20000);
@@ -82,7 +84,7 @@ public class TestPodcastListPreference
         ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
         String url = "http://www.fmtoyama.co.jp/contents/podcast/podcast_24.xml";
         int prevCount = adapter.getCount();
-        solo_.enterText(solo_.getEditText(0), url);
+        solo_.enterText((EditText)solo_.getView(R.id.url_edit), url);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_with_bom_success");       
         solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
         solo_.waitForDialogToClose(20000);
@@ -105,7 +107,21 @@ public class TestPodcastListPreference
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_duplicate");
         Assert.assertEquals(prevCount, adapter.getCount());
     }
-    
+
+    public void testExpand() {
+        solo_.sleep(1000);
+        //ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
+        ListView list = (ListView)solo_.getView(R.id.podlist);
+        View v = list.getChildAt(0);
+        Button button = (Button)v.findViewById(R.id.detail_button);
+        solo_.clickOnView(button);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "expand");
+        View group = v.findViewById(R.id.podcast_detail_view);
+        View urllabel = v.findViewById(R.id.podcast_url);
+        Assert.assertEquals(group.getVisibility(), View.VISIBLE);
+        Assert.assertEquals(urllabel.getVisibility(), View.VISIBLE);
+    }
+
     // public void testDelete3() {
     //     solo_.sleep(1000);
     //     ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
