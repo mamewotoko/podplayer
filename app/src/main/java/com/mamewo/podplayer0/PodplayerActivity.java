@@ -309,8 +309,11 @@ public class PodplayerActivity
     private class GetPodcastTask
         extends BaseGetPodcastTask
     {
+        private PodcastInfo prevPodInfo_;
+        
         public GetPodcastTask(int limit) {
             super(PodplayerActivity.this, client_, limit, EPISODE_BUF_SIZE);
+            prevPodInfo_ = null;
         }
 
         @Override
@@ -322,7 +325,12 @@ public class PodplayerActivity
             //Log.d(TAG, "onProgressUpdate");
             filterSelectedPodcast();
             //adapter_.notifyDataSetChanged();
-            savePodcastList();
+            //if status is changed || first_item
+            PodcastInfo lastValue = values[values.length-1].getPodcastInfo();
+            if(prevPodInfo_ == null || prevPodInfo_ != lastValue){
+                savePodcastList();
+                prevPodInfo_ = lastValue;
+            }
         }
 
         private void onFinished() {
