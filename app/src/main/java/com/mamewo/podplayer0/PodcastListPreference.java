@@ -460,11 +460,13 @@ public class PodcastListPreference
         protected void onProgressUpdate(PodcastInfo... values){
             PodcastInfo info = values[0];
             adapter_.add(info);
+            //TODO: check status of PodcastInfo and change message
             String msg =
                 MessageFormat.format(getString(R.string.podcast_added), info.getTitle());
             showMessage(msg);
             urlEdit_.setText("");
             urlEdit_.clearFocus();
+            isChanged_ = true;
         }
         
         @Override
@@ -783,6 +785,7 @@ public class PodcastListPreference
         public void onClick(View v){
             PodcastInfo info = (PodcastInfo)v.getTag();
             adapter_.remove(info);
+            isChanged_ = true;
             adapter_.notifyDataSetChanged();
         }
     }
@@ -801,6 +804,7 @@ public class PodcastListPreference
             else {
                 adapter_.add(info);
             }
+            isChanged_ = true;
             adapter_.notifyDataSetChanged();
         }
     }
@@ -820,6 +824,7 @@ public class PodcastListPreference
             else {
                 adapter_.insert(info, 0);
             }
+            isChanged_ = true;
             adapter_.notifyDataSetChanged();
         }
     }

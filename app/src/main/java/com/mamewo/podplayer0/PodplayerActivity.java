@@ -288,7 +288,6 @@ public class PodplayerActivity
             else {
                 stateIcon.setVisibility(View.GONE);
             }
-
             String iconURL = state_.podcastList_.get(info.index_).getIconURL();
             if(showPodcastIcon_ && null != iconURL){
                 Glide
