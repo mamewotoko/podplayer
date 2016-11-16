@@ -367,7 +367,7 @@ public class PodcastListPreference
                         response = client_.newCall(request).execute();
                     }
                     catch(IOException e){
-                        showMessage(getString(R.string.network_error));
+                        //TODO: post showMessage(getString(R.string.network_error));
                         Log.d(TAG, "network error", e);
                         continue;
                     }
@@ -375,8 +375,9 @@ public class PodcastListPreference
                         //TODO: show messge
                         publishProgress(new PodcastInfo(title, url, null, true, username, password, PodcastInfo.Status.AUTH_REQUIRED_LOCKED));
                         Log.i(TAG, "auth required: "+url.toString());
+                        result = true;
                         //TODO: show supported or not
-                        showMessage(getString(R.string.auth_required));
+                        //TODO: post showMessage(getString(R.string.auth_required));
                         continue;
                     }
                     if(!response.isSuccessful()){
@@ -461,9 +462,11 @@ public class PodcastListPreference
             PodcastInfo info = values[0];
             adapter_.add(info);
             //TODO: check status of PodcastInfo and change message
-            String msg =
-                MessageFormat.format(getString(R.string.podcast_added), info.getTitle());
-            showMessage(msg);
+            if(info.getTitle().length() > 0){
+                String msg =
+                    MessageFormat.format(getString(R.string.podcast_added), info.getTitle());
+                showMessage(msg);
+            }
             urlEdit_.setText("");
             urlEdit_.clearFocus();
             isChanged_ = true;
