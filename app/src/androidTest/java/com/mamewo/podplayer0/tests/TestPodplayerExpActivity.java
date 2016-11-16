@@ -134,6 +134,7 @@ public class TestPodplayerExpActivity
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "clear_cache");
         solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         solo_.sleep(UI_SLEEP);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "clear_cache");
         selectPreference(res_.getString(R.string.clear_response_cache_title));
         solo_.sleep(UI_SLEEP);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "clear_cache");
