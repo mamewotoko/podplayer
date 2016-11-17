@@ -12,7 +12,7 @@ apply plugin: 'spoon'
 
 android {
   compileSdkVersion 24
-  buildToolsVersion "24"
+  buildToolsVersion "24.0.3"
   defaultConfig {
     applicationId "com.mamewo.podplayer0"
     minSdkVersion 10
@@ -78,10 +78,10 @@ spoon {
 dependencies {
   compile project(":podcast_parser")
   compile project(":pulltorefresh")
-  compile 'com.android.support:support-v4:24.2.1'
-  compile 'com.android.support:appcompat-v7:24.2.1'
-
-  compile 'com.android.support:preference-v7:24.2.1'
+  compile 'com.android.support:support-v4:24.0.3'
+  compile 'com.android.support:appcompat-v7:24.0.3'
+  compile 'com.android.support:preference-v7:24.0.3'
+  
   compile 'com.github.bumptech.glide:glide:3.7.0'
   
   androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.6.3'
