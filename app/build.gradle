@@ -70,11 +70,12 @@ spoon {
   if(project.hasProperty('spoonOutput')){
     baseOutputDir = file("$buildDir/"+project.spoonOutput)
   }
-  //className = 'com.mamewo.podplayer0.tests.espresso.TestEsPreference'
-  //methodName = 'clearHTTPCache'
+  
+  className = 'com.mamewo.podplayer0.tests.TestPodplayerActivity'
+  methodName = 'testClearCache'
 
   //from 1.5.0?
-  codeCoverage = true
+  //codeCoverage = true
 }
 
 dependencies {

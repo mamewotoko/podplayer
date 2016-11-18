@@ -213,23 +213,7 @@ public class TestPodplayerActivity
     public void testClearCache() throws Exception {
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "clear_cache");
-
-        // int screenWidth = getActivity().getWindowManager().getDefaultDisplay().getWidth();
-        // int screenHeight = getActivity().getWindowManager().getDefaultDisplay().getHeight();
-        // int fromX, toX, fromY, toY = 0;
-        // int stepCount=1;
-        // Scroll Down // Drag Up
-        // fromX = screenWidth/2;
-        // toX = screenWidth/2;
-        // fromY = (screenHeight/2) + (screenHeight/3);
-        // toY = (screenHeight/2) - (screenHeight/3);
-        // solo_.drag(fromX, toX, fromY, toY, stepCount);
-        // solo_.sendKey(Solo.DOWN);
-        // solo_.sleep(100);
-        // solo_.sendKey(Solo.DOWN);
-        // solo_.sleep(100);
-        solo_.scrollDown();
-        
+        solo_.scrollDown();       
         solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         solo_.sleep(UI_SLEEP);
         selectPreference(res_.getString(R.string.clear_response_cache_title));
