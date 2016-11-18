@@ -20,7 +20,8 @@ android {
     versionCode 13
     versionName "1.1.1"
 
-    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    //For espresso
+    //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
 
   signingConfigs {
@@ -54,6 +55,11 @@ android {
 }
 
 spoon {
+  //For espresso
+  // configurations.all {
+  //   resolutionStrategy.force 'com.android.support:support-annotations:23.1.1'
+  // }
+
   //instrumentationArgs = ["package=com.mamewo.podplayer0.tests"]
   if(project.hasProperty('spoonClassName')){
     className = project.spoonClassName
@@ -68,11 +74,7 @@ spoon {
   //methodName = 'clearHTTPCache'
 
   //from 1.5.0?
-  //codeCoverage = true
-
-  configurations.all {
-    resolutionStrategy.force 'com.android.support:support-annotations:23.1.1'
-  }
+  codeCoverage = true
 }
 
 dependencies {
