@@ -185,7 +185,7 @@ TODO
   * preference
   * notification
   * gesture?
-    * gesture command
+    * To test gesture, add method "Scroller.draw" to robotium (similar to Scroller.drag)
   * landscape UI
 * gesture score histogram?
 * improve UI to add podcast URL

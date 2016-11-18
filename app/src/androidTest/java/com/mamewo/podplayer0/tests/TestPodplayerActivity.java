@@ -303,4 +303,21 @@ public class TestPodplayerActivity
         solo_.sleep(500);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "preference2");
     }
+
+    // public void testPlayGesture() throws Exception {
+    //     Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
+    //     int px1 = 100;
+    //     int py1 = 300;
+
+    //     int px2 = 200;
+    //     int py2 = py1+30;
+
+    //     int px3 = px1;
+    //     int py3 = py2+30;
+        
+    //     solo_.drag(px1, px2, py1, py2, 50);
+    //     solo_.drag(px2, px3, py2, py3, 50);
+    //     solo_.drag(px3, px1, py3, py1, 50);
+    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_gesture");
+    // }
 }

@@ -71,8 +71,8 @@ spoon {
     baseOutputDir = file("$buildDir/"+project.spoonOutput)
   }
   
-  // className = 'com.mamewo.podplayer0.tests.TestPodplayerActivity'
-  // methodName = 'testClearCache'
+  className = 'com.mamewo.podplayer0.tests.TestPodplayerActivity'
+  methodName = 'testPlayGesture'
   //from 1.5.0?
   //codeCoverage = true
 }
