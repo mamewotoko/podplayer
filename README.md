@@ -51,21 +51,16 @@ How to run UI test using Robotium
    ./gradlew -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity spoon
    ```
 
-DONE
-----
-* http authenticate for MediaPlayer
-  * now support android-14 and above
-  * supports only basic authentication
-  * used MediaPlayser.setDataSource(Context, Uri, Map<String,String)
-    * to set HTTP header
-    * api from android-14
-  * uri with user info does not work... (android-10 xperia)
-
 TODO
 ----
-* http authenticate for MediaPlayer
-  * add test
 * podcast title should be nullable?
+* display url when title is null (e.g. http authentication)
+* fix bugs
+  * podcast removed -> back -> crash
+  * when prepare error occurs, cursor moves to next episode
+    * stop playing
+      * or mark error item and try playing next unerror item
+  * when only one episode is registered, list is in tap to refresh mode after loaded
 * podcast detail as activity
 * fast load
   * improve incremental update algorithm to reduce cpu usage
@@ -145,13 +140,6 @@ TODO
 * modify icon
   * use opaque orange
   * make white status icon?
-* fix bugs
-  * checkbox of preference is gray based
-    * http://stackoverflow.com/questions/27091845/android-appcompat-dark-theme-settings-checkbox
-  * when prepare error occurs, cursor moves to next episode
-    * stop playing
-      * or mark error item and try playing next unerror item
-  * when only one episode is registered, list is in tap to refresh mode after loaded
 * just add podcast url without check (preference)? 
 * use database to manage loaded episodes
   * display mark which is already played, new item etc...

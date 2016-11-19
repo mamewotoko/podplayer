@@ -183,19 +183,19 @@ public class PodcastListPreference
         catch (IOException e) {
             Log.d(TAG, "failed to save podcast list setting");
         }
-        //Ummm..: to call preference listener
-        Log.d(TAG, "onStop.isChanged?; " + isChanged_);
-        if (isChanged_) {
-            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-            boolean prevValue = pref.getBoolean("podcastlist2", true);
-            pref.edit().putBoolean("podcastlist2", !prevValue).apply();
-        }
     }
     
     @Override
     public void onStop() {
         super.onStop();
         saveSetting();
+        Log.d(TAG, "onStop isChanged_: "+isChanged_);
+        if (isChanged_) {
+            //Ummm..: to call preference listener
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+            boolean prevValue = pref.getBoolean("podcastlist2", true);
+            pref.edit().putBoolean("podcastlist2", !prevValue).apply();
+        }
     }
     
     @Override

@@ -17,6 +17,12 @@ import com.mamewo.podplayer0.R;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.preference.PreferenceManager;
+import android.content.SharedPreferences;
+import android.content.Context;
 
 public class TestPodplayerExpActivity
     extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
@@ -36,7 +42,7 @@ public class TestPodplayerExpActivity
         Log.d(TAG, "current activity: "+solo_.getCurrentActivity().getTitle().toString());
         solo_.clickOnText(targetTitle);
     }
-    
+
     public TestPodplayerExpActivity() {
         super("com.mamewo.podplayer0", PodplayerExpActivity.class);
     }
@@ -47,6 +53,11 @@ public class TestPodplayerExpActivity
         config.screenshotFileType = ScreenshotFileType.PNG;
         config.screenshotSavePath = new File(Environment.getExternalStorageDirectory(), "Robotium-Screenshots").getPath();
         config.shouldScroll = false;
+        Context context = getInstrumentation().getTargetContext();
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putBoolean("use_expandable_ui", true);
+        editor.commit();
+        //editor.
         res_ = getInstrumentation().getTargetContext().getResources();
         solo_ = new Solo(getInstrumentation(), config, getActivity());
     }
@@ -113,7 +124,7 @@ public class TestPodplayerExpActivity
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "expand_3");
     }
     //TODO: expand/collapse prefrence test
-    
+
     //-----------------------
     public void testMainScreenshot() throws Exception {
         solo_.sleep(500);
@@ -142,4 +153,58 @@ public class TestPodplayerExpActivity
         solo_.goBack();
         solo_.sleep(UI_SLEEP);
     }
+
+    public void testAddAuthPodcast() throws Exception {
+        String url = "http://mamewo.ddo.jp/podcast/auth/sample_podcast.xml";
+        Assert.assertTrue(solo_.waitForActivity("PodplayerExpActivity", INIT_SLEEP));
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
+        
+        solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+        solo_.sleep(UI_SLEEP);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
+       
+        selectPreference(res_.getString(R.string.pref_podcastlist_title));
+        solo_.sleep(UI_SLEEP);
+
+        solo_.enterText((EditText)solo_.getView(R.id.url_edit), url);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
+        solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
+        solo_.waitForDialogToClose(20000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
+
+        //enter username and password
+        ListView list = (ListView)solo_.getView(R.id.podlist);
+        ListAdapter adapter = list.getAdapter();
+        int count = adapter.getCount();
+
+        View v = list.getChildAt(count-1);
+
+        View expand = v.findViewById(R.id.detail_button);
+        solo_.clickOnView(expand);
+
+        EditText usernameEdit = (EditText)v.findViewById(R.id.username);
+        EditText passwordEdit = (EditText)v.findViewById(R.id.password);
+        View loginButton = v.findViewById(R.id.auth_info);
+        //TODO: assert usernameEdit, xxx are visible
+        solo_.enterText(usernameEdit, "tak");
+        solo_.enterText(passwordEdit, "takashi");
+        solo_.clickOnView(loginButton);
+
+        solo_.waitForDialogToClose(20000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
+        solo_.goBack();
+        solo_.sleep(UI_SLEEP);
+        solo_.goBack();
+        solo_.sleep(UI_SLEEP);
+
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
+
+        View collapseButton = solo_.getView(R.id.collapse_button);
+        solo_.clickOnView(collapseButton);
+        solo_.sleep(500);
+
+        solo_.sleep(UI_SLEEP);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
+    }
+
 }

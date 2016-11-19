@@ -274,7 +274,7 @@ public class PodplayerActivity
             ImageView episodeIcon = (ImageView)view.findViewById(R.id.episode_icon);
             EpisodeInfo current = player_.getCurrentPodInfo();
             if(current != null && current.getURL().equals(info.getURL())) {
-                //cache!
+                //TODO: cache!
                 if(player_.isPlaying()) {
                     stateIcon.setImageResource(R.drawable.ic_play_arrow_white_24dp);
                     stateIcon.setContentDescription(getString(R.string.icon_desc_playing));
@@ -288,6 +288,9 @@ public class PodplayerActivity
             else {
                 stateIcon.setVisibility(View.GONE);
             }
+            Log.d(TAG, "icon: " + info.getTitle() + " index: " + info.index_
+                  + " current: " + currentList_.size()
+                  + " podcast:" + state_.podcastList_.size());
             String iconURL = state_.podcastList_.get(info.index_).getIconURL();
             if(showPodcastIcon_ && null != iconURL){
                 Glide
@@ -428,6 +431,7 @@ public class PodplayerActivity
                 l = reversed;
             }
         }
+        //TODO: selected item is removed
         currentList_ = l;
         //Log.d(TAG, "filterSelectedPodcast: "+ currentList_.size());
         if (! isLoading()) {
