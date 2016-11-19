@@ -67,9 +67,13 @@ spoon {
   else {
     className = 'com.mamewo.podplayer0.tests.TestPodplayerActivity'
   }
+  if(project.hasProperty('spoonMethodName')){
+    methodName = project.spoonMethodName
+  }
   if(project.hasProperty('spoonOutput')){
     baseOutputDir = file("$buildDir/"+project.spoonOutput)
   }
+
   
   // className = 'com.mamewo.podplayer0.tests.TestPodplayerActivity'
   // methodName = 'testPlayGesture'

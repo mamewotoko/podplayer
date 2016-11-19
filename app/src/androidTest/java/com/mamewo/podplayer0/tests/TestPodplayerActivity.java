@@ -227,6 +227,8 @@ public class TestPodplayerActivity
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
         solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         solo_.sleep(UI_SLEEP);
+        solo_.scrollDown();
+       
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "image_disable_enable");
         selectPreference(res_.getString(R.string.pref_show_podcast_icon));
         solo_.sleep(UI_SLEEP);
@@ -243,6 +245,7 @@ public class TestPodplayerActivity
         
         solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         solo_.sleep(UI_SLEEP);
+        solo_.scrollDown();
         selectPreference(res_.getString(R.string.pref_show_podcast_icon));
         solo_.sleep(UI_SLEEP);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "image_disable_enable");
@@ -260,6 +263,9 @@ public class TestPodplayerActivity
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
         solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         solo_.sleep(UI_SLEEP);
+        solo_.scrollDown();
+        solo_.scrollDown();
+
         selectPreference(res_.getString(R.string.pref_license));
         solo_.sleep(UI_SLEEP);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "license");
@@ -269,6 +275,9 @@ public class TestPodplayerActivity
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
         solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         solo_.sleep(500);
+        solo_.scrollDown();
+        solo_.scrollDown();
+        
         selectPreference(res_.getString(R.string.pref_version));
         solo_.sleep(500);
         View githubView = solo_.getView(R.id.github_logo);
