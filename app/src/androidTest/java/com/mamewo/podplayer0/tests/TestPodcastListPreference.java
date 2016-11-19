@@ -125,17 +125,66 @@ public class TestPodcastListPreference
         // Assert.assertEquals(View.VISIBLE, upButton.getVisibility());
     }
 
-    public void testDelete3() {
+    public void testDelete() {
         solo_.sleep(1000);
-        ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
+        
+        ListView list = (ListView)solo_.getView(R.id.podlist);
+        ListAdapter adapter = list.getAdapter();
         int count = adapter.getCount();
-        solo_.clickLongInList(3);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete3");
-        //solo_.clickInList(PodcastListPreference.REMOVE_OPERATION+1);
+        View v = list.getChildAt(0);
+        View button = v.findViewById(R.id.detail_button);
+        solo_.clickOnView(button);
+        //TODO: list redraw is slow
+        solo_.sleep(7000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete");
 
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete3");
+        View deleteButton = v.findViewById(R.id.delete);
+        solo_.clickOnView(deleteButton);
+
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete");
         Assert.assertEquals(count-1, adapter.getCount());
     }
+
+    public void testMoveUp() {
+        solo_.sleep(1000);
+        
+        ListView list = (ListView)solo_.getView(R.id.podlist);
+        ListAdapter adapter = list.getAdapter();
+        int count = adapter.getCount();
+        View v = list.getChildAt(0);
+        View button = v.findViewById(R.id.detail_button);
+        solo_.clickOnView(button);
+        //TODO: list redraw is slow
+        solo_.sleep(7000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "up");
+
+        View upButton = v.findViewById(R.id.move_up);
+        solo_.clickOnView(upButton);
+
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "up");
+        Assert.assertEquals(count, adapter.getCount());
+    }
+
+    public void testMoveDown() {
+        solo_.sleep(1000);
+        
+        ListView list = (ListView)solo_.getView(R.id.podlist);
+        ListAdapter adapter = list.getAdapter();
+        int count = adapter.getCount();
+        View v = list.getChildAt(0);
+        View button = v.findViewById(R.id.detail_button);
+        solo_.clickOnView(button);
+        //TODO: list redraw is slow
+        solo_.sleep(7000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "down");
+
+        View downButton = v.findViewById(R.id.move_down);
+        solo_.clickOnView(downButton);
+
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "down");
+        Assert.assertEquals(count, adapter.getCount());
+    }
+
 
     public void testAddAuth(){
         solo_.sleep(200);
