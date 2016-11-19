@@ -152,6 +152,7 @@ TODO
     * stop playing
       * or mark error item and try playing next unerror item
   * when only one episode is registered, list is in tap to refresh mode after loaded
+* just add podcast url without check (preference)? 
 * use database to manage loaded episodes
   * display mark which is already played, new item etc...
   * to reduce reload of podcast

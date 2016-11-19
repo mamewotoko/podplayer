@@ -373,16 +373,30 @@ public class PodcastListPreference
                     }
                     if(response.code() == 401){
                         //TODO: show messge
-                        publishProgress(new PodcastInfo(title, url, null, true, username, password, PodcastInfo.Status.AUTH_REQUIRED_LOCKED));
-                        Log.i(TAG, "auth required: "+url.toString());
-                        result = true;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                            PodcastInfo prevInfo = req.getPrevInfo();
+                            if(null != prevInfo){
+                                //update password
+                                prevInfo.setUsername(username);
+                                prevInfo.setPassword(null);
+                                //update ui
+                            }
+                            else {
+                                publishProgress(new PodcastInfo(title, url, null, true, username, password, PodcastInfo.Status.AUTH_REQUIRED_LOCKED));
+                            }
+                            result = true;
+                            Log.i(TAG, "auth required: "+url.toString());
+                        }
+                        else {
+                            Log.i(TAG, "auth required but not supported for this android: "+url.toString());
+                        }
                         //TODO: show supported or not
                         //TODO: post showMessage(getString(R.string.auth_required));
                         continue;
                     }
                     if(!response.isSuccessful()){
                         Log.i(TAG, "http error: "+response.message()+", "+url.toString());
-                        publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, PodcastInfo.Status.ERROR));
+                        //publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, PodcastInfo.Status.ERROR));
                         continue;
                     }
                     //TODO: check content-type
@@ -425,19 +439,29 @@ public class PodcastListPreference
                         else {
                             status = PodcastInfo.Status.PUBLIC;
                         }
-                        publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, status));
+                        PodcastInfo prevInfo = req.getPrevInfo();
+                        if(null != prevInfo){
+                            prevInfo.setTitle(title);
+                            prevInfo.setIconURL(iconURL);
+                            prevInfo.setUsername(username);
+                            prevInfo.setUsername(password);
+                            prevInfo.setStatus(status);
+                        }
+                        else {
+                            publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, status));
+                        }
                         result = true;
                     }
                 }
                 catch (IOException e) {
                     Log.i(TAG, "IOException", e);
-                    publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, PodcastInfo.Status.ERROR));
+                    //publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, PodcastInfo.Status.ERROR));
                     //continue
                 }
                 catch (XmlPullParserException e) {
                     Log.i(TAG, "XmlPullParserException", e);
                     //TODO: showMessage();
-                    publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, PodcastInfo.Status.ERROR));
+                    //publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, PodcastInfo.Status.ERROR));
                     //continue
                 }
                 finally {
@@ -479,6 +503,9 @@ public class PodcastListPreference
             dialog_ = null;
             if (!result.booleanValue()) {
                 showMessage(getString(R.string.msg_add_podcast_failed));
+            }
+            else {
+                adapter_.notifyDataSetChanged();
             }
         }
         
@@ -870,7 +897,7 @@ public class PodcastListPreference
                 //TODO check task
                 showDialog(CHECKING_DIALOG);
                 task_ = new CheckTask();
-                task_.execute(new SimpleRequest(info.getURL(), info.getUsername(), info.getPassword()));
+                task_.execute(new SimpleRequest(info.getURL(), info.getUsername(), info.getPassword(), info));
             }
         }
     }
@@ -880,11 +907,17 @@ public class PodcastListPreference
         private URL url_;
         private String username_;
         private String password_;
+        private PodcastInfo prevInfo_;
         
-        public SimpleRequest(URL url, String username, String password){
+        public SimpleRequest(URL url, String username, String password, PodcastInfo prevInfo){
             url_ = url;
             username_ = username;
             password_ = password;
+            prevInfo_ = prevInfo;
+        }
+
+        public SimpleRequest(URL url, String username, String password){
+            this(url, username, password, null);
         }
 
         public URL getURL(){
@@ -897,6 +930,10 @@ public class PodcastListPreference
 
         public String getPassword(){
             return password_;
+        }
+
+        public PodcastInfo getPrevInfo(){
+            return prevInfo_;
         }
     }
 }
