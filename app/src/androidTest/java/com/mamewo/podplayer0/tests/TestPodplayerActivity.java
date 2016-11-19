@@ -132,7 +132,7 @@ public class TestPodplayerActivity
     // move down
     
     public void testAddPodcast() throws Exception {
-        String url = "http://www.tfm.co.jp/podcasts/avanti/podcast.xml";
+        String url = "http://www.bbc.co.uk/programmes/p02nrvk3/episodes/downloads.rss";
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
         solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         //false...

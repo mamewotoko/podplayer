@@ -430,28 +430,7 @@ public class PodcastListPreference
                         }
                         parser.next();
                     }
-                    if (numItems > 0 && null != title) {
-                        //Log.d(TAG, "publish: " + title);
-                        PodcastInfo.Status status;
-                        if(null != username && null != password){
-                            status = PodcastInfo.Status.AUTH_REQUIRED_UNLOCKED;
-                        }
-                        else {
-                            status = PodcastInfo.Status.PUBLIC;
-                        }
-                        PodcastInfo prevInfo = req.getPrevInfo();
-                        if(null != prevInfo){
-                            prevInfo.setTitle(title);
-                            prevInfo.setIconURL(iconURL);
-                            prevInfo.setUsername(username);
-                            prevInfo.setPassword(password);
-                            prevInfo.setStatus(status);
-                        }
-                        else {
-                            publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, status));
-                        }
-                        result = true;
-                    }
+                    //TODO: braek if title, iconURL and at least one episode(enclosure) are obtained
                 }
                 catch (IOException e) {
                     Log.i(TAG, "IOException", e);
@@ -476,6 +455,28 @@ public class PodcastListPreference
                     if(null != response){
                         response.close();
                     }
+                }
+                if (null != title) {
+                    //Log.d(TAG, "publish: " + title);
+                    PodcastInfo.Status status;
+                    if(null != username && null != password){
+                        status = PodcastInfo.Status.AUTH_REQUIRED_UNLOCKED;
+                        }
+                    else {
+                        status = PodcastInfo.Status.PUBLIC;
+                    }
+                    PodcastInfo prevInfo = req.getPrevInfo();
+                    if(null != prevInfo){
+                        prevInfo.setTitle(title);
+                        prevInfo.setIconURL(iconURL);
+                        prevInfo.setUsername(username);
+                        prevInfo.setPassword(password);
+                        prevInfo.setStatus(status);
+                    }
+                    else {
+                        publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, status));
+                    }
+                    result = true;
                 }
             }
             return result;
