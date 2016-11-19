@@ -5,7 +5,7 @@
 # lang country screen_size target abi
 
 LANGUAGE=$1
-if [ -z "$LANG" ]; then
+if [ -z "$LANGUAGE" ]; then
     LANGUAGE=en
 fi
 

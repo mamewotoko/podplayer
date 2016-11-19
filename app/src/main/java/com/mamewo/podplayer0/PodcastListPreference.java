@@ -444,7 +444,7 @@ public class PodcastListPreference
                             prevInfo.setTitle(title);
                             prevInfo.setIconURL(iconURL);
                             prevInfo.setUsername(username);
-                            prevInfo.setUsername(password);
+                            prevInfo.setPassword(password);
                             prevInfo.setStatus(status);
                         }
                         else {
