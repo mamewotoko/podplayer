@@ -167,10 +167,8 @@ public class PodcastListPreference
         adapter_ = new PodcastInfoAdapter(this, list);
         podcastListView_.setAdapter(adapter_);
     }
-    
-    @Override
-    public void onStop() {
-        super.onStop();
+
+    private void saveSetting(){
         try {
             List<PodcastInfo> lst = new ArrayList<PodcastInfo>();
             for(int i = 0; i < adapter_.getCount(); i++){
@@ -192,6 +190,12 @@ public class PodcastListPreference
             boolean prevValue = pref.getBoolean("podcastlist2", true);
             pref.edit().putBoolean("podcastlist2", !prevValue).apply();
         }
+    }
+    
+    @Override
+    public void onStop() {
+        super.onStop();
+        saveSetting();
     }
     
     @Override
@@ -354,6 +358,7 @@ public class PodcastListPreference
                 String iconURL = null;
                 String title = null;
                 Response response = null;
+                boolean isRSS = false;                
                 try {
                     ///XXX
                     Request.Builder builder = new Request.Builder();
@@ -407,10 +412,14 @@ public class PodcastListPreference
                     parser.setInput(is, "UTF-8");
                     boolean inTitle = false;
                     int eventType;
+
                     while((eventType = parser.getEventType()) != XmlPullParser.END_DOCUMENT && !isCancelled()) {
                         if(eventType == XmlPullParser.START_TAG) {
                             String currentName = parser.getName();
-                            if("enclosure".equalsIgnoreCase(currentName)) {
+                            if("rss".equalsIgnoreCase(currentName)){
+                                isRSS = true;
+                            }
+                            else if("enclosure".equalsIgnoreCase(currentName)) {
                                 numItems++;
                             }
                             else if("itunes:image".equalsIgnoreCase(currentName)) {
@@ -455,6 +464,10 @@ public class PodcastListPreference
                     if(null != response){
                         response.close();
                     }
+                }
+                if(!isRSS){
+                    //TODO: show message "this is not a podcast"
+                    continue;
                 }
                 if (null != title) {
                     //Log.d(TAG, "publish: " + title);
@@ -506,6 +519,8 @@ public class PodcastListPreference
                 showMessage(getString(R.string.msg_add_podcast_failed));
             }
             else {
+                isChanged_ = true;
+                saveSetting();
                 adapter_.notifyDataSetChanged();
             }
         }
@@ -893,7 +908,6 @@ public class PodcastListPreference
                 EditText passwordView = (EditText)layout.findViewById(R.id.password);
                 info.setUsername(usernameView.getText().toString());
                 info.setPassword(passwordView.getText().toString());
-                Log.d(TAG, "url, user, pass: " + info.getURL() + " " + info.getUsername() + " " + info.getPassword());
                 //TODO: start check
                 //TODO check task
                 showDialog(CHECKING_DIALOG);

@@ -14,6 +14,9 @@ import junit.framework.Assert;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 public class TestPodplayerActivity
     extends ActivityInstrumentationTestCase2<PodplayerActivity>
@@ -148,6 +151,55 @@ public class TestPodplayerActivity
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_podcast");
     }
 
+
+    public void testAddAuthPodcast() throws Exception {
+        String url = "http://mamewo.ddo.jp/podcast/auth/sample_podcast.xml";
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
+        solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+        selectPreference(res_.getString(R.string.pref_podcastlist_title));
+        solo_.sleep(UI_SLEEP);
+
+        solo_.enterText((EditText)solo_.getView(R.id.url_edit), url);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
+        solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
+        solo_.waitForDialogToClose(20000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
+
+        //enter username and password
+        ListView list = (ListView)solo_.getView(R.id.podlist);
+        ListAdapter adapter = list.getAdapter();
+        int count = adapter.getCount();
+
+        View v = list.getChildAt(count-1);
+
+        View expand = v.findViewById(R.id.detail_button);
+        solo_.clickOnView(expand);       
+        
+        EditText usernameEdit = (EditText)v.findViewById(R.id.username);
+        EditText passwordEdit = (EditText)v.findViewById(R.id.password);
+        View loginButton = v.findViewById(R.id.auth_info);
+        //TODO: assert usernameEdit, xxx are visible        
+        solo_.enterText(usernameEdit, "tak");
+        solo_.enterText(passwordEdit, "takashi");
+        solo_.clickOnView(loginButton);
+
+        solo_.waitForDialogToClose(20000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
+        solo_.goBack();
+        solo_.sleep(UI_SLEEP);
+        solo_.goBack();
+        solo_.sleep(UI_SLEEP);
+
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
+        solo_.scrollDown();
+        solo_.scrollDown();
+        solo_.scrollDown();
+        solo_.scrollDown();
+        solo_.scrollDown();
+        solo_.sleep(UI_SLEEP);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
+    }
+    
     public void testAbortReload() {
         solo_.sleep(500);
         View cancelView = solo_.getView(R.id.cancel_image);

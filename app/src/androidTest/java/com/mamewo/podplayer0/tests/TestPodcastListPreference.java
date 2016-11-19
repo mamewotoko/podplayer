@@ -143,29 +143,28 @@ public class TestPodcastListPreference
         solo_.enterText((EditText)solo_.getView(R.id.url_edit), url);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
         solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
-        solo_.sleep(10000);
+        solo_.waitForDialogToClose(20000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
-    }
-    
-    // public void testUp() {
-    //     solo_.sleep(1000);
-    //     ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
-    //     PodcastInfo info = (PodcastInfo)adapter.getItem(1);
-    //     solo_.clickLongInList(2);
-    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "up");
-    //     solo_.clickInList(PodcastListPreference.UP_OPERATION+1);
-    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "up");
-    //     Assert.assertEquals(info, adapter.getItem(0));
-    // }
-    
-    // public void testDown() {
-    //     solo_.sleep(1000);
-    //     ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
-    //     PodcastInfo info = (PodcastInfo)adapter.getItem(0);
-    //     solo_.clickLongInList(1);
-    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "down");      
-    //     solo_.clickInList(PodcastListPreference.DOWN_OPERATION+1);
-    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "down");        
-    //     Assert.assertEquals(info, adapter.getItem(1));
-    // }
+
+        //enter username and password
+        ListView list = (ListView)solo_.getView(R.id.podlist);
+        ListAdapter adapter = list.getAdapter();
+        int count = adapter.getCount();
+        View v = list.getChildAt(count-1);
+
+        View expand = v.findViewById(R.id.detail_button);
+        solo_.clickOnView(expand);       
+        
+        EditText usernameEdit = (EditText)v.findViewById(R.id.username);
+        EditText passwordEdit = (EditText)v.findViewById(R.id.password);
+        View loginButton = v.findViewById(R.id.auth_info);
+        //TODO: assert usernameEdit, xxx are visible        
+        solo_.enterText(usernameEdit, "tak");
+        solo_.enterText(passwordEdit, "takashi");
+        solo_.clickOnView(loginButton);
+
+        solo_.waitForDialogToClose(20000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
+        //check status button
+    }  
 }
