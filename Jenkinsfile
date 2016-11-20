@@ -23,14 +23,15 @@ node {
   }
   
   stage('Report'){
-    echo 'publishHTML'
-    publishHTML(target: [allowMissing: false,
-                         allowLinkToLastBuild: false,
-                         keepAll: true,
-                         reportDir: 'app/build/spoon',
-                         reportFiles: 'index',
-                         reportFiles: 'Spoon result'
-                        ]);
+    // null pointer exception...
+    // echo 'publishHTML'
+    // publishHTML(target: [allowMissing: false,
+    //                      allowLinkToLastBuild: false,
+    //                      keepAll: true,
+    //                      reportDir: 'app/build/spoon',
+    //                      reportFiles: 'index',
+    //                      reportFiles: 'Spoon result'
+    //                     ]);
     echo 'copyArtifact'
     step([$class: 'CopyArtifact',
           projectName: 'podplayer_pipeline',
