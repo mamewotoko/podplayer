@@ -10,16 +10,19 @@ node {
     sh './gradlew assembleDebug lint'
   }
 
+  stage('Lint report'){
+    step([$class: 'LintPublisher']);
+  }
+  
   stage('Build test'){
     sh './gradlew assembleAndroidTest'
   }
 
   stage('Run test'){
-    sh 'sh ci/snapci/02_test.sh "" "" "" "" default/x86'
+    sh 'bash -x ci/snapci/02_test.sh "" "" "" "" default/x86'
   }
   
   stage('Report'){
-    step([$class: 'LintPublisher']);
     step([$class: 'CopyArtifact',
           projectName: 'podplayer_pipeline',
           filter: 'app/build']);
