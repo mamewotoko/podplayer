@@ -23,9 +23,7 @@ node {
   }
   
   stage('Report'){
-    step([$class: 'CopyArtifact',
-          projectName: 'podplayer_pipeline',
-          filter: 'app/build']);
+    echo 'publishHTML'
     publishHMTL(target: [allowMissing: false,
                          allowLinkToLastBuild: false,
                          keepAll: true,
@@ -33,5 +31,9 @@ node {
                          reportFiles: 'index',
                          reportFiles: 'Spoon result'
                         ]);
+    echo 'copyArtifact'
+    step([$class: 'CopyArtifact',
+          projectName: 'podplayer_pipeline',
+          filter: 'app/build']);
   }
 }
