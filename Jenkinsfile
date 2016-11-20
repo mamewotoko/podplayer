@@ -33,8 +33,9 @@ node {
     //                      reportFiles: 'Spoon result'
     //                     ]);
     echo 'copyArtifact'
+    sh 'pwd'
     step([$class: 'CopyArtifact',
           projectName: 'podplayer_pipeline',
-          filter: 'app/build']);
+          target: 'app/build']);
   }
 }
