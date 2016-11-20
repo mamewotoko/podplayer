@@ -1,5 +1,5 @@
 #! groovy
-node {
+node('podplayer_pipeline') {
   stage('Checkout') {
     checkout scm
     sh 'git submodule update --init'
