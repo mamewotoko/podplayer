@@ -19,6 +19,16 @@ node {
   }
   
   stage('Report'){
-    step([$class: 'LintPublisher'])
+    step([$class: 'LintPublisher']);
+    step([$class: 'CopyArtifact',
+          projectName: 'podplayer_pipeline',
+          filter: 'app/build']);
+    publishHMTL(target: [allowMissing: false,
+                         allowLinkToLastBuild: false,
+                         keepAll: true,
+                         reportDir: 'app/build/spoon',
+                         reportFiles: 'index',
+                         reportFiles: 'Spoon result'
+                        ]);
   }
 }
