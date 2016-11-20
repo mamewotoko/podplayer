@@ -24,9 +24,10 @@ node('podplayer_pipeline') {
   
   stage('Report'){
     // null pointer exception...
-    archiveArtifaccts 'app/build'
     sh 'pwd'
     sh 'ls -l'
+    echo 'archiveArtifacts'
+    archiveArtifacts 'app/build'
     echo 'publishHTML'
     publishHTML(target: [allowMissing: true,
                          alwaysLinkToLastBuild: false,
