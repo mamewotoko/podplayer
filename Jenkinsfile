@@ -24,7 +24,7 @@ node {
   
   stage('Report'){
     echo 'publishHTML'
-    publishHMTL(target: [allowMissing: false,
+    publishHTML(target: [allowMissing: false,
                          allowLinkToLastBuild: false,
                          keepAll: true,
                          reportDir: 'app/build/spoon',
