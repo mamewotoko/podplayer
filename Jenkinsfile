@@ -24,18 +24,20 @@ node {
   
   stage('Report'){
     // null pointer exception...
-    // echo 'publishHTML'
-    // publishHTML(target: [allowMissing: false,
-    //                      allowLinkToLastBuild: false,
-    //                      keepAll: true,
-    //                      reportDir: 'app/build/spoon',
-    //                      reportFiles: 'index',
-    //                      reportFiles: 'Spoon result'
-    //                     ]);
-    echo 'copyArtifact'
+    archiveArtifaccts 'app/build'
     sh 'pwd'
-    step([$class: 'CopyArtifact',
-          projectName: 'podplayer_pipeline',
-          target: 'app/build']);
+    sh 'ls -l'
+    echo 'publishHTML'
+    publishHTML(target: [allowMissing: true,
+                         alwaysLinkToLastBuild: false,
+                         keepAll: true,
+                         reportDir: 'app/build/spoon',
+                         reportFiles: 'index'.html,
+                         reportName: 'Spoon result'
+                        ]);
+    // echo 'copyArtifact'
+    // step([$class: 'CopyArtifact',
+    //       projectName: 'podplayer_pipeline',
+    //       target: 'app/build']);
   }
 }
