@@ -52,7 +52,7 @@ echo STATUS: stopped is expected: $STATUS
 #     echo emulator does not start
 #     exit 1
 # fi
-adb logcat > app/build/logcat.log &
+adb -v time logcat > app/build/logcat.log &
 
 ./gradlew spoonDebug -PspoonOutput=spoon_${AVD_NAME}
 ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity -PspoonOutput=spoon_exp_${AVD_NAME}
