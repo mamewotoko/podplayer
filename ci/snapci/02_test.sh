@@ -52,12 +52,13 @@ echo STATUS: stopped is expected: $STATUS
 #     echo emulator does not start
 #     exit 1
 # fi
-adb -v time logcat > app/build/logcat.log &
-
+adb uninstall com.mamewo.podplayer0
+adb logcat -v time > app/build/logcat.log &
 ./gradlew spoonDebug -PspoonOutput=spoon_${AVD_NAME}
 ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity -PspoonOutput=spoon_exp_${AVD_NAME}
 ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodcastListPreference -PspoonOutput=spoon_podlist_${AVD_NAME}
 
 ## TODO: get serial id
 adb -s emulator-5554 emu kill
+kill %1
 sleep 30
