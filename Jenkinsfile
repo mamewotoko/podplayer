@@ -33,7 +33,7 @@ node('podplayer_pipeline') {
                          alwaysLinkToLastBuild: false,
                          keepAll: true,
                          reportDir: 'app/build/spoon',
-                         reportFiles: 'index'.html,
+                         reportFiles: 'index.html',
                          reportName: 'Spoon result'
                         ]);
     // echo 'copyArtifact'

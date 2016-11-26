@@ -60,5 +60,6 @@ adb logcat -v time > app/build/logcat.log &
 
 ## TODO: get serial id
 adb -s emulator-5554 emu kill
-kill %1
+#kill %1
+
 sleep 30
