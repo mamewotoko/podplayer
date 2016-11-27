@@ -32,14 +32,14 @@ node('podplayer_pipeline') {
     publishHTML(target: [allowMissing: true,
                          alwaysLinkToLastBuild: false,
                          keepAll: true,
-                         reportDir: 'app/build/spoon_emu_android-10_480x800_en_us',
+                         reportDir: 'app/build/spoon_emu_android-10_480x800_en_us/debug',
                          reportFiles: 'index.html',
                          reportName: 'Spoon pulltorefresh android-10'
                         ])
     publishHTML(target: [allowMissing: true,
                          alwaysLinkToLastBuild: false,
                          keepAll: true,
-                         reportDir: 'app/build/spoon_exp_emu_android-10_480x800_en_us',
+                         reportDir: 'app/build/spoon_exp_emu_android-10_480x800_en_us/debug',
                          reportFiles: 'index.html',
                          reportName: 'Spoon expd android-10'
                         ])
@@ -47,7 +47,7 @@ node('podplayer_pipeline') {
     publishHTML(target: [allowMissing: true,
                          alwaysLinkToLastBuild: false,
                          keepAll: true,
-                         reportDir: 'app/build/spoon_podlist_emu_android-10_480x800_en_us',
+                         reportDir: 'app/build/spoon_podlist_emu_android-10_480x800_en_us/debug',
                          reportFiles: 'index.html',
                          reportName: 'Spoon podlist android-10'
                         ])
