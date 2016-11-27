@@ -1,3 +1,3 @@
 #! /bin/bash
 set -e
-./gradlew assembleDebug assembleDebugAndroidTest lint
+./gradlew clean assembleDebug assembleDebugAndroidTest lint
