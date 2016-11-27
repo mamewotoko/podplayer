@@ -23,8 +23,8 @@ node('podplayer_pipeline') {
   stage('Run test'){
     sh 'bash -x ci/snapci/02_test.sh en us 480x800 android-10 default/x86'
 
-    sh 'bash -x ci/snapci/02_test.sh en us 480x800 andoid-19 default/x86'
-    sh 'bash -x ci/snapci/02_test.sh en us 1280x800 andoid-19 default/x86'
+    sh 'bash -x ci/snapci/02_test.sh en us 480x800 android-19 default/x86'
+    sh 'bash -x ci/snapci/02_test.sh en us 1280x800 android-19 default/x86'
     sh 'bash -x ci/snapci/02_test.sh ja jp 1280x800 android-19 default/x86'
     sh 'bash -x ci/snapci/02_test.sh ja jp 480x800 android-19 default/x86'
     sh 'bash -x ci/snapci/02_test.sh sv se 1280x800 android-19 default/x86'
