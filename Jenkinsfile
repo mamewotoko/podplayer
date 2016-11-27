@@ -24,10 +24,10 @@ node('podplayer_pipeline') {
   
   stage('Report'){
     // null pointer exception...
-    sh 'pwd'
-    sh 'ls -l'
+//    sh 'pwd'
+//    sh 'ls -l'
     echo 'archiveArtifacts'
-    archiveArtifacts 'app/build'
+    archiveArtifacts 'app/build/**/*.apk'
     echo 'publishHTML'
     publishHTML(target: [allowMissing: true,
                          alwaysLinkToLastBuild: false,
@@ -35,7 +35,7 @@ node('podplayer_pipeline') {
                          reportDir: 'app/build/spoon',
                          reportFiles: 'index.html',
                          reportName: 'Spoon result'
-                        ]);
+                        ])
     // echo 'copyArtifact'
     // step([$class: 'CopyArtifact',
     //       projectName: 'podplayer_pipeline',
