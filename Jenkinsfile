@@ -34,14 +34,14 @@ node('podplayer_pipeline') {
                          keepAll: true,
                          reportDir: 'app/build/spoon_emu_android-10_480x800_en_us',
                          reportFiles: 'index.html',
-                         reportName: 'Spoon pulltorefresh (android-10)'
+                         reportName: 'Spoon pulltorefresh android-10'
                         ])
     publishHTML(target: [allowMissing: true,
                          alwaysLinkToLastBuild: false,
                          keepAll: true,
                          reportDir: 'app/build/spoon_exp_emu_android-10_480x800_en_us',
                          reportFiles: 'index.html',
-                         reportName: 'Spoon exp (android-10)'
+                         reportName: 'Spoon expd android-10'
                         ])
 
     publishHTML(target: [allowMissing: true,
@@ -49,7 +49,7 @@ node('podplayer_pipeline') {
                          keepAll: true,
                          reportDir: 'app/build/spoon_podlist_emu_android-10_480x800_en_us',
                          reportFiles: 'index.html',
-                         reportName: 'Spoon podlist (android-10)'
+                         reportName: 'Spoon podlist android-10'
                         ])
     // echo 'copyArtifact'
     // step([$class: 'CopyArtifact',
