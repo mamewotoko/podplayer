@@ -288,9 +288,9 @@ public class PodplayerActivity
             else {
                 stateIcon.setVisibility(View.GONE);
             }
-            Log.d(TAG, "icon: " + info.getTitle() + " index: " + info.index_
-                  + " current: " + currentList_.size()
-                  + " podcast:" + state_.podcastList_.size());
+            // Log.d(TAG, "icon: " + info.getTitle() + " index: " + info.index_
+            //       + " current: " + currentList_.size()
+            //       + " podcast:" + state_.podcastList_.size());
             String iconURL = state_.podcastList_.get(info.index_).getIconURL();
             if(showPodcastIcon_ && null != iconURL){
                 Glide
