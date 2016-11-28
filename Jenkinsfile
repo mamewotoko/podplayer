@@ -82,7 +82,7 @@ node('podplayer_pipeline') {
 }
 
 
-def publishSpoonResult(target, resolution, lang, contry){
+def publishSpoonResult(target, resolution, lang, country){
     publishHTML(target: [allowMissing: true,
                          alwaysLinkToLastBuild: false,
                          keepAll: true,
