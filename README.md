@@ -62,6 +62,8 @@ TODO
     * stop playing
       * or mark error item and try playing next unerror item
   * when only one episode is registered, list is in tap to refresh mode after loaded
+  * test: Solo.clickOnMenuItem does not work (when screen is landscape? e.g. 1280x800)
+    * menu key does not work
 * podcast detail as activity
 * fast load
   * improve incremental update algorithm to reduce cpu usage
@@ -76,22 +78,6 @@ TODO
   * episode item
     * introduce simple memory based cache
 * use unified date format
-* select http lib
-  * point of view
-    * http response cache
-    * authentication (w/ cache?)
-      * preemptive
-  * libraries
-    * HttpURLConnection
-    * OkHTTP
-      https://github.com/square/okhttp/wiki/Recipes
-      * cache
-      * auth, counting retry
-    * Volley
-      * cache
-      * customize http header to implement authentication
-    * Android Asynchronous Http Client
-      http://loopj.com/android-async-http/
 * add + action icon to add podcast    
 * display toast when network error occurs
 * handle opml

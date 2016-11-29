@@ -1,2 +1,20 @@
 Auth test site
 http://mamewo.ddo.jp/podcast/auth/
+
+
+* select http lib
+  * point of view
+    * http response cache
+    * authentication (w/ cache?)
+      * preemptive
+  * libraries
+    * HttpURLConnection
+    * OkHTTP
+      https://github.com/square/okhttp/wiki/Recipes
+      * cache
+      * auth, counting retry
+    * Volley
+      * cache
+      * customize http header to implement authentication
+    * Android Asynchronous Http Client
+      http://loopj.com/android-async-http/
