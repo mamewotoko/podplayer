@@ -178,19 +178,32 @@ TODO
 * display playing icon in group of expandable list
 * upload demo movie to youtube
 
+Third-party libraries
+---------------------
+The podplayer uses the following software, resource and tool.
+* Copyright (c) 2011 [Johan Nilsson](http://markupartist.com)  
+  https://github.com/johannilsson/android-pulltorefresh
+* [Glide](https://github.com/bumptech/glide)  
+  https://github.com/bumptech/glide
+* [Meterial icons](https://design.google.com/icons/)
+* Gesture data is built with GestureBuilder sample application of android (legacy/GestureBuilder)
+
 License
-----------
-* podplayer: Copyright (c) 2012-2016 Takashi Masuyama. All rights reserved. 
-Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
+-------
 
-* podplayer uses the following software and resource
-  * Copyright (c) 2011 [Johan Nilsson](http://markupartist.com)  
-    https://github.com/johannilsson/android-pulltorefresh
-  * [Glide](https://github.com/bumptech/glide)  
-    https://github.com/bumptech/glide
-  * [Meterial icons](https://design.google.com/icons/)
+    Copyright (c) 2012-2016 Takashi Masuyama. All rights reserved.
 
-* Gesture data is built using GestureBuilder sample application of android (legacy/GestureBuilder)
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 Keywords
 ----------
