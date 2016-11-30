@@ -102,6 +102,6 @@ def publishSpoonResult(target, resolution, lang, country){
                          keepAll: true,
                          reportDir: 'app/build/spoon_podlist_emu_'+target+'_'+resolution+'_'+lang+'_'+country+'/debug',
                          reportFiles: 'index.html',
-                         reportName: 'Spoon podlist'+target+'_'+resolution+'_'+lang
+                         reportName: 'Spoon podlist '+target+'_'+resolution+'_'+lang
                         ]);
 }
