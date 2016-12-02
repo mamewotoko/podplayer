@@ -1,6 +1,4 @@
 #! /bin/sh
 
-python merge_spoon.py $* > merged.html
+python ci/snapci/merge_spoon.py $* > merged.html
 cp -r $(dirname $1)/static .
-
-
