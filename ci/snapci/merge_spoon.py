@@ -8,23 +8,40 @@ merged_html = html.fromstring("<div></div>")
 
 hero_css = """
 <style>
+body { padding-top: 20px; padding-left: 5px; padding-right: 5px }
 .hero-unit h1 { font-size: 16px; margin: 2px; }
 .hero-unit p { font-size: 14px }
 .hero-unit { margin-bottom: 0px; padding: 2px; }
-.container { margin-bottom: 10px; }
+.container { margin: 5px;}
+.birds-eye .device th { display: none }
 </style>
 """
 
-for report in report_files:
+footer_html = """
+<script type="text/javascript">
+$('.test a').popover({
+    placement: 'top',
+    trigger: 'hover'
+});
+</script>
+"""
+
+for report in sorted(report_files):
     with open(report, "r") as f:
         s = f.read()
-    testname = os.path.basename(os.path.dirname(os.path.dirname(report)))
+    report_dir = os.path.dirname(report)
+    testname = os.path.basename(os.path.dirname(report_dir))
     h = html.fromstring(s)
     if head_element is None:
         head_element = h.head
         head_element.append(html.fromstring(hero_css))
     container_elements = h.xpath("//div[@class='container']")
+   
     for cont in container_elements:
+        for a_element in cont.xpath("//a"):
+            ## TODO: if href is relative
+            newpath = os.path.join(report_dir, a_element.attrib['href'])
+            a_element.attrib['href'] = newpath
         testtitle = cont.xpath("//div[@class='hero-unit']/h1")[0]
         original_report = html.fromstring('<a href="%s">%s</a>' % (report, testname))
         testtitle.clear()
@@ -34,6 +51,6 @@ for report in report_files:
 root = html.fromstring("<html></html>")
 root.append(head_element)
 root.append(merged_html)
+root.append(html.fromstring(footer_html))
 
 print html.tostring(root)
-
