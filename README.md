@@ -160,6 +160,7 @@ TODO
   * preference
   * notification
   * gesture?
+    * use Solo.illustrate
     * To test gesture, add method "Scroller.draw" to robotium (similar to Scroller.drag)
   * landscape UI
 * gesture score histogram?
@@ -181,10 +182,9 @@ TODO
 Third-party libraries
 ---------------------
 The podplayer uses the following software, resource and tool.
-* Copyright (c) 2011 [Johan Nilsson](http://markupartist.com)  
-  https://github.com/johannilsson/android-pulltorefresh
+* [Pull To Refresh for Android](https://github.com/johannilsson/android-pulltorefresh)
+  Copyright (c) 2011 [Johan Nilsson](http://markupartist.com)  
 * [Glide](https://github.com/bumptech/glide)  
-  https://github.com/bumptech/glide
 * [Meterial icons](https://design.google.com/icons/)
 * Gesture data is built with GestureBuilder sample application of android (legacy/GestureBuilder)
 

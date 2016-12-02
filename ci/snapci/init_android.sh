@@ -2,8 +2,6 @@
 
 # raise an error if any command fails!
 set -e
-#cat /proc/cpuinfo
-#cat /etc/issue
 
 # existance of this file indicates that all dependencies were previously installed, and any changes to this file will use a different filename.
 INITIALIZATION_FILE="$ANDROID_HOME/.initialized-dependencies-$(git log -n 1 --format=%h -- $0)"
@@ -27,3 +25,6 @@ if [ ! -e ${INITIALIZATION_FILE} ]; then
     #curl -L ci/spoon-runner.jar
     touch ${INITIALIZATION_FILE}
 fi
+
+## to merge report
+sudo pip install lxml
