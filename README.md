@@ -54,9 +54,15 @@ How to run UI test using Robotium
 
 TODO
 ----
+* add cool widget to play episode
+* View holder pattern for ListView
+  * http://developer.android.com/intl/ja/training/improving-layouts/smooth-scrolling.html#ViewHolder
+  * reduce findViewById call in getView
+* call Glide.clear
 * podcast title should be nullable?
 * display url when title is null (e.g. http authentication)
 * fix bugs
+  * fix icon flicker while loading episode
   * podcast removed -> back -> crash
   * when prepare error occurs, cursor moves to next episode
     * stop playing
@@ -68,7 +74,6 @@ TODO
 * fast load
   * improve incremental update algorithm to reduce cpu usage
     * problem: displayed episode is not played by click while loading episodes
-    * fix flicker while loading episode
 * change color of category text in preference screen   
 * add option to exit by pressing back button
   * display confirm dialog: exit or playing background, live as servcie and display notification
@@ -152,7 +157,6 @@ TODO
   * avoid flicker when button on notification pressed
 * write additional podcast url to sd card?
 * add confirm dialog to open web site
-* http://developer.android.com/intl/ja/training/improving-layouts/smooth-scrolling.html#ViewHolder
 * add / update test
   * MainActivityTest, PodcastActivity then testAbortReload blocks...
   * preference
@@ -161,7 +165,6 @@ TODO
     * use Solo.illustrate
     * To test gesture, add method "Scroller.draw" to robotium (similar to Scroller.drag)
   * landscape UI
-* gesture score histogram?
 * improve UI to add podcast URL
   * update main activity when setting is changed
 * reset playing position after podcast selection is changed
@@ -170,7 +173,6 @@ TODO
 * Autoload: load when create activity or when podcast list setting is changed
 * play episode which is clicked while preparing other episode
 * add episode search UI
-* add cool widget to play episode
 * add slider to show current playing position
 * add error handling
 * write user guide?

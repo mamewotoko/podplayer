@@ -37,50 +37,32 @@ node('podplayer_pipeline') {
 //    sh 'ls -l'
     echo 'archiveArtifacts'
     archiveArtifacts 'app/build/**/*.apk'
-    echo 'publishHTML'
 
-    //1
-    // publishHTML(target: [allowMissing: true,
-    //                      alwaysLinkToLastBuild: false,
-    //                      keepAll: true,
-    //                      reportDir: 'app/build/spoon_emu_android-10_480x800_en_us/debug',
-    //                      reportFiles: 'index.html',
-    //                      reportName: 'Spoon pulltorefresh android-10'
-    //                     ])
-    // publishHTML(target: [allowMissing: true,
-    //                      alwaysLinkToLastBuild: false,
-    //                      keepAll: true,
-    //                      reportDir: 'app/build/spoon_exp_emu_android-10_480x800_en_us/debug',
-    //                      reportFiles: 'index.html',
-    //                      reportName: 'Spoon expd android-10'
-    //                     ])
+    echo 'merge report'
+    sh 'sh -x ci/snapci/03_report.sh'
 
-    // publishHTML(target: [allowMissing: true,
-    //                      alwaysLinkToLastBuild: false,
-    //                      keepAll: true,
-    //                      reportDir: 'app/build/spoon_podlist_emu_android-10_480x800_en_us/debug',
-    //                      reportFiles: 'index.html',
-    //                      reportName: 'Spoon podlist android-10'
-    //                     ])
+    publishHTML(target: [allowMissing: true,
+                         alwaysLinkToLastBuild: false,
+                         keepAll: true,
+                         reportDir: 'app/build/',
+                         reportFiles: 'merged.html',
+                         reportName: 'Spoon result'
+                        ])
 
-    publishSpoonResult('android-10', '480x800', 'en', 'us')
+    //echo 'publishHTML'
+    // publishSpoonResult('android-10', '480x800', 'en', 'us')
 
-    publishSpoonResult('android-19', '480x800', 'en', 'us')
-    publishSpoonResult('android-19', '1280x800', 'en', 'us')
+    // publishSpoonResult('android-19', '480x800', 'en', 'us')
+    // publishSpoonResult('android-19', '1280x800', 'en', 'us')
 
-    publishSpoonResult('android-19', '480x800', 'ja', 'jp')
-    publishSpoonResult('android-19', '1280x800', 'ja', 'jp')
+    // publishSpoonResult('android-19', '480x800', 'ja', 'jp')
+    // publishSpoonResult('android-19', '1280x800', 'ja', 'jp')
     
-    publishSpoonResult('android-19', '480x800', 'sv', 'se')
-    publishSpoonResult('android-19', '1280x800', 'sv', 'se')
-
-//                      echo 'copyArtifact'
-       // step([$class: 'CopyArtifact',
-    //       projectName: 'podplayer_pipeline',
-    //       target: 'app/build']);
+    // publishSpoonResult('android-19', '480x800', 'sv', 'se')
+    // publishSpoonResult('android-19', '1280x800', 'sv', 'se')
+    //'spoon_emu_android-10_480x800_en_us',
   }
 }
-
 
 def publishSpoonResult(target, resolution, lang, country){
     publishHTML(target: [allowMissing: true,
