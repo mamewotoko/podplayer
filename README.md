@@ -78,7 +78,8 @@ TODO
   * episode item
     * introduce simple memory based cache
 * use unified date format
-* add + action icon to add podcast    
+  * pull to refresh
+  * published date of episode
 * display toast when network error occurs
 * handle opml
 * share podcast with friend / author (add to preset)
@@ -94,9 +95,6 @@ TODO
   * start player service
 * use minifyEnabled option of build.gradle
   * disable logging
-* fix #1
-  * content corrupted?
-  * debug: using TeeInputStream of Commons IO
 * fix lint warnings
   * review lint.xml and enable appropriate options
   * check report of code inspection of Android Studio
