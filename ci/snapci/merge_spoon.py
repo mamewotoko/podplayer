@@ -7,7 +7,7 @@ head_element = None
 merged_html = html.fromstring("<div></div>")
 
 hero_css = """
-<style>
+<style type="text/css">
 body { padding-top: 20px; padding-left: 5px; padding-right: 5px }
 .hero-unit h1 { font-size: 16px; margin: 2px; }
 .hero-unit p { font-size: 14px }

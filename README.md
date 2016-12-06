@@ -18,6 +18,7 @@ https://play.google.com/store/apps/details?id=com.mamewo.podplayer0
 How to build
 ------------
 1. Install "Android support repository" using [Android SDK Manager](https://developer.android.com/studio/intro/update.html?hl=ja#sdk-manager)
+
   Install script (in spapci): ` ci/snapci/init_android.sh ` 
 2. Clone source
 
