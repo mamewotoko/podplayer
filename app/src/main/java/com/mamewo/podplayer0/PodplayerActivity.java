@@ -304,7 +304,8 @@ public class PodplayerActivity
             String iconURL = state_.podcastList_.get(info.getIndex()).getIconURL();
             if(showPodcastIcon_ && null != iconURL){
                 //TODO: check previous icon url
-                if(info.getIndex() != holder.podcastIndex_){
+                if(View.GONE == holder.episodeIcon_.getVisibility()
+                   || info.getIndex() != holder.podcastIndex_){
                     Glide
                         .with(getApplicationContext())
                         .load(iconURL)

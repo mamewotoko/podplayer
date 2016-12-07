@@ -383,7 +383,8 @@ public class PodplayerExpActivity
             String iconURL = state_.podcastList_.get(info.getIndex()).getIconURL();
             if(showPodcastIcon_ && null != iconURL){
                 //to avoid image flicker
-                if(holder.podcastIndex_ != info.getIndex()){
+                if(View.GONE == holder.episodeIcon_.getVisibility()
+                   || holder.podcastIndex_ != info.getIndex()){
                     Glide
                         .with(getApplicationContext())
                         .load(state_.podcastList_.get(info.getIndex()).getIconURL())
