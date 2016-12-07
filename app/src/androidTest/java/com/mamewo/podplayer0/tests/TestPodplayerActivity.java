@@ -201,8 +201,7 @@ public class TestPodplayerActivity
         solo_.goBack();
         solo_.sleep(UI_SLEEP);
         solo_.goBack();
-        solo_.sleep(UI_SLEEP);
-
+        solo_.sleep(40000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
 
         //View collapseButton = solo_.getView(R.id.collapse_button);
