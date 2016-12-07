@@ -1,6 +1,3 @@
-Auth test site
-http://mamewo.ddo.jp/podcast/auth/
-
 
 * select http lib
   * point of view
@@ -18,3 +15,8 @@ http://mamewo.ddo.jp/podcast/auth/
       * customize http header to implement authentication
     * Android Asynchronous Http Client
       http://loopj.com/android-async-http/
+* fix icon flicker while loading episode
+* View holder pattern for ListView
+  * http://developer.android.com/intl/ja/training/improving-layouts/smooth-scrolling.html#ViewHolder
+  * reduce findViewById call in getView
+* call Glide.clear

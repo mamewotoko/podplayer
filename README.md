@@ -56,14 +56,9 @@ How to run UI test using Robotium
 TODO
 ----
 * add cool widget to play episode
-* View holder pattern for ListView
-  * http://developer.android.com/intl/ja/training/improving-layouts/smooth-scrolling.html#ViewHolder
-  * reduce findViewById call in getView
-* call Glide.clear
 * podcast title should be nullable?
 * display url when title is null (e.g. http authentication)
 * fix bugs
-  * fix icon flicker while loading episode
   * podcast removed -> back -> crash
   * when prepare error occurs, cursor moves to next episode
     * stop playing
@@ -87,7 +82,7 @@ TODO
   * pull to refresh
   * published date of episode
 * display toast when network error occurs
-* handle opml
+* handle opml as input to specify podcast list
 * share podcast with friend / author (add to preset)
   * bluetooth
   * IR code
@@ -144,7 +139,7 @@ TODO
    * test multiple test classes once / merge test result
     * current situation: freeze?
     * set "package" instrumentationArgs to start all test classes
-   * add test of content description
+   * add test of content description (manual test)
    * pull down
 * add preference to display pubdate as "X days before"
 * add activity for tv?

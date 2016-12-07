@@ -266,6 +266,7 @@ public class PodplayerActivity
                 holder.timeView_ = (TextView)view.findViewById(R.id.episode_time);
                 holder.stateIcon_ = (ImageView)view.findViewById(R.id.play_icon);
                 holder.episodeIcon_ = (ImageView)view.findViewById(R.id.episode_icon);
+                holder.podcastIndex_ = -1;
                 view.setTag(holder);
             }
             else {
@@ -300,21 +301,24 @@ public class PodplayerActivity
             // Log.d(TAG, "icon: " + info.getTitle() + " index: " + info.index_
             //       + " current: " + currentList_.size()
             //       + " podcast:" + state_.podcastList_.size());
-            String iconURL = state_.podcastList_.get(info.index_).getIconURL();
+            String iconURL = state_.podcastList_.get(info.getIndex()).getIconURL();
             if(showPodcastIcon_ && null != iconURL){
-                Glide
-                    .with(getApplicationContext())
-                    .load(iconURL)
-                    .dontAnimate()
-                    .into(holder.episodeIcon_);
-                holder.episodeIcon_.setContentDescription(info.getTitle());
+                //TODO: check previous icon url
+                if(info.getIndex() != holder.podcastIndex_){
+                    Glide
+                        .with(getApplicationContext())
+                        .load(iconURL)
+                        .into(holder.episodeIcon_);
+                    holder.episodeIcon_.setContentDescription(info.getTitle());
+                }
                 holder.episodeIcon_.setVisibility(View.VISIBLE);
             }
             else {
                 Glide.clear(holder.episodeIcon_);
                 holder.episodeIcon_.setContentDescription(getString(R.string.icon_desc_episode_none));
-                holder.episodeIcon_.setVisibility(View.GONE);
+                holder.episodeIcon_.setVisibility(View.GONE);                
             }
+            holder.podcastIndex_ = info.getIndex();
             return view;
         }
     }
@@ -564,5 +568,6 @@ public class PodplayerActivity
         TextView timeView_;
         ImageView stateIcon_;
         ImageView episodeIcon_;
+        int podcastIndex_;
     }
 }
