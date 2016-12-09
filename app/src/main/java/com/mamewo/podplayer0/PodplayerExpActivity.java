@@ -44,7 +44,6 @@ public class PodplayerExpActivity
     PlayerService.PlayerStateListener,
     OnChildClickListener
 {
-
     private ImageButton playButton_;
 	private ImageView reloadButton_;
     private ImageButton expandButton_;
@@ -81,8 +80,6 @@ public class PodplayerExpActivity
         expandButton_.setOnClickListener(this);
         collapseButton_ = (ImageButton) findViewById(R.id.collapse_button);
         collapseButton_.setOnClickListener(this);
-        //groupData_ = new ArrayList<Map<String, String>>();
-        //childData_ = new ArrayList<List<Map<String, Object>>>();
     }
 
     private void updateUI() {
@@ -212,26 +209,26 @@ public class PodplayerExpActivity
                                 int childPosition,
                                 long id)
     {
-        EpisodeInfo info = (EpisodeInfo)adapter_.getChild(groupPosition, childPosition);
+        EpisodeInfo episode = (EpisodeInfo)adapter_.getChild(groupPosition, childPosition);
         EpisodeInfo current = player_.getCurrentPodInfo();
-        if(current != null && current.getURL().equals(info.getURL())) {
+        if(current != null && current.getURL().equals(episode.getURL())) {
             if(player_.isPlaying()) {
                 player_.pauseMusic();
             }
             else {
                 if(! player_.restartMusic()){
-                    playByInfo(info);
+                    playByInfo(episode);
                 }
             }
         }
         else {
             updatePlaylist();
-            playByInfo(info);
+            playByInfo(episode);
         }
         return true;
     }
 
-    private void playByInfo(EpisodeInfo info) {
+    private void playByInfo(EpisodeInfo episode) {
         //umm...
         if(state_.latestList_ == null){
             return;
@@ -239,13 +236,13 @@ public class PodplayerExpActivity
         int playPos = -1;
         //skip! use list size
         for(int pos = 0; pos < state_.latestList_.size(); pos++) {
-            if(state_.latestList_.get(pos) == info) {
+            if(state_.latestList_.get(pos) == episode) {
                 playPos = pos;
                 break;
             }
         }
         if (playPos < 0){
-            Log.i(TAG, "playByInfo: info is not found: " + info.getURL());
+            Log.i(TAG, "playByInfo: info is not found: " + episode.getURL());
             return;
         }
         player_.playNth(playPos);
@@ -359,11 +356,11 @@ public class PodplayerExpActivity
             else {
                 holder = (EpisodeHolder)view.getTag();
             }
-            EpisodeInfo info = (EpisodeInfo)getChild(groupPosition, childPosition);
-            holder.titleView_.setText(info.getTitle());
-            holder.timeView_.setText(info.getPubdateString());
+            EpisodeInfo episode = (EpisodeInfo)getChild(groupPosition, childPosition);
+            holder.titleView_.setText(episode.getTitle());
+            holder.timeView_.setText(episode.getPubdateString());
             EpisodeInfo current = player_.getCurrentPodInfo();
-            if(current != null && current.getURL().equals(info.getURL())) {
+            if(current != null && current.getURL().equals(episode.getURL())) {
                 //cache!
                 if(player_.isPlaying()) {
                     holder.stateIcon_.setImageResource(R.drawable.ic_play_arrow_white_24dp);
@@ -380,14 +377,14 @@ public class PodplayerExpActivity
             }
 
             //TODO: use string or uri
-            String iconURL = state_.podcastList_.get(info.getIndex()).getIconURL();
+            String iconURL = state_.podcastList_.get(episode.getIndex()).getIconURL();
             if(showPodcastIcon_ && null != iconURL){
                 //to avoid image flicker
                 if(View.GONE == holder.episodeIcon_.getVisibility()
-                   || holder.podcastIndex_ != info.getIndex()){
+                   || holder.podcastIndex_ != episode.getIndex()){
                     Glide
                         .with(getApplicationContext())
-                        .load(state_.podcastList_.get(info.getIndex()).getIconURL())
+                        .load(state_.podcastList_.get(episode.getIndex()).getIconURL())
                         .into(holder.episodeIcon_);
                 }
                 holder.episodeIcon_.setVisibility(View.VISIBLE);
@@ -396,7 +393,7 @@ public class PodplayerExpActivity
                 Glide.clear(holder.episodeIcon_);
                 holder.episodeIcon_.setVisibility(View.GONE);
             }
-            holder.podcastIndex_ = info.getIndex();
+            holder.podcastIndex_ = episode.getIndex();
             return view;
         }
     }
@@ -417,9 +414,9 @@ public class PodplayerExpActivity
 
         @Override
         protected void onProgressUpdate(EpisodeInfo... values){
-            for (EpisodeInfo info: values) {
+            for (EpisodeInfo episode: values) {
                 //state_.loadedEpisode_.add(info);
-                state_.mergeEpisode(info);
+                state_.mergeEpisode(episode);
             }
             updateUI();
         }
@@ -460,15 +457,15 @@ public class PodplayerExpActivity
         int groupPosition = ExpandableListView.getPackedPositionGroup(id);
         int childPosition = ExpandableListView.getPackedPositionChild(id);
 
-        EpisodeInfo info = (EpisodeInfo)adapter_.getChild(groupPosition, childPosition);
-        if(info.getLink() == null){
+        EpisodeInfo episode = (EpisodeInfo)adapter_.getChild(groupPosition, childPosition);
+        if(episode.getLink() == null){
             return true;
         }
         //TODO: use link of podcast.xml (global one)
         //TODO: display url before connect
         //episode.link refers audio file...
         Intent i =
-            new Intent(Intent.ACTION_VIEW, Uri.parse(info.getLink()));
+            new Intent(Intent.ACTION_VIEW, Uri.parse(episode.getLink()));
         startActivity(i);
         return true;
     }
@@ -499,13 +496,13 @@ public class PodplayerExpActivity
     }
 
     @Override
-    public void onStartLoadingMusic(EpisodeInfo info) {
+    public void onStartLoadingMusic(EpisodeInfo episode) {
         setProgressBarIndeterminateVisibility(false);
         updateUI();        
     }
 
     @Override
-    public void onStartMusic(EpisodeInfo info) {
+    public void onStartMusic(EpisodeInfo episode) {
         setProgressBarIndeterminateVisibility(true);
         updateUI();
     }
