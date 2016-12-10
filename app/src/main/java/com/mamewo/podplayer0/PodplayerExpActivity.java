@@ -350,7 +350,6 @@ public class PodplayerExpActivity
                 holder.timeView_ = (TextView)view.findViewById(R.id.episode_time);
                 holder.stateIcon_ = (ImageView)view.findViewById(R.id.play_icon);
                 holder.episodeIcon_ = (ImageView)view.findViewById(R.id.episode_icon);
-                //holder.podcastIndex_ = -1;
                 holder.displayedIconURL_ = null;
                 view.setTag(holder);
             }
@@ -397,7 +396,6 @@ public class PodplayerExpActivity
                 Glide.clear(holder.episodeIcon_);
                 holder.episodeIcon_.setVisibility(View.GONE);
             }
-            //holder.podcastIndex_ = episode.getIndex();
             holder.displayedIconURL_ = iconURL;
             return view;
         }
