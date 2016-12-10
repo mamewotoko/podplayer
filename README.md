@@ -58,15 +58,16 @@ TODO
 * add cool widget to play episode
 * podcast title should be nullable?
 * display url when title is null (e.g. http authentication)
+* podcast detail as activity
+* add preset podcast
+  * This Week in Germany
+    http://www.spreaker.com/show/1331025/episodes/feed
 * fix bugs
-  * podcast removed -> back -> crash
   * when prepare error occurs, cursor moves to next episode
     * stop playing
       * or mark error item and try playing next unerror item
-  * when only one episode is registered, list is in tap to refresh mode after loaded
   * test: Solo.clickOnMenuItem does not work (when screen is landscape? e.g. 1280x800)
     * menu key does not work
-* podcast detail as activity
 * fast load
   * improve incremental update algorithm to reduce cpu usage
     * problem: displayed episode is not played by click while loading episodes
