@@ -289,17 +289,15 @@ abstract public class BasePodplayerActivity
         }
         //following block should be last one of this function
         if (updateAll || "podcastlist2".equals(key)) {
+            Log.d(TAG, "podcastList load and update");
             state_.podcastList_ = PodcastListPreference.loadSetting(this);
             //TODO: reuse loaded episode
+            state_.loadedEpisode_.clear();
+            state_.latestList_.clear();
+            //TODO: clear all icon
             for(int i = 0; i < state_.podcastList_.size(); i++){
-                if(i < state_.loadedEpisode_.size()){
-                    state_.loadedEpisode_.get(i).clear();
-                }
-                else {
-                    state_.loadedEpisode_.add(new ArrayList<EpisodeInfo>());
-                }
+                state_.loadedEpisode_.add(new ArrayList<EpisodeInfo>());
             }
-            //TODO: make short if podcastList_ is shorten
             Log.d(TAG, "loadedEpisode_:" + state_.loadedEpisode_.size() + "; " + state_.podcastList_.size());
             onPodcastListChanged(updateAll);
         }
@@ -354,7 +352,6 @@ abstract public class BasePodplayerActivity
             lastUpdatedDate_ = null;
             latestList_ = new ArrayList<EpisodeInfo>();
         }
-
         
         // static
         // public void sortEpisodeByDate(List<EpisodeInfo> lst, boolean latestFirst){

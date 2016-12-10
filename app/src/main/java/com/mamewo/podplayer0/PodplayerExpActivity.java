@@ -341,7 +341,7 @@ public class PodplayerExpActivity
                                  View convertView,
                                  ViewGroup parent)
         {
-            View view = convertView;
+            View view;
             EpisodeHolder holder;
             if(convertView == null){
                 view = View.inflate(PodplayerExpActivity.this, R.layout.episode_item, null);
@@ -350,10 +350,12 @@ public class PodplayerExpActivity
                 holder.timeView_ = (TextView)view.findViewById(R.id.episode_time);
                 holder.stateIcon_ = (ImageView)view.findViewById(R.id.play_icon);
                 holder.episodeIcon_ = (ImageView)view.findViewById(R.id.episode_icon);
-                holder.podcastIndex_ = -1;
+                //holder.podcastIndex_ = -1;
+                holder.displayedIconURL_ = null;
                 view.setTag(holder);
             }
             else {
+                view = convertView;
                 holder = (EpisodeHolder)view.getTag();
             }
             EpisodeInfo episode = (EpisodeInfo)getChild(groupPosition, childPosition);
@@ -380,11 +382,13 @@ public class PodplayerExpActivity
             String iconURL = state_.podcastList_.get(episode.getIndex()).getIconURL();
             if(showPodcastIcon_ && null != iconURL){
                 //to avoid image flicker
+                String displayedIconURL = holder.displayedIconURL_;
                 if(View.GONE == holder.episodeIcon_.getVisibility()
-                   || holder.podcastIndex_ != episode.getIndex()){
+                   || null == displayedIconURL
+                   || !displayedIconURL.equals(iconURL)){
                     Glide
                         .with(getApplicationContext())
-                        .load(state_.podcastList_.get(episode.getIndex()).getIconURL())
+                        .load(iconURL)
                         .into(holder.episodeIcon_);
                 }
                 holder.episodeIcon_.setVisibility(View.VISIBLE);
@@ -393,7 +397,8 @@ public class PodplayerExpActivity
                 Glide.clear(holder.episodeIcon_);
                 holder.episodeIcon_.setVisibility(View.GONE);
             }
-            holder.podcastIndex_ = episode.getIndex();
+            //holder.podcastIndex_ = episode.getIndex();
+            holder.displayedIconURL_ = iconURL;
             return view;
         }
     }
@@ -519,6 +524,6 @@ public class PodplayerExpActivity
         TextView timeView_;
         ImageView stateIcon_;
         ImageView episodeIcon_;
-        int podcastIndex_;
+        String displayedIconURL_;
     }
 }
