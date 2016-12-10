@@ -220,7 +220,7 @@ public class TestPodplayerActivity
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete_and_back");
        
         selectPreference(res_.getString(R.string.pref_podcastlist_title));
-        solo_.sleep(UI_SLEEP);
+        solo_.sleep(40000);
 
         ListView list = (ListView)solo_.getView(R.id.podlist);
         ListAdapter adapter = list.getAdapter();
@@ -238,9 +238,12 @@ public class TestPodplayerActivity
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete_and_back");
         solo_.goBack();
         solo_.sleep(UI_SLEEP);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete_and_back");
+
         solo_.goBack();
         //crash
         solo_.sleep(5000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete_and_back");
     }
 
     public void testAbortReload() {
