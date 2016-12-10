@@ -174,7 +174,6 @@ public class PodcastListPreference
             for(int i = 0; i < adapter_.getCount(); i++){
                 lst.add(adapter_.getItem(i));
             }
-            Log.d(TAG, "onStop: saveSetting");
             saveSetting(this, lst);
         }
         catch (JSONException e) {
@@ -352,7 +351,7 @@ public class PodcastListPreference
                 String username = req.getUsername();
                 String password = req.getPassword();
 
-                Log.d(TAG, "get URL: " + url);
+                //Log.d(TAG, "get URL: " + url);
                 InputStream is = null;
                 int numItems = 0;
                 String iconURL = null;
@@ -716,7 +715,7 @@ public class PodcastListPreference
             array.put(jsonValue);
         }
         String json = array.toString();
-        Log.d(TAG, "saveSetting JSON: " + json);
+        //Log.d(TAG, "saveSetting JSON: " + json);
         FileOutputStream fos = context.getApplicationContext().openFileOutput(CONFIG_FILENAME, MODE_PRIVATE);
         try{
             fos.write(json.getBytes());
@@ -760,7 +759,7 @@ public class PodcastListPreference
             BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
             String line;
             while (null != (line = reader.readLine())) {
-                Log.d(TAG, "loadSettingFromJSONFile: JSON "+line);
+                //Log.d(TAG, "loadSettingFromJSONFile: JSON "+line);
                 sb.append(line);
             }
         }
