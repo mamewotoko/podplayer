@@ -114,13 +114,13 @@ public class PlayerService
 	private int INFO_DISCONTINUITY = MEDIA_ERROR_BASE - 13;
 	
 	//TODO: check
-	static
-	public boolean isNetworkConnected(Context context) {
-		ConnectivityManager connMgr =
-				(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		return (networkInfo != null && networkInfo.isConnected());
-	}
+	// static
+	// public boolean isNetworkConnected(Context context) {
+	// 	ConnectivityManager connMgr =
+	// 			(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+	// 	NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+	// 	return (networkInfo != null && networkInfo.isConnected());
+	// }
 
 	public void setPlaylist(List<EpisodeInfo> playlist) {
 		currentPlaylist_ = playlist;
