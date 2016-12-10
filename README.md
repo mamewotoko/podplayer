@@ -56,8 +56,6 @@ How to run UI test using Robotium
 TODO
 ----
 * add cool widget to play episode
-* podcast title should be nullable?
-* display url when title is null (e.g. http authentication)
 * podcast detail as activity
 * add preset podcast
   * This Week in Germany
@@ -71,6 +69,7 @@ TODO
 * fast load
   * improve incremental update algorithm to reduce cpu usage
     * problem: displayed episode is not played by click while loading episodes
+* podcast title should be nullable?    
 * change color of category text in preference screen   
 * add option to exit by pressing back button
   * display confirm dialog: exit or playing background, live as servcie and display notification
@@ -89,10 +88,6 @@ TODO
   * IR code
   * mail?
   * post to website
-* thanks dialog?
-  * FIXED: checkbox of preference is gray based
-    * http://stackoverflow.com/questions/27091845/android-appcompat-dark-theme-settings-checkbox
-  * Travis CI, Jenkins, Sakura VPS
 * set default item / show notification in paused state
   * start player service
 * use minifyEnabled option of build.gradle

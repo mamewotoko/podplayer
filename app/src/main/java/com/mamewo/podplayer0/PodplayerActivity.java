@@ -419,7 +419,8 @@ public class PodplayerActivity
     //         Collections.reverse(currentList_);
     //     }
     // }
-    
+
+    //TODO: tuning
     private void filterSelectedPodcast(){
         List<EpisodeInfo> l;
         //TODO: design incremnetal add 
@@ -446,7 +447,7 @@ public class PodplayerActivity
         }
         //TODO: selected item is removed
         currentList_ = l;
-        Log.d(TAG, "filterSelectedPodcast: "+ currentList_.size());
+        //Log.d(TAG, "filterSelectedPodcast: "+ currentList_.size());
         if (! isLoading()) {
             episodeListView_.hideHeader();
         }

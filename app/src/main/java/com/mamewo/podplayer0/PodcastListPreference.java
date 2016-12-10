@@ -387,7 +387,7 @@ public class PodcastListPreference
                                 //update ui
                             }
                             else {
-                                publishProgress(new PodcastInfo(title, url, null, true, username, password, PodcastInfo.Status.AUTH_REQUIRED_LOCKED));
+                                publishProgress(new PodcastInfo(url.toString(), url, null, true, username, password, PodcastInfo.Status.AUTH_REQUIRED_LOCKED));
                             }
                             result = true;
                             Log.i(TAG, "auth required: "+url.toString());
