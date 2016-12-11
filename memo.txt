@@ -20,3 +20,15 @@
   * http://developer.android.com/intl/ja/training/improving-layouts/smooth-scrolling.html#ViewHolder
   * reduce findViewById call in getView
 * call Glide.clear
+* thanks dialog?
+  * FIXED: checkbox of preference is gray based
+    * http://stackoverflow.com/questions/27091845/android-appcompat-dark-theme-settings-checkbox
+
+----
+release note
+1.1.1
+- improve http performance using cache 
+- support podcast which requires http authentication
+  - for android 4.0 or above
+  - basic authentication only
+
