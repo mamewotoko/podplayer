@@ -504,7 +504,7 @@ public class PodplayerActivity
 
     @Override
     protected void onPodcastListChanged(boolean start) {
-        Log.d(TAG, "onPodcastListChanged");
+        //Log.d(TAG, "onPodcastListChanged");
         SharedPreferences pref=
                 PreferenceManager.getDefaultSharedPreferences(this);
         List<String> list = new ArrayList<String>();
