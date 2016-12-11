@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="pref_podcastlist_keys">
-        <item>NHK WORLD RADIO JAPAN</item>
-        <item>BBC: The English We Speak</item>
-        <item>Wall Street Journal This Morning</item>
-	<item>Voice of America (VOA)</item>
-    </string-array>
-    
+<resources>   
     <string-array name="pref_timeout_titles">
         <item>Ingen tidsgräns</item>
         <item>15 sekunder</item>
