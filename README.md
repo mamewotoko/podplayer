@@ -58,8 +58,8 @@ TODO
 * add cool widget to play episode
 * podcast detail as activity
 * add preset podcast
-  * This Week in Germany
-    http://www.spreaker.com/show/1331025/episodes/feed
+  * Luke's ENGLISH Podcast - Learn British English with Luke Thompson
+    https://audioboom.com/channels/1919834.rss
 * fix bugs
   * when prepare error occurs, cursor moves to next episode
     * stop playing
