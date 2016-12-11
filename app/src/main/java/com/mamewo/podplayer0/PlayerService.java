@@ -239,7 +239,7 @@ public class PlayerService
 	}
 	
 	public boolean playNext() {
-		Log.d(TAG, "playNext");
+		//Log.d(TAG, "playNext");
 		if(currentPlaylist_ == null || currentPlaylist_.size() == 0) {
 			return false;
 		}
@@ -369,7 +369,7 @@ public class PlayerService
 		isPausing_ = false;
 		stopForeground(false);
 		if(null != listener_){
-			Log.d(TAG, "call onStopMusic");
+			//Log.d(TAG, "call onStopMusic");
 			listener_.onStopMusic(STOP);
 		}
 	}
@@ -404,7 +404,7 @@ public class PlayerService
 	@Override
 	public void onCreate(){
 		super.onCreate();
-		Log.d(TAG, "PlayerService.onCreate is called");
+		//Log.d(TAG, "PlayerService.onCreate is called");
 		currentPlaylist_ = null;
 		currentPlaying_ = null;
 		listener_ = null;

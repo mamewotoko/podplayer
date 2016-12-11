@@ -226,7 +226,7 @@ abstract public class BasePodplayerActivity
     }
  
     protected void syncPreference(SharedPreferences pref, String key){
-        Log.d(TAG, "syncPreference: " + key);
+        //Log.d(TAG, "syncPreference: " + key);
         boolean updateAll = "ALL".equals(key);
         if ("use_expandable_ui".equals(key)) {
             uiSettingChanged_ = true;
@@ -289,7 +289,7 @@ abstract public class BasePodplayerActivity
         }
         //following block should be last one of this function
         if (updateAll || "podcastlist2".equals(key)) {
-            Log.d(TAG, "podcastList load and update");
+            //Log.d(TAG, "podcastList load and update");
             state_.podcastList_ = PodcastListPreference.loadSetting(this);
             //TODO: reuse loaded episode
             state_.loadedEpisode_.clear();
