@@ -502,6 +502,26 @@ public class TestPodplayerActivity
         solo_.illustrate(illustration);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_gesture");
         solo_.sleep(10000);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_gesture");        
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_gesture");
     }
+
+    public void testPullToRefresh() throws Exception {
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
+        int px1 = 300;
+        int py1 = 300;
+
+        int px2 = px1;
+        int py2 = py1 + 500;
+
+        Illustration.Builder builder = solo_.createIllustrationBuilder();
+        builder.addPoint(px1, py1, MotionEvent.TOOL_TYPE_FINGER);
+        builder.addPoint(px2, py2, MotionEvent.TOOL_TYPE_FINGER);
+
+        Illustration illustration = builder.build();
+        solo_.sleep(10000);
+        solo_.illustrate(illustration);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "pull_to_refresh");
+        solo_.sleep(10000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "pull_to_refresh");
+    }   
 }

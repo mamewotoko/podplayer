@@ -136,7 +136,6 @@ TODO
     * current situation: freeze?
     * set "package" instrumentationArgs to start all test classes
    * add test of content description (manual test)
-   * pull down
 * add preference to display pubdate as "X days before"
 * add activity for tv?
 * save latest few item to savedInstanceState
@@ -153,9 +152,6 @@ TODO
   * MainActivityTest, PodcastActivity then testAbortReload blocks...
   * preference
   * notification
-  * gesture?
-    * use Solo.illustrate
-    * To test gesture, add method "Scroller.draw" to robotium (similar to Scroller.drag)
   * landscape UI
 * improve UI to add podcast URL
   * update main activity when setting is changed
