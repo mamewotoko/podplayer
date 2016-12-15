@@ -462,4 +462,46 @@ public class TestPodplayerActivity
         //TODO: add assert that pausing 
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_gesture");
     }
+
+    public void testNextBackGesture() throws Exception {
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
+        int px1 = 300;
+        int py1 = 300;
+
+        int px2 = px1+100;
+        int py2 = py1+200;
+
+        int px3 = 100;
+        int py3 = py2;
+
+        Illustration.Builder builder = solo_.createIllustrationBuilder();
+        builder.addPoint(px1, py1, MotionEvent.TOOL_TYPE_FINGER);
+        builder.addPoint(px2, py2, MotionEvent.TOOL_TYPE_FINGER);
+        builder.addPoint(px3, py3, MotionEvent.TOOL_TYPE_FINGER);
+        Illustration illustration = builder.build();
+        solo_.sleep(10000);
+        solo_.illustrate(illustration);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_gesture");
+        solo_.sleep(10000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_gesture");
+
+        int qx1 = 300;
+        int qy1 = 300;
+
+        int qx2 = qx1-100;
+        int qy2 = qy1+200;
+
+        int qx3 = 500;
+        int qy3 = qy2;
+
+        builder = solo_.createIllustrationBuilder();
+        builder.addPoint(qx1, qy1, MotionEvent.TOOL_TYPE_FINGER);
+        builder.addPoint(qx2, qy2, MotionEvent.TOOL_TYPE_FINGER);
+        builder.addPoint(qx3, qy3, MotionEvent.TOOL_TYPE_FINGER);
+        illustration = builder.build();
+        solo_.illustrate(illustration);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_gesture");
+        solo_.sleep(10000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_gesture");        
+    }
 }
