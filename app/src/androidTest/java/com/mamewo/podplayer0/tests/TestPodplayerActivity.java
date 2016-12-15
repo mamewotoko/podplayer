@@ -2,13 +2,14 @@ package com.mamewo.podplayer0.tests;
 
 import com.robotium.solo.Solo;
 import com.robotium.solo.Solo.Config;
-
+import com.robotium.solo.Illustration;
 import android.content.res.Resources;
 
 import com.jraska.falcon.FalconSpoon;
 
 import com.mamewo.podplayer0.PodplayerActivity;
 import com.mamewo.podplayer0.R;
+import android.view.MotionEvent;
 
 import junit.framework.Assert;
 import android.test.ActivityInstrumentationTestCase2;
@@ -411,20 +412,54 @@ public class TestPodplayerActivity
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "preference2");
     }
 
-    // public void testPlayGesture() throws Exception {
-    //     Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
-    //     int px1 = 100;
-    //     int py1 = 300;
+    public void testPlayGesture() throws Exception {
+        Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
+        int px1 = 100;
+        int py1 = 300;
 
-    //     int px2 = 200;
-    //     int py2 = py1+30;
+        int px2 = 400;
+        int py2 = py1+100;
 
-    //     int px3 = px1;
-    //     int py3 = py2+30;
-        
-    //     solo_.drag(px1, px2, py1, py2, 50);
-    //     solo_.drag(px2, px3, py2, py3, 50);
-    //     solo_.drag(px3, px1, py3, py1, 50);
-    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_gesture");
-    // }
+        int px3 = px1;
+        int py3 = py2+100;
+
+        Illustration.Builder builder = solo_.createIllustrationBuilder();
+        builder.addPoint(px1, py1, MotionEvent.TOOL_TYPE_FINGER);
+        builder.addPoint(px2, py2, MotionEvent.TOOL_TYPE_FINGER);
+        builder.addPoint(px3, py3, MotionEvent.TOOL_TYPE_FINGER);
+        builder.addPoint(px1, py1-50, MotionEvent.TOOL_TYPE_FINGER);
+        Illustration illustration = builder.build();
+        solo_.sleep(10000);
+        solo_.illustrate(illustration);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_gesture");
+        solo_.sleep(10000);
+        //TODO: add assert that playing podcast
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_gesture");
+
+        int qx1 = px1;
+        int qy1 = py1;
+
+        int qx2 = qx1;
+        int qy2 = qy1+200;
+
+        int qx3 = qx1+200;
+        int qy3 = qy1;
+
+        int qx4 = qx1+200;
+        int qy4 = qy1+200+50;
+
+        builder = solo_.createIllustrationBuilder();
+        builder.addPoint(qx1, qy1, MotionEvent.TOOL_TYPE_FINGER);
+        builder.addPoint(qx2, qy2, MotionEvent.TOOL_TYPE_FINGER);
+        builder.addPoint(qx3, qy3, MotionEvent.TOOL_TYPE_FINGER);
+        builder.addPoint(qx4, qy4, MotionEvent.TOOL_TYPE_FINGER);
+
+        illustration = builder.build();
+        solo_.illustrate(illustration);
+        //cannot capture gesture yellow line
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_gesture");
+        solo_.sleep(UI_SLEEP);
+        //TODO: add assert that pausing 
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_gesture");
+    }
 }
