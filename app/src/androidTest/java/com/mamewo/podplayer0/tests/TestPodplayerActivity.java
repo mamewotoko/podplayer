@@ -412,7 +412,7 @@ public class TestPodplayerActivity
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "preference2");
     }
 
-    public void testPlayGesture() throws Exception {
+    public void testPlayPauseGesture() throws Exception {
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
         int px1 = 100;
         int py1 = 300;
