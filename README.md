@@ -132,10 +132,10 @@ TODO
     * remember listened timestamp
 * add score thershold preference dialog 
 * spoon test
-   * test multiple test classes once / merge test result
+  * test multiple test classes once / merge test result
     * current situation: freeze?
     * set "package" instrumentationArgs to start all test classes
-   * add test of content description (manual test)
+  * add test of content description (manual test)
 * add preference to display pubdate as "X days before"
 * add activity for tv?
 * save latest few item to savedInstanceState

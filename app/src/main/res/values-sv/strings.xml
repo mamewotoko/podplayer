@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- swedish resource -->
 <resources>
-    <string name="app_name">Podplayer</string>
+    <string name="app_name">podplayer</string>
     <string name="pref_podcastlist_title">Podcast list</string>
     <string name="pref_pause_on_unplugged_title">Paus på unplugged</string>
     <string name="pref_play_after_unplugged">Fortsätt spela efter unplugged</string>
