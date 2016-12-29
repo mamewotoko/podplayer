@@ -24,6 +24,8 @@ import android.preference.PreferenceManager;
 import android.content.SharedPreferences;
 import android.content.Context;
 
+import android.support.v7.widget.ActionMenuView;
+
 public class TestPodplayerExpActivity
     extends ActivityInstrumentationTestCase2<PodplayerExpActivity>
 {
@@ -37,6 +39,24 @@ public class TestPodplayerExpActivity
     final static
     private String TAG = "podtest";
 
+    private void clickOverflowMenu(int menuStringId){
+        ActionMenuView menuview = solo_.getView(ActionMenuView.class, 0);
+        int numChild = menuview.getChildCount();
+        View overflowMenuIcon = menuview.getChildAt(numChild-1);
+        solo_.clickOnView(overflowMenuIcon);
+        solo_.sleep(500);
+        solo_.clickOnText(solo_.getString(menuStringId));
+    }
+
+    private void startPreferenceActivity() {
+        boolean mainActWait = solo_.waitForActivity("MalarmActivity");
+        Log.d(TAG, "waitMainActivity: " + mainActWait);
+        
+        clickOverflowMenu(R.string.preference_menu);
+        
+        solo_.waitForActivity("PodplayerPreference");
+    }
+    
     public void selectPreference(String targetTitle) {
         solo_.sleep(UI_SLEEP);
         Log.d(TAG, "current activity: "+solo_.getCurrentActivity().getTitle().toString());
@@ -94,7 +114,8 @@ public class TestPodplayerExpActivity
 
     public void testFinish() {
         solo_.sleep(500);
-        solo_.clickOnMenuItem(res_.getString(R.string.exit_menu));
+        //solo_.clickOnMenuItem(res_.getString(R.string.exit_menu));
+        clickOverflowMenu(R.string.exit_menu);
         solo_.sleep(500);
     }
 
@@ -143,7 +164,8 @@ public class TestPodplayerExpActivity
     public void testClearCache() throws Exception {
         Assert.assertTrue(solo_.waitForActivity("PodplayerExpActivity", INIT_SLEEP));
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "clear_cache");
-        solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+        //solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
+        startPreferenceActivity();
         solo_.sleep(UI_SLEEP);
         solo_.scrollDown();
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "clear_cache");

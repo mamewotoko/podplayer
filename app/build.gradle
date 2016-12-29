@@ -76,7 +76,7 @@ spoon {
   debug = true
   
   // className = 'com.mamewo.podplayer0.tests.TestPodplayerActivity'
-  // methodName = 'testPlayGesture'
+  methodName = 'testAddPodcast'
   //from 1.5.0?
   //codeCoverage = true
 }
