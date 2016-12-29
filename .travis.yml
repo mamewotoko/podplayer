@@ -9,7 +9,6 @@ android:
         - build-tools-24.0.3
         - android-24
         - android-23
-        - extra-android-support
         - extra-android-m2repository
     licences:
         - '.+'

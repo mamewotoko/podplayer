@@ -131,7 +131,6 @@ public class PodplayerActivity
             playButton_.setImageResource(R.drawable.ic_play_arrow_white_24dp);
         }
     }
-    
 
     @Override
     public void onClick(View v) {

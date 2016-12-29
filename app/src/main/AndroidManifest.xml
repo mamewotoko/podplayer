@@ -44,7 +44,6 @@
           </intent-filter>
       </activity>
     <activity android:name="com.mamewo.podplayer0.PodplayerPreference"
-
               />
     <activity android:name="com.mamewo.podplayer0.PodcastListPreference"
               android:windowSoftInputMode="adjustResize"
