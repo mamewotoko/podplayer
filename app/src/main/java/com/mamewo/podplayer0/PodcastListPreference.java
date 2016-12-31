@@ -555,7 +555,7 @@ public class PodcastListPreference
             }
             PodcastInfo info = getItem(position);
             String iconURL = info.getIconURL();
-            Log.d(TAG, "getView: icon: " + iconURL);
+            //Log.d(TAG, "getView: icon: " + iconURL);
             ImageView icon = (ImageView)view.findViewById(R.id.podcast_icon);
             if(null != iconURL){
                 Glide.with(getApplicationContext())

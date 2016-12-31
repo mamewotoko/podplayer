@@ -8,7 +8,7 @@ node('podplayer_pipeline') {
 
   stage('Build') {
     env.PATH="${env.JAVA_HOME}/bin:${env.ANDROID_HOME}/tools:${env.ANDROID_HOME}/platform-tools:${env.PATH}"
-    sh './gradlew assembleDebug lint'
+    sh './gradlew clean assembleDebug lint'
   }
 
   stage('Lint report'){
@@ -32,9 +32,6 @@ node('podplayer_pipeline') {
   }
 
   stage('Report'){
-    // null pointer exception...
-//    sh 'pwd'
-//    sh 'ls -l'
     echo 'archiveArtifacts'
     archiveArtifacts 'app/build/**/*.apk'
 
@@ -48,19 +45,6 @@ node('podplayer_pipeline') {
                          reportFiles: 'merged.html',
                          reportName: 'Spoon result'
                         ])
-
-    //echo 'publishHTML'
-    // publishSpoonResult('android-10', '480x800', 'en', 'us')
-
-    // publishSpoonResult('android-19', '480x800', 'en', 'us')
-    // publishSpoonResult('android-19', '1280x800', 'en', 'us')
-
-    // publishSpoonResult('android-19', '480x800', 'ja', 'jp')
-    // publishSpoonResult('android-19', '1280x800', 'ja', 'jp')
-    
-    // publishSpoonResult('android-19', '480x800', 'sv', 'se')
-    // publishSpoonResult('android-19', '1280x800', 'sv', 'se')
-    //'spoon_emu_android-10_480x800_en_us',
   }
 }
 
