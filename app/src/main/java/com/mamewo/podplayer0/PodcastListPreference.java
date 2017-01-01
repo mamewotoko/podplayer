@@ -43,6 +43,7 @@ import android.os.Bundle;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -96,7 +97,7 @@ public class PodcastListPreference
     static final
     private int CHECKING_DIALOG = 0;
     static final
-    private int DIALOG_REMOVE_PODCAST = 1;
+    private int EXPORT_DIALOG = 1;
     final static
     private String PODCAST_SITE_URL = "http://mamewo.ddo.jp/podcast/podcast.html";
     private Dialog dialog_;
@@ -183,6 +184,20 @@ public class PodcastListPreference
             Log.d(TAG, "failed to save podcast list setting");
         }
     }
+
+    //tab separated text
+    private StringBuffer exportSetting(){
+        StringBuffer sb = new StringBuffer();
+        for(int i = 0; i < adapter_.getCount(); i++){
+            PodcastInfo pinfo = adapter_.getItem(i);
+            String title = pinfo.getTitle();
+            String url = pinfo.getURL().toString();
+            sb.append(title);
+            sb.append("\t");
+            sb.append(url);
+        }
+        return sb;
+    }
     
     @Override
     public void onStop() {
@@ -213,6 +228,9 @@ public class PodcastListPreference
                 new Intent(Intent.ACTION_VIEW, Uri.parse(PODCAST_SITE_URL));
             startActivity(new Intent(i));
             handled = true;
+            break;
+        case R.id.export_podcast_menu:
+            showDialog(EXPORT_DIALOG);
             break;
         default:
             break;
@@ -296,6 +314,19 @@ public class PodcastListPreference
             progressDialog.setTitle(R.string.dialog_checking_podcast_url);
             progressDialog.setMessage(getString(R.string.dialog_checking_podcast_url_body));
             dialog = progressDialog;
+            break;
+        case EXPORT_DIALOG:
+            StringBuffer sb = exportSetting();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.exported_podcasts)
+                .setPositiveButton("OK", null);
+            View view = LayoutInflater
+                .from(this)
+                .inflate(R.layout.selectable_textview, null, false);
+            TextView text = (TextView)view.findViewById(R.id.message);
+            text.setText(sb.toString());
+            builder.setView(view);
+            dialog = builder.create();
             break;
         default:
             break;

@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/export_podcast_menu"
+        android:icon="@drawable/ic_import_export_white_24dp"
+        android:title="@string/export_podcast_menu"
+        app:showAsAction="ifRoom"
+        >
+    </item>
     <item
         android:id="@+id/podcast_page_menu"
         android:icon="@android:drawable/ic_menu_slideshow"
