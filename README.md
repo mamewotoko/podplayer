@@ -73,7 +73,6 @@ TODO
 * change color of category text in preference screen   
 * add option to exit by pressing back button
   * display confirm dialog: exit or playing background, live as servcie and display notification
-* avoid infinite try playing loop when network is not available
 * cache
   * podcast xml
   * episode item
@@ -100,6 +99,9 @@ TODO
   * design layout with AndroidStudio
   * use com.android.support:design (material design)
   * notification layout
+  * use RecyclerView
+    * animation
+    * efficient memory use
   * use CardView?
     https://developer.android.com/training/material/lists-cards.html
   * material icon: change loading icon of pulltorefresh  

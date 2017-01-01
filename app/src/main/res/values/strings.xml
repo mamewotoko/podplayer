@@ -15,7 +15,7 @@
     <string name="pref_load_podcasts_when_app_starts">Load podcasts when app starts</string>
     <string name="pref_read_timeout">Read timeout</string>
     <string name="pref_appearance_category">Appearance</string>
-    <string name="pref_use_expandable_list_ui">Use expandable list UI</string>
+    <string name="pref_view_mode">View mode</string>
     <string name="pref_pull_to_update_ui">pull to update UI</string>
     <string name="pref_expandable_list_ui">expandable list UI</string>
 

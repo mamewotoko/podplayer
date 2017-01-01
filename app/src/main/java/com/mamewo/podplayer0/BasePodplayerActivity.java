@@ -228,7 +228,7 @@ abstract public class BasePodplayerActivity
     protected void syncPreference(SharedPreferences pref, String key){
         Log.d(TAG, "syncPreference: " + key);
         boolean updateAll = "ALL".equals(key);
-        if ("use_expandable_ui".equals(key)) {
+        if ("view_mode".equals(key)) {
             uiSettingChanged_ = true;
         }
         Resources res = getResources();

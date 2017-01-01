@@ -1,5 +1,7 @@
 package com.mamewo.podplayer0;
 
+import android.app.Activity;
+
 public class Const {
     static final
     public String TAG = "podplayer";
@@ -10,6 +12,14 @@ public class Const {
     public int APPEARANCE_ORDER = 0;
     static final
     public int REVERSE_APPEARANCE_ORDER = 1;
+
+    static final
+    public int VIEW_PULLTOREFRESH = 0;
+    static final
+    public int VIEW_EXP = 1;
+    static final
+    public int VIEW_CARD = 2;
+
     // static final
     // public int PUBDATE_ORDER = 2;
     // static final

@@ -36,7 +36,9 @@ public class PodplayerPreferenceFragment
     private Preference license_;
     private Preference mailToAuthor_;
     private Preference gestureTable_;
+    private ListPreference viewModePref_;
     private ListPreference readTimeout_;
+    private Preference expandInDefault_;
     //private Preference scoreThreshold_;
     private Preference clearCache_;
     private Preference episodeLimit_;
@@ -61,6 +63,7 @@ public class PodplayerPreferenceFragment
         podcastList_.setOnPreferenceClickListener(this);
         readTimeout_ = (ListPreference)findPreference("read_timeout");
         //scoreThreshold_ = findPreference("gesture_score_threshold");
+        viewModePref_ = (ListPreference)findPreference("view_mode");
         episodeLimit_ = findPreference("episode_limit");
         episodeOrder_ = (ListPreference)findPreference("episode_order");
         gestureTable_ = findPreference("gesture_list");
@@ -70,7 +73,9 @@ public class PodplayerPreferenceFragment
         license_.setOnPreferenceClickListener(this);
         mailToAuthor_ = findPreference("mail_to_author");
         mailToAuthor_.setOnPreferenceClickListener(this);
-        
+
+        expandInDefault_ = findPreference("expand_in_default");
+
         //CheckBoxPreference cachePreference = (CheckBoxPreference)findPreference("use_response_cache");
         clearCache_ = findPreference("clear_response_cache");
         clearCache_.setOnPreferenceClickListener(this);
@@ -136,6 +141,11 @@ public class PodplayerPreferenceFragment
         if(updateAll || "episode_order".equals(key)){
             int order = Integer.valueOf(pref.getString("episode_order", "0"));
             episodeOrder_.setSummary(res.getStringArray(R.array.episode_item_order_entries)[order]);
+        }
+        if(updateAll || "view_mode".equals(key)){
+            int viewMode = Integer.valueOf(pref.getString("view_mode", "0"));
+            viewModePref_.setSummary(res.getStringArray(R.array.view_mode_title)[viewMode]);
+            expandInDefault_.setEnabled(viewMode == VIEW_EXP);
         }
     }
 

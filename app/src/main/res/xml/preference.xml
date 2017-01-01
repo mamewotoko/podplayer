@@ -44,16 +44,24 @@
         />
   </PreferenceCategory> 
   <PreferenceCategory android:title="@string/pref_appearance_category" >
+<!--
     <CheckBoxPreference
         android:key="use_expandable_ui"
         android:defaultValue="@bool/default_use_expandable_ui"
         android:summaryOff="@string/pref_pull_to_update_ui"
         android:summaryOn="@string/pref_expandable_list_ui"
         android:title="@string/pref_use_expandable_list_ui" />
+-->
+    <ListPreference
+	android:key="view_mode"
+	android:entries="@array/view_mode_title"
+	android:entryValues="@array/view_mode_values"
+	android:defaultValue="@string/default_view_mode"
+	android:title="@string/pref_view_mode"
+	/>
     <CheckBoxPreference
         android:key="expand_in_default"
         android:defaultValue="@bool/default_expand_in_default"
-        android:dependency="use_expandable_ui"
         android:summaryOff="@string/pref_collapse"
         android:summaryOn="@string/pref_expand"
         android:title="@string/pref_expand_list_in_default" />

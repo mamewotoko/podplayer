@@ -13,6 +13,7 @@ import com.jraska.falcon.FalconSpoon;
 
 import com.mamewo.podplayer0.PodplayerExpActivity;
 import com.mamewo.podplayer0.R;
+import com.mamewo.podplayer0.Const;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
@@ -75,7 +76,8 @@ public class TestPodplayerExpActivity
         config.shouldScroll = false;
         Context context = getInstrumentation().getTargetContext();
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putBoolean("use_expandable_ui", true);
+        //editor.putBoolean("use_expandable_ui", true);
+        editor.putInteger("view_mode", Const.VIEW_EXP);
         editor.commit();
         //editor.
         res_ = getInstrumentation().getTargetContext().getResources();

@@ -9,6 +9,8 @@ import com.jraska.falcon.FalconSpoon;
 
 import com.mamewo.podplayer0.PodplayerActivity;
 import com.mamewo.podplayer0.R;
+import com.mamewo.podplayer0.Const;
+
 import android.view.MotionEvent;
 
 import junit.framework.Assert;
@@ -71,8 +73,7 @@ public class TestPodplayerActivity
         Config config = new Config();
         Context context = getInstrumentation().getTargetContext();
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        //editor.putBoolean("use_expandable_ui", false);
-        editor.putBoolean("use_expandable_ui", true);
+        editor.putInt("view_mode", Const.VIEW_PULLTOREFRESH);
         editor.commit();
 
         solo_ = new Solo(getInstrumentation(), config, getActivity());

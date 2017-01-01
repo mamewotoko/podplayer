@@ -68,19 +68,12 @@ public class PodplayerActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.main);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayShowTitleEnabled(false);
 
-        //debug: check
-        // View v = findViewById(R.id.podcast_selector);
-        // Log.d(TAG, "spinner class: "+v.getClass().getName());
-        //end debug
-        
 		playButton_ = (ImageButton) findViewById(R.id.play_button);
         playButton_.setOnClickListener(this);
         playButton_.setOnLongClickListener(this);
@@ -92,6 +85,7 @@ public class PodplayerActivity
         episodeListView_.setOnItemLongClickListener(this);
         episodeListView_.setOnRefreshListener(this);
         episodeListView_.setOnCancelListener(this);
+        //initial dummy
         currentList_ = state_.latestList_;
         adapter_ = new EpisodeAdapter();
         episodeListView_.setAdapter(adapter_);
@@ -313,7 +307,7 @@ public class PodplayerActivity
             else {
                 Glide.clear(holder.episodeIcon_);
                 holder.episodeIcon_.setContentDescription(getString(R.string.icon_desc_episode_none));
-                holder.episodeIcon_.setVisibility(View.GONE);                
+                holder.episodeIcon_.setVisibility(View.GONE);
             }
             holder.displayedIconURL_ = iconURL;
             return view;
@@ -339,7 +333,8 @@ public class PodplayerActivity
             //Log.d(TAG, "onProgressUpdate");
             filterSelectedPodcast();
             //adapter_.notifyDataSetChanged();
-            //if status is changed || first_item
+
+            //save podcast info, if last podcast info is changed or first load
             PodcastInfo lastValue = values[values.length-1].getPodcastInfo();
             if(prevPodInfo_ == null || prevPodInfo_ != lastValue){
                 savePodcastList();

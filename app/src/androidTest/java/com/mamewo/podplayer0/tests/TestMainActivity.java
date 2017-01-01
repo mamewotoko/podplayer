@@ -43,7 +43,8 @@ public class TestMainActivity
         }
         super.tearDown();
     }
-    
+
+    //TODO: modify
     public void testStart() {
         Activity activity = getActivity();
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity);
