@@ -44,7 +44,6 @@ import android.widget.ImageButton;
 public class PodplayerActivity
     extends BasePodplayerActivity
     implements OnClickListener,
-    OnLongClickListener,
     OnItemClickListener,
     OnItemLongClickListener,
     OnItemSelectedListener,
@@ -76,7 +75,6 @@ public class PodplayerActivity
 
 		playButton_ = (ImageButton) findViewById(R.id.play_button);
         playButton_.setOnClickListener(this);
-        playButton_.setOnLongClickListener(this);
         playButton_.setEnabled(false);
         selector_ = (Spinner) findViewById(R.id.podcast_selector);
         selector_.setOnItemSelectedListener(this);
@@ -147,21 +145,6 @@ public class PodplayerActivity
     }
 
     @Override
-    public boolean onLongClick(View view) {
-        if (view == playButton_) {
-            //TODO: add preference to enable this 
-            if (player_.isPlaying()) {
-                player_.stopMusic();
-            }
-            else {
-                player_.playMusic();
-            }
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> list, View view, int pos, long id) {
         //refresh header is added....
         EpisodeInfo info = (EpisodeInfo)adapter_.getItem(pos-1);
@@ -216,13 +199,11 @@ public class PodplayerActivity
 
     @Override
     public void onStartLoadingMusic(EpisodeInfo info) {
-        setProgressBarIndeterminateVisibility(true);
         updateUI();
     }
 
     @Override
     public void onStopMusic(int mode) {
-        setProgressBarIndeterminateVisibility(false);
         updateUI();
     }
     // end of callback methods
@@ -252,6 +233,7 @@ public class PodplayerActivity
         public View getView(int position, View convertView, ViewGroup parent) {
             View view;
             EpisodeHolder holder;
+            
             if (null == convertView) {
                 view = View.inflate(PodplayerActivity.this, R.layout.episode_item, null);
                 holder = new EpisodeHolder();

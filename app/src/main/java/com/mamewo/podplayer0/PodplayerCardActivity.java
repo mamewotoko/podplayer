@@ -39,7 +39,8 @@ import android.support.v7.app.ActionBar;
 public class PodplayerCardActivity
     extends BasePodplayerActivity
     implements OnClickListener,
-               OnItemSelectedListener
+               OnItemSelectedListener,
+               PlayerService.PlayerStateListener
 {
     static
     private int EPISODE_BUF_SIZE = 10;
@@ -63,7 +64,8 @@ public class PodplayerCardActivity
 
 		playButton_ = (ImageButton) findViewById(R.id.play_button);
         playButton_.setOnClickListener(this);
-        
+        playButton_.setEnabled(false);
+
         recyclerView_ = (RecyclerView)findViewById(R.id.recycler_view);
         layoutManager_ = new LinearLayoutManager(this);
         recyclerView_.setLayoutManager(layoutManager_);
@@ -83,6 +85,8 @@ public class PodplayerCardActivity
     @Override
     public void onServiceConnected(ComponentName name, IBinder binder) {
         player_ = ((PlayerService.LocalBinder)binder).getService();
+        player_.setOnStartMusicListener(this);
+        playButton_.setEnabled(true);
     }
 
     @Override
@@ -192,10 +196,9 @@ public class PodplayerCardActivity
                     player_.playMusic();
                 }
             }
-            updatePlayButton();
         }
     }
-
+    
     private void updatePlayButton(){
         if(player_.isPlaying()){
             playButton_.setContentDescription(getResources().getString(R.string.action_pause));
@@ -220,6 +223,81 @@ public class PodplayerCardActivity
         //TODO
     }
 
+    private boolean playByInfo(EpisodeInfo info) {
+        //umm...
+        int playPos;
+        for(playPos = 0; playPos < state_.latestList_.size(); playPos++) {
+            if(state_.latestList_.get(playPos) == info) {
+                break;
+            }
+        }
+        if (playPos < 0){
+            Log.i(TAG, "playByInfo: info is not found: " + info.getURL());
+            return false;
+        }
+
+        return player_.playNth(playPos);
+    }
+
+    public void updateUI(){
+        Log.d(TAG, "updateUI");
+        updatePlayButton();
+        adapter_.notifyDataSetChanged();
+    }
+    
+    @Override
+    public void onStartMusic(EpisodeInfo info) {
+		//setProgressBarIndeterminateVisibility(false);
+		//currentPlayPosition_.setMax(player_.getDuration());
+		//int pos = player_.getCurrentPositionMsec();
+        //currentPlayPosition_.setProgress(pos);
+        //timer
+        Log.d(TAG, "onStartMusic");
+        updateUI();
+    }
+
+    @Override
+    public void onStartLoadingMusic(EpisodeInfo info) {
+        Log.d(TAG, "onStartLoadingMusic");
+        updateUI();
+    }
+
+    @Override
+    public void onStopMusic(int mode) {
+        Log.d(TAG, "onStopMusic");
+        updateUI();
+    }
+
+    public class ItemClickListener
+        implements View.OnClickListener
+    {
+        private EpisodeInfo info_;
+        
+        public ItemClickListener(EpisodeInfo info){
+            info_ = info;
+        }
+
+        @Override
+        public void onClick(View view){
+            Log.d(TAG, "onClick: "+view.toString());
+            EpisodeInfo info = info_;
+            EpisodeInfo current = player_.getCurrentPodInfo();
+            if(null != current && current.getURL().equals(info.getURL())) {
+                if(player_.isPlaying()) {
+                    player_.pauseMusic();
+                }
+                else {
+                    if(! player_.restartMusic()){
+                        playByInfo(info);
+                    }
+                }
+            }
+            else {
+                playByInfo(info);
+            }
+        }
+    }
+    
     private class EpisodeAdapter
         extends RecyclerView.Adapter<EpisodeHolder>
     {
@@ -237,9 +315,10 @@ public class PodplayerCardActivity
 
         @Override
         public void onBindViewHolder(EpisodeHolder holder, int position){
-            EpisodeInfo episode = currentList_.get(position);
+            final EpisodeInfo episode = currentList_.get(position);
             holder.titleView_.setText(episode.getTitle());
             holder.timeView_.setText(episode.getPubdateString());
+            holder.container_.setOnClickListener(new ItemClickListener(episode));
 
             EpisodeInfo current = player_.getCurrentPodInfo();
             if(current != null && current.getURL().equals(episode.getURL())) {
@@ -295,6 +374,7 @@ public class PodplayerCardActivity
         public TextView timeView_;
         public ImageView stateIcon_;
         public ImageView episodeIcon_;
+        public View container_;
         public String displayedIconURL_;
 
         public EpisodeHolder(View view){
@@ -303,6 +383,7 @@ public class PodplayerCardActivity
             timeView_ = (TextView)view.findViewById(R.id.episode_time);
             stateIcon_ =  (ImageView)view.findViewById(R.id.play_icon);
             episodeIcon_ = (ImageView)view.findViewById(R.id.episode_icon);
+            container_ = view;
             displayedIconURL_ = null;
         }
     }
@@ -310,8 +391,14 @@ public class PodplayerCardActivity
     private class GetPodcastTask
         extends BaseGetPodcastTask
     {
+        final
+        private int UPDATE_THRES = 10;
+        private int count_;
+        private int displayedCount_;
+        
         public GetPodcastTask(int limit) {
             super(PodplayerCardActivity.this, client_, limit, EPISODE_BUF_SIZE);
+            count_ = 0;
         }
         
         @Override
@@ -319,6 +406,12 @@ public class PodplayerCardActivity
             Log.d(TAG, "loading card:");
             for (int i = 0; i < values.length; i++) {
                 state_.mergeEpisode(values[i]);
+            }
+            count_ += values.length;
+            if(displayedCount_ - count_ > UPDATE_THRES){
+                updatePlaylist();
+                updateUI();
+                displayedCount_ = count_;
             }
         }
         
