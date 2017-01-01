@@ -57,6 +57,8 @@ TODO
 ----
 * add cool widget to play episode
 * podcast detail as activity
+  * channel/description or itunes:subtitle
+  * channel/copyright
 * add preset podcast
   * Luke's ENGLISH Podcast - Learn British English with Luke Thompson
     https://audioboom.com/channels/1919834.rss
@@ -100,10 +102,9 @@ TODO
   * use com.android.support:design (material design)
   * notification layout
   * use RecyclerView
+    * episodelist, podcast list editor
     * animation
-    * efficient memory use
-  * use CardView?
-    https://developer.android.com/training/material/lists-cards.html
+    * efficient memory use?
   * material icon: change loading icon of pulltorefresh  
 * support http auth for fetching podcast xml and episodes (#2)
   * cache auth info for each host?

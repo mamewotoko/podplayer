@@ -155,6 +155,9 @@ abstract public class BasePodplayerActivity
     // }
 
     public void updatePlaylist() {
+        if(null == player_){
+            return;
+        }
         //boolean reversed = currentOrder_ == REVERSE_APPEARANCE_ORDER;
         player_.setPlaylist(state_.list(currentOrder_));
     }
