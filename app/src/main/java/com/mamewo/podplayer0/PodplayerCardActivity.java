@@ -15,6 +15,9 @@ import android.view.ViewGroup;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ArrayAdapter;
@@ -95,6 +98,30 @@ public class PodplayerCardActivity
         player_ = null;
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.cardmenu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        boolean handled = super.onOptionsItemSelected(item);
+        if(handled){
+            return true;
+        }
+        switch(item.getItemId()){
+        case R.id.reload_menu:
+            loadPodcast();
+            handled = true;
+            break;
+        default:
+            break;
+        }
+        return handled;
+    }
+    
     private int podcastTitle2Index(String title){
         List<PodcastInfo> list = state_.podcastList_;
         for(int i = 0; i < list.size(); i++) {
@@ -403,20 +430,17 @@ public class PodplayerCardActivity
         
         @Override
         protected void onProgressUpdate(EpisodeInfo... values){
-            Log.d(TAG, "loading card:");
             for (int i = 0; i < values.length; i++) {
                 state_.mergeEpisode(values[i]);
             }
             count_ += values.length;
             if(displayedCount_ - count_ > UPDATE_THRES){
-                updatePlaylist();
-                updateUI();
+                filterSelectedPodcast();
                 displayedCount_ = count_;
             }
         }
         
         private void onFinished() {
-            Log.d(TAG, "onFinished");
             loadTask_ = null;
             //updateUI();
             updatePlaylist();

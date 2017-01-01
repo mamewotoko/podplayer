@@ -51,6 +51,7 @@
     <string name="msg_add_podcast_cancelled">cancelled</string>
 
     <string name="podcast_list_menu">Add podcast</string>
+    <string neme="reload_menu">Reload podcast</string>
     <string name="preference_menu">Preference</string>
     <string name="preference_title">Preference</string>
     <string name="exit_menu">Exit</string>
