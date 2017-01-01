@@ -92,9 +92,6 @@ public class PodplayerActivity
     }
 
     private void updateUI() {
-        if(null == player_) {
-            return;
-        }
         adapter_.notifyDataSetChanged();
         updatePlayButton();
     }
@@ -104,7 +101,6 @@ public class PodplayerActivity
             Log.i(TAG, "Already loading");
             return;
         }
-        setProgressBarIndeterminateVisibility(true);
         SharedPreferences pref=
                 PreferenceManager.getDefaultSharedPreferences(this);
         Resources res = getResources();

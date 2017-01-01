@@ -76,24 +76,38 @@ public class PodplayerCardActivity
         selector_ = (Spinner) findViewById(R.id.podcast_selector);
         selector_.setOnItemSelectedListener(this);
         
-        SharedPreferences pref=
-            PreferenceManager.getDefaultSharedPreferences(this);
-        syncPreference(pref, "ALL");
-
         currentList_ = state_.latestList_;
         adapter_ = new EpisodeAdapter();
         recyclerView_.setAdapter(adapter_);
     }
 
+    //called initialize time or rotate screen
     @Override
     public void onServiceConnected(ComponentName name, IBinder binder) {
         player_ = ((PlayerService.LocalBinder)binder).getService();
         player_.setOnStartMusicListener(this);
         playButton_.setEnabled(true);
+        SharedPreferences pref=
+            PreferenceManager.getDefaultSharedPreferences(this);
+        syncPreference(pref, "ALL");
+        
+        List<EpisodeInfo> playlist = player_.getCurrentPlaylist();
+        //player -playlist-> app
+        if (null != playlist) {
+            state_.latestList_ = playlist;
+            state_.loadedEpisode_ = new ArrayList<List<EpisodeInfo>>();
+            for(int i = 0; i < state_.podcastList_.size(); i++){
+                state_.loadedEpisode_.add(new ArrayList<EpisodeInfo>());
+            }
+            for(EpisodeInfo info: state_.latestList_){
+                state_.loadedEpisode_.get(info.index_).add(info);
+            }
+        }
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
+        Log.d(TAG, "onServiceDisconnected");
         player_.clearOnStartMusicListener();
         player_ = null;
     }
@@ -204,7 +218,7 @@ public class PodplayerCardActivity
             //update list by loaded items
             filterSelectedPodcast();
         }
-        //updateUI();
+        updateUI();
     }
 
     @Override
@@ -238,6 +252,10 @@ public class PodplayerCardActivity
     }
     
     public void loadPodcast(){
+        if (isLoading()) {
+            Log.i(TAG, "Already loading");
+            return;
+        }
         SharedPreferences pref=
                 PreferenceManager.getDefaultSharedPreferences(this);
         Resources res = getResources();
