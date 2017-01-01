@@ -48,6 +48,7 @@ public class PodplayerCardActivity
     private EpisodeAdapter adapter_;
     private Spinner selector_;
     private ImageButton playButton_;
+    //filtered list
     private List<EpisodeInfo> currentList_;
         
     @Override
@@ -66,8 +67,6 @@ public class PodplayerCardActivity
         recyclerView_ = (RecyclerView)findViewById(R.id.recycler_view);
         layoutManager_ = new LinearLayoutManager(this);
         recyclerView_.setLayoutManager(layoutManager_);
-        adapter_ = new EpisodeAdapter(this, state_.latestList_);
-        recyclerView_.setAdapter(adapter_);
 
         selector_ = (Spinner) findViewById(R.id.podcast_selector);
         selector_.setOnItemSelectedListener(this);
@@ -76,8 +75,9 @@ public class PodplayerCardActivity
             PreferenceManager.getDefaultSharedPreferences(this);
         syncPreference(pref, "ALL");
 
-        currentList_ = new ArrayList<EpisodeInfo>();
-        Log.d(TAG, "podcast: " + state_.podcastList_.size());
+        currentList_ = state_.latestList_;
+        adapter_ = new EpisodeAdapter();
+        recyclerView_.setAdapter(adapter_);
     }
 
     @Override
@@ -223,12 +223,7 @@ public class PodplayerCardActivity
     private class EpisodeAdapter
         extends RecyclerView.Adapter<EpisodeHolder>
     {
-        private List<EpisodeInfo> episodeList_;
-        private Context context_;
-
-        public EpisodeAdapter(Context context, List<EpisodeInfo> episodeList){
-            context_ = context;
-            episodeList_ = episodeList;
+        public EpisodeAdapter(){
         }
         
         @Override
@@ -242,21 +237,20 @@ public class PodplayerCardActivity
 
         @Override
         public void onBindViewHolder(EpisodeHolder holder, int position){
-            EpisodeInfo episode = episodeList_.get(position);
+            EpisodeInfo episode = currentList_.get(position);
             holder.titleView_.setText(episode.getTitle());
             holder.timeView_.setText(episode.getPubdateString());
 
-            Log.d(TAG, "bind: "+episode.getTitle());
             EpisodeInfo current = player_.getCurrentPodInfo();
             if(current != null && current.getURL().equals(episode.getURL())) {
                 //TODO: cache!
                 if(player_.isPlaying()) {
                     holder.stateIcon_.setImageResource(R.drawable.ic_play_arrow_white_24dp);
-                    holder.stateIcon_.setContentDescription(context_.getString(R.string.icon_desc_playing));
+                    holder.stateIcon_.setContentDescription(getString(R.string.icon_desc_playing));
                 }
                 else {
                     holder.stateIcon_.setImageResource(R.drawable.ic_pause_white_24dp);
-                    holder.stateIcon_.setContentDescription(context_.getString(R.string.icon_desc_pausing));
+                    holder.stateIcon_.setContentDescription(getString(R.string.icon_desc_pausing));
                 }
                 holder.stateIcon_.setVisibility(View.VISIBLE);
             }
@@ -272,7 +266,7 @@ public class PodplayerCardActivity
                    || null == displayedIconURL
                    || !displayedIconURL.equals(iconURL)){
                     Glide
-                        .with(context_)
+                        .with(PodplayerCardActivity.this)
                         .load(iconURL)
                         .into(holder.episodeIcon_);
                     holder.episodeIcon_.setContentDescription(episode.getTitle());
@@ -281,7 +275,7 @@ public class PodplayerCardActivity
             }
             else {
                 Glide.clear(holder.episodeIcon_);
-                holder.episodeIcon_.setContentDescription(context_.getString(R.string.icon_desc_episode_none));
+                holder.episodeIcon_.setContentDescription(getString(R.string.icon_desc_episode_none));
                 holder.episodeIcon_.setVisibility(View.GONE);
             }
             holder.displayedIconURL_ = iconURL;
@@ -289,7 +283,7 @@ public class PodplayerCardActivity
 
         @Override
         public int getItemCount(){
-            return episodeList_.size();
+            return currentList_.size();
         }
     }
 
