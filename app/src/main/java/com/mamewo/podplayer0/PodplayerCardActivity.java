@@ -434,7 +434,7 @@ public class PodplayerCardActivity
                 state_.mergeEpisode(values[i]);
             }
             count_ += values.length;
-            if(displayedCount_ - count_ > UPDATE_THRES){
+            if(count_ - displayedCount_ > UPDATE_THRES){
                 filterSelectedPodcast();
                 displayedCount_ = count_;
             }

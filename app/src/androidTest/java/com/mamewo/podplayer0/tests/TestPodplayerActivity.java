@@ -73,7 +73,7 @@ public class TestPodplayerActivity
         Config config = new Config();
         Context context = getInstrumentation().getTargetContext();
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putInt("view_mode", Const.VIEW_PULLTOREFRESH);
+        editor.putString("view_mode", String.valueOf(Const.VIEW_PULLTOREFRESH));
         editor.commit();
 
         solo_ = new Solo(getInstrumentation(), config, getActivity());

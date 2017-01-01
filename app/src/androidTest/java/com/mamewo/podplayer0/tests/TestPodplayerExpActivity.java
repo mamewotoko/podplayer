@@ -77,7 +77,7 @@ public class TestPodplayerExpActivity
         Context context = getInstrumentation().getTargetContext();
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         //editor.putBoolean("use_expandable_ui", true);
-        editor.putInteger("view_mode", Const.VIEW_EXP);
+        editor.putString("view_mode", String.valueOf(Const.VIEW_EXP));
         editor.commit();
         //editor.
         res_ = getInstrumentation().getTargetContext().getResources();
