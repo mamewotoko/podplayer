@@ -14,7 +14,7 @@ Author: Sam Judd
 * ZXing
 https://github.com/zxing/zxing
 
-* Meterialc icons
+* Meterial icons
 https://design.google.com/icons/
 Google
 
