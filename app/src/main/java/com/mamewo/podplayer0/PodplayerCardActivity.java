@@ -6,9 +6,14 @@ import java.util.ArrayList;
 import android.util.Log;
 import android.os.Bundle;
 import android.os.IBinder;
+//import android.os.Vibrator;
+
 import android.content.ComponentName;
+import android.content.Intent;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.DialogInterface;
+
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.ViewGroup;
@@ -29,6 +34,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.app.AlertDialog;
+import android.app.Dialog;
 
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
@@ -47,6 +54,10 @@ public class PodplayerCardActivity
 {
     static
     private int EPISODE_BUF_SIZE = 10;
+    static final
+    public int SHARE_EPISODE_DIALOG = 100;
+    static
+    public String[] LOCAL_SHARE_OPTIONS = { "Twitter", "Mail" };
     private RecyclerView recyclerView_;
     private LinearLayoutManager layoutManager_;
     private EpisodeAdapter adapter_;
@@ -312,7 +323,7 @@ public class PodplayerCardActivity
         Log.d(TAG, "onStopMusic");
         updateUI();
     }
-
+    
     public class ItemClickListener
         implements View.OnClickListener
     {
@@ -342,6 +353,38 @@ public class PodplayerCardActivity
             }
         }
     }
+
+   
+    public class ItemLongClickListener
+        implements View.OnLongClickListener
+    {
+        private EpisodeInfo info_;
+        
+        public ItemLongClickListener(EpisodeInfo info){
+            info_ = info;
+        }
+
+        // private void shortVibrate() {
+        //     Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        //     if (vibrator != null) {
+        //         vibrator.vibrate(100);
+        //     }
+        // }
+
+        @Override
+        public boolean onLongClick(View v){
+            //share
+            //short vib
+            // shortVibrate();
+            Bundle b = new Bundle();
+            b.putCharSequence("episode_title", info_.getTitle());
+            b.putCharSequence("episode_url", info_.getURL().toString());
+            b.putCharSequence("podcast_title", info_.getPodcastInfo().getTitle());
+            b.putCharSequence("podcast_url", info_.getPodcastInfo().getURL().toString());
+            showDialog(SHARE_EPISODE_DIALOG, b);
+            return true;
+        }
+    }
     
     private class EpisodeAdapter
         extends RecyclerView.Adapter<EpisodeHolder>
@@ -364,6 +407,7 @@ public class PodplayerCardActivity
             holder.titleView_.setText(episode.getTitle());
             holder.timeView_.setText(episode.getPubdateString());
             holder.container_.setOnClickListener(new ItemClickListener(episode));
+            holder.container_.setOnLongClickListener(new ItemLongClickListener(episode));
 
             EpisodeInfo current = player_.getCurrentPodInfo();
             if(current != null && current.getURL().equals(episode.getURL())) {
@@ -474,5 +518,65 @@ public class PodplayerCardActivity
         protected void onCancelled() {
             onFinished();
         }
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id, Bundle bundle) {
+        final String title = (String)bundle.getCharSequence("episode_title");
+        final String url = (String)bundle.getCharSequence("episode_url");
+        final String podcastTitle = (String)bundle.getCharSequence("podcast_title");
+        final String podcastURL = (String)bundle.getCharSequence("podcast_url");
+        Dialog dialog;
+        switch(id){
+        case SHARE_EPISODE_DIALOG:
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle(R.string.share_epiode)
+                .setItems(LOCAL_SHARE_OPTIONS, new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialog, int which){
+                            if("Twitter".equals(LOCAL_SHARE_OPTIONS[which])){
+                                //
+                                Intent i = new Intent();
+                                i.setAction(Intent.ACTION_SEND);
+                                i.setType("text/plain");
+                                i.setPackage("com.twitter.android");
+                                StringBuffer sb = new StringBuffer();
+                                sb.append(title);
+                                sb.append(" #podplayer ");
+                                sb.append(podcastURL);
+                                startActivity(i);
+                                
+                                i.putExtra(Intent.EXTRA_TEXT, sb.toString());
+                                startActivity(i);
+                            }
+                            else if("Mail".equals(LOCAL_SHARE_OPTIONS[which])){
+                                Intent i = new Intent();
+                                i.setAction(Intent.ACTION_SEND);
+                                i.setType("message/rfc822");
+                                //TODO: translate
+                                StringBuffer sb = new StringBuffer();
+                                sb.append(title);
+                                sb.append("\n");
+                                sb.append(podcastTitle);
+                                sb.append("\n");
+                                sb.append(url);
+                                sb.append("\n-----\npodplayer (Android app): https://play.google.com/store/apps/details?id=com.mamewo.podplayer0");
+                                i.putExtra(Intent.EXTRA_TEXT, sb.toString());
+                                startActivity(i);
+                            }
+                        }                        
+                    })
+                .setNegativeButton("Cancel", null); //TODO: put to strings
+            dialog = builder.create();
+            break;
+        default:
+            dialog = null;
+            break;
+        }
+        return dialog;
+    }
+
+    @Override
+    protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
     }
 }

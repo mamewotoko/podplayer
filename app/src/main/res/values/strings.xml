@@ -66,6 +66,7 @@
     <string name="exported_podcasts">Exported podcasts</string>
     <string name="share_podcast">Share podcast</string>
     <string name="podcast_share">Share podcast</string>
+    <string name="share_epiode">Share episode</string>
     <string name="clear_response_cache_title">Clear HTTP response cache</string>
     <string name="hint_podcast_url">URL of podcast XML</string>
     <string name="pref_episode_limit">Limit of episodes for each podcast</string>

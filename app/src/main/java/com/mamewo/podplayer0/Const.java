@@ -20,6 +20,10 @@ public class Const {
     static final
     public int VIEW_CARD = 2;
 
+    //move to array.xml
+    static final
+    public String[] SHARE_OPTIONS = { "Twitter", "Mail", "QRCode" };
+
     // static final
     // public int PUBDATE_ORDER = 2;
     // static final

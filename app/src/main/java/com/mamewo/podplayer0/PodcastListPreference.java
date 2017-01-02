@@ -95,13 +95,10 @@ public class PodcastListPreference
     implements OnClickListener,
     OnCancelListener
 {
-    private Button addButton_;
-    private EditText urlEdit_;
-    private CheckTask task_;
-    private PodcastInfoAdapter adapter_;
-    private ListView podcastListView_;
-    private Bundle bundle_;
-    private boolean isChanged_ = false;
+    static final
+    private int WHITE = 0xFFFFFFFF;
+    static final
+    private int BLACK = 0xFF000000;
     static final
     private String CONFIG_FILENAME = "podcast.json";
     static final
@@ -112,20 +109,22 @@ public class PodcastListPreference
     private int SHARE_PODCAST_DIALOG = 2;
     static final
     private int QRCODE_DIALOG = 3;
-    static private
-    final String[] options = { "Twitter", "Mail", "QRCode" };
     static final
     private int SCAN_QRCODE_REQUEST_CODE = 3232;
         
     final static
     private String PODCAST_SITE_URL = "http://mamewo.ddo.jp/podcast/podcast.html";
-    private Dialog dialog_;
     private PodcastInfo selectedPodcastInfo_;
     private OkHttpClient client_;
     private Map<String, Option> optionMap_;
-
-    private static final int WHITE = 0xFFFFFFFF;
-    private static final int BLACK = 0xFF000000;
+    private Dialog dialog_;
+    private boolean isChanged_ = false;
+    private Button addButton_;
+    private EditText urlEdit_;
+    private CheckTask task_;
+    private PodcastInfoAdapter adapter_;
+    private ListView podcastListView_;
+    private int dialogID_;
     
     private class Option {
         public boolean expand_;
@@ -143,12 +142,27 @@ public class PodcastListPreference
         addButton_ = (Button) findViewById(R.id.add_podcast_button);
         addButton_.setOnClickListener(this);
         urlEdit_ = (EditText) findViewById(R.id.url_edit);
-        dialog_ = null;
         optionMap_ = new HashMap<String, Option>();
         podcastListView_ = (ListView) findViewById(R.id.podlist);
-        bundle_ = null;
         client_ = new OkHttpClient();
-       
+        dialogID_ = -1;
+
+        List<PodcastInfo> list = loadSetting(this);
+        adapter_ = new PodcastInfoAdapter(this, list);
+        podcastListView_.setAdapter(adapter_);
+
+        if(null != savedInstanceState){
+            String url = (String)savedInstanceState.getCharSequence("selected_url");
+            if(null != url){
+                for(PodcastInfo info: list){
+                    if(url.equals(info.getURL().toString())){
+                        selectedPodcastInfo_ = info;
+                        break;
+                    }
+                }
+            }
+        }
+        
         //show back button ono toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -160,6 +174,22 @@ public class PodcastListPreference
                 finish();
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        if(null != selectedPodcastInfo_){
+            outState.putCharSequence("selected_url", selectedPodcastInfo_.getURL().toString());
+        }
+    }
+    
+    @Override
+    public void onDestroy(){
+        Log.d(TAG, "onDestroy: dialog" + dialogID_);
+        //remove on rotating screen 
+        removeDialog(dialogID_);
+        super.onDestroy();
     }
     
     static
@@ -186,9 +216,6 @@ public class PodcastListPreference
     public void onStart() {
         super.onStart();
         isChanged_ = false;
-        List<PodcastInfo> list = loadSetting(this);
-        adapter_ = new PodcastInfoAdapter(this, list);
-        podcastListView_.setAdapter(adapter_);
     }
 
     private void saveSetting(){
@@ -220,7 +247,8 @@ public class PodcastListPreference
         }
         return sb;
     }
-    
+
+ 
     @Override
     public void onStop() {
         super.onStop();
@@ -421,7 +449,7 @@ public class PodcastListPreference
     
     @Override
     protected Dialog onCreateDialog(int id, Bundle bundle) {
-        Log.d(TAG, "onCreateDialog(bundle): " + id);
+        Log.d(TAG, "onCreateDialog: " + id);
         Dialog dialog;
         AlertDialog.Builder builder = null;
         View view;
@@ -447,13 +475,20 @@ public class PodcastListPreference
             dialog = builder.create();
             break;
         case SHARE_PODCAST_DIALOG:
+            // final String title = (String)bundle.getCharSequence("title");
+            // final String url = (String)bundle.getCharSequence("url");
+            
             builder = new AlertDialog.Builder(this)
                 .setTitle(R.string.share_podcast)
-                .setItems(options, new DialogInterface.OnClickListener(){
+                .setItems(SHARE_OPTIONS, new DialogInterface.OnClickListener(){
                         @Override
                         public void onClick(DialogInterface dialog, int which){
                             PodcastInfo info = selectedPodcastInfo_;
-                            if("Twitter".equals(options[which])){
+                            if(null == info){
+                                // when screen is rotated
+                                return;
+                            }
+                            if("Twitter".equals(SHARE_OPTIONS[which])){
                                 //
                                 Intent i = new Intent();
                                 i.setAction(Intent.ACTION_SEND);
@@ -462,7 +497,7 @@ public class PodcastListPreference
                                 i.putExtra(Intent.EXTRA_TEXT, info.getTitle()+" #podplayer "+info.getURL().toString());
                                 startActivity(i);
                             }
-                            else if("Mail".equals(options[which])){
+                            else if("Mail".equals(SHARE_OPTIONS[which])){
                                 Intent i = new Intent();
                                 i.setAction(Intent.ACTION_SEND);
                                 i.setType("message/rfc822");
@@ -471,8 +506,12 @@ public class PodcastListPreference
                                 i.putExtra(Intent.EXTRA_TEXT, info.getTitle()+"\n"+info.getURL().toString()+"\n"+"-----\npodplayer (Android app): https://play.google.com/store/apps/details?id=com.mamewo.podplayer0");
                                 startActivity(i);
                             }
-                            else if("QRCode".equals(options[which])){
-                                showDialog(QRCODE_DIALOG);
+                            else if("QRCode".equals(SHARE_OPTIONS[which])){
+                                Bundle b = new Bundle();
+                                b.putCharSequence("title", selectedPodcastInfo_.getTitle());
+                                b.putCharSequence("url", selectedPodcastInfo_.getURL().toString());
+                                
+                                showDialog(QRCODE_DIALOG, b);
                             }
                         }
                     })
@@ -493,15 +532,15 @@ public class PodcastListPreference
             dialog = null;
             break;
         }
-        dialog_ = dialog;
+        //dialog_ = dialog;
         return dialog;
     }
     
     @Override
     protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
-        bundle_ = args;
         AlertDialog.Builder builder = null;
-
+        dialogID_ = id;
+        
         switch(id){
         case CHECKING_DIALOG:
             dialog_ = dialog;
@@ -510,13 +549,17 @@ public class PodcastListPreference
             StringBuffer sb = exportSetting();
             TextView text = (TextView)dialog.findViewById(R.id.message);
             text.setText(sb.toString());
-            dialog_ = dialog;
+            //dialog_ = dialog;
             break;
         case SHARE_PODCAST_DIALOG:
             //list alert
-            dialog_ = dialog;
+            //dialog_ = dialog;
             break;
         case QRCODE_DIALOG:
+            if(null == selectedPodcastInfo_){
+                dialog.dismiss();
+                return;
+            }
             String url = selectedPodcastInfo_.getURL().toString();
             Bitmap bitmap = createQRCode(url);
             
@@ -1092,8 +1135,12 @@ public class PodcastListPreference
         @Override
         public void onClick(View v){
             selectedPodcastInfo_ = (PodcastInfo)v.getTag();
+
+            Bundle b = new Bundle();
+            b.putCharSequence("title", selectedPodcastInfo_.getTitle());
+            b.putCharSequence("url", selectedPodcastInfo_.getURL().toString());
             //display dialog
-            showDialog(SHARE_PODCAST_DIALOG);
+            showDialog(SHARE_PODCAST_DIALOG, b);
         }
     }
     
