@@ -15,6 +15,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import android.graphics.PorterDuff;
+import android.graphics.Bitmap;
+import android.graphics.Point;
+import android.view.Display;
+import android.view.WindowManager;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.common.BitMatrix;
+
 import org.apache.commons.io.input.BOMInputStream;
     
 import okhttp3.Request;
@@ -99,6 +108,8 @@ public class PodcastListPreference
     private int EXPORT_DIALOG = 1;
     static final
     private int SHARE_PODCAST_DIALOG = 2;
+    static final
+    private int QRCODE_DIALOG = 3;
     final static
     private String PODCAST_SITE_URL = "http://mamewo.ddo.jp/podcast/podcast.html";
     private Dialog dialog_;
@@ -106,6 +117,9 @@ public class PodcastListPreference
     private OkHttpClient client_;
     private Map<String, Option> optionMap_;
 
+    private static final int WHITE = 0xFFFFFFFF;
+    private static final int BLACK = 0xFF000000;
+    
     private class Option {
         public boolean expand_;
         public Option(){
@@ -331,11 +345,47 @@ public class PodcastListPreference
         }
     }
 
+    private Bitmap createQRCode(String content){
+        //Map<EncodeHintType, Object> hints = null;
+        BitMatrix result;
+
+        WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        Display display = manager.getDefaultDisplay();
+        Point displaySize = new Point();
+        display.getSize(displaySize);
+        int widthScreen = displaySize.x;
+        int heightScreen = displaySize.y;
+        int smallerDimension = (widthScreen < heightScreen) ? widthScreen : heightScreen;
+        smallerDimension = smallerDimension*7/8;
+        try{ 
+            result = new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE, smallerDimension, smallerDimension, null);
+        }
+        catch(Exception e){
+            Log.d(TAG, "QR code error:", e);
+            return null;
+        }
+                                
+        int width = result.getWidth();
+        int height = result.getHeight();
+        int[] pixels = new int[width * height];
+        for (int y = 0; y < height; y++) {
+            int offset = y * width;
+            for (int x = 0; x < width; x++) {
+                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+            }
+        }
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+        return bitmap;
+    }
+    
     @Override
     protected Dialog onCreateDialog(int id, Bundle bundle) {
         Log.d(TAG, "onCreateDialog(bundle): " + id);
         Dialog dialog;
         AlertDialog.Builder builder = null;
+        View view;
+        
         switch(id){
         case CHECKING_DIALOG:
             ProgressDialog progressDialog = new ProgressDialog(this);
@@ -351,7 +401,7 @@ public class PodcastListPreference
             builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.exported_podcasts)
                 .setPositiveButton("OK", null);
-            View view = LayoutInflater
+            view = LayoutInflater
                 .from(this)
                 .inflate(R.layout.selectable_textview, null, false);
             TextView text = (TextView)view.findViewById(R.id.message);
@@ -361,7 +411,7 @@ public class PodcastListPreference
             break;
         case SHARE_PODCAST_DIALOG:
             //list alert
-            final String[] options = { "Twitter" };
+            final String[] options = { "Twitter", "Mail", "QRCode" };
             final PodcastInfo info = selectedPodcastInfo_;
             builder = new AlertDialog.Builder(this)
                 .setTitle(R.string.share_podcast)
@@ -377,9 +427,42 @@ public class PodcastListPreference
                                 i.putExtra(Intent.EXTRA_TEXT, info.getTitle()+" #podplayer "+info.getURL().toString());
                                 startActivity(i);
                             }
+                            else if("Mail".equals(options[which])){
+                                Intent i = new Intent();
+                                i.setAction(Intent.ACTION_SEND);
+                                i.setType("message/rfc822");
+                                //i.putExtra(Intent.EXTRA_SUBJECT");
+                                //TODO: translate
+                                i.putExtra(Intent.EXTRA_TEXT, info.getTitle()+"\n"+info.getURL().toString()+"\n"+"-----\npodplayer (Android app): https://play.google.com/store/apps/details?id=com.mamewo.podplayer0");
+                                startActivity(i);
+                            }
+                            else if("QRCode".equals(options[which])){
+                                selectedPodcastInfo_ = info;
+                                showDialog(QRCODE_DIALOG);
+                            }
                         }
                     })
                 .setNegativeButton("Cancel", null); //TODO: put to strings
+            dialog = builder.create();
+            break;
+        case QRCODE_DIALOG:
+            String url = selectedPodcastInfo_.getURL().toString();
+            Bitmap bitmap = createQRCode(url);
+            
+            view = LayoutInflater
+                .from(this)
+                .inflate(R.layout.qr_code, null, false);
+            ImageView qrCode = (ImageView)view.findViewById(R.id.qr_code);
+            qrCode.setImageBitmap(bitmap);
+            TextView titleView = (TextView)view.findViewById(R.id.title);
+            titleView.setText(selectedPodcastInfo_.getTitle());
+            TextView urlView = (TextView)view.findViewById(R.id.url);
+            urlView.setText(url);
+
+            builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.qrcode_of_podcast)
+                .setView(view)
+                .setPositiveButton("OK", null);
             dialog = builder.create();
             break;
         default:
