@@ -560,6 +560,8 @@ public class PodplayerCardActivity
                                 sb.append(podcastTitle);
                                 sb.append("\n");
                                 sb.append(url);
+                                sb.append("\n-----\n");
+                                sb.append(podcastURL);
                                 sb.append("\n-----\npodplayer (Android app): https://play.google.com/store/apps/details?id=com.mamewo.podplayer0");
                                 i.putExtra(Intent.EXTRA_TEXT, sb.toString());
                                 startActivity(i);

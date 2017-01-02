@@ -30,7 +30,6 @@ public class TestPodplayerActivity
     extends ActivityInstrumentationTestCase2<PodplayerActivity>
 {
     protected Solo solo_;
-    protected Resources res_;
     static final
     private int INIT_SLEEP = 5000;
     static final
@@ -77,7 +76,6 @@ public class TestPodplayerActivity
         editor.commit();
 
         solo_ = new Solo(getInstrumentation(), config, getActivity());
-        res_ = getInstrumentation().getTargetContext().getResources();
     }
 
     @Override
@@ -141,20 +139,17 @@ public class TestPodplayerActivity
     public void testFinish() {
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
         //TODO: use resource
-        //solo_.clickOnMenuItem(res_.getString(R.string.exit_menu));
         clickOverflowMenu(R.string.exit_menu);
     }
 
     public void testSelectPodcast() throws Exception {
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
-        //solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         startPreferenceActivity();
 
         //false...
         //Assert.assertTrue(solo_.waitForActivity("PodplayerPrefrence", UI_SLEEP));
         // solo_.sleep(5000);
-        // solo_.clickOnText(res_.getString(R.string.pref_podcastlist_title));
-        selectPreference(res_.getString(R.string.pref_podcastlist_title));
+        selectPreference(solo_.getString(R.string.pref_podcastlist_title));
         //solo_.waitForActivity(PodcastListPreference.class.getName(), UI_SLEEP);
         solo_.sleep(UI_SLEEP);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "select_podcast");       
@@ -171,11 +166,10 @@ public class TestPodplayerActivity
     public void testAddPodcast() throws Exception {
         String url = "http://www.bbc.co.uk/programmes/p02nrvk3/episodes/downloads.rss";
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
-        //solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         startPreferenceActivity();
         //false...
         //solo_.waitForActivity("PodplayerPrefrence", UI_SLEEP);
-        selectPreference(res_.getString(R.string.pref_podcastlist_title));
+        selectPreference(solo_.getString(R.string.pref_podcastlist_title));
         solo_.sleep(UI_SLEEP);
         //podcast list
         solo_.enterText(0, url);
@@ -191,12 +185,11 @@ public class TestPodplayerActivity
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
         
-        //solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         startPreferenceActivity();
         solo_.sleep(UI_SLEEP);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
        
-        selectPreference(res_.getString(R.string.pref_podcastlist_title));
+        selectPreference(solo_.getString(R.string.pref_podcastlist_title));
         solo_.sleep(UI_SLEEP);
 
         solo_.enterText((EditText)solo_.getView(R.id.url_edit), url);
@@ -242,13 +235,12 @@ public class TestPodplayerActivity
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete_and_back");
         
-        //solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         startPreferenceActivity();
 
         solo_.sleep(UI_SLEEP);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "delete_and_back");
        
-        selectPreference(res_.getString(R.string.pref_podcastlist_title));
+        selectPreference(solo_.getString(R.string.pref_podcastlist_title));
         solo_.sleep(40000);
 
         ListView list = (ListView)solo_.getView(R.id.podlist);
@@ -329,11 +321,10 @@ public class TestPodplayerActivity
    
     public void testGestureDialog() throws Exception {
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
-        //solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         startPreferenceActivity();
 
         solo_.sleep(UI_SLEEP);
-        selectPreference(res_.getString(R.string.pref_gesture_list));
+        selectPreference(solo_.getString(R.string.pref_gesture_list));
         solo_.sleep(UI_SLEEP);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "gesture_dialog");
         //TODO: check that gesture list dialog is displayed
@@ -343,11 +334,10 @@ public class TestPodplayerActivity
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "clear_cache");
         solo_.scrollDown();       
-        //solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         startPreferenceActivity();
-                
+        
         solo_.sleep(UI_SLEEP);
-        selectPreference(res_.getString(R.string.clear_response_cache_title));
+        selectPreference(solo_.getString(R.string.clear_response_cache_title));
         solo_.sleep(UI_SLEEP);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "clear_cache");
         solo_.goBack();
@@ -356,14 +346,13 @@ public class TestPodplayerActivity
 
     public void testImageDisableEnable() throws Exception {
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
-        //solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         startPreferenceActivity();
 
         solo_.sleep(UI_SLEEP);
         solo_.scrollDown();
        
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "image_disable_enable");
-        selectPreference(res_.getString(R.string.pref_show_podcast_icon));
+        selectPreference(solo_.getString(R.string.pref_show_podcast_icon));
         solo_.sleep(UI_SLEEP);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "image_disable_enable");
         solo_.goBack();
@@ -376,12 +365,11 @@ public class TestPodplayerActivity
         // v.getLocationOnScreen(pos);
         // solo_.drag(pos[0]+10, pos[1]+10, pos[0]+10, pos[1]+30, 4);
         
-        //solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         startPreferenceActivity();
 
         solo_.sleep(UI_SLEEP);
         solo_.scrollDown();
-        selectPreference(res_.getString(R.string.pref_show_podcast_icon));
+        selectPreference(solo_.getString(R.string.pref_show_podcast_icon));
         solo_.sleep(UI_SLEEP);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "image_disable_enable");
         solo_.goBack();
@@ -396,28 +384,26 @@ public class TestPodplayerActivity
     
     public void testLicence() {
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
-        //solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         startPreferenceActivity();
 
         solo_.sleep(UI_SLEEP);
         solo_.scrollDown();
         solo_.scrollDown();
 
-        selectPreference(res_.getString(R.string.pref_license));
+        selectPreference(solo_.getString(R.string.pref_license));
         solo_.sleep(UI_SLEEP);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "license");
     }
 
     public void testVersion() {
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
-        //solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         startPreferenceActivity();
         
         solo_.sleep(500);
         solo_.scrollDown();
         solo_.scrollDown();
         
-        selectPreference(res_.getString(R.string.pref_version));
+        selectPreference(solo_.getString(R.string.pref_version));
         solo_.sleep(500);
         View githubView = solo_.getView(R.id.github_logo);
         solo_.clickOnView(githubView);
@@ -441,7 +427,6 @@ public class TestPodplayerActivity
     
     public void testPreference() throws Exception {
         Assert.assertTrue(solo_.waitForActivity("PodplayerActivity", INIT_SLEEP));
-        //solo_.clickOnMenuItem(res_.getString(R.string.preference_menu));
         startPreferenceActivity();
 
         solo_.sleep(500);
