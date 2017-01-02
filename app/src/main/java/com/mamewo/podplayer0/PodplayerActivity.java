@@ -489,7 +489,7 @@ public class PodplayerActivity
             }
         }
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
+            new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
 		adapter.setDropDownViewResource(android.support.v7.appcompat.R.layout.support_simple_spinner_dropdown_item);
 
         selector_.setAdapter(adapter);

@@ -55,7 +55,26 @@ How to run UI test using Robotium
 
 TODO
 ----
+* spoon test
+  * bug: MainActivityTest, PodcastActivity then testAbortReload blocks...
+  * add test of share function
+    * QR code
+    * mail
+    * Twitter
+  * test multiple test classes once / merge test result
+    * current situation: freeze?
+    * set "package" instrumentationArgs to start all test classes
+  * add test of content description (manual test)
+  * preference
+  * notification
+  * landscape UI
+* fix bug
+  * open Podcast list editor, press detail button, rotate screen
+    -> crash
+    -> selectedPodcastInfo_ is null, touched
+* scan QR code as podcast URL then add
 * add cool widget to play episode
+* support tablet
 * podcast detail as activity
   * channel/description or itunes:subtitle
   * channel/copyright
@@ -86,10 +105,7 @@ TODO
 * handle opml as input to specify podcast list
 * share podcast with friend / author (add to preset)
   * bluetooth
-  * QR code
-  * mail
   * Google+
-  * Twitter
   * Facebook
   * as text
 * set default item / show notification in paused state
@@ -126,7 +142,6 @@ TODO
   * add test
 * modify icon
   * use opaque orange
-  * make white status icon?
 * just add podcast url without check (preference)? 
 * use database to manage loaded episodes
   * display mark which is already played, new item etc...
@@ -137,11 +152,6 @@ TODO
     * ? not listened / ! listened
     * remember listened timestamp
 * add score thershold preference dialog 
-* spoon test
-  * test multiple test classes once / merge test result
-    * current situation: freeze?
-    * set "package" instrumentationArgs to start all test classes
-  * add test of content description (manual test)
 * add preference to display pubdate as "X days before"
 * add activity for tv?
 * save latest few item to savedInstanceState
@@ -154,11 +164,6 @@ TODO
   * avoid flicker when button on notification pressed
 * write additional podcast url to sd card?
 * add confirm dialog to open web site
-* add / update test
-  * MainActivityTest, PodcastActivity then testAbortReload blocks...
-  * preference
-  * notification
-  * landscape UI
 * improve UI to add podcast URL
   * update main activity when setting is changed
 * reset playing position after podcast selection is changed

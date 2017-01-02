@@ -23,6 +23,8 @@ import android.view.WindowManager;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.apache.commons.io.input.BOMInputStream;
     
@@ -110,6 +112,11 @@ public class PodcastListPreference
     private int SHARE_PODCAST_DIALOG = 2;
     static final
     private int QRCODE_DIALOG = 3;
+    static private
+    final String[] options = { "Twitter", "Mail", "QRCode" };
+    static final
+    private int SCAN_QRCODE_REQUEST_CODE = 3232;
+        
     final static
     private String PODCAST_SITE_URL = "http://mamewo.ddo.jp/podcast/podcast.html";
     private Dialog dialog_;
@@ -237,9 +244,10 @@ public class PodcastListPreference
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled = false;
+        Intent i;
         switch(item.getItemId()) {
         case R.id.podcast_page_menu:
-            Intent i =
+            i =
                 new Intent(Intent.ACTION_VIEW, Uri.parse(PODCAST_SITE_URL));
             startActivity(new Intent(i));
             handled = true;
@@ -247,10 +255,38 @@ public class PodcastListPreference
         case R.id.export_podcast_menu:
             showDialog(EXPORT_DIALOG);
             break;
+        case R.id.scan_qrcode_menu:
+            //i = new Intent("com.google.zxing.client.android.SCAN");
+            //startActivityForResult(i, SCAN_QRCODE_REQUEST_CODE);
+            IntentIntegrator integrator = new IntentIntegrator(this);
+            integrator.setBeepEnabled(false);
+            integrator.initiateScan();
+            break;
         default:
             break;
         }
         return handled;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, requestCode, data);
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        
+        if(scanResult == null){
+            //DISPLAY toast message?
+            return;
+        }
+        String url = scanResult.getContents();
+        String orig = urlEdit_.getText().toString();
+        if(orig.length() > 0){
+            orig = orig + "\n" + url;
+        }
+        else {
+            orig = url;
+        }
+        urlEdit_.setText(orig);
+        startCheckURLText();
     }
 
     private class SimpleRequest
@@ -287,54 +323,58 @@ public class PodcastListPreference
             return prevInfo_;
         }
     }
+
+    public void startCheckURLText(){
+        String[] urlStrList = urlEdit_.getText().toString().split("\n");
+        
+        //check url
+        //String[] urlStrList = urlStr.split("\n");
+        int malformed = 0;
+        List<URL> urlList = new ArrayList<URL>();
+        for(String urlStr: urlStrList){
+            if(urlStr.isEmpty()){
+                continue;
+            }
+            //TODO: use hash
+            boolean duplicate = false;
+            for(int i = 0; i < adapter_.getCount(); i++){
+                if(urlStr.equals(adapter_.getItem(i).getURL().toString())){
+                    //TODO: show toast
+                    Log.d(TAG, "duplicate: " + urlStr);
+                    duplicate = true;
+                    continue;
+                }
+            }
+            if(duplicate){
+                continue;
+            }
+            try {
+                URL url = new URL(urlStr);
+                urlList.add(url);
+            }
+            catch (MalformedURLException e) {
+                malformed += 1;
+            }
+        }
+        if(malformed > 0){
+            showMessage(getString(R.string.error_malformed_url));
+        }
+        if(urlList.size() == 0){
+            return;
+        }
+        showDialog(CHECKING_DIALOG);
+        task_ = new CheckTask();
+        SimpleRequest[] reqlist = new SimpleRequest[urlList.size()];
+        for(int i = 0; i < urlList.size(); i++){
+            reqlist[i] = new SimpleRequest(urlList.get(i), null, null);
+        }
+        task_.execute(reqlist);
+    }
     
     @Override
     public void onClick(View view) {
         if (view == addButton_) {
-            String[] urlStrList = urlEdit_.getText().toString().split("\n");
-
-            //check url
-            //String[] urlStrList = urlStr.split("\n");
-            int malformed = 0;
-            List<URL> urlList = new ArrayList<URL>();
-            for(String urlStr: urlStrList){
-                if(urlStr.isEmpty()){
-                    continue;
-                }
-                //TODO: use hash
-                boolean duplicate = false;
-                for(int i = 0; i < adapter_.getCount(); i++){
-                    if(urlStr.equals(adapter_.getItem(i).getURL().toString())){
-                        //TODO: show toast
-                        Log.d(TAG, "duplicate: " + urlStr);
-                        duplicate = true;
-                        continue;
-                    }
-                }
-                if(duplicate){
-                    continue;
-                }
-                try {
-                    URL url = new URL(urlStr);
-                    urlList.add(url);
-                }
-                catch (MalformedURLException e) {
-                    malformed += 1;
-                }
-            }
-            if(malformed > 0){
-                showMessage(getString(R.string.error_malformed_url));
-            }
-            if(urlList.size() == 0){
-                return;
-            }
-            showDialog(CHECKING_DIALOG);
-            task_ = new CheckTask();
-            SimpleRequest[] reqlist = new SimpleRequest[urlList.size()];
-            for(int i = 0; i < urlList.size(); i++){
-                reqlist[i] = new SimpleRequest(urlList.get(i), null, null);
-            }
-            task_.execute(reqlist);
+            startCheckURLText();
         }
         else if (view.getId() == R.id.checkbox) {
             CheckBox checkbox = (CheckBox) view;
@@ -397,27 +437,22 @@ public class PodcastListPreference
             dialog = progressDialog;
             break;
         case EXPORT_DIALOG:
-            StringBuffer sb = exportSetting();
             builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.exported_podcasts)
                 .setPositiveButton("OK", null);
             view = LayoutInflater
                 .from(this)
                 .inflate(R.layout.selectable_textview, null, false);
-            TextView text = (TextView)view.findViewById(R.id.message);
-            text.setText(sb.toString());
             builder.setView(view);
             dialog = builder.create();
             break;
         case SHARE_PODCAST_DIALOG:
-            //list alert
-            final String[] options = { "Twitter", "Mail", "QRCode" };
-            final PodcastInfo info = selectedPodcastInfo_;
             builder = new AlertDialog.Builder(this)
                 .setTitle(R.string.share_podcast)
                 .setItems(options, new DialogInterface.OnClickListener(){
                         @Override
                         public void onClick(DialogInterface dialog, int which){
+                            PodcastInfo info = selectedPodcastInfo_;
                             if("Twitter".equals(options[which])){
                                 //
                                 Intent i = new Intent();
@@ -437,7 +472,6 @@ public class PodcastListPreference
                                 startActivity(i);
                             }
                             else if("QRCode".equals(options[which])){
-                                selectedPodcastInfo_ = info;
                                 showDialog(QRCODE_DIALOG);
                             }
                         }
@@ -446,19 +480,9 @@ public class PodcastListPreference
             dialog = builder.create();
             break;
         case QRCODE_DIALOG:
-            String url = selectedPodcastInfo_.getURL().toString();
-            Bitmap bitmap = createQRCode(url);
-            
             view = LayoutInflater
                 .from(this)
                 .inflate(R.layout.qr_code, null, false);
-            ImageView qrCode = (ImageView)view.findViewById(R.id.qr_code);
-            qrCode.setImageBitmap(bitmap);
-            TextView titleView = (TextView)view.findViewById(R.id.title);
-            titleView.setText(selectedPodcastInfo_.getTitle());
-            TextView urlView = (TextView)view.findViewById(R.id.url);
-            urlView.setText(url);
-
             builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.qrcode_of_podcast)
                 .setView(view)
@@ -476,9 +500,32 @@ public class PodcastListPreference
     @Override
     protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
         bundle_ = args;
+        AlertDialog.Builder builder = null;
+
         switch(id){
         case CHECKING_DIALOG:
             dialog_ = dialog;
+            break;
+        case EXPORT_DIALOG:
+            StringBuffer sb = exportSetting();
+            TextView text = (TextView)dialog.findViewById(R.id.message);
+            text.setText(sb.toString());
+            dialog_ = dialog;
+            break;
+        case SHARE_PODCAST_DIALOG:
+            //list alert
+            dialog_ = dialog;
+            break;
+        case QRCODE_DIALOG:
+            String url = selectedPodcastInfo_.getURL().toString();
+            Bitmap bitmap = createQRCode(url);
+            
+            ImageView qrCode = (ImageView)dialog.findViewById(R.id.qr_code);
+            qrCode.setImageBitmap(bitmap);
+            TextView titleView = (TextView)dialog.findViewById(R.id.title);
+            titleView.setText(selectedPodcastInfo_.getTitle());
+            TextView urlView = (TextView)dialog.findViewById(R.id.url);
+            urlView.setText(url);
             break;
         default:
             break;
@@ -1071,7 +1118,7 @@ public class PodcastListPreference
     {
         @Override
         public void onClick(View v){
-            PodcastInfo info = (PodcastInfo)v.getTag();
+            PodcastInfo info = (PodcastInfo)v.getTag();            
             ViewParent parent = v.getParent();
             if(null == parent){
                 Log.d(TAG, "parent is null");

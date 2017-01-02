@@ -59,6 +59,7 @@
     <string name="app_podcastlist_title">Podcast List Editor</string>
     <string name="podcast_added">Podcast: {0} is added</string>
     <string name="header_lastupdated">Last updated: </string>
+    <string name="scan_qrcode_menu">Scan QR code of podcast</string>
     <string name="export_podcast_menu">Export podcast list as text</string>
     <string name="podcast_webpage_menu">Open podcast site</string>
 
