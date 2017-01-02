@@ -86,9 +86,12 @@ TODO
 * handle opml as input to specify podcast list
 * share podcast with friend / author (add to preset)
   * bluetooth
-  * IR code
-  * mail?
-  * post to website
+  * QR code
+  * mail
+  * Google+
+  * Twitter
+  * Facebook
+  * as text
 * set default item / show notification in paused state
   * start player service
 * use minifyEnabled option of build.gradle

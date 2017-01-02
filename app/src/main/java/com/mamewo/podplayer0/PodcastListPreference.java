@@ -82,7 +82,6 @@ import android.support.v7.widget.Toolbar;
 public class PodcastListPreference
 	extends AppCompatActivity
     implements OnClickListener,
-    OnItemClickListener,
     OnCancelListener
 {
     private Button addButton_;
@@ -98,9 +97,12 @@ public class PodcastListPreference
     private int CHECKING_DIALOG = 0;
     static final
     private int EXPORT_DIALOG = 1;
+    static final
+    private int SHARE_PODCAST_DIALOG = 2;
     final static
     private String PODCAST_SITE_URL = "http://mamewo.ddo.jp/podcast/podcast.html";
     private Dialog dialog_;
+    private PodcastInfo selectedPodcastInfo_;
     private OkHttpClient client_;
     private Map<String, Option> optionMap_;
 
@@ -123,7 +125,6 @@ public class PodcastListPreference
         dialog_ = null;
         optionMap_ = new HashMap<String, Option>();
         podcastListView_ = (ListView) findViewById(R.id.podlist);
-        podcastListView_.setOnItemClickListener(this);
         bundle_ = null;
         client_ = new OkHttpClient();
        
@@ -237,6 +238,41 @@ public class PodcastListPreference
         }
         return handled;
     }
+
+    private class SimpleRequest
+    {
+        private URL url_;
+        private String username_;
+        private String password_;
+        private PodcastInfo prevInfo_;
+        
+        public SimpleRequest(URL url, String username, String password, PodcastInfo prevInfo){
+            url_ = url;
+            username_ = username;
+            password_ = password;
+            prevInfo_ = prevInfo;
+        }
+
+        public SimpleRequest(URL url, String username, String password){
+            this(url, username, password, null);
+        }
+
+        public URL getURL(){
+            return url_;
+        }
+
+        public String getUsername(){
+            return username_;
+        }
+
+        public String getPassword(){
+            return password_;
+        }
+
+        public PodcastInfo getPrevInfo(){
+            return prevInfo_;
+        }
+    }
     
     @Override
     public void onClick(View view) {
@@ -288,23 +324,18 @@ public class PodcastListPreference
         }
         else if (view.getId() == R.id.checkbox) {
             CheckBox checkbox = (CheckBox) view;
-            onCheckboxClicked(checkbox);
+            isChanged_ = true;
+            PodcastInfo info = (PodcastInfo) checkbox.getTag();
+            info.setEnabled(!info.getEnabled());
+            checkbox.setChecked(info.getEnabled());
         }
     }
 
-    private void onCheckboxClicked(CheckBox checkbox) {
-        Log.d(TAG, "checkbox is clicked: " + checkbox.isChecked());
-        //umm...
-        isChanged_ = true;
-        PodcastInfo info = (PodcastInfo) checkbox.getTag();
-        info.setEnabled(!info.getEnabled());
-        checkbox.setChecked(info.getEnabled());
-    }
-    
     @Override
     protected Dialog onCreateDialog(int id, Bundle bundle) {
         Log.d(TAG, "onCreateDialog(bundle): " + id);
-        Dialog dialog = null;
+        Dialog dialog;
+        AlertDialog.Builder builder = null;
         switch(id){
         case CHECKING_DIALOG:
             ProgressDialog progressDialog = new ProgressDialog(this);
@@ -317,7 +348,7 @@ public class PodcastListPreference
             break;
         case EXPORT_DIALOG:
             StringBuffer sb = exportSetting();
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.exported_podcasts)
                 .setPositiveButton("OK", null);
             View view = LayoutInflater
@@ -328,7 +359,31 @@ public class PodcastListPreference
             builder.setView(view);
             dialog = builder.create();
             break;
+        case SHARE_PODCAST_DIALOG:
+            //list alert
+            final String[] options = { "Twitter" };
+            final PodcastInfo info = selectedPodcastInfo_;
+            builder = new AlertDialog.Builder(this)
+                .setTitle(R.string.share_podcast)
+                .setItems(options, new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialog, int which){
+                            if("Twitter".equals(options[which])){
+                                //
+                                Intent i = new Intent();
+                                i.setAction(Intent.ACTION_SEND);
+                                i.setType("text/plain");
+                                i.setPackage("com.twitter.android");
+                                i.putExtra(Intent.EXTRA_TEXT, info.getTitle()+" #podplayer "+info.getURL().toString());
+                                startActivity(i);
+                            }
+                        }
+                    })
+                .setNegativeButton("Cancel", null); //TODO: put to strings
+            dialog = builder.create();
+            break;
         default:
+            dialog = null;
             break;
         }
         dialog_ = dialog;
@@ -349,7 +404,6 @@ public class PodcastListPreference
     
     //check that podcast XML is valid
     public class CheckTask
-    //extends AsyncTask<URL, PodcastInfo, Boolean>
         extends AsyncTask<SimpleRequest, PodcastInfo, Boolean>
     {
         private boolean addItem_;
@@ -635,7 +689,10 @@ public class PodcastListPreference
                 upButton.setOnClickListener(new MoveupButtonListener());
                 downButton.setTag(info);
                 downButton.setOnClickListener(new MovedownButtonListener());
-
+                ImageButton shareButton = (ImageButton)view.findViewById(R.id.podcast_share);
+                shareButton.setTag(info);
+                shareButton.setOnClickListener(new ShareButtonListener());
+                
                 Button enterPasswordButton = (Button)view.findViewById(R.id.auth_info);
                 enterPasswordButton.setTag(info);
                 enterPasswordButton.setOnClickListener(new EnterPasswordButtonListener());
@@ -848,12 +905,6 @@ public class PodcastListPreference
         }
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapter, View parent, int pos, long id) {
-        CheckBox checkbox = (CheckBox) parent.findViewById(R.id.checkbox);
-        onCheckboxClicked(checkbox);
-    }
-
     private class RemoveButtonListener
         implements View.OnClickListener
     {
@@ -905,6 +956,17 @@ public class PodcastListPreference
         }
     }
 
+    private class ShareButtonListener
+        implements View.OnClickListener
+    {
+        @Override
+        public void onClick(View v){
+            selectedPodcastInfo_ = (PodcastInfo)v.getTag();
+            //display dialog
+            showDialog(SHARE_PODCAST_DIALOG);
+        }
+    }
+    
     private class DetailButtonListener
         implements View.OnClickListener
     {
@@ -944,41 +1006,6 @@ public class PodcastListPreference
                 task_ = new CheckTask();
                 task_.execute(new SimpleRequest(info.getURL(), info.getUsername(), info.getPassword(), info));
             }
-        }
-    }
-
-    private class SimpleRequest
-    {
-        private URL url_;
-        private String username_;
-        private String password_;
-        private PodcastInfo prevInfo_;
-        
-        public SimpleRequest(URL url, String username, String password, PodcastInfo prevInfo){
-            url_ = url;
-            username_ = username;
-            password_ = password;
-            prevInfo_ = prevInfo;
-        }
-
-        public SimpleRequest(URL url, String username, String password){
-            this(url, username, password, null);
-        }
-
-        public URL getURL(){
-            return url_;
-        }
-
-        public String getUsername(){
-            return username_;
-        }
-
-        public String getPassword(){
-            return password_;
-        }
-
-        public PodcastInfo getPrevInfo(){
-            return prevInfo_;
         }
     }
 }
