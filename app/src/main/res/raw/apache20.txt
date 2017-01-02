@@ -1,5 +1,5 @@
 podplayer
-Copyright (c) 2012-2016 Takashi Masuyama. All rights reserved.
+Copyright (c) 2012-2017 Takashi Masuyama. All rights reserved.
 
 This application is built using open source software and resource:
 
@@ -11,7 +11,10 @@ Copyright (c) 2011 Johan Nilsson
 https://github.com/bumptech/glide
 Author: Sam Judd
 
-* Meterial icons
+* ZXing
+https://github.com/zxing/zxing
+
+* Meterialc icons
 https://design.google.com/icons/
 Google
 
