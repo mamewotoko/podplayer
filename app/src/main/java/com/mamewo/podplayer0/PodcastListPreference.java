@@ -422,9 +422,8 @@ public class PodcastListPreference
         WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
         Display display = manager.getDefaultDisplay();
         Point displaySize = new Point();
-        display.getSize(displaySize);
-        int widthScreen = displaySize.x;
-        int heightScreen = displaySize.y;
+        int widthScreen = display.getWidth();
+        int heightScreen = display.getHeight();
         int smallerDimension = (widthScreen < heightScreen) ? widthScreen : heightScreen;
         smallerDimension = smallerDimension*7/8;
         try{ 
