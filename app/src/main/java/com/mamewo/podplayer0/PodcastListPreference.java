@@ -22,10 +22,10 @@ import android.view.WindowManager;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.EncodeHintType;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-
 import org.apache.commons.io.input.BOMInputStream;
     
 import okhttp3.Request;

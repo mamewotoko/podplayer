@@ -482,8 +482,9 @@ public class PlayerService
 		//for backward compatibility
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
 			.setSmallIcon(R.drawable.ic_status)
-			.setContentTitle("Podplayer")
+			.setContentTitle(getString(R.string.app_name))
 			.setContentText(episodeTitle)
+            .setTicker(episodeTitle)
 			.setAutoCancel(false)
 			.setOngoing(true)
 			.setContent(rvs);
