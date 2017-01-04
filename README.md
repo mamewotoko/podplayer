@@ -10,7 +10,7 @@ Screenshot
 
 Google Play
 ------------
-[![play web page](https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png =192x75)](https://play.google.com/store/apps/details?id=com.mamewo.podplayer0)
+[!<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" width="192" height="75">](https://play.google.com/store/apps/details?id=com.mamewo.podplayer0)
 <img src="https://github.com/mamewotoko/podplayer/raw/pullupdate/res/drawable/qr.png" width="86" height="86">
   
 https://play.google.com/store/apps/details?id=com.mamewo.podplayer0
