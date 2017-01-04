@@ -416,6 +416,8 @@ public class PodcastListPreference
     private Bitmap createQRCode(String content){
         //Map<EncodeHintType, Object> hints = null;
         BitMatrix result;
+        Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
+        hints.put(EncodeHintType.MARGIN, 2);
 
         WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
         Display display = manager.getDefaultDisplay();
@@ -426,7 +428,7 @@ public class PodcastListPreference
         int smallerDimension = (widthScreen < heightScreen) ? widthScreen : heightScreen;
         smallerDimension = smallerDimension*7/8;
         try{ 
-            result = new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE, smallerDimension, smallerDimension, null);
+            result = new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE, smallerDimension, smallerDimension, hints);
         }
         catch(Exception e){
             Log.d(TAG, "QR code error:", e);

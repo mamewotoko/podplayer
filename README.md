@@ -10,7 +10,7 @@ Screenshot
 
 Google Play
 ------------
-[![play web page](http://www.android.com/images/brand/get_it_on_play_logo_small.png)](https://play.google.com/store/apps/details?id=com.mamewo.podplayer0)
+[![play web page](https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png =192x75)](https://play.google.com/store/apps/details?id=com.mamewo.podplayer0)
 <img src="https://github.com/mamewotoko/podplayer/raw/pullupdate/res/drawable/qr.png" width="86" height="86">
   
 https://play.google.com/store/apps/details?id=com.mamewo.podplayer0
@@ -55,6 +55,11 @@ How to run UI test using Robotium
 
 TODO
 ----
+* add cool widget to play episode
+* support tablet
+  * add supoprts-largescreen and supoprts-xlargescreen
+  * https://developer.android.com/guide/topics/manifest/supports-screens-element.html
+  * tablet
 * spoon test
   * bug: MainActivityTest, PodcastActivity then testAbortReload blocks...
   * add test of share function
@@ -68,13 +73,11 @@ TODO
   * preference
   * notification
   * landscape UI
+* support TV
 * fix bug
   * open Podcast list editor, press detail button, rotate screen
     -> crash
     -> selectedPodcastInfo_ is null, touched
-* scan QR code as podcast URL then add
-* add cool widget to play episode
-* support tablet
 * podcast detail as activity
   * channel/description or itunes:subtitle
   * channel/copyright
