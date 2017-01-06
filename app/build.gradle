@@ -18,7 +18,7 @@ android {
     minSdkVersion 10
     targetSdkVersion 19
     versionCode 14
-    versionName "1.1.2"
+    versionName "1.2.0"
 
     //For espresso
     //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

@@ -60,6 +60,12 @@
     <string name="scan_qrcode_menu">Skanna QR-kod för podcast</string>
     <string name="export_podcast_menu">Export podcast lista som text</string>
     <string name="podcast_webpage_menu">Öppna podcast webbplats</string>
+
+    <string name="exported_podcasts">Exporterade podcasts</string>
+    <string name="share_podcast">Dela podcast</string>
+    <string name="podcast_share">Dela podcast</string>
+    <string name="share_epiode">Andel episod</string>
+
     <string name="clear_response_cache_title">Klar HTTP-svar cache</string>
     <string name="hint_podcast_url">URL podcast XML</string>
 
@@ -89,6 +95,9 @@
     <string name="icon_desc_qrcode">QR-kod till Google Play sida, vänligen dela podplayer med dina vänner</string>
     <string name="icon_desc_github">Länk i GitHub</string>
 
+    <string name="qrcode_of_podcast_desc">QR-kod som representerar webbadressen vald podcast</string>
+    <string name="qrcode_of_podcast">QR-kod podcast</string>
+    
     <string name="icon_desc_podcast_detail">Visning detalj av podcast</string>
     <string name="auth_required">Användarnamn och lösenord krävs</string>
     <string name="network_error">Nätverksfel</string>

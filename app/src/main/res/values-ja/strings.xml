@@ -56,8 +56,14 @@
     <string name="podcast_added">{0} を追加しました</string>
     <string name="header_lastupdated">最終更新: </string>
     <string name="scan_qrcode_menu">ポッドキャストのURLのQRコードをスキャンして取り込む</string>
-    <string name="export_podcast_menu">ポッドキャストのリストをテキストとして出力</string>
+    <string name="export_podcast_menu">ポッドキャストのリスト</string>
     <string name="podcast_webpage_menu">Podcastサイトを開く</string>
+
+    <string name="exported_podcasts">書き出したポッドキャスト</string>
+    <string name="share_podcast">ポッドキャストを共有する</string>
+    <string name="podcast_share">ポッドキャストを共有する</string>
+    <string name="share_epiode">エピソードを共有する</string>
+
     <string name="clear_response_cache_title">キャッシュを削除する</string>
     <string name="hint_podcast_url">Podcast(XML)のURL</string>
 
@@ -86,6 +92,9 @@
     <string name="icon_desc_gesture_table">ジェスチャー表</string>
     <string name="icon_desc_qrcode">Google playのウェブサイトへのQRコードです。ぜひ、友達に教えてあげてください。</string>
     <string name="icon_desc_github">GitHubへのリンク</string>
+
+    <string name="qrcode_of_podcast_desc">選択したポッドキャストのURLを表すQRコード</string>
+    <string name="qrcode_of_podcast">ポッドキャストのQRコード</string>
 
     <string name="icon_desc_podcast_detail">ポッドキャストの詳細を表示</string>
     <string name="auth_required">ユーザ名とパスワードが必要です。</string>

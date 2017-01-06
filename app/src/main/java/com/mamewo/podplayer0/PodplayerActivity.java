@@ -110,6 +110,9 @@ public class PodplayerActivity
     }
 
     private void updatePlayButton(){
+        if(null == player_){
+            return;
+        }
         if(player_.isPlaying()){
             playButton_.setContentDescription(getResources().getString(R.string.action_pause));
             playButton_.setImageResource(R.drawable.ic_pause_white_24dp);
@@ -124,6 +127,9 @@ public class PodplayerActivity
     public void onClick(View v) {
         //add option to load onStart
         if (v == playButton_) {
+            if(null == player_){
+                return;
+            }
             if(player_.isPlaying()) {
                 player_.pauseMusic();
             }
@@ -142,6 +148,9 @@ public class PodplayerActivity
 
     @Override
     public void onItemClick(AdapterView<?> list, View view, int pos, long id) {
+        if(null == player_){
+            return;
+        }
         //refresh header is added....
         EpisodeInfo info = (EpisodeInfo)adapter_.getItem(pos-1);
         EpisodeInfo current = player_.getCurrentPodInfo();

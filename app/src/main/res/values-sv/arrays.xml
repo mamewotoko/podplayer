@@ -24,5 +24,11 @@
       <item>Senaste först</item>
       -->
     </string-array>
+
+    <string-array name="view_mode_title">
+      <item>Dra för att uppdatera listan</item>
+      <item>Expanderbar lista</item>
+      <item>Kort</item>
+    </string-array>>
    
 </resources>
