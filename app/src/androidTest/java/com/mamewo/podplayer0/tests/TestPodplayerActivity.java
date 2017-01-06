@@ -213,10 +213,10 @@ public class TestPodplayerActivity
         View loginButton = v.findViewById(R.id.auth_info);
         //TODO: assert usernameEdit, xxx are visible
         solo_.enterText(usernameEdit, "tak");
-        solo_.enterText(passwordEdit, "takashi");
         solo_.sleep(500);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
-
+        
+        solo_.enterText(passwordEdit, "takashi");
         solo_.clickOnView(loginButton);
 
         solo_.waitForDialogToClose(20000);
