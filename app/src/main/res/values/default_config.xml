@@ -9,7 +9,7 @@
     <string name="default_read_timeout" translatable="false">30</string>
     <bool name="default_use_expandable_ui">false</bool>
     <bool name="default_show_podcast_icon">true</bool>
-    <string name="default_view_mode">0</string>
+    <string name="default_view_mode" translatable="false">0</string>
     <bool name="default_enable_gesture">true</bool>
     
     <!-- old -->

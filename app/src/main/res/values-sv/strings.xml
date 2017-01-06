@@ -15,8 +15,8 @@
     <string name="pref_read_timeout">Läs timeout</string>
     <string name="pref_general_category">allmän</string>
     <string name="pref_appearance_category">UI</string>
+    <string name="pref_view_mode">visningsläge</string>
     <string name="pref_network_category">nätverk</string>
-    <string name="pref_use_expandable_list_ui">Använd utbyggbart lista UI</string>
     <string name="pref_pull_to_update_ui">dra att uppdatera UI</string>
     <string name="pref_expandable_list_ui">utbyggbart lista UI</string>
     <string name="pref_expand_list_in_default">utöka listan i standard</string>
@@ -48,6 +48,8 @@
     <string name="msg_add_podcast_cancelled">Avbruten</string>
 
     <string name="podcast_list_menu">Lägg podcast</string>
+    
+    <string name="reload_menu">reload podcast</string>
     <string name="preference_menu">Företräde</string>
     <string name="preference_title">Företräde</string>
     <string name="exit_menu">Avsluta</string>
@@ -55,6 +57,8 @@
     <string name="app_podcastlist_title">Redigera podcast lista</string>
     <string name="podcast_added">Podcast: {0} läggs</string>
     <string name="header_lastupdated">Senast uppdaterad: </string>
+    <string name="scan_qrcode_menu">Skanna QR-kod för podcast</string>
+    <string name="export_podcast_menu">Export podcast lista som text</string>
     <string name="podcast_webpage_menu">Öppna podcast webbplats</string>
     <string name="clear_response_cache_title">Klar HTTP-svar cache</string>
     <string name="hint_podcast_url">URL podcast XML</string>

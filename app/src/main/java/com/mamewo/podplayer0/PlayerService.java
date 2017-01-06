@@ -353,7 +353,6 @@ public class PlayerService
 		if(null != listener_){
 			listener_.onStartLoadingMusic(currentPlaying_);
 		}
-		showNotification(currentPlaying_.getTitle());
 		return true;
 	}
 	
@@ -387,6 +386,7 @@ public class PlayerService
 		}
 		isPausing_ = true;
 		stopForeground(false);
+        //TODO: update notificatoion (button)
 		showNotification(currentPlaying_.getTitle());
 		if(null != listener_){
 			listener_.onStopMusic(PAUSE);
@@ -515,6 +515,7 @@ public class PlayerService
 			return;
 		}
 		player_.start();
+        showNotification(currentPlaying_.getTitle());
 		if(null != listener_){
 			listener_.onStartMusic(currentPlaying_);
 		}

@@ -13,9 +13,9 @@
     <string name="pref_load_podcasts_when_app_starts">アプリ起動時に読み込む</string>
     <string name="pref_read_timeout">読み込みのタイムアウト</string>
     <string name="pref_appearance_category">UI</string>
+    <string name="pref_view_mode">表示モード</string>
     <string name="pref_general_category">一般</string>
     <string name="pref_network_category">ネットワーク</string> 
-    <string name="pref_use_expandable_list_ui">折りたたみリストを使う</string>
     <string name="pref_pull_to_update_ui">引き下げて更新するリストを使う</string>
     <string name="pref_expandable_list_ui">折りたたみリストを使う</string>
     <string name="pref_expand_list_in_default">折りたたみリストのデフォルト</string>
@@ -47,6 +47,7 @@
     <string name="msg_add_podcast_cancelled">キャンセルされました</string>
 
     <string name="podcast_list_menu">ポッドキャストを追加</string>
+    <string name="reload_menu">ポッドキャストを再読み込み</string>
     <string name="preference_menu">設定</string>
     <string name="preference_title">設定</string>
     <string name="exit_menu">終了</string>
@@ -54,6 +55,8 @@
     <string name="app_podcastlist_title">Podcastリストを編集</string>
     <string name="podcast_added">{0} を追加しました</string>
     <string name="header_lastupdated">最終更新: </string>
+    <string name="scan_qrcode_menu">ポッドキャストのURLのQRコードをスキャンして取り込む</string>
+    <string name="export_podcast_menu">ポッドキャストのリストをテキストとして出力</string>
     <string name="podcast_webpage_menu">Podcastサイトを開く</string>
     <string name="clear_response_cache_title">キャッシュを削除する</string>
     <string name="hint_podcast_url">Podcast(XML)のURL</string>

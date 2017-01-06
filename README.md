@@ -56,6 +56,11 @@ How to run UI test using Robotium
 TODO
 ----
 * add cool widget to play episode
+* add settings
+  * cache size
+    * icon, podcast xml
+    * display current used cache size
+    * modify size in MB
 * support tablet
   * add supoprts-largescreen and supoprts-xlargescreen
   * https://developer.android.com/guide/topics/manifest/supports-screens-element.html

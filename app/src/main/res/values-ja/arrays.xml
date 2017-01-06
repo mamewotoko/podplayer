@@ -24,4 +24,11 @@
       <item>pubDate順の逆(新しいものから)</item>
       -->
     </string-array>
+
+    <string-array name="view_mode_title">
+      <item>引っ張って更新するリスト</item>
+      <item>Podcastごとに折りたためるリスト</item>
+      <item>カード</item>
+    </string-array>>
+    
 </resources>
