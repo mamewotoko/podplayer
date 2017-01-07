@@ -1169,7 +1169,7 @@ public class PodcastListPreference
             PodcastInfo info = (PodcastInfo)v.getTag();            
             ViewParent parent = v.getParent();
             if(null == parent){
-                Log.d(TAG, "parent is null");
+                //Log.d(TAG, "parent is null");
                 return;
             }
             if(parent instanceof LinearLayout){

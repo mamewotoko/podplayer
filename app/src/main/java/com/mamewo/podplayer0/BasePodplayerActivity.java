@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 
+//import com.google.firebase.analytics.FirebaseAnalytics;
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
 import com.mamewo.lib.podcast_parser.PodcastInfo;
@@ -79,8 +80,14 @@ abstract public class BasePodplayerActivity
     abstract protected void onPodcastListChanged(boolean start);
     abstract protected void notifyOrderChanged(int order);
 
+    //remove
+    //private FirebaseAnalytics mFirebaseAnalytics;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Obtain the FirebaseAnalytics instance.
+        //mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         ServiceConnection conn = this;
         Class<?> userClass = this.getClass();
         Intent intent = new Intent(this, PlayerService.class);
@@ -168,7 +175,7 @@ abstract public class BasePodplayerActivity
     
     public void startLoading(BaseGetPodcastTask task) {
         if (isLoading()) {
-            Log.d(TAG, "startLoading: already loading");
+            //Log.d(TAG, "startLoading: already loading");
             return;
         }
         //state_.loadedEpisode_.clear();
@@ -212,7 +219,7 @@ abstract public class BasePodplayerActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
-        Log.d(TAG, "onSharedPreferneceChanged: " + key);
+        //Log.d(TAG, "onSharedPreferneceChanged: " + key);
         syncPreference(pref, key);
     }
 
@@ -229,7 +236,7 @@ abstract public class BasePodplayerActivity
     }
  
     protected void syncPreference(SharedPreferences pref, String key){
-        Log.d(TAG, "syncPreference: " + key);
+        //Log.d(TAG, "syncPreference: " + key);
         boolean updateAll = "ALL".equals(key);
         if ("view_mode".equals(key)) {
             uiSettingChanged_ = true;
@@ -266,7 +273,7 @@ abstract public class BasePodplayerActivity
         }
         if("clear_response_cache".equals(key)){
             try{
-                Log.d(TAG, "HTTP response cache is cleared");
+                //Log.d(TAG, "HTTP response cache is cleared");
                 client_.cache().evictAll();
                 Glide.get(getApplicationContext()).clearMemory();
                 final Context context = getApplicationContext();
@@ -301,7 +308,7 @@ abstract public class BasePodplayerActivity
             for(int i = 0; i < state_.podcastList_.size(); i++){
                 state_.loadedEpisode_.add(new ArrayList<EpisodeInfo>());
             }
-            Log.d(TAG, "loadedEpisode_:" + state_.loadedEpisode_.size() + "; " + state_.podcastList_.size());
+            //Log.d(TAG, "loadedEpisode_:" + state_.loadedEpisode_.size() + "; " + state_.podcastList_.size());
             onPodcastListChanged(updateAll);
         }
     }

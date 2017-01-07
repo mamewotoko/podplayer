@@ -200,7 +200,7 @@ public class PodplayerCardActivity
     
     @Override
     protected void onPodcastListChanged(boolean start) {
-        Log.d(TAG, "onPodcastListChanged");
+        //Log.d(TAG, "onPodcastListChanged");
         SharedPreferences pref=
                 PreferenceManager.getDefaultSharedPreferences(this);
         List<String> list = new ArrayList<String>();
@@ -288,7 +288,7 @@ public class PodplayerCardActivity
             }
         }
         if (playPos < 0){
-            Log.i(TAG, "playByInfo: info is not found: " + info.getURL());
+            //Log.i(TAG, "playByInfo: info is not found: " + info.getURL());
             return false;
         }
 
@@ -296,7 +296,7 @@ public class PodplayerCardActivity
     }
 
     public void updateUI(){
-        Log.d(TAG, "updateUI");
+        //Log.d(TAG, "updateUI");
         updatePlayButton();
         adapter_.notifyDataSetChanged();
     }
@@ -308,19 +308,19 @@ public class PodplayerCardActivity
 		//int pos = player_.getCurrentPositionMsec();
         //currentPlayPosition_.setProgress(pos);
         //timer
-        Log.d(TAG, "onStartMusic");
+        //Log.d(TAG, "onStartMusic");
         updateUI();
     }
 
     @Override
     public void onStartLoadingMusic(EpisodeInfo info) {
-        Log.d(TAG, "onStartLoadingMusic");
+        //Log.d(TAG, "onStartLoadingMusic");
         updateUI();
     }
 
     @Override
     public void onStopMusic(int mode) {
-        Log.d(TAG, "onStopMusic");
+        //Log.d(TAG, "onStopMusic");
         updateUI();
     }
     

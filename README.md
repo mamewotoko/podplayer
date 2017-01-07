@@ -55,16 +55,12 @@ How to run UI test using Robotium
 
 TODO
 ----
-* add cool widget to play episode
 * add settings
   * cache size
     * icon, podcast xml
     * display current used cache size
     * modify size in MB
-* support tablet
-  * add supoprts-largescreen and supoprts-xlargescreen
-  * https://developer.android.com/guide/topics/manifest/supports-screens-element.html
-  * tablet
+* Try navutil
 * spoon test
   * bug: MainActivityTest, PodcastActivity then testAbortReload blocks...
   * add test of share function
@@ -78,6 +74,7 @@ TODO
   * preference
   * notification
   * landscape UI
+  * enable episode long click
 * support TV
 * fix bug
   * open Podcast list editor, press detail button, rotate screen
@@ -86,9 +83,11 @@ TODO
 * podcast detail as activity
   * channel/description or itunes:subtitle
   * channel/copyright
-* add preset podcast
+* add podcast to podcast site
   * Luke's ENGLISH Podcast - Learn British English with Luke Thompson
     https://audioboom.com/channels/1919834.rss
+  * NHK news
+  
 * fix bugs
   * when prepare error occurs, cursor moves to next episode
     * stop playing
