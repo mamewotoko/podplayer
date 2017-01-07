@@ -168,7 +168,7 @@ abstract public class BasePodplayerActivity
     
     public void startLoading(BaseGetPodcastTask task) {
         if (isLoading()) {
-            Log.d(TAG, "startLoading: already loading");
+            //Log.d(TAG, "startLoading: already loading");
             return;
         }
         //state_.loadedEpisode_.clear();
@@ -212,7 +212,7 @@ abstract public class BasePodplayerActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
-        Log.d(TAG, "onSharedPreferneceChanged: " + key);
+        //Log.d(TAG, "onSharedPreferneceChanged: " + key);
         syncPreference(pref, key);
     }
 
@@ -229,7 +229,7 @@ abstract public class BasePodplayerActivity
     }
  
     protected void syncPreference(SharedPreferences pref, String key){
-        Log.d(TAG, "syncPreference: " + key);
+        //Log.d(TAG, "syncPreference: " + key);
         boolean updateAll = "ALL".equals(key);
         if ("view_mode".equals(key)) {
             uiSettingChanged_ = true;
@@ -266,7 +266,7 @@ abstract public class BasePodplayerActivity
         }
         if("clear_response_cache".equals(key)){
             try{
-                Log.d(TAG, "HTTP response cache is cleared");
+                //Log.d(TAG, "HTTP response cache is cleared");
                 client_.cache().evictAll();
                 Glide.get(getApplicationContext()).clearMemory();
                 final Context context = getApplicationContext();

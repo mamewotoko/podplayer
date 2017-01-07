@@ -28,33 +28,36 @@
         android:label="podplayer_exp"
         android:launchMode="singleTask">
       <!-- comment this before release -->
+      <!--
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
+        </intent-filter>
+        -->
     </activity>
     <activity
         android:name="com.mamewo.podplayer0.PodplayerActivity"
         android:label="podplayer_list"
         android:launchMode="singleTask">
       <!-- comment this before release -->
+      <!--
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
+        </intent-filter>
+        -->
     </activity>
     <activity
         android:name="com.mamewo.podplayer0.PodplayerCardActivity"
         android:label="podplayer_card"
         android:launchMode="singleTask">
-      <!--
-      android:theme="@style/AppTheme.Light.NoActionBar"
-      -->
       <!-- comment this before release -->
+      <!--
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
+        </intent-filter>
+        -->
     </activity>
     <activity android:name="com.mamewo.podplayer0.PodplayerPreference"
               />

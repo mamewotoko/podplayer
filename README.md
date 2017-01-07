@@ -55,16 +55,24 @@ How to run UI test using Robotium
 
 TODO
 ----
-* add cool widget to play episode
+* analyze initialize performance
+  * systrace
+* add abort botton to card view
+* write listened item to db
+  * https://github.com/realm/realm-java
+* Design
+  * use DialogCompat
 * add settings
   * cache size
     * icon, podcast xml
     * display current used cache size
     * modify size in MB
+* share episode menu
 * support tablet
-  * add supoprts-largescreen and supoprts-xlargescreen
+  * add supprts-largescreen and supoprts-xlargescreen
   * https://developer.android.com/guide/topics/manifest/supports-screens-element.html
   * tablet
+* add cool widget to play episode  
 * spoon test
   * bug: MainActivityTest, PodcastActivity then testAbortReload blocks...
   * add test of share function

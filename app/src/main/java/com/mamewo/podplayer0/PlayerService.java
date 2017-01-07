@@ -257,11 +257,11 @@ public class PlayerService
 	 */
 	public boolean playNth(int pos) {
 		if(currentPlaylist_ == null || currentPlaylist_.size() == 0){
-			Log.d(TAG, "playNth: currentPlaylist_: " + currentPlaylist_);
+			//Log.d(TAG, "playNth: currentPlaylist_: " + currentPlaylist_);
 			return false;
 		}
 		if(isPreparing_){
-			Log.d(TAG, "playNth: preparing");
+			//Log.d(TAG, "playNth: preparing");
 			return false;
 		}
 		isPausing_ = false;
@@ -303,16 +303,16 @@ public class PlayerService
 	 */
 	public boolean playMusic() {
 		if (isPreparing_) {
-			Log.d(TAG, "playMusic: preparing");
+			//Log.d(TAG, "playMusic: preparing");
 			stopOnPrepared_ = false;
 			return false;
 		}
 		if (null == currentPlaylist_ || currentPlaylist_.isEmpty()) {
-			Log.i(TAG, "playMusic: playlist is null");
+			//Log.i(TAG, "playMusic: playlist is null");
 			return false;
 		}
 		currentPlaying_ = currentPlaylist_.get(playCursor_);
-		Log.d(TAG, "playMusic: " + playCursor_ + ": " + currentPlaying_.getURL());
+		//Log.d(TAG, "playMusic: " + playCursor_ + ": " + currentPlaying_.getURL());
 		try {
             player_.reset();
             String username = currentPlaying_.getUsername();
@@ -347,7 +347,7 @@ public class PlayerService
 			isPausing_ = false;
 		}
 		catch (IOException e) {
-            Log.d(TAG, "playMusic IOException", e);
+            //Log.d(TAG, "playMusic IOException", e);
 			return false;
 		}
 		if(null != listener_){
@@ -404,7 +404,7 @@ public class PlayerService
 	@Override
 	public void onCreate(){
 		super.onCreate();
-		Log.d(TAG, "PlayerService.onCreate is called");
+		//Log.d(TAG, "PlayerService.onCreate is called");
 		currentPlaylist_ = null;
 		currentPlaying_ = null;
 		listener_ = null;
@@ -502,10 +502,10 @@ public class PlayerService
 
 	@Override
 	public void onPrepared(MediaPlayer player) {
-		Log.d(TAG, "onPrepared");
+		//Log.d(TAG, "onPrepared");
 		isPreparing_ = false;
 		if(stopOnPrepared_) {
-			Log.d(TAG, "onPrepared aborted");
+			//Log.d(TAG, "onPrepared aborted");
 			stopOnPrepared_ = false;
 			return;
 		}
@@ -606,13 +606,11 @@ public class PlayerService
 
 		switch(focusChange){
 		case AudioManager.AUDIOFOCUS_GAIN:
-			Log.d(TAG, "AUDIOFOCUS_GAIN");
 			//TODO: test stop -> gain / playing -> gain
 			manager.registerMediaButtonEventReceiver(mediaButtonReceiver_);
 			restartMusic();
 			break;
 		case AudioManager.AUDIOFOCUS_LOSS:
-			Log.d(TAG, "AUDIOFOCUS_LOSS");
 			pauseMusic();
 			manager.unregisterMediaButtonEventReceiver(mediaButtonReceiver_);
 			break;
@@ -668,7 +666,6 @@ public class PlayerService
 				}
 			}
 			else if(Intent.ACTION_MEDIA_BUTTON.equals(action)) {
-				Log.d(TAG, "media button");
 				Intent i = new Intent(context, PlayerService.class);
 				i.setAction(MEDIA_BUTTON_ACTION);
 				i.putExtra("event", intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT));
