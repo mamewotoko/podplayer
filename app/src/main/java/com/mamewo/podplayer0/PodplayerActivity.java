@@ -101,10 +101,8 @@ public class PodplayerActivity
             Log.i(TAG, "Already loading");
             return;
         }
-        SharedPreferences pref=
-                PreferenceManager.getDefaultSharedPreferences(this);
         Resources res = getResources();
-        int limit = Integer.valueOf(pref.getString("episode_limit", res.getString(R.string.default_episode_limit)));
+        int limit = Integer.valueOf(pref_.getString("episode_limit", res.getString(R.string.default_episode_limit)));
         GetPodcastTask task = new GetPodcastTask(limit);
         startLoading(task);
     }
@@ -255,7 +253,8 @@ public class PodplayerActivity
             }
             EpisodeInfo episode = (EpisodeInfo)getItem(position);
             holder.titleView_.setText(episode.getTitle());
-            holder.timeView_.setText(episode.getPubdateString());
+
+            holder.timeView_.setText(episode.getPubdateString(dateFormat_));
 
             EpisodeInfo current = player_.getCurrentPodInfo();
             if(current != null && current.getURL().equals(episode.getURL())) {
@@ -340,7 +339,7 @@ public class PodplayerActivity
                 episodeListView_.setLastUpdated(getString(R.string.header_lastupdated) + df.format(state_.lastUpdatedDate_));
             }
             setProgressBarIndeterminateVisibility(false);
-            episodeListView_.onRefreshComplete();
+            episodeListView_.onRefreshComplete(dateFormat_.format(state_.lastUpdatedDate_));
             episodeListView_.hideHeader();
             loadTask_ = null;
             savePodcastList();
@@ -378,10 +377,8 @@ public class PodplayerActivity
     @Override
     public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
         EpisodeInfo info = (EpisodeInfo)adapter_.getItem(pos-1);
-        SharedPreferences pref=
-                PreferenceManager.getDefaultSharedPreferences(this);
         Resources res = getResources();
-        boolean enableLongClick = pref.getBoolean("enable_long_click", res.getBoolean(R.bool.default_enable_long_click));
+        boolean enableLongClick = pref_.getBoolean("enable_long_click", res.getBoolean(R.bool.default_enable_long_click));
         if ((! enableLongClick) || null == info.getLink()) {
             return false;
         }
@@ -460,9 +457,7 @@ public class PodplayerActivity
         player_ = ((PlayerService.LocalBinder)binder).getService();
         player_.setOnStartMusicListener(this);
         playButton_.setEnabled(true);
-        SharedPreferences pref=
-                PreferenceManager.getDefaultSharedPreferences(this);
-        syncPreference(pref, "ALL");
+        syncPreference(pref_, "ALL");
         //TODO: move to base?
         List<EpisodeInfo> playlist = player_.getCurrentPlaylist();
         if (null != playlist) {
@@ -486,8 +481,6 @@ public class PodplayerActivity
     @Override
     protected void onPodcastListChanged(boolean start) {
         Log.d(TAG, "onPodcastListChanged");
-        SharedPreferences pref=
-                PreferenceManager.getDefaultSharedPreferences(this);
         List<String> list = new ArrayList<String>();
         list.add(getString(R.string.selector_all));
         //stop loading?
@@ -503,7 +496,7 @@ public class PodplayerActivity
 
         selector_.setAdapter(adapter);
         Resources res = getResources();
-        boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
+        boolean doLoad = pref_.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
         List<EpisodeInfo> playlist = state_.latestList_;
         if ((!start) || doLoad) {
             //reload
@@ -512,8 +505,7 @@ public class PodplayerActivity
         else if (playlist != null && ! playlist.isEmpty()) {
             //update list by loaded items
             filterSelectedPodcast();
-            DateFormat df = DateFormat.getDateTimeInstance();
-            episodeListView_.onRefreshComplete(df.format(state_.lastUpdatedDate_));
+            episodeListView_.onRefreshComplete(dateFormat_.format(state_.lastUpdatedDate_));
         }
         updateUI();
     }

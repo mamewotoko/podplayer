@@ -405,7 +405,7 @@ public class PodplayerCardActivity
         public void onBindViewHolder(EpisodeHolder holder, int position){
             final EpisodeInfo episode = currentList_.get(position);
             holder.titleView_.setText(episode.getTitle());
-            holder.timeView_.setText(episode.getPubdateString());
+            holder.timeView_.setText(episode.getPubdateString(dateFormat_));
             holder.container_.setOnClickListener(new ItemClickListener(episode));
             holder.container_.setOnLongClickListener(new ItemLongClickListener(episode));
 

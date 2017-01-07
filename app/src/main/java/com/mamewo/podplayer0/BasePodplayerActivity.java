@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 //import com.google.firebase.analytics.FirebaseAnalytics;
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
@@ -79,7 +81,8 @@ abstract public class BasePodplayerActivity
 
     abstract protected void onPodcastListChanged(boolean start);
     abstract protected void notifyOrderChanged(int order);
-
+    protected SharedPreferences pref_;
+    protected DateFormat dateFormat_;
     //remove
     //private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -87,7 +90,7 @@ abstract public class BasePodplayerActivity
         super.onCreate(savedInstanceState);
         // Obtain the FirebaseAnalytics instance.
         //mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
+        pref_ = PreferenceManager.getDefaultSharedPreferences(this);
         ServiceConnection conn = this;
         Class<?> userClass = this.getClass();
         Intent intent = new Intent(this, PlayerService.class);
@@ -102,10 +105,8 @@ abstract public class BasePodplayerActivity
         //TODO: handle error
         bindService(intent, conn, Context.BIND_AUTO_CREATE);
         loadTask_ = null;
-        SharedPreferences pref=
-                PreferenceManager.getDefaultSharedPreferences(this);
-        pref.registerOnSharedPreferenceChangeListener(this);
-        currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
+        pref_.registerOnSharedPreferenceChangeListener(this);
+        currentOrder_ = Integer.valueOf(pref_.getString("episode_order", "0"));
 
         ExternalCacheDiskCacheFactory factory = new ExternalCacheDiskCacheFactory(this, "podcast_icon", ICON_DISK_CACHE_BYTES);
         //TODO: use new api
@@ -114,7 +115,9 @@ abstract public class BasePodplayerActivity
             //obsolete API....
             Glide.setup(builder);
         }
-        long timeoutSec = (long)Integer.valueOf(pref.getString("read_timeout", res.getString(R.string.default_read_timeout)));
+        String formatStr = pref_.getString("date_format", YYYYMMDD_24H);
+        dateFormat_ = new SimpleDateFormat(formatStr);
+        long timeoutSec = (long)Integer.valueOf(pref_.getString("read_timeout", res.getString(R.string.default_read_timeout)));
         File cacheDir = new File(getExternalCacheDir(), HTTP_CACHE_DIR);
         client_ = new OkHttpClient.Builder()
             .readTimeout(timeoutSec, TimeUnit.SECONDS)
@@ -124,9 +127,7 @@ abstract public class BasePodplayerActivity
 
     @Override
     public void onDestroy() {
-        SharedPreferences pref =
-                PreferenceManager.getDefaultSharedPreferences(this);
-        pref.unregisterOnSharedPreferenceChangeListener(this);
+        pref_.unregisterOnSharedPreferenceChangeListener(this);
         if (null != loadTask_) {
             loadTask_.cancel(true);
         }
@@ -296,6 +297,9 @@ abstract public class BasePodplayerActivity
         if(updateAll || "episode_order".equals(key)){
             currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
             notifyOrderChanged(currentOrder_);
+        }
+        if(updateAll || "date_format".equals(key)){
+            dateFormat_ = new SimpleDateFormat(pref.getString("date_format", YYYYMMDD_24H));
         }
         //following block should be last one of this function
         if (updateAll || "podcastlist2".equals(key)) {

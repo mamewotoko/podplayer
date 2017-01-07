@@ -20,6 +20,17 @@ public class Const {
     static final
     public int VIEW_CARD = 2;
 
+    //format
+    
+    static final
+    public String YYYYMMDD_24H = "yyyy/MM/dd HH:mm Z";
+    static final
+    public String YYYYMMDD_AMPM = "yyyy/MM/dd hh:mm a Z";
+    static final
+    public String ENGLISH_24H = "EEE, dd MMM yyyy HH:mm Z";
+    static final
+    public String ENGLISH_AMPM = "EEE, dd MMM yyyy hh:mm a Z";
+    
     //move to array.xml
     static final
     public String[] SHARE_OPTIONS = { "Twitter", "Mail", "QRCode" };

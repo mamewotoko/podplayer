@@ -87,7 +87,6 @@ TODO
   * Luke's ENGLISH Podcast - Learn British English with Luke Thompson
     https://audioboom.com/channels/1919834.rss
   * NHK news
-  
 * fix bugs
   * when prepare error occurs, cursor moves to next episode
     * stop playing
@@ -105,9 +104,6 @@ TODO
   * podcast xml
   * episode item
     * introduce simple memory based cache
-* use unified date format
-  * pull to refresh
-  * published date of episode
 * display toast when network error occurs
 * handle opml as input to specify podcast list
 * share podcast with friend / author (add to preset)

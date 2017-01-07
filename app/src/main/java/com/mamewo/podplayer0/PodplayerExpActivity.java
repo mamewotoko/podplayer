@@ -359,7 +359,7 @@ public class PodplayerExpActivity
             }
             EpisodeInfo episode = (EpisodeInfo)getChild(groupPosition, childPosition);
             holder.titleView_.setText(episode.getTitle());
-            holder.timeView_.setText(episode.getPubdateString());
+            holder.timeView_.setText(episode.getPubdateString(dateFormat_));
             EpisodeInfo current = player_.getCurrentPodInfo();
             if(current != null && current.getURL().equals(episode.getURL())) {
                 //cache!

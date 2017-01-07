@@ -78,6 +78,13 @@
         android:summaryOff="@string/pref_icon_hide"
         android:summaryOn="@string/pref_icon_show"
         android:title="@string/pref_show_podcast_icon" />
+    <ListPreference
+	android:key="date_format"
+	android:entries="@array/date_format_entries"
+	android:entryValues="@array/date_format_entries_value"
+	android:defaultValue="yyyy/MM/dd HH:mm Z"
+	android:title="@string/pref_date_format"
+	/>
   </PreferenceCategory>
   <PreferenceCategory android:title="@string/pref_network_category" >
     <Preference
