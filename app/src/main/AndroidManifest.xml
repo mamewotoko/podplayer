@@ -22,7 +22,6 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-
     <activity
         android:name="com.mamewo.podplayer0.PodplayerExpActivity"
         android:label="podplayer_exp"
@@ -56,6 +55,8 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
+    <activity android:name="com.mamewo.podplayer0.PodcastSiteActivity"
+              />
     <activity android:name="com.mamewo.podplayer0.PodplayerPreference"
               />
     <activity android:name="com.mamewo.podplayer0.PodcastListPreference"

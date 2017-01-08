@@ -111,6 +111,8 @@ public class PodcastListPreference
     private int QRCODE_DIALOG = 3;
     static final
     private int SCAN_QRCODE_REQUEST_CODE = 3232;
+    static final
+    private int PODCAST_SITE_REQUEST_CODE = 3233;
         
     final static
     private String PODCAST_SITE_URL = "http://mamewo.ddo.jp/podcast/podcast.html";
@@ -275,9 +277,11 @@ public class PodcastListPreference
         Intent i;
         switch(item.getItemId()) {
         case R.id.podcast_page_menu:
-            i =
-                new Intent(Intent.ACTION_VIEW, Uri.parse(PODCAST_SITE_URL));
-            startActivity(new Intent(i));
+            // i =
+            //     new Intent(Intent.ACTION_VIEW, Uri.parse(PODCAST_SITE_URL));
+            // startActivity(new Intent(i));
+            Intent intent = new Intent(this, PodcastSiteActivity.class);
+            startActivityForResult(intent, PODCAST_SITE_REQUEST_CODE);
             handled = true;
             break;
         case R.id.export_podcast_menu:
@@ -295,28 +299,43 @@ public class PodcastListPreference
         }
         return handled;
     }
-
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode, requestCode, data);
-        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        
-        if(scanResult == null){
+        switch(requestCode){
+        case SCAN_QRCODE_REQUEST_CODE:
+            IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if(scanResult == null){
             //DISPLAY toast message?
-            return;
+                return;
+            }
+            String url = scanResult.getContents();
+            String orig = urlEdit_.getText().toString();
+            if(orig.length() > 0){
+                orig = orig + "\n" + url;
+            }
+            else {
+                orig = url;
+            }
+            urlEdit_.setText(orig);
+            startCheckURLText();
+            break;
+        case PODCAST_SITE_REQUEST_CODE:
+            Log.d(TAG, "data: "+data);
+            if(null == data){
+                break;
+            }
+            String urls = data.getStringExtra(PodcastSiteActivity.PODCAST_SITE_URLS);
+            //String urlStr = String.join("\n", urls);
+            urlEdit_.setText(urls);
+            startCheckURLText();
+            break;
+        default:
+            break;
         }
-        String url = scanResult.getContents();
-        String orig = urlEdit_.getText().toString();
-        if(orig.length() > 0){
-            orig = orig + "\n" + url;
-        }
-        else {
-            orig = url;
-        }
-        urlEdit_.setText(orig);
-        startCheckURLText();
-    }
 
+    }
+    
     private class SimpleRequest
     {
         private URL url_;
@@ -476,9 +495,6 @@ public class PodcastListPreference
             dialog = builder.create();
             break;
         case SHARE_PODCAST_DIALOG:
-            // final String title = (String)bundle.getCharSequence("title");
-            // final String url = (String)bundle.getCharSequence("url");
-            
             builder = new AlertDialog.Builder(this)
                 .setTitle(R.string.share_podcast)
                 .setItems(SHARE_OPTIONS, new DialogInterface.OnClickListener(){
