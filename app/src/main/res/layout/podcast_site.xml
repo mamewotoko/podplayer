@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="vertical" >
+  <android.support.v7.widget.Toolbar
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize"
+      android:background="?attr/colorPrimary"
+      >
+  </android.support.v7.widget.Toolbar>
+
+  <WebView
+      android:id="@+id/web_view"
+      android:layout_width="fill_parent"
+      android:layout_height="match_parent"
+      android:focusable="true"
+      android:focusableInTouchMode="true" >
+  </WebView>
+  <EditText
+      android:id="@+id/url_edit"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:inputType="textNoSuggestions"
+      android:hint="@string/username"
+      android:focusable="true"
+      />
+</LinearLayout>
