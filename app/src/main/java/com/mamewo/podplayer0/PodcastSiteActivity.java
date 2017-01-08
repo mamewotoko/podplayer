@@ -24,7 +24,7 @@ public class PodcastSiteActivity
     static final
     public String PODCAST_SITE_URLS = "PODCAST_SITE_URLS";
     static final        
-    private String PODSITE_URL = "http://mamewo.ddo.jp/podcast/podcast.html";
+    private String PODSITE_URL = "http://mamewo.ddo.jp/podcast/podcast.html#main";
     private WebView webView_;
     private String urls_;
     
