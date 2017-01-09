@@ -38,7 +38,7 @@ public class BaseGetPodcastTask
     final static
     private String[] DUMMY_ARRAY = new String[0];
     private int publishBufferSize_;
-    private List<Podcast> authRequired_;
+    private List<PodcastRealm> authRequired_;
     
     final static
     private String TAG = "podparser";
@@ -60,14 +60,14 @@ public class BaseGetPodcastTask
         client_ = client;
         buffer_ = new ArrayList<String>();
         publishBufferSize_ = publishBufferSize;
-        authRequired_ = new ArrayList<Podcast>();
+        authRequired_ = new ArrayList<PodcastRealm>();
     }
 
     public BaseGetPodcastTask(Context context, OkHttpClient client, int limit) {
         this(context, client, limit, DEFAULT_BUFFER_SIZE);
     }
 
-    public List<Podcast> getAuthRequiredList(){
+    public List<PodcastRealm> getAuthRequiredList(){
         return authRequired_;
     }
     
