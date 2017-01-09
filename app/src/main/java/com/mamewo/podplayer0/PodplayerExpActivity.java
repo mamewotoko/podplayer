@@ -3,10 +3,10 @@ package com.mamewo.podplayer0;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
-import com.mamewo.lib.podcast_parser.EpisodeInfo;
-//import com.mamewo.lib.podcast_parser.PodcastInfo;
-import com.mamewo.lib.podcast_parser.Podcast;
+import com.mamewo.podplayer0.parser.BaseGetPodcastTask;
+import com.mamewo.podplayer0.parser.EpisodeInfo;
+//import com.mamewo.podplayer0.parser.PodcastInfo;
+import com.mamewo.podplayer0.parser.Podcast;
 
 
 import static com.mamewo.podplayer0.Const.*;

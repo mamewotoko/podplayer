@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import com.mamewo.lib.podcast_parser.EpisodeInfo;
-import com.mamewo.lib.podcast_parser.Util;
+import com.mamewo.podplayer0.parser.EpisodeInfo;
+import com.mamewo.podplayer0.parser.Util;
 
 import static com.mamewo.podplayer0.Const.*;
 

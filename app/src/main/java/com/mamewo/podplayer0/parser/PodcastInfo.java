@@ -1,28 +1,22 @@
-package com.mamewo.podplayer0.db;
+package com.mamewo.podplayer0.parser;
+
+import java.net.URL;
 
 import java.io.Serializable;
 import java.net.URL;
 import java.net.MalformedURLException;
 import android.util.Log;
-import com.mamewo.podplayer0.parser.Podcast;
-import com.mamewo.podplayer0.parser.PodcastBuilder;
 
-import io.realm.RealmObject;
-import io.realm.RealmModel;
-import io.realm.annotations.RealmClass;
-import io.realm.annotations.Ignore;
-
-import static com.mamewo.podplayer0.Const.*;
-
-@RealmClass
-public class PodcastRealm
-    implements RealmModel,
-               Podcast,
-               Serializable
+public class PodcastInfo 
+    implements Serializable,
+               Podcast
 {
-    private static final long serialVersionUID = 76131894671950703L;
+    final static
+    private String TAG = "podparser";
+    
+    private static final long serialVersionUID = 7613791894671950703L;
     private String title_;
-    private String url_;
+    private URL url_;
     private boolean enabled_;
     private String iconURL_;
 
@@ -31,10 +25,7 @@ public class PodcastRealm
     private String password_;
     private int status_;
 
-    @Ignore
-    private URL parsedURL_;
-    
-    public PodcastRealm(){
+    public PodcastInfo(){
         title_ = null;
         url_ = null;
         enabled_ = true;
@@ -43,6 +34,24 @@ public class PodcastRealm
         password_ = null;
         status_ = Podcast.UNKNOWN;
     }
+    
+    // public PodcastInfo(String title, URL url, String iconURL, boolean enabled, String username, String password, Status status) {
+    //     title_ = title;
+    //     if(null == title_){
+    //         title_ = "";
+    //     }
+    //     url_ = url;
+    //     iconURL_ = iconURL;
+    //     enabled_ = enabled;
+
+    //     username_ = username;
+    //     password_ = password;
+    //     lastStatus_ = status;
+    // }
+
+    // public PodcastInfo(String title, URL url, String iconURL, boolean enabled) {
+    //     this(title, url, iconURL, enabled, null, null, Status.UNKNOWN);
+    // }
     
     public String getTitle(){
         return title_;
@@ -53,13 +62,11 @@ public class PodcastRealm
     }
     
     public void setURL(String url) {
-        url_ = url;
         try{
-            parsedURL_ = new URL(url_);
+            url_ = new URL(url);
         }
         catch(MalformedURLException e){
             Log.d(TAG, "parse url", e);
-            parsedURL_ = null;
         }
     }
     
@@ -67,27 +74,20 @@ public class PodcastRealm
         return url_.toString();
     }
 
-    //XXX
     public URL getParsedURL(){
-        try{
-            return new URL(url_);
-        }
-        catch(MalformedURLException e){
-            Log.d(TAG, "parse url", e);
-            return null;
-        }
+        return url_;
     }
     
     public URL getURLWithAuthInfo(){
-        try{
-            if(null != username_ && null != password_){
-                return new URL(addUserInfo(url_));
+        if(null != username_ && null != password_){
+            try{
+                return new URL(addUserInfo(url_.toString()));
             }
-            return new URL(url_);
+            catch (MalformedURLException e){
+                return null;
+            }
         }
-        catch (MalformedURLException e){
-            return null;
-        }
+        return url_;
     }
 
     public boolean getEnabled(){
@@ -144,13 +144,13 @@ public class PodcastRealm
     }
 
     static
-    public class PodcastRealmBuilder
-        implements PodcastBuilder<PodcastRealm>
+    public class PodcastInfoBuilder
+        implements PodcastBuilder<PodcastInfo>
     {
-        private PodcastRealm info_;
+        private PodcastInfo info_;
 
-        public PodcastRealmBuilder(){
-            info_ = new PodcastRealm();
+        public PodcastInfoBuilder(){
+            info_ = new PodcastInfo();
         }
 
         @Override
@@ -189,7 +189,7 @@ public class PodcastRealm
         }
 
         @Override
-        public PodcastRealm build(){
+        public PodcastInfo build(){
             return info_;
         }
     }

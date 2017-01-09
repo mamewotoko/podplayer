@@ -31,10 +31,10 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
-import com.mamewo.lib.podcast_parser.EpisodeInfo;
-//import com.mamewo.lib.podcast_parser.PodcastInfo;
-import com.mamewo.lib.podcast_parser.Podcast;
+import com.mamewo.podplayer0.parser.BaseGetPodcastTask;
+import com.mamewo.podplayer0.parser.EpisodeInfo;
+//import com.mamewo.podplayer0.parser.PodcastInfo;
+import com.mamewo.podplayer0.parser.Podcast;
 import com.markupartist.android.widget.PullToRefreshListView;
 
 import com.mamewo.podplayer0.db.PodcastRealm;
@@ -334,12 +334,9 @@ public class PodplayerActivity
         }
 
         private void onFinished() {
-            DateFormat df = DateFormat.getDateTimeInstance();
             //TODO: change format of date
             state_.lastUpdatedDate_ = new Date();
-            episodeListView_.setLastUpdated(getString(R.string.header_lastupdated) + df.format(state_.lastUpdatedDate_));
-            setProgressBarIndeterminateVisibility(false);
-            episodeListView_.onRefreshComplete(dateFormat_.format(state_.lastUpdatedDate_));
+            episodeListView_.onRefreshComplete(getString(R.string.header_lastupdated) + dateFormat_.format(state_.lastUpdatedDate_));
             episodeListView_.hideHeader();
             loadTask_ = null;
             savePodcastList();
@@ -505,7 +502,7 @@ public class PodplayerActivity
         else if (playlist != null && ! playlist.isEmpty()) {
             //update list by loaded items
             filterSelectedPodcast();
-            episodeListView_.onRefreshComplete(dateFormat_.format(state_.lastUpdatedDate_));
+            episodeListView_.onRefreshComplete(getString(R.string.header_lastupdated) + dateFormat_.format(state_.lastUpdatedDate_));
         }
         updateUI();
     }

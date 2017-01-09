@@ -37,10 +37,10 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.app.AlertDialog;
 import android.app.Dialog;
 
-import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
-import com.mamewo.lib.podcast_parser.EpisodeInfo;
-//import com.mamewo.lib.podcast_parser.PodcastInfo;
-import com.mamewo.lib.podcast_parser.Podcast;
+import com.mamewo.podplayer0.parser.BaseGetPodcastTask;
+import com.mamewo.podplayer0.parser.EpisodeInfo;
+//import com.mamewo.podplayer0.parser.PodcastInfo;
+import com.mamewo.podplayer0.parser.Podcast;
 
 import com.mamewo.podplayer0.db.PodcastRealm;
 

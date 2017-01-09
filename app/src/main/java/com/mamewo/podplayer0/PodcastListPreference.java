@@ -25,6 +25,7 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmBaseAdapter;
+import io.realm.RealmChangeListener;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -45,11 +46,11 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import com.mamewo.lib.podcast_parser.PodcastInfo;
-import com.mamewo.lib.podcast_parser.Podcast;
-import com.mamewo.lib.podcast_parser.PodcastInfo.PodcastInfoBuilder;
-import com.mamewo.lib.podcast_parser.PodcastBuilder;
-import com.mamewo.lib.podcast_parser.Util;
+import com.mamewo.podplayer0.parser.PodcastInfo;
+import com.mamewo.podplayer0.parser.Podcast;
+import com.mamewo.podplayer0.parser.PodcastInfo.PodcastInfoBuilder;
+import com.mamewo.podplayer0.parser.PodcastBuilder;
+import com.mamewo.podplayer0.parser.Util;
 
 import static com.mamewo.podplayer0.Const.*;
 
@@ -138,7 +139,8 @@ public class PodcastListPreference
     private ListView podcastListView_;
     private int dialogID_;
     private RealmResults<PodcastRealm> podcastModel_;
-    
+    private RealmChangeListener<RealmResults<PodcastRealm>> changeListener_;
+        
     static
     private Class<PodcastRealm.PodcastRealmBuilder> podcastBuilderClass_ = PodcastRealm.PodcastRealmBuilder.class;
     
@@ -173,7 +175,30 @@ public class PodcastListPreference
         podcastListView_ = (ListView) findViewById(R.id.podlist);
         client_ = new OkHttpClient();
         dialogID_ = -1;
-        podcastModel_ = loadSettingRealm(this);
+        Realm realm = Realm.getDefaultInstance();
+        Log.d(TAG, "json exists: "+configJSONExists());
+        if(configJSONExists()){
+            try{
+                //loadJSONFileIntoDB();
+                storeJSONSetting();
+                storeDefaultPodcastList();
+            }
+            catch(JSONException e){
+                Log.d(TAG, "load error(JSON)", e);
+            }
+            catch(IOException e){
+                Log.d(TAG, "load error", e);
+            }
+        }
+        podcastModel_ = realm.where(PodcastRealm.class).findAll();
+        changeListener_ = new RealmChangeListener<RealmResults<PodcastRealm>>(){
+                @Override
+                public void onChange(RealmResults<PodcastRealm> results){
+                    adapter_.notifyDataSetChanged();
+                }
+            };
+        podcastModel_.addChangeListener(changeListener_);
+        
         adapter_ = new PodcastAdapter(this, podcastModel_);
         podcastListView_.setAdapter(adapter_);
         
@@ -213,29 +238,33 @@ public class PodcastListPreference
     @Override
     public void onDestroy(){
         Log.d(TAG, "onDestroy: dialog" + dialogID_);
-        //remove on rotating screen 
+        //remove on rotating screen
+        podcastModel_.removeChangeListener(changeListener_);
         removeDialog(dialogID_);
         super.onDestroy();
     }
     
-    static
-    private List<Podcast> defaultPodcastList(Context context) {
-        String[] allTitles = context.getResources().getStringArray(R.array.pref_podcastlist_keys);
-        String[] allURLs = context.getResources().getStringArray(R.array.pref_podcastlist_urls);
+    public void storeDefaultPodcastList() {
+        String[] allTitles = getResources().getStringArray(R.array.pref_podcastlist_keys);
+        String[] allURLs = getResources().getStringArray(R.array.pref_podcastlist_urls);
         List<Podcast> list = new ArrayList<Podcast>();
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
         for (int i = 0; i < allTitles.length; i++) {
             String title = allTitles[i];
             String url = allURLs[i];
             //TODO: get config and fetch icon
-            PodcastBuilder<PodcastRealm> builder = createPodcastBuilder();
-            builder.setTitle(title);
-            builder.setURL(url);
-            builder.setEnabled(true);
-            Podcast info = builder.build();
-            
-            list.add(info);
+            RealmResults<PodcastRealm> existing = realm.where(PodcastRealm.class).equalTo("url", url).findAll();
+            if(existing.size() > 0){
+                continue;
+            }
+            PodcastRealm info = realm.createObject(PodcastRealm.class);
+            info.setTitle(title);
+            info.setURL(url);
+            info.setEnabled(true);
         }
-        return list;
+        realm.commitTransaction();
     }
 
     @Override
@@ -365,9 +394,9 @@ public class PodcastListPreference
         private URL url_;
         private String username_;
         private String password_;
-        private Podcast prevInfo_;
+        private PodcastRealm prevInfo_;
         
-        public SimpleRequest(URL url, String username, String password, Podcast prevInfo){
+        public SimpleRequest(URL url, String username, String password, PodcastRealm prevInfo){
             url_ = url;
             username_ = username;
             password_ = password;
@@ -390,7 +419,7 @@ public class PodcastListPreference
             return password_;
         }
 
-        public Podcast getPrevInfo(){
+        public PodcastRealm getPrevInfo(){
             return prevInfo_;
         }
     }
@@ -417,6 +446,7 @@ public class PodcastListPreference
                 }
             }
             if(duplicate){
+                //TODO: mesage
                 continue;
             }
             try {
@@ -451,7 +481,10 @@ public class PodcastListPreference
             CheckBox checkbox = (CheckBox) view;
             isChanged_ = true;
             Podcast info = (Podcast) checkbox.getTag();
+            Realm realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
             info.setEnabled(!info.getEnabled());
+            realm.commitTransaction();
             checkbox.setChecked(info.getEnabled());
         }
     }
@@ -618,7 +651,7 @@ public class PodcastListPreference
     
     //check that podcast XML is valid
     public class CheckTask
-        extends AsyncTask<SimpleRequest, Podcast, Boolean>
+        extends AsyncTask<SimpleRequest, String, Boolean>
     {
         private boolean addItem_;
         
@@ -632,6 +665,7 @@ public class PodcastListPreference
 
         @Override
         protected Boolean doInBackground(SimpleRequest... reqlist) {
+            Realm realm = Realm.getDefaultInstance();
             XmlPullParserFactory factory;
             try {
                 factory = XmlPullParserFactory.newInstance();
@@ -685,16 +719,17 @@ public class PodcastListPreference
                                 //update ui
                             }
                             else {
-                                PodcastBuilder<PodcastRealm> b = createPodcastBuilder();
-                                b.setTitle(url.toString());
-                                b.setURL(url.toString());
-                                b.setEnabled(true);
-                                b.setUsername(username);
-                                b.setPassword(password);
-                                b.setStatus(Podcast.AUTH_REQUIRED_LOCKED);
-                                Podcast info = b.build();
-                                publishProgress(info);
-                                //publishProgress(new PodcastInfo(url.toString(), url, null, true, username, password, PodcastInfo.Status.AUTH_REQUIRED_LOCKED));
+                                //PodcastBuilder<PodcastRealm> b = createPodcastBuilder();
+                                realm.beginTransaction();
+                                PodcastRealm info = realm.createObject(PodcastRealm.class);
+                                info.setTitle(url.toString());
+                                info.setURL(url.toString());
+                                info.setEnabled(true);
+                                info.setUsername(username);
+                                info.setPassword(password);
+                                info.setStatus(Podcast.AUTH_REQUIRED_LOCKED);
+                                realm.commitTransaction();
+                                publishProgress(info.getTitle());
                             }
                             result = true;
                             Log.i(TAG, "auth required: "+url.toString());
@@ -708,15 +743,18 @@ public class PodcastListPreference
                     }
                     if(!response.isSuccessful()){
                         Log.i(TAG, "http error: "+response.message()+", "+url.toString());
-                        PodcastBuilder<PodcastRealm> b = createPodcastBuilder();
-                        b.setTitle(url.toString());
-                        b.setURL(url.toString());
-                        b.setEnabled(true);
-                        b.setUsername(username);
-                        b.setPassword(password);
-                        b.setStatus(Podcast.ERROR);
-                        Podcast info = b.build();
-                        publishProgress(info);
+                        //PodcastBuilder<PodcastRealm> b = createPodcastBuilder();
+                        realm.beginTransaction();
+                        PodcastRealm info = realm.createObject(PodcastRealm.class);
+                        info.setTitle(url.toString());
+                        info.setURL(url.toString());
+                        info.setEnabled(true);
+                        info.setUsername(username);
+                        info.setPassword(password);
+                        info.setStatus(Podcast.ERROR);
+                        realm.commitTransaction();
+
+                        publishProgress(info.getTitle());
                         continue;
                     }
                     //TODO: check content-type
@@ -793,26 +831,31 @@ public class PodcastListPreference
                     else {
                         status = Podcast.PUBLIC;
                     }
-                    Podcast prevInfo = req.getPrevInfo();
+                    PodcastRealm prevInfo = req.getPrevInfo();
                     if(null != prevInfo){
+                        realm.beginTransaction();
+
                         prevInfo.setTitle(title);
                         prevInfo.setIconURL(iconURL);
                         prevInfo.setUsername(username);
                         prevInfo.setPassword(password);
                         prevInfo.setStatus(status);
+                        realm.commitTransaction();
                     }
                     else {
-                        PodcastBuilder<PodcastRealm> builder = createPodcastBuilder();
-                        builder.setTitle(title);
-                        builder.setURL(url.toString());
-                        builder.setIconURL(iconURL);
-                        builder.setEnabled(true);
-                        builder.setUsername(username);
-                        builder.setPassword(password);
-                        builder.setStatus(status);
-                        //publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, status));
-                        Podcast info = builder.build();
-                        publishProgress(info);
+                        //PodcastBuilder<PodcastRealm> builder = createPodcastBuilder();
+                        realm.beginTransaction();
+                        PodcastRealm info = realm.createObject(PodcastRealm.class);
+                        info.setTitle(title);
+                        info.setURL(url.toString());
+                        info.setIconURL(iconURL);
+                        info.setEnabled(true);
+                        info.setUsername(username);
+                        info.setPassword(password);
+                        info.setStatus(status);
+
+                        realm.commitTransaction();                        
+                        publishProgress(info.getTitle());
                     }
                     result = true;
                 }
@@ -821,16 +864,19 @@ public class PodcastListPreference
         }
         
         @Override
-        protected void onProgressUpdate(Podcast... values){
-            Podcast info = values[0];
-            //adapter_.add(info);
-            //podcastList_.add((PodcastRealm)info);
-            //TODO: check status of PodcastInfo and change message
-            if(info.getTitle().length() > 0){
-                String msg =
-                    MessageFormat.format(getString(R.string.podcast_added), info.getTitle());
-                showMessage(msg);
+        protected void onProgressUpdate(String... titles){
+            // for(int i = 0; i < values.length; i++){
+            //     podcastModel_.add(values[i]);
+            // }
+            for(int i = 0; i < titles.length; i++){
+                String title = titles[i];
+                if(null != title && title.length() > 0){
+                    String msg =
+                        MessageFormat.format(getString(R.string.podcast_added), title);
+                    showMessage(msg);
+                }
             }
+            //TODO: check status of PodcastInfo and change message
             urlEdit_.setText("");
             urlEdit_.clearFocus();
             isChanged_ = true;
@@ -846,7 +892,6 @@ public class PodcastListPreference
             }
             else {
                 isChanged_ = true;
-                //saveSetting();
                 adapter_.notifyDataSetChanged();
             }
         }
@@ -1051,44 +1096,26 @@ public class PodcastListPreference
             fos.close();
         }
     }
-
-    static
-    public List<Podcast> loadSettingJSON(Context context) {
-        List<Podcast> list;
-        File configFile = context.getFileStreamPath(CONFIG_FILENAME);
-        if (configFile.exists()) {
-            try {
-                list = loadSettingFromJSONFile(context);
-            }
-            catch (IOException e) {
-                Log.d(TAG, "IOException", e);
-                list = defaultPodcastList(context);
-            }
-            catch (JSONException e) {
-                Log.d(TAG, "JSONException", e);
-                list = defaultPodcastList(context);
-            }
-        }
-        else {
-            list = defaultPodcastList(context);
-        }
-        return list;
-    }
     
-    //List<PodcastRealm>
-    static
-    public RealmResults<PodcastRealm> loadSettingRealm(Context context) {
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<PodcastRealm> result = realm.where(PodcastRealm.class).findAll();
-        return result;
+    public boolean configJSONExists(){
+        File configFile = getFileStreamPath(CONFIG_FILENAME);
+        return configFile.exists();
     }
+   
+    //List<PodcastRealm>
+    // public RealmResults<PodcastRealm> loadPodcastRealm(Context context){
+    //     Realm realm = Realm.getDefaultInstance();
+    //     RealmResults<PodcastRealm> result = realm.where(PodcastRealm.class).findAll();
+    //     return result;
+    // }
   
-    static
-    private List<Podcast> loadSettingFromJSONFile(Context context)
+    private void storeJSONSetting()
             throws IOException, JSONException
     {
+        Log.d(TAG, "loadJSONFileIntoDB");
+        Realm realm = Realm.getDefaultInstance();
         //TODO: move to podcastinfo
-        FileInputStream fis = context.getApplicationContext().openFileInput(CONFIG_FILENAME);
+        FileInputStream fis = getApplicationContext().openFileInput(CONFIG_FILENAME);
         StringBuffer sb = new StringBuffer();
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
@@ -1102,9 +1129,10 @@ public class PodcastListPreference
             fis.close();
         }
         String json = sb.toString();
-        List<Podcast> list = new ArrayList<Podcast>();
         JSONTokener tokener = new JSONTokener(json);
         JSONArray jsonArray = (JSONArray) tokener.nextValue();
+
+        realm.beginTransaction();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject value = jsonArray.getJSONObject(i);
             //TODO: check key existance
@@ -1120,13 +1148,25 @@ public class PodcastListPreference
             }
             if(value.has("status")){
                 try{
-                    status = value.getInt("status");
+                    String st = value.getString("status");
+                    if("UNKNOWN".equals(st)){
+                        status = Podcast.UNKNOWN;
+                    }
+                    else if("PUBLIC".equals(st)){
+                        status = Podcast.PUBLIC;
+                    }
+                    else if("AUTH_REQUIRED_LOCKED".equals(st)){
+                        status = Podcast.AUTH_REQUIRED_LOCKED;
+                    }
+                    else if("ERROR".equals(st)){
+                        status = Podcast.ERROR;
+                    }
                 }
                 catch(Exception e){
                     Log.d(TAG, "read status failed: ", e);
                 }
             }
-            String username  = null;
+            String username = null;
             if(value.has("username")){
                 username = value.getString("username");
             }
@@ -1135,19 +1175,21 @@ public class PodcastListPreference
                 password  = value.getString("password");
             }
             boolean enabled = value.getBoolean("enabled");
+            RealmResults<PodcastRealm> existing = realm.where(PodcastRealm.class).equalTo("url", url.toString()).findAll();
+            if(existing.size() > 0){
+                continue;
+            }
 			//PodcastInfo info = new PodcastInfo(title, url, iconURL, enabled, username, password, status);
-            PodcastInfoBuilder builder = new PodcastInfoBuilder();
-            builder.setTitle(title);
-            builder.setURL(url.toString());
-            builder.setIconURL(iconURL);
-            builder.setEnabled(enabled);
-            builder.setUsername(username);
-            builder.setPassword(password);
-            builder.setStatus(status);
-            PodcastInfo info = builder.build();
-            list.add(info);
+            PodcastRealm info = realm.createObject(PodcastRealm.class);
+            info.setTitle(title);
+            info.setURL(url.toString());
+            info.setIconURL(iconURL);
+            info.setEnabled(enabled);
+            info.setUsername(username);
+            info.setPassword(password);
+            info.setStatus(status);
         }
-        return list;
+        realm.commitTransaction();
     }
     
     public void showMessage(String message) {
@@ -1248,7 +1290,7 @@ public class PodcastListPreference
     {
         @Override
         public void onClick(View v){
-            Podcast info = (Podcast)v.getTag();            
+            PodcastRealm info = (PodcastRealm)v.getTag();            
             ViewParent parent = v.getParent();
             if(null == parent){
                 //Log.d(TAG, "parent is null");

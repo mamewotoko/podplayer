@@ -12,10 +12,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 //import com.google.firebase.analytics.FirebaseAnalytics;
-import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
-import com.mamewo.lib.podcast_parser.EpisodeInfo;
-import com.mamewo.lib.podcast_parser.Podcast;
-//import com.mamewo.lib.podcast_parser.PodcastInfo;
+import com.mamewo.podplayer0.parser.BaseGetPodcastTask;
+import com.mamewo.podplayer0.parser.EpisodeInfo;
+import com.mamewo.podplayer0.parser.Podcast;
+//import com.mamewo.podplayer0.parser.PodcastInfo;
 
 import com.mamewo.podplayer0.db.PodcastRealm;
 import static com.mamewo.podplayer0.Const.*;
@@ -112,6 +112,8 @@ abstract public class BasePodplayerActivity
         final Resources res = getResources();
 
         state_ = new PodplayerState();
+        //
+        state_.loadRealm();
         connection_ = conn;
         //TODO: handle error
         bindService(intent, conn, Context.BIND_AUTO_CREATE);
@@ -316,7 +318,7 @@ abstract public class BasePodplayerActivity
         //following block should be last one of this function
         if (updateAll || "podcastlist2".equals(key)) {
             Log.d(TAG, "podcastList load and update");
-            state_.podcastList_ = PodcastListPreference.loadSettingRealm(this);
+            //state_.podcastList_ = PodcastListPreference.loadSettingRealm(this);
             //TODO: reuse loaded episode
             state_.loadedEpisode_.clear();
             state_.latestList_.clear();
@@ -377,6 +379,11 @@ abstract public class BasePodplayerActivity
             podcastList_ = null;
             lastUpdatedDate_ = null;
             latestList_ = new ArrayList<EpisodeInfo>();
+        }
+        
+        public void loadRealm(){
+            Realm realm = Realm.getDefaultInstance();
+            podcastList_ = realm.where(PodcastRealm.class).findAll();
         }
         
         // static

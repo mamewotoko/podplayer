@@ -78,16 +78,16 @@
     </string-array>
 
     <string-array name="date_format_entries" translatable="false">
-      <item>yyyy/MM/dd HH:mm Z\n(2017/01/07 13:10 +0900)</item>
-      <item>yyyy/MM/dd hh:mm a Z\n(2017/01/07 01:10 PM +0900)</item>
-      <item>EEE, dd MMM yyyy HH:mm Z\n(Sat, 7 Jan 2017 13:10 +0900)</item>
-      <item>EEE, dd MMM yyyy hh:mm a Z\n(Sat, 7 Jan 2017 01:10 PM +0900)</item>
+      <item>yyyy/MM/dd HH:mm:ss Z\n(2017/01/07 13:10:34 +0900)</item>
+      <item>yyyy/MM/dd hh:mm:ss a Z\n(2017/01/07 01:10:34 PM +0900)</item>
+      <item>EEE, dd MMM yyyy HH:mm:ss Z\n(Sat, 7 Jan 2017 13:10:34 +0900)</item>
+      <item>EEE, dd MMM yyyy hh:mm:ss a Z\n(Sat, 7 Jan 2017 01:10:34 PM +0900)</item>
     </string-array>
 
     <string-array name="date_format_entries_value" translatable="false">
-      <item>yyyy/MM/dd HH:mm Z</item>
-      <item>yyyy/MM/dd hh:mm a Z</item>
-      <item>EEE, dd MMM yyyy HH:mm Z</item>
-      <item>EEE, dd MMM yyyy hh:mm a Z</item>
+      <item>yyyy/MM/dd HH:mm:ss Z</item>
+      <item>yyyy/MM/dd hh:mm:ss a Z</item>
+      <item>EEE, dd MMM yyyy HH:mm:ss Z</item>
+      <item>EEE, dd MMM yyyy hh:mm:ss a Z</item>
     </string-array>
 </resources>
