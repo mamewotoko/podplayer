@@ -1,9 +1,0 @@
-TODO
-* make white base allow icon
-  * ./res/drawable-hdpi/ic_pulltorefresh_arrow.png
-  * ./res/drawable-ldpi/ic_pulltorefresh_arrow.png
-  * ./res/drawable-mdpi/ic_pulltorefresh_arrow.png
-
----
-Takashi Masuyama < mamewotoko@gmail.com >
-http://mamewo.ddo.jp/
