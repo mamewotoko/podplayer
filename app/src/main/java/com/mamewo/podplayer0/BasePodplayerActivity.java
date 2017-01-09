@@ -14,8 +14,10 @@ import java.text.SimpleDateFormat;
 //import com.google.firebase.analytics.FirebaseAnalytics;
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
-import com.mamewo.lib.podcast_parser.PodcastInfo;
+import com.mamewo.lib.podcast_parser.Podcast;
+//import com.mamewo.lib.podcast_parser.PodcastInfo;
 
+import com.mamewo.podplayer0.db.PodcastRealm;
 import static com.mamewo.podplayer0.Const.*;
 
 import android.media.AudioManager;
@@ -48,6 +50,10 @@ import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
 import android.support.v7.app.AppCompatActivity;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+import io.realm.RealmConfiguration;
+
 //common activity + gesture
 abstract public class BasePodplayerActivity
     extends AppCompatActivity
@@ -56,7 +62,7 @@ abstract public class BasePodplayerActivity
     ServiceConnection
 {
     final static
-    private PodcastInfo[] DUMMY_INFO_LIST = new PodcastInfo[0];
+    private Podcast[] DUMMY_INFO_LIST = new Podcast[0];
     final static
     public String HTTP_CACHE_DIR = "http_cache";
     //16mbyte
@@ -90,6 +96,11 @@ abstract public class BasePodplayerActivity
         super.onCreate(savedInstanceState);
         // Obtain the FirebaseAnalytics instance.
         //mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        Realm.init(getApplicationContext());
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfig);
+        
         pref_ = PreferenceManager.getDefaultSharedPreferences(this);
         ServiceConnection conn = this;
         Class<?> userClass = this.getClass();
@@ -224,16 +235,17 @@ abstract public class BasePodplayerActivity
         syncPreference(pref, key);
     }
 
+    //XXX remove
     public void savePodcastList() {
-        try{
-            PodcastListPreference.saveSetting(this, state_.podcastList_);
-        }
-        catch(JSONException e){
-            Log.d(TAG, "saveError", e);
-        }
-        catch(IOException e){
-            Log.d(TAG, "saveError", e);
-        }
+        // try{
+        //     PodcastListPreference.saveSettingJSON(this, state_.podcastList_);
+        // }
+        // catch(JSONException e){
+        //     Log.d(TAG, "saveError", e);
+        // }
+        // catch(IOException e){
+        //     Log.d(TAG, "saveError", e);
+        // }
     }
  
     protected void syncPreference(SharedPreferences pref, String key){
@@ -304,7 +316,7 @@ abstract public class BasePodplayerActivity
         //following block should be last one of this function
         if (updateAll || "podcastlist2".equals(key)) {
             Log.d(TAG, "podcastList load and update");
-            state_.podcastList_ = PodcastListPreference.loadSetting(this);
+            state_.podcastList_ = PodcastListPreference.loadSettingRealm(this);
             //TODO: reuse loaded episode
             state_.loadedEpisode_.clear();
             state_.latestList_.clear();
@@ -354,7 +366,7 @@ abstract public class BasePodplayerActivity
         implements Serializable
     {
         private static final long serialVersionUID = 1L;
-        protected List<PodcastInfo> podcastList_;
+        protected RealmResults<PodcastRealm> podcastList_;
         //same order with podcastList_
         protected List<List<EpisodeInfo>> loadedEpisode_;
         protected Date lastUpdatedDate_;
@@ -362,7 +374,7 @@ abstract public class BasePodplayerActivity
         
         private PodplayerState() {
             loadedEpisode_ = new ArrayList<List<EpisodeInfo>>();
-            podcastList_ = new ArrayList<PodcastInfo>();
+            podcastList_ = null;
             lastUpdatedDate_ = null;
             latestList_ = new ArrayList<EpisodeInfo>();
         }
@@ -405,7 +417,7 @@ abstract public class BasePodplayerActivity
             if(loadedEpisode_.size() <= episode.index_){
                 return;
             }
-            
+
             //TODO: binary search by date? (sort by date first)
             List<EpisodeInfo> targetList = loadedEpisode_.get(episode.index_);
             int s = targetList.size();

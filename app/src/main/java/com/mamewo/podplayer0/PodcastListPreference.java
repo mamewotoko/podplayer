@@ -20,6 +20,12 @@ import android.graphics.Point;
 import android.view.Display;
 import android.view.WindowManager;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
+import io.realm.OrderedRealmCollection;
+import io.realm.RealmBaseAdapter;
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.EncodeHintType;
@@ -27,7 +33,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import org.apache.commons.io.input.BOMInputStream;
-    
+
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -40,8 +46,10 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import com.mamewo.lib.podcast_parser.PodcastInfo;
+import com.mamewo.lib.podcast_parser.Podcast;
+import com.mamewo.lib.podcast_parser.PodcastInfo.PodcastInfoBuilder;
+import com.mamewo.lib.podcast_parser.PodcastBuilder;
 import com.mamewo.lib.podcast_parser.Util;
-import com.mamewo.lib.podcast_parser.PodcastInfo.Status.*;
 
 import static com.mamewo.podplayer0.Const.*;
 
@@ -90,6 +98,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.mamewo.podplayer0.db.PodcastRealm;
+
 public class PodcastListPreference
 	extends AppCompatActivity
     implements OnClickListener,
@@ -116,7 +126,7 @@ public class PodcastListPreference
         
     final static
     private String PODCAST_SITE_URL = "http://mamewo.ddo.jp/podcast/podcast.html";
-    private PodcastInfo selectedPodcastInfo_;
+    private Podcast selectedPodcastInfo_;
     private OkHttpClient client_;
     private Map<String, Option> optionMap_;
     private Dialog dialog_;
@@ -124,9 +134,13 @@ public class PodcastListPreference
     private Button addButton_;
     private EditText urlEdit_;
     private CheckTask task_;
-    private PodcastInfoAdapter adapter_;
+    private PodcastAdapter adapter_;
     private ListView podcastListView_;
     private int dialogID_;
+    private RealmResults<PodcastRealm> podcastModel_;
+    
+    static
+    private Class<PodcastRealm.PodcastRealmBuilder> podcastBuilderClass_ = PodcastRealm.PodcastRealmBuilder.class;
     
     private class Option {
         public boolean expand_;
@@ -134,7 +148,18 @@ public class PodcastListPreference
             expand_ = false;
         }
     }
-    
+
+    static
+    private PodcastRealm.PodcastRealmBuilder createPodcastBuilder(){
+        try{
+            return podcastBuilderClass_.newInstance();
+        }
+        catch(Exception e){
+            Log.d(TAG, "builder craete error", e);
+            return null;
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,15 +173,14 @@ public class PodcastListPreference
         podcastListView_ = (ListView) findViewById(R.id.podlist);
         client_ = new OkHttpClient();
         dialogID_ = -1;
-
-        List<PodcastInfo> list = loadSetting(this);
-        adapter_ = new PodcastInfoAdapter(this, list);
+        podcastModel_ = loadSettingRealm(this);
+        adapter_ = new PodcastAdapter(this, podcastModel_);
         podcastListView_.setAdapter(adapter_);
-
+        
         if(null != savedInstanceState){
             String url = (String)savedInstanceState.getCharSequence("selected_url");
             if(null != url){
-                for(PodcastInfo info: list){
+                for(Podcast info: podcastModel_){
                     if(url.equals(info.getURL().toString())){
                         selectedPodcastInfo_ = info;
                         break;
@@ -195,21 +219,21 @@ public class PodcastListPreference
     }
     
     static
-    private List<PodcastInfo> defaultPodcastInfoList(Context context) {
+    private List<Podcast> defaultPodcastList(Context context) {
         String[] allTitles = context.getResources().getStringArray(R.array.pref_podcastlist_keys);
         String[] allURLs = context.getResources().getStringArray(R.array.pref_podcastlist_urls);
-        List<PodcastInfo> list = new ArrayList<PodcastInfo>();
+        List<Podcast> list = new ArrayList<Podcast>();
         for (int i = 0; i < allTitles.length; i++) {
             String title = allTitles[i];
-            try {
-                URL url = new URL(allURLs[i]);
-                //TODO: get config and fetch icon
-                PodcastInfo info = new PodcastInfo(title, url, null, true);
-                list.add(info);
-            }
-            catch (MalformedURLException e) {
-                Log.d(TAG, "malformed", e);
-            }
+            String url = allURLs[i];
+            //TODO: get config and fetch icon
+            PodcastBuilder<PodcastRealm> builder = createPodcastBuilder();
+            builder.setTitle(title);
+            builder.setURL(url);
+            builder.setEnabled(true);
+            Podcast info = builder.build();
+            
+            list.add(info);
         }
         return list;
     }
@@ -220,13 +244,13 @@ public class PodcastListPreference
         isChanged_ = false;
     }
 
-    private void saveSetting(){
+    private void saveSettingJSON(){
         try {
-            List<PodcastInfo> lst = new ArrayList<PodcastInfo>();
+            List<Podcast> lst = new ArrayList<Podcast>();
             for(int i = 0; i < adapter_.getCount(); i++){
                 lst.add(adapter_.getItem(i));
             }
-            saveSetting(this, lst);
+            saveSettingJSON(this, lst);
         }
         catch (JSONException e) {
             Log.d(TAG, "failed to save podcast list setting");
@@ -240,7 +264,7 @@ public class PodcastListPreference
     private StringBuffer exportSetting(){
         StringBuffer sb = new StringBuffer();
         for(int i = 0; i < adapter_.getCount(); i++){
-            PodcastInfo pinfo = adapter_.getItem(i);
+            Podcast pinfo = adapter_.getItem(i);
             String title = pinfo.getTitle();
             String url = pinfo.getURL().toString();
             sb.append(title);
@@ -254,7 +278,7 @@ public class PodcastListPreference
     @Override
     public void onStop() {
         super.onStop();
-        saveSetting();
+        //saveSetting();
         Log.d(TAG, "onStop isChanged_: "+isChanged_);
         if (isChanged_) {
             //Ummm..: to call preference listener
@@ -341,9 +365,9 @@ public class PodcastListPreference
         private URL url_;
         private String username_;
         private String password_;
-        private PodcastInfo prevInfo_;
+        private Podcast prevInfo_;
         
-        public SimpleRequest(URL url, String username, String password, PodcastInfo prevInfo){
+        public SimpleRequest(URL url, String username, String password, Podcast prevInfo){
             url_ = url;
             username_ = username;
             password_ = password;
@@ -366,7 +390,7 @@ public class PodcastListPreference
             return password_;
         }
 
-        public PodcastInfo getPrevInfo(){
+        public Podcast getPrevInfo(){
             return prevInfo_;
         }
     }
@@ -426,7 +450,7 @@ public class PodcastListPreference
         else if (view.getId() == R.id.checkbox) {
             CheckBox checkbox = (CheckBox) view;
             isChanged_ = true;
-            PodcastInfo info = (PodcastInfo) checkbox.getTag();
+            Podcast info = (Podcast) checkbox.getTag();
             info.setEnabled(!info.getEnabled());
             checkbox.setChecked(info.getEnabled());
         }
@@ -500,7 +524,7 @@ public class PodcastListPreference
                 .setItems(SHARE_OPTIONS, new DialogInterface.OnClickListener(){
                         @Override
                         public void onClick(DialogInterface dialog, int which){
-                            PodcastInfo info = selectedPodcastInfo_;
+                            Podcast info = selectedPodcastInfo_;
                             if(null == info){
                                 // when screen is rotated
                                 return;
@@ -594,7 +618,7 @@ public class PodcastListPreference
     
     //check that podcast XML is valid
     public class CheckTask
-        extends AsyncTask<SimpleRequest, PodcastInfo, Boolean>
+        extends AsyncTask<SimpleRequest, Podcast, Boolean>
     {
         private boolean addItem_;
         
@@ -653,7 +677,7 @@ public class PodcastListPreference
                     if(response.code() == 401){
                         //TODO: show messge
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                            PodcastInfo prevInfo = req.getPrevInfo();
+                            Podcast prevInfo = req.getPrevInfo();
                             if(null != prevInfo){
                                 //update password
                                 prevInfo.setUsername(username);
@@ -661,7 +685,16 @@ public class PodcastListPreference
                                 //update ui
                             }
                             else {
-                                publishProgress(new PodcastInfo(url.toString(), url, null, true, username, password, PodcastInfo.Status.AUTH_REQUIRED_LOCKED));
+                                PodcastBuilder<PodcastRealm> b = createPodcastBuilder();
+                                b.setTitle(url.toString());
+                                b.setURL(url.toString());
+                                b.setEnabled(true);
+                                b.setUsername(username);
+                                b.setPassword(password);
+                                b.setStatus(Podcast.AUTH_REQUIRED_LOCKED);
+                                Podcast info = b.build();
+                                publishProgress(info);
+                                //publishProgress(new PodcastInfo(url.toString(), url, null, true, username, password, PodcastInfo.Status.AUTH_REQUIRED_LOCKED));
                             }
                             result = true;
                             Log.i(TAG, "auth required: "+url.toString());
@@ -675,7 +708,15 @@ public class PodcastListPreference
                     }
                     if(!response.isSuccessful()){
                         Log.i(TAG, "http error: "+response.message()+", "+url.toString());
-                        //publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, PodcastInfo.Status.ERROR));
+                        PodcastBuilder<PodcastRealm> b = createPodcastBuilder();
+                        b.setTitle(url.toString());
+                        b.setURL(url.toString());
+                        b.setEnabled(true);
+                        b.setUsername(username);
+                        b.setPassword(password);
+                        b.setStatus(Podcast.ERROR);
+                        Podcast info = b.build();
+                        publishProgress(info);
                         continue;
                     }
                     //TODO: check content-type
@@ -745,14 +786,14 @@ public class PodcastListPreference
                 }
                 if (null != title) {
                     //Log.d(TAG, "publish: " + title);
-                    PodcastInfo.Status status;
+                    int status;
                     if(null != username && null != password){
-                        status = PodcastInfo.Status.AUTH_REQUIRED_UNLOCKED;
+                        status = Podcast.AUTH_REQUIRED_UNLOCKED;
                         }
                     else {
-                        status = PodcastInfo.Status.PUBLIC;
+                        status = Podcast.PUBLIC;
                     }
-                    PodcastInfo prevInfo = req.getPrevInfo();
+                    Podcast prevInfo = req.getPrevInfo();
                     if(null != prevInfo){
                         prevInfo.setTitle(title);
                         prevInfo.setIconURL(iconURL);
@@ -761,7 +802,17 @@ public class PodcastListPreference
                         prevInfo.setStatus(status);
                     }
                     else {
-                        publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, status));
+                        PodcastBuilder<PodcastRealm> builder = createPodcastBuilder();
+                        builder.setTitle(title);
+                        builder.setURL(url.toString());
+                        builder.setIconURL(iconURL);
+                        builder.setEnabled(true);
+                        builder.setUsername(username);
+                        builder.setPassword(password);
+                        builder.setStatus(status);
+                        //publishProgress(new PodcastInfo(title, url, iconURL, true, username, password, status));
+                        Podcast info = builder.build();
+                        publishProgress(info);
                     }
                     result = true;
                 }
@@ -770,9 +821,10 @@ public class PodcastListPreference
         }
         
         @Override
-        protected void onProgressUpdate(PodcastInfo... values){
-            PodcastInfo info = values[0];
-            adapter_.add(info);
+        protected void onProgressUpdate(Podcast... values){
+            Podcast info = values[0];
+            //adapter_.add(info);
+            //podcastList_.add((PodcastRealm)info);
             //TODO: check status of PodcastInfo and change message
             if(info.getTitle().length() > 0){
                 String msg =
@@ -794,7 +846,7 @@ public class PodcastListPreference
             }
             else {
                 isChanged_ = true;
-                saveSetting();
+                //saveSetting();
                 adapter_.notifyDataSetChanged();
             }
         }
@@ -808,15 +860,12 @@ public class PodcastListPreference
         }
     }
     
-    public class PodcastInfoAdapter
-        extends ArrayAdapter<PodcastInfo>
+    public class PodcastAdapter
+        extends RealmBaseAdapter<PodcastRealm>
+        implements ListAdapter
     {
-        public PodcastInfoAdapter(Context context) {
-            super(context, R.layout.podcast_select_item);
-        }
-
-        public PodcastInfoAdapter(Context context, List<PodcastInfo> list) {
-            super(context, R.layout.podcast_select_item, list);
+        public PodcastAdapter(Context context, OrderedRealmCollection<PodcastRealm> list) {
+            super(context, list);
         }
         
         @Override
@@ -828,7 +877,7 @@ public class PodcastListPreference
             else {
                 view = convertView;
             }
-            PodcastInfo info = getItem(position);
+            Podcast info = getItem(position);
             String iconURL = info.getIconURL();
             //Log.d(TAG, "getView: icon: " + iconURL);
             ImageView icon = (ImageView)view.findViewById(R.id.podcast_icon);
@@ -895,18 +944,18 @@ public class PodcastListPreference
                 EditText usernameEdit = (EditText)view.findViewById(R.id.username);
                 EditText passwordEdit = (EditText)view.findViewById(R.id.password);
                 switch(info.getStatus()){
-                case UNKNOWN:
+                case Podcast.UNKNOWN:
                     //TODO: change icon
                     authView.setVisibility(View.GONE);
                     imageId = R.drawable.ic_error_outline_white_24dp;
                     imageColor = ContextCompat.getColor(context, R.color.white);
                     break;
-                case PUBLIC:
+                case Podcast.PUBLIC:
                     authView.setVisibility(View.GONE);
                     imageId = R.drawable.ic_public_white_24dp;
                     imageColor = ContextCompat.getColor(context, R.color.green);
                     break;
-                case AUTH_REQUIRED_LOCKED:
+                case Podcast.AUTH_REQUIRED_LOCKED:
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
                         authView.setVisibility(View.VISIBLE);
                         if(null != info.getUsername()){
@@ -928,7 +977,7 @@ public class PodcastListPreference
                     imageId = R.drawable.ic_lock_outline_white_24dp;
                     imageColor = ContextCompat.getColor(context, R.color.yellow);
                     break;
-                case AUTH_REQUIRED_UNLOCKED:
+                case Podcast.AUTH_REQUIRED_UNLOCKED:
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
                         authView.setVisibility(View.VISIBLE);
                         if(null != info.getUsername()){
@@ -950,7 +999,7 @@ public class PodcastListPreference
                     imageId = R.drawable.ic_lock_open_white_24dp;
                     imageColor = ContextCompat.getColor(context, R.color.green);
                     break;
-                case ERROR:
+                case Podcast.ERROR:
                     authView.setVisibility(View.GONE);
                     imageId = R.drawable.ic_error_outline_white_24dp;
                     imageColor = ContextCompat.getColor(context, R.color.pink);
@@ -975,13 +1024,13 @@ public class PodcastListPreference
     }
 
     static
-    public void saveSetting(Context context, List<PodcastInfo> lst) throws
+    public void saveSettingJSON(Context context, List<Podcast> lst) throws
         JSONException, IOException
     {
         JSONArray array = new JSONArray();
         //for (int i = 0; i < adapter_.getCount(); i++) {
         //PodcastInfo info = adapter_.getItem(i);
-        for(PodcastInfo info: lst){
+        for(Podcast info: lst){
             JSONObject jsonValue = (new JSONObject())
                 .accumulate("title", info.getTitle())
                 .accumulate("url", info.getURL().toString())
@@ -1002,10 +1051,10 @@ public class PodcastListPreference
             fos.close();
         }
     }
-    
+
     static
-    public List<PodcastInfo> loadSetting(Context context) {
-        List<PodcastInfo> list;
+    public List<Podcast> loadSettingJSON(Context context) {
+        List<Podcast> list;
         File configFile = context.getFileStreamPath(CONFIG_FILENAME);
         if (configFile.exists()) {
             try {
@@ -1013,21 +1062,29 @@ public class PodcastListPreference
             }
             catch (IOException e) {
                 Log.d(TAG, "IOException", e);
-                list = defaultPodcastInfoList(context);
+                list = defaultPodcastList(context);
             }
             catch (JSONException e) {
                 Log.d(TAG, "JSONException", e);
-                list = defaultPodcastInfoList(context);
+                list = defaultPodcastList(context);
             }
         }
         else {
-            list = defaultPodcastInfoList(context);
+            list = defaultPodcastList(context);
         }
         return list;
     }
     
+    //List<PodcastRealm>
     static
-    private List<PodcastInfo> loadSettingFromJSONFile(Context context)
+    public RealmResults<PodcastRealm> loadSettingRealm(Context context) {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<PodcastRealm> result = realm.where(PodcastRealm.class).findAll();
+        return result;
+    }
+  
+    static
+    private List<Podcast> loadSettingFromJSONFile(Context context)
             throws IOException, JSONException
     {
         //TODO: move to podcastinfo
@@ -1045,7 +1102,7 @@ public class PodcastListPreference
             fis.close();
         }
         String json = sb.toString();
-        List<PodcastInfo> list = new ArrayList<PodcastInfo>();
+        List<Podcast> list = new ArrayList<Podcast>();
         JSONTokener tokener = new JSONTokener(json);
         JSONArray jsonArray = (JSONArray) tokener.nextValue();
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -1057,13 +1114,13 @@ public class PodcastListPreference
             }
             URL url = new URL(value.getString("url"));
             String iconURL = null;
-            PodcastInfo.Status status = PodcastInfo.Status.UNKNOWN;
+            int status = Podcast.UNKNOWN;
             if(value.has("icon_url")){
                 iconURL = value.getString("icon_url");
             }
             if(value.has("status")){
                 try{
-                    status = PodcastInfo.Status.valueOf(value.getString("status"));
+                    status = value.getInt("status");
                 }
                 catch(Exception e){
                     Log.d(TAG, "read status failed: ", e);
@@ -1078,7 +1135,16 @@ public class PodcastListPreference
                 password  = value.getString("password");
             }
             boolean enabled = value.getBoolean("enabled");
-			PodcastInfo info = new PodcastInfo(title, url, iconURL, enabled, username, password, status);
+			//PodcastInfo info = new PodcastInfo(title, url, iconURL, enabled, username, password, status);
+            PodcastInfoBuilder builder = new PodcastInfoBuilder();
+            builder.setTitle(title);
+            builder.setURL(url.toString());
+            builder.setIconURL(iconURL);
+            builder.setEnabled(enabled);
+            builder.setUsername(username);
+            builder.setPassword(password);
+            builder.setStatus(status);
+            PodcastInfo info = builder.build();
             list.add(info);
         }
         return list;
@@ -1100,8 +1166,8 @@ public class PodcastListPreference
     {
         @Override
         public void onClick(View v){
-            PodcastInfo info = (PodcastInfo)v.getTag();
-            adapter_.remove(info);
+            Podcast info = (Podcast)v.getTag();
+            //adapter_.remove(info);
             isChanged_ = true;
             adapter_.notifyDataSetChanged();
         }
@@ -1112,15 +1178,15 @@ public class PodcastListPreference
     {
         @Override
         public void onClick(View v){
-            PodcastInfo info = (PodcastInfo)v.getTag();
-            int pos = adapter_.getPosition(info);
-            adapter_.remove(info);
-            if(pos > 0){
-                adapter_.insert(info, pos-1);
-            }
-            else {
-                adapter_.add(info);
-            }
+            Podcast info = (Podcast)v.getTag();
+            //int pos = adapter_.getPosition(info);
+            // adapter_.remove(info);
+            // if(pos > 0){
+            //     adapter_.insert(info, pos-1);
+            // }
+            // else {
+            //     adapter_.add(info);
+            // }
             isChanged_ = true;
             adapter_.notifyDataSetChanged();
         }
@@ -1131,27 +1197,27 @@ public class PodcastListPreference
     {
         @Override
         public void onClick(View v){
-            PodcastInfo info = (PodcastInfo)v.getTag();
-            int pos = adapter_.getPosition(info);
-            int len = adapter_.getCount();
-            adapter_.remove(info);
-            if(pos < len-1){
-                adapter_.insert(info, pos+1);
-            }
-            else {
-                adapter_.insert(info, 0);
-            }
+            Podcast info = (Podcast)v.getTag();
+            //int pos = adapter_.getPosition(info);
+            //int len = adapter_.getCount();
+            // adapter_.remove(info);
+            // if(pos < len-1){
+            //     adapter_.insert(info, pos+1);
+            // }
+            // else {
+            //     adapter_.insert(info, 0);
+            // }
             isChanged_ = true;
             adapter_.notifyDataSetChanged();
         }
     }
-
+    
     private class ShareButtonListener
         implements View.OnClickListener
     {
         @Override
         public void onClick(View v){
-            selectedPodcastInfo_ = (PodcastInfo)v.getTag();
+            selectedPodcastInfo_ = (Podcast)v.getTag();
 
             Bundle b = new Bundle();
             b.putCharSequence("title", selectedPodcastInfo_.getTitle());
@@ -1166,7 +1232,7 @@ public class PodcastListPreference
     {
         @Override
         public void onClick(View v){
-            PodcastInfo info = (PodcastInfo)v.getTag();
+            Podcast info = (Podcast)v.getTag();
             Option opt = optionMap_.get(info.getURL().toString());
             if(opt == null){
                 opt = new Option();
@@ -1182,7 +1248,7 @@ public class PodcastListPreference
     {
         @Override
         public void onClick(View v){
-            PodcastInfo info = (PodcastInfo)v.getTag();            
+            Podcast info = (Podcast)v.getTag();            
             ViewParent parent = v.getParent();
             if(null == parent){
                 //Log.d(TAG, "parent is null");
@@ -1198,7 +1264,7 @@ public class PodcastListPreference
                 //TODO check task
                 showDialog(CHECKING_DIALOG);
                 task_ = new CheckTask();
-                task_.execute(new SimpleRequest(info.getURL(), info.getUsername(), info.getPassword(), info));
+                task_.execute(new SimpleRequest(info.getParsedURL(), info.getUsername(), info.getPassword(), info));
             }
         }
     }

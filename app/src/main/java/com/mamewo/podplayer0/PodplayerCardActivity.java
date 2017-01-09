@@ -39,7 +39,12 @@ import android.app.Dialog;
 
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
-import com.mamewo.lib.podcast_parser.PodcastInfo;
+//import com.mamewo.lib.podcast_parser.PodcastInfo;
+import com.mamewo.lib.podcast_parser.Podcast;
+
+import com.mamewo.podplayer0.db.PodcastRealm;
+
+import io.realm.RealmResults;
 
 import com.bumptech.glide.Glide;
 import static com.mamewo.podplayer0.Const.*;
@@ -148,9 +153,10 @@ public class PodplayerCardActivity
     }
     
     private int podcastTitle2Index(String title){
-        List<PodcastInfo> list = state_.podcastList_;
+        //List<Podcast> list = state_.podcastList_;
+        RealmResults<PodcastRealm> list = state_.podcastList_;
         for(int i = 0; i < list.size(); i++) {
-            PodcastInfo info = list.get(i);
+            Podcast info = list.get(i);
             if(title.equals(info.getTitle())) {
                 return i;
             }
@@ -207,7 +213,7 @@ public class PodplayerCardActivity
         list.add(getString(R.string.selector_all));
         //stop loading?
         for(int i = 0; i < state_.podcastList_.size(); i++) {
-            PodcastInfo info = state_.podcastList_.get(i);
+            Podcast info = state_.podcastList_.get(i);
             if (info.getEnabled()) {
                 list.add(info.getTitle());
             }
@@ -379,8 +385,8 @@ public class PodplayerCardActivity
             Bundle b = new Bundle();
             b.putCharSequence("episode_title", info_.getTitle());
             b.putCharSequence("episode_url", info_.getURL().toString());
-            b.putCharSequence("podcast_title", info_.getPodcastInfo().getTitle());
-            b.putCharSequence("podcast_url", info_.getPodcastInfo().getURL().toString());
+            b.putCharSequence("podcast_title", info_.getPodcast().getTitle());
+            b.putCharSequence("podcast_url", info_.getPodcast().getURL().toString());
             showDialog(SHARE_EPISODE_DIALOG, b);
             return true;
         }

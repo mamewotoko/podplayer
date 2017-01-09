@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
-import com.mamewo.lib.podcast_parser.PodcastInfo;
+//import com.mamewo.lib.podcast_parser.PodcastInfo;
+import com.mamewo.lib.podcast_parser.Podcast;
+
 
 import static com.mamewo.podplayer0.Const.*;
 
@@ -319,7 +321,7 @@ public class PodplayerExpActivity
             }
             TextView titleView = (TextView)view.findViewById(R.id.text1);
             TextView countView = (TextView)view.findViewById(R.id.text2);
-            PodcastInfo info = state_.podcastList_.get(filteredItemIndex_.get(groupPosition));
+            Podcast info = state_.podcastList_.get(filteredItemIndex_.get(groupPosition));
             titleView.setText(info.getTitle());
             int childNum = state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition)).size();
             String numStr;

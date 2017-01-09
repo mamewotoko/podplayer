@@ -63,6 +63,7 @@
     <string name="scan_qrcode_menu">Scan QR code of podcast</string>
     <string name="export_podcast_menu">Export podcast list as text</string>
     <string name="podcast_webpage_menu">Open podcast site</string>
+    <string name="select_podcast_from_site">Select podcast</string>
 
     <string name="exported_podcasts">Exported podcasts</string>
     <string name="share_podcast">Share podcast</string>

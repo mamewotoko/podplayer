@@ -86,7 +86,6 @@ TODO
 * add podcast to podcast site
   * Luke's ENGLISH Podcast - Learn British English with Luke Thompson
     https://audioboom.com/channels/1919834.rss
-  * NHK news
 * fix bugs
   * when prepare error occurs, cursor moves to next episode
     * stop playing

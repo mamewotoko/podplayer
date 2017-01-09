@@ -33,8 +33,12 @@ import android.widget.TextView;
 
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
-import com.mamewo.lib.podcast_parser.PodcastInfo;
+//import com.mamewo.lib.podcast_parser.PodcastInfo;
+import com.mamewo.lib.podcast_parser.Podcast;
 import com.markupartist.android.widget.PullToRefreshListView;
+
+import com.mamewo.podplayer0.db.PodcastRealm;
+import io.realm.RealmResults;
 
 import com.bumptech.glide.Glide;
 import android.support.v7.widget.Toolbar;
@@ -68,6 +72,7 @@ public class PodplayerActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
@@ -303,7 +308,7 @@ public class PodplayerActivity
     private class GetPodcastTask
         extends BaseGetPodcastTask
     {
-        private PodcastInfo prevPodInfo_;
+        private Podcast prevPodInfo_;
         
         public GetPodcastTask(int limit) {
             super(PodplayerActivity.this, client_, limit, EPISODE_BUF_SIZE);
@@ -321,7 +326,7 @@ public class PodplayerActivity
             //adapter_.notifyDataSetChanged();
 
             //save podcast info, if last podcast info is changed or first load
-            PodcastInfo lastValue = values[values.length-1].getPodcastInfo();
+            Podcast lastValue = values[values.length-1].getPodcast();
             if(prevPodInfo_ == null || prevPodInfo_ != lastValue){
                 savePodcastList();
                 prevPodInfo_ = lastValue;
@@ -329,15 +334,10 @@ public class PodplayerActivity
         }
 
         private void onFinished() {
-            if(adapter_.isEmpty()) {
-                episodeListView_.setLastUpdated("");
-            }
-            else {
-                DateFormat df = DateFormat.getDateTimeInstance();
-                //TODO: change format of date
-                state_.lastUpdatedDate_ = new Date();
-                episodeListView_.setLastUpdated(getString(R.string.header_lastupdated) + df.format(state_.lastUpdatedDate_));
-            }
+            DateFormat df = DateFormat.getDateTimeInstance();
+            //TODO: change format of date
+            state_.lastUpdatedDate_ = new Date();
+            episodeListView_.setLastUpdated(getString(R.string.header_lastupdated) + df.format(state_.lastUpdatedDate_));
             setProgressBarIndeterminateVisibility(false);
             episodeListView_.onRefreshComplete(dateFormat_.format(state_.lastUpdatedDate_));
             episodeListView_.hideHeader();
@@ -442,9 +442,9 @@ public class PodplayerActivity
     }
     
     private int podcastTitle2Index(String title){
-        List<PodcastInfo> list = state_.podcastList_;
+        RealmResults<PodcastRealm> list = state_.podcastList_;
         for(int i = 0; i < list.size(); i++) {
-            PodcastInfo info = list.get(i);
+            Podcast info = list.get(i);
             if(title.equals(info.getTitle())) {
                 return i;
             }
@@ -485,7 +485,7 @@ public class PodplayerActivity
         list.add(getString(R.string.selector_all));
         //stop loading?
         for(int i = 0; i < state_.podcastList_.size(); i++) {
-            PodcastInfo info = state_.podcastList_.get(i);
+            Podcast info = state_.podcastList_.get(i);
             if (info.getEnabled()) {
                 list.add(info.getTitle());
             }

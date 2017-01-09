@@ -24,7 +24,7 @@ public class PodcastSiteActivity
     static final
     public String PODCAST_SITE_URLS = "PODCAST_SITE_URLS";
     static final        
-    private String PODSITE_URL = "http://mamewo.ddo.jp/podcast/podcast.html#main";
+    private String PODSITE_URL = "http://mamewo.ddo.jp/podcast/podcast_boot.html#main";
     private WebView webView_;
     private String urls_;
     
@@ -36,7 +36,7 @@ public class PodcastSiteActivity
         webView_ = (WebView)findViewById(R.id.web_view);
         urls_ = null;
         webView_.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setBuiltInZoomControls(true);
+        webView_.getSettings().setBuiltInZoomControls(true);
         webView_.addJavascriptInterface(new JSInterface(), "WEBVIEW");
         webView_.setWebChromeClient(new WebChromeClient() {
                 public void onConsoleMessage(String message, int lineNumber, String sourceID) {
@@ -46,6 +46,7 @@ public class PodcastSiteActivity
                 }
             });
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.select_podcast_from_site);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
