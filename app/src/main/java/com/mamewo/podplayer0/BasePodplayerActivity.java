@@ -52,8 +52,10 @@ import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
 import android.support.v7.app.AppCompatActivity;
 
 import io.realm.Realm;
+import io.realm.Sort;
 import io.realm.RealmResults;
 import io.realm.RealmConfiguration;
+import io.realm.RealmChangeListener;
 
 //common activity + gesture
 abstract public class BasePodplayerActivity
@@ -84,8 +86,9 @@ abstract public class BasePodplayerActivity
     public int ICON_DISK_CACHE_BYTES = 64*1024*1024;
     protected int currentOrder_;
 
-    abstract protected void onPodcastListChanged(boolean start);
-    abstract protected void notifyOrderChanged(int order);
+    // abstract protected void onPodcastListChanged(boolean start);
+    // abstract protected void notifyOrderChanged(int order);
+    //abstract protected void notifyLatestListChanged();
     protected SharedPreferences pref_;
     protected DateFormat dateFormat_;
     //remove
@@ -273,7 +276,7 @@ abstract public class BasePodplayerActivity
                                                 res.getBoolean(R.bool.default_show_podcast_icon));
             //TODO: modify interface........
             currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
-            notifyOrderChanged(currentOrder_);
+            //notifyOrderChanged(currentOrder_);
         }
         if("clear_response_cache".equals(key)){
             try{
@@ -299,7 +302,7 @@ abstract public class BasePodplayerActivity
         }
         if(updateAll || "episode_order".equals(key)){
             currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
-            notifyOrderChanged(currentOrder_);
+            //notifyOrderChanged(currentOrder_);
         }
         if(updateAll || "date_format".equals(key)){
             dateFormat_ = new SimpleDateFormat(pref.getString("date_format", YYYYMMDD_24H));
@@ -309,14 +312,14 @@ abstract public class BasePodplayerActivity
             Log.d(TAG, "podcastList load and update");
             //state_.podcastList_ = PodcastListPreference.loadSettingRealm(this);
             //TODO: reuse loaded episode
-            state_.loadedEpisode_.clear();
-            state_.latestList_.clear();
+            //state_.loadedEpisode_.clear();
+            //state_.latestList_.clear();
             //TODO: clear all icon
-            for(int i = 0; i < state_.podcastList_.size(); i++){
-                state_.loadedEpisode_.add(new ArrayList<EpisodeInfo>());
-            }
+            // for(int i = 0; i < state_.podcastList_.size(); i++){
+            //     state_.loadedEpisode_.add(new ArrayList<EpisodeInfo>());
+            // }
             //Log.d(TAG, "loadedEpisode_:" + state_.loadedEpisode_.size() + "; " + state_.podcastList_.size());
-            onPodcastListChanged(updateAll);
+            //onPodcastListChanged(updateAll);
         }
     }
 
@@ -363,16 +366,28 @@ abstract public class BasePodplayerActivity
         protected RealmResults<EpisodeRealm> latestList_;
         
         private PodplayerState() {
-            loadedEpisode_ = null;
             podcastList_ = null;
             lastUpdatedDate_ = null;
-            latestList_ = new ArrayList<EpisodeInfo>();
+            latestList_ = null;
         }
         
         public void loadRealm(){
             Realm realm = Realm.getDefaultInstance();
             podcastList_ = realm.where(PodcastRealm.class).equalTo("enabled", true).findAll();
+
+            String[] sortFields = { "podcast.id", "occurIndex"};
+            Sort[] order = { Sort.ASCENDING, Sort.ASCENDING };
             latestList_ = realm.where(EpisodeRealm.class).findAll();
+            //TODO: remove change listener
+
+            // RealmChangeListener<RealmResults<EpisodeRealm>> listener =
+            //     new RealmChangeListener<RealmResults<EpisodeRealm>>(){
+            //         @Override
+            //         public void onChange(RealmResults<EpisodeRealm> results){
+            //             notifyLatestListChanged();
+            //         }
+            //     };
+            // latestList_.addChangeListener(listener);
         }
         
         // static
@@ -384,12 +399,13 @@ abstract public class BasePodplayerActivity
         //     }
         // }
         
-        public RealmResults<EpisodeRealm> list(int orderSetting){
-            //Log.d(TAG, "list: "+orderSetting);
-            String[] sortFields = { "podcast.id", "occurIndex"};
-            Sort[] order = { Sort.ASCENDING, Sort.ASCENDING };
-            latestList_ = realm.where(EpisodeRealm.class).sort(sortFields, order).findAll();
-            return latestList_;
-        }
+        // public RealmResults<EpisodeRealm> listg(int orderSetting){
+        //     //Log.d(TAG, "list: "+orderSetting);
+        //     Realm realm = Realm.getDefaultInstance();
+        //     String[] sortFields = { "podcast.id", "occurIndex"};
+        //     Sort[] order = { Sort.ASCENDING, Sort.ASCENDING };
+        //     latestList_ = realm.where(EpisodeRealm.class).findAll().sort(sortFields, order);
+        //     return latestList_;
+        // }
     }
 }

@@ -40,6 +40,8 @@ import com.markupartist.android.widget.PullToRefreshListView;
 import com.mamewo.podplayer0.db.PodcastRealm;
 import com.mamewo.podplayer0.db.EpisodeRealm;
 import io.realm.RealmResults;
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
 
 import com.bumptech.glide.Glide;
 import android.support.v7.widget.Toolbar;
@@ -91,10 +93,21 @@ public class PodplayerActivity
         episodeListView_.setOnCancelListener(this);
         //initial dummy
         currentList_ = state_.latestList_;
+
+        //adapter_ is initialized after player initialized
         adapter_ = new EpisodeAdapter();
         episodeListView_.setAdapter(adapter_);
         //currentPlayPosition_ = (SeekBar) findViewById(R.id.seekbar);
         //currentPlayPosition_.setOnSeekBarChangeListener(this);
+
+        //TODO: remove
+        RealmChangeListener<RealmResults<EpisodeRealm>> changeListener = new RealmChangeListener<RealmResults<EpisodeRealm>>(){
+                @Override
+                public void onChange(RealmResults<EpisodeRealm> results){
+                        adapter_.notifyDataSetChanged();
+                }
+            };
+        state_.latestList_.addChangeListener(changeListener);
     }
 
     private void updateUI() {
@@ -138,9 +151,6 @@ public class PodplayerActivity
                 player_.pauseMusic();
             }
             else {
-                if (null == state_.loadedEpisode_ || state_.loadedEpisode_.isEmpty()) {
-                    return;
-                }
                 updatePlaylist();
                 if(! player_.restartMusic()) {
                     player_.playMusic();
@@ -158,7 +168,10 @@ public class PodplayerActivity
         //refresh header is added....
         EpisodeRealm info = (EpisodeRealm)adapter_.getItem(pos-1);
         EpisodeRealm current = player_.getCurrentPodInfo();
+        Log.d(TAG, "current: "+current);
+        Log.d(TAG, "clicked: "+info);
         if(current != null && current.getURL().equals(info.getURL())) {
+            Log.d(TAG, "current: title "+current.getTitle());
             Log.d(TAG, "onItemClick: URL: " + current.getURL());
             if(player_.isPlaying()) {
                 Log.d(TAG, "onItemClick1");
@@ -183,7 +196,7 @@ public class PodplayerActivity
         //umm...
         int playPos;
         for(playPos = 0; playPos < state_.latestList_.size(); playPos++) {
-            if(state_.latestList_.get(playPos) == info) {
+            if(state_.latestList_.get(playPos).getId() == info.getId()) {
                 break;
             }
         }
@@ -191,7 +204,7 @@ public class PodplayerActivity
             Log.i(TAG, "playByInfo: info is not found: " + info.getURL());
             return false;
         }
-
+        Log.d(TAG, "playByInfo: "+playPos);
         return player_.playNth(playPos);
     }
 
@@ -260,28 +273,34 @@ public class PodplayerActivity
             EpisodeRealm episode = (EpisodeRealm)getItem(position);
             holder.titleView_.setText(episode.getTitle());
 
-            holder.timeView_.setText(episode.getPubdateString(dateFormat_));
+            holder.timeView_.setText(episode.getPubdateStr(dateFormat_));
 
-            EpisodeRealm current = player_.getCurrentPodInfo();
-            if(current != null && current.getURL().equals(episode.getURL())) {
-                //TODO: cache!
-                if(player_.isPlaying()) {
-                    holder.stateIcon_.setImageResource(R.drawable.ic_play_arrow_white_24dp);
-                    holder.stateIcon_.setContentDescription(getString(R.string.icon_desc_playing));
-                }
-                else {
-                    holder.stateIcon_.setImageResource(R.drawable.ic_pause_white_24dp);
-                    holder.stateIcon_.setContentDescription(getString(R.string.icon_desc_pausing));
-                }
-                holder.stateIcon_.setVisibility(View.VISIBLE);
+            if(player_ == null){
+                holder.stateIcon_.setVisibility(View.GONE);
             }
             else {
-                holder.stateIcon_.setVisibility(View.GONE);
+                EpisodeRealm current = player_.getCurrentPodInfo();
+                if(current != null && current.getURL().equals(episode.getURL())) {
+                //TODO: cache!
+                    if(player_.isPlaying()) {
+                        holder.stateIcon_.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+                        holder.stateIcon_.setContentDescription(getString(R.string.icon_desc_playing));
+                    }
+                    else {
+                        holder.stateIcon_.setImageResource(R.drawable.ic_pause_white_24dp);
+                        holder.stateIcon_.setContentDescription(getString(R.string.icon_desc_pausing));
+                    }
+                    holder.stateIcon_.setVisibility(View.VISIBLE);
+                }
+                else {
+                    holder.stateIcon_.setVisibility(View.GONE);
+                }
             }
             // Log.d(TAG, "icon: " + episode.getTitle() + " index: " + episode.getIndex()
             //       + " current: " + currentList_.size()
             //       + " podcast:" + state_.podcastList_.size());
-            String iconURL = state_.podcastList_.get(episode.getIndex()).getIconURL();
+            //String iconURL = state_.podcastList_.get(episode.getIndex()).getIconURL();
+            String iconURL = episode.getPodcast().getIconURL();
             if(showPodcastIcon_ && null != iconURL){
                 //TODO: check previous icon url
                 String displayedIconURL = holder.displayedIconURL_;
@@ -317,21 +336,14 @@ public class PodplayerActivity
         }
 
         @Override
-        protected void onProgressUpdate(EpisodeRealm... values){
+        protected void onProgressUpdate(String... values){
             // for (int i = 0; i < values.length; i++) {
             //     state_.mergeEpisode(values[i]);
             //     //adapter_.add(values[i]);
             // }
             //Log.d(TAG, "onProgressUpdate");
-            filterSelectedPodcast();
+            //filterSelectedPodcast();
             //adapter_.notifyDataSetChanged();
-
-            //save podcast info, if last podcast info is changed or first load
-            Podcast lastValue = values[values.length-1].getPodcast();
-            if(prevPodInfo_ == null || prevPodInfo_ != lastValue){
-                savePodcastList();
-                prevPodInfo_ = lastValue;
-            }
         }
 
         private void onFinished() {
@@ -340,7 +352,6 @@ public class PodplayerActivity
             episodeListView_.onRefreshComplete(getString(R.string.header_lastupdated) + dateFormat_.format(state_.lastUpdatedDate_));
             episodeListView_.hideHeader();
             loadTask_ = null;
-            savePodcastList();
             //dummy
             //sortEpisodeByDate(true);
             //TODO: Sync playlist
@@ -396,37 +407,37 @@ public class PodplayerActivity
     // }
 
     //TODO: tuning
-    private void filterSelectedPodcast(){
-        RealmResults<EpisodeRealm> l;
-        //TODO: design incremnetal add 
-        if(selector_.getSelectedItemPosition() == 0){
-            //-1: all
-            l = state_.latestList_;
-        }
-        else {
-            String title = (String)selector_.getSelectedItem();
-            Realm realm = Realm.getDefaultInstance();
-            RealmResults<PodcastRealm> infoList = realm.where(PodcastRealm.class).equalTo("title", title).findAll();
-            int podcastId = infoList.get(0).getId();
-            l = realm.where(EpisodeRealm.class).equalTo("podcast.id", podcastId).findAll();
-        }
-        //TODO: selected item is removed
-        currentList_ = l;
-        //Log.d(TAG, "filterSelectedPodcast: "+ currentList_.size());
-        if (! isLoading()) {
-            episodeListView_.hideHeader();
-        }
-        adapter_.notifyDataSetChanged();
-    }
+    // private void filterSelectedPodcast(){
+    //     RealmResults<EpisodeRealm> l;
+    //     //TODO: design incremnetal add 
+    //     if(selector_.getSelectedItemPosition() == 0){
+    //         //-1: all
+    //         l = state_.latestList_;
+    //     }
+    //     else {
+    //         String title = (String)selector_.getSelectedItem();
+    //         Realm realm = Realm.getDefaultInstance();
+    //         RealmResults<PodcastRealm> infoList = realm.where(PodcastRealm.class).equalTo("title", title).findAll();
+    //         int podcastId = infoList.get(0).getId();
+    //         l = realm.where(EpisodeRealm.class).equalTo("podcast.id", podcastId).findAll();
+    //     }
+    //     //TODO: selected item is removed
+    //     currentList_ = l;
+    //     //Log.d(TAG, "filterSelectedPodcast: "+ currentList_.size());
+    //     if (! isLoading()) {
+    //         episodeListView_.hideHeader();
+    //     }
+    //     adapter_.notifyDataSetChanged();
+    // }
 
     @Override
     public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
-        filterSelectedPodcast();
+        //filterSelectedPodcast();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapter) {
-        filterSelectedPodcast();
+        //filterSelectedPodcast();
     }
     
     private int podcastTitle2Index(String title){
@@ -442,6 +453,7 @@ public class PodplayerActivity
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder binder) {
+        Log.d(TAG, "onServiceConnected");
         player_ = ((PlayerService.LocalBinder)binder).getService();
         player_.setOnStartMusicListener(this);
         playButton_.setEnabled(true);
@@ -456,43 +468,48 @@ public class PodplayerActivity
         player_ = null;
     }
 
-    @Override
-    protected void onPodcastListChanged(boolean start) {
-        Log.d(TAG, "onPodcastListChanged");
-        List<String> list = new ArrayList<String>();
-        list.add(getString(R.string.selector_all));
-        //stop loading?
-        for(int i = 0; i < state_.podcastList_.size(); i++) {
-            Podcast info = state_.podcastList_.get(i);
-            if (info.getEnabled()) {
-                list.add(info.getTitle());
-            }
-        }
-        ArrayAdapter<String> adapter =
-            new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-		adapter.setDropDownViewResource(android.support.v7.appcompat.R.layout.support_simple_spinner_dropdown_item);
+    // @Override
+    // protected void notifyLatestListChanged(){
+    //     adapter_.notifyDataSetChanged();
+    // }
+    
+    // @Override
+    // protected void onPodcastListChanged(boolean start) {
+    //     Log.d(TAG, "onPodcastListChanged");
+    //     List<String> list = new ArrayList<String>();
+    //     list.add(getString(R.string.selector_all));
+    //     //stop loading?
+    //     for(int i = 0; i < state_.podcastList_.size(); i++) {
+    //         Podcast info = state_.podcastList_.get(i);
+    //         if (info.getEnabled()) {
+    //             list.add(info.getTitle());
+    //         }
+    //     }
+    //     ArrayAdapter<String> adapter =
+    //         new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
+	// 	adapter.setDropDownViewResource(android.support.v7.appcompat.R.layout.support_simple_spinner_dropdown_item);
 
-        selector_.setAdapter(adapter);
-        Resources res = getResources();
-        boolean doLoad = pref_.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
-        RealmResults<EpisodeRealm> playlist = state_.latestList_;
-        if ((!start) || doLoad) {
-            //reload
-            episodeListView_.startRefresh();
-        }
-        else if (playlist != null && ! playlist.isEmpty()) {
-            //update list by loaded items
-            filterSelectedPodcast();
-            episodeListView_.onRefreshComplete(getString(R.string.header_lastupdated) + dateFormat_.format(state_.lastUpdatedDate_));
-        }
-        updateUI();
-    }
+    //     selector_.setAdapter(adapter);
+    //     Resources res = getResources();
+    //     boolean doLoad = pref_.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
+    //     RealmResults<EpisodeRealm> playlist = state_.latestList_;
+    //     if ((!start) || doLoad) {
+    //         //reload
+    //         episodeListView_.startRefresh();
+    //     }
+    //     else if (playlist != null && ! playlist.isEmpty()) {
+    //         //update list by loaded items
+    //         filterSelectedPodcast();
+    //         episodeListView_.onRefreshComplete(getString(R.string.header_lastupdated) + dateFormat_.format(state_.lastUpdatedDate_));
+    //     }
+    //     updateUI();
+    // }
 
-    @Override
-    public void notifyOrderChanged(int order){
-        updatePlaylist();
-        adapter_.notifyDataSetChanged();
-    }
+    // @Override
+    // public void notifyOrderChanged(int order){
+    //     updatePlaylist();
+    //     adapter_.notifyDataSetChanged();
+    // }
 
     // @Override
     // public void onProgressChanged(SeekBar bar, int progress, boolean fromUser){

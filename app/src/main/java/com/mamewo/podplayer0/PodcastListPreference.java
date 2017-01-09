@@ -28,7 +28,6 @@ import io.realm.OrderedRealmCollection;
 import io.realm.RealmChangeListener;
 import io.realm.RealmRecyclerViewAdapter;
 
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.EncodeHintType;

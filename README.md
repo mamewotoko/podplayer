@@ -55,6 +55,11 @@ How to run UI test using Robotium
 
 TODO
 ----
+* realm integration
+  * putlltorefresh view
+    * filter
+  * card view
+  * exp view
 * add settings
   * cache size
     * icon, podcast xml

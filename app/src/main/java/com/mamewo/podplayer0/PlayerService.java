@@ -9,6 +9,7 @@ import java.util.HashMap;
 import com.mamewo.podplayer0.db.EpisodeRealm;
 import com.mamewo.podplayer0.parser.Util;
 import io.realm.RealmResults;
+import io.realm.Realm;
 
 import static com.mamewo.podplayer0.Const.*;
 
@@ -129,7 +130,7 @@ public class PlayerService
 		//currentPlaylist_ = playlist;
         //add test
         Realm realm = Realm.getDefaultInstance();
-        currentPlaylist_ = realm.where(EpisodeInfo.class).findAll();
+        currentPlaylist_ = realm.where(EpisodeRealm.class).findAll();
 	}
 
 	//previous tune when previous is clicked twice quickly
@@ -295,9 +296,9 @@ public class PlayerService
 			return false;
 		}
 		player_.start();
-		EpisodeInfo info = currentPlaylist_.get(playCursor_);
+		EpisodeRealm info = currentPlaylist_.get(playCursor_);
 		if(null != listener_){
-			listener_.onStartMusic(currentPlaylist_.get(playCursor_));
+			listener_.onStartMusic(info.getId());
 		}
 		showNotification(info.getTitle());
 		return true;
@@ -321,8 +322,8 @@ public class PlayerService
 		Log.d(TAG, "playMusic: " + playCursor_ + ": " + currentPlaying_.getURL());
 		try {
             player_.reset();
-            String username = currentPlaying_.getUsername();
-            String password = currentPlaying_.getPassword();
+            String username = currentPlaying_.getPodcast().getUsername();
+            String password = currentPlaying_.getPodcast().getPassword();
                 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                 Uri uri = Uri.parse(currentPlaying_.getURL());

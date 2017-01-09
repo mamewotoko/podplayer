@@ -105,12 +105,12 @@ public class PodplayerExpActivity
         }
         reloadButton_.setContentDescription(getResources().getString(R.string.action_abort));
 		reloadButton_.setImageResource(R.drawable.ic_clear_white_24dp);
-        setProgressBarIndeterminateVisibility(true);
         updateUI();
         SharedPreferences pref=
                 PreferenceManager.getDefaultSharedPreferences(this);
         Resources res = getResources();
         int limit = Integer.valueOf(pref.getString("episode_limit", res.getString(R.string.default_episode_limit)));
+        Log.d(TAG, "loadPodcast");
         GetPodcastTask task = new GetPodcastTask(limit);
         startLoading(task);
     }
@@ -354,7 +354,7 @@ public class PodplayerExpActivity
             }
             EpisodeRealm episode = (EpisodeRealm)getChild(groupPosition, childPosition);
             holder.titleView_.setText(episode.getTitle());
-            holder.timeView_.setText(episode.getPubdateStr());
+            holder.timeView_.setText(episode.getPubdateStr(dateFormat_));
             EpisodeRealm current = player_.getCurrentPodInfo();
             if(current != null && current.getURL().equals(episode.getURL())) {
                 //cache!
@@ -412,7 +412,7 @@ public class PodplayerExpActivity
         }
 
         @Override
-        protected void onProgressUpdate(EpisodeRealm... values){
+        protected void onProgressUpdate(String... values){
             updateUI();
         }
 
@@ -463,29 +463,29 @@ public class PodplayerExpActivity
     }
 
     //TODO: fetch current playing episode to update currentPodInfo
-    @Override
-    protected void onPodcastListChanged(boolean start) {
-        filteredItemIndex_.clear();
-        for(int i = 0; i < state_.podcastList_.size(); i++) {
-            if(state_.podcastList_.get(i).getEnabled()){
-                filteredItemIndex_.add(i);
-            }
-        }
-        SharedPreferences pref =
-                PreferenceManager.getDefaultSharedPreferences(this);
-        Resources res = getResources();
-        boolean expandInDefault = pref.getBoolean("expand_in_default", res.getBoolean(R.bool.default_expand_in_default));
-        if (expandInDefault) { 
-            expandOrCollapseAll(true);
-        }
-        expandableList_.setOnChildClickListener(this);
-        boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
-        updateUI();
-        //List<EpisodeInfo> playlist = state_.loadedEpisode_;
-        if ((!start) || doLoad) {
-            loadPodcast();
-        }
-    }
+    // @Override
+    // protected void onPodcastListChanged(boolean start) {
+    //     filteredItemIndex_.clear();
+    //     for(int i = 0; i < state_.podcastList_.size(); i++) {
+    //         if(state_.podcastList_.get(i).getEnabled()){
+    //             filteredItemIndex_.add(i);
+    //         }
+    //     }
+    //     SharedPreferences pref =
+    //             PreferenceManager.getDefaultSharedPreferences(this);
+    //     Resources res = getResources();
+    //     boolean expandInDefault = pref.getBoolean("expand_in_default", res.getBoolean(R.bool.default_expand_in_default));
+    //     if (expandInDefault) { 
+    //         expandOrCollapseAll(true);
+    //     }
+    //     expandableList_.setOnChildClickListener(this);
+    //     boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
+    //     updateUI();
+    //     //List<EpisodeInfo> playlist = state_.loadedEpisode_;
+    //     if ((!start) || doLoad) {
+    //         loadPodcast();
+    //     }
+    // }
 
     @Override
     public void onStartLoadingMusic(int episodeId) {
@@ -497,11 +497,16 @@ public class PodplayerExpActivity
         updateUI();
     }
 
-    @Override
-    public void notifyOrderChanged(int order){
-        updatePlaylist();
-        adapter_.notifyDataSetChanged();
-    }
+    // @Override
+    // protected void notifyLatestListChanged(){
+    //     adapter_.notifyDataSetChanged();
+    // }
+    
+    // @Override
+    // public void notifyOrderChanged(int order){
+    //     updatePlaylist();
+    //     adapter_.notifyDataSetChanged();
+    // }
 
     static
     private class EpisodeHolder {

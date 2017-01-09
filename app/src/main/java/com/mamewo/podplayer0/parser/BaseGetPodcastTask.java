@@ -27,16 +27,16 @@ import android.util.Log;
 import android.util.Base64;
 
 public class BaseGetPodcastTask
-    extends AsyncTask<Podcast, EpisodeRealm, Void>
+    extends AsyncTask<Podcast, String, Void>
 {
     private Context context_;
     private OkHttpClient client_;
     private int limit_;
-    private List<EpisodeInfo> buffer_;
+    private List<String> buffer_;
     final static
     private int DEFAULT_BUFFER_SIZE = 10;
     final static
-    private EpisodeInfo[] DUMMY_ARRAY = new EpisodeInfo[0];
+    private String[] DUMMY_ARRAY = new String[0];
     private int publishBufferSize_;
     private List<Podcast> authRequired_;
     
@@ -58,7 +58,7 @@ public class BaseGetPodcastTask
         context_ = context;
         limit_ = limit;
         client_ = client;
-        buffer_ = new ArrayList<EpisodeRealm>();
+        buffer_ = new ArrayList<String>();
         publishBufferSize_ = publishBufferSize;
         authRequired_ = new ArrayList<Podcast>();
     }
@@ -88,7 +88,7 @@ public class BaseGetPodcastTask
             return null;
         }
         for(int i = 0; i < podcastInfo.size(); i++) {
-            Podcast pinfo = podcastInfo.get(i);
+            PodcastRealm pinfo = podcastInfo.get(i);
             if(isCancelled()){
                 break;
             }
@@ -204,7 +204,7 @@ public class BaseGetPodcastTask
                                 info.setOccurIndex(episodeCount);
                                 realm.commitTransaction();
                                 
-                                buffer_.add(info);
+                                buffer_.add(info.getTitle());
                                 if (buffer_.size() >= publishBufferSize_) {
                                     //Log.d(TAG, "publish: "+podcastURL+" "+title);
                                     publish();

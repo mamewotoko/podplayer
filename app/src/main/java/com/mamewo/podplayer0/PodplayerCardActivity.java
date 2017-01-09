@@ -209,40 +209,45 @@ public class PodplayerCardActivity
         adapter_.notifyDataSetChanged();
     }
     
-    @Override
-    protected void onPodcastListChanged(boolean start) {
-        //Log.d(TAG, "onPodcastListChanged");
-        SharedPreferences pref=
-                PreferenceManager.getDefaultSharedPreferences(this);
-        List<String> list = new ArrayList<String>();
-        list.add(getString(R.string.selector_all));
-        //stop loading?
-        for(int i = 0; i < state_.podcastList_.size(); i++) {
-            Podcast info = state_.podcastList_.get(i);
-            if (info.getEnabled()) {
-                list.add(info.getTitle());
-            }
-        }
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-		adapter.setDropDownViewResource(android.support.v7.appcompat.R.layout.support_simple_spinner_dropdown_item);
-        selector_.setAdapter(adapter);
+    // @Override
+    // protected void onPodcastListChanged(boolean start) {
+    //     //Log.d(TAG, "onPodcastListChanged");
+    //     SharedPreferences pref=
+    //             PreferenceManager.getDefaultSharedPreferences(this);
+    //     List<String> list = new ArrayList<String>();
+    //     list.add(getString(R.string.selector_all));
+    //     //stop loading?
+    //     for(int i = 0; i < state_.podcastList_.size(); i++) {
+    //         Podcast info = state_.podcastList_.get(i);
+    //         if (info.getEnabled()) {
+    //             list.add(info.getTitle());
+    //         }
+    //     }
+    //     ArrayAdapter<String> adapter =
+    //             new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
+	// 	adapter.setDropDownViewResource(android.support.v7.appcompat.R.layout.support_simple_spinner_dropdown_item);
+    //     selector_.setAdapter(adapter);
 
-        Resources res = getResources();
-        boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
-        RealmResults<EpisodeRealm> playlist = state_.latestList_;
-        if ((!start) || doLoad) {
-            //reload
-            //episodeListView_.startRefresh();
-            loadPodcast();
-        }
-        else if (playlist != null && ! playlist.isEmpty()) {
-            //update list by loaded items
-            filterSelectedPodcast();
-        }
-        updateUI();
-    }
+    //     Resources res = getResources();
+    //     boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
+    //     RealmResults<EpisodeRealm> playlist = state_.latestList_;
+    //     if ((!start) || doLoad) {
+    //         //reload
+    //         //episodeListView_.startRefresh();
+    //         loadPodcast();
+    //     }
+    //     else if (playlist != null && ! playlist.isEmpty()) {
+    //         //update list by loaded items
+    //         filterSelectedPodcast();
+    //     }
+    //     updateUI();
+    // }
 
+    // @Override
+    // protected void notifyLatestListChanged(){
+    //     adapter_.notifyDataSetChanged();
+    // }
+    
     @Override
     public void onClick(View v) {
         //add option to load onStart
@@ -282,10 +287,10 @@ public class PodplayerCardActivity
         startLoading(new GetPodcastTask(limit));
     }
     
-    @Override
-    public void notifyOrderChanged(int order){
-        //TODO
-    }
+    // @Override
+    // public void notifyOrderChanged(int order){
+    //     //TODO
+    // }
 
     private boolean playByInfo(EpisodeRealm info) {
         //umm...
@@ -500,7 +505,7 @@ public class PodplayerCardActivity
         }
         
         @Override
-        protected void onProgressUpdate(EpisodeRealm... values){
+        protected void onProgressUpdate(String... values){
             // for (int i = 0; i < values.length; i++) {
             //     state_.mergeEpisode(values[i]);
             // }
