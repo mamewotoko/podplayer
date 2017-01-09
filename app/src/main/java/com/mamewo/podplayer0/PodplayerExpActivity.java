@@ -99,15 +99,6 @@ public class PodplayerExpActivity
         }
     }
 
-    // public void onSharedPreferenceChanged(SharePreference pref, String key){
-    //     super.onSharedPreferenceChanged(pref, key);
-    //     //TODO: move to const or string
-    //     if("episode_limit".equals(key)){
-    //         currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
-    //         adapter_.notifyDataSetChanged();
-    //     }
-    // }
-
     //must be called from UI thread
     private void loadPodcast(){
         if (isLoading()) {
@@ -315,9 +306,12 @@ public class PodplayerExpActivity
                                  View convertView,
                                  ViewGroup parent)
         {
-            View view = convertView;
-            if(view == null){
+            View view;
+            if(convertView == null){
                 view = View.inflate(PodplayerExpActivity.this, R.layout.expandable_list_item2, null);
+            }
+            else {
+                view = convertView;
             }
             TextView titleView = (TextView)view.findViewById(R.id.text1);
             TextView countView = (TextView)view.findViewById(R.id.text2);

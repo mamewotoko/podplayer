@@ -24,8 +24,10 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import io.realm.OrderedRealmCollection;
-import io.realm.RealmBaseAdapter;
+//import io.realm.RealmBaseAdapter;
 import io.realm.RealmChangeListener;
+import io.realm.RealmRecyclerViewAdapter;
+
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -78,7 +80,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -98,6 +99,9 @@ import com.bumptech.glide.Glide;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.LinearLayoutManager;
 
 import com.mamewo.podplayer0.db.PodcastRealm;
 
@@ -136,7 +140,9 @@ public class PodcastListPreference
     private EditText urlEdit_;
     private CheckTask task_;
     private PodcastAdapter adapter_;
-    private ListView podcastListView_;
+    private RecyclerView podcastView_;
+    private LinearLayoutManager layoutManager_;
+
     private int dialogID_;
     private RealmResults<PodcastRealm> podcastModel_;
     private RealmChangeListener<RealmResults<PodcastRealm>> changeListener_;
@@ -172,7 +178,7 @@ public class PodcastListPreference
         addButton_.setOnClickListener(this);
         urlEdit_ = (EditText) findViewById(R.id.url_edit);
         optionMap_ = new HashMap<String, Option>();
-        podcastListView_ = (ListView) findViewById(R.id.podlist);
+        podcastView_ = (RecyclerView) findViewById(R.id.podlist);
         client_ = new OkHttpClient();
         dialogID_ = -1;
         Realm realm = Realm.getDefaultInstance();
@@ -198,10 +204,13 @@ public class PodcastListPreference
                 }
             };
         podcastModel_.addChangeListener(changeListener_);
-        
+        layoutManager_ = new LinearLayoutManager(this);
+        podcastView_.setLayoutManager(layoutManager_);
         adapter_ = new PodcastAdapter(this, podcastModel_);
-        podcastListView_.setAdapter(adapter_);
-        
+
+        podcastView_.setAdapter(adapter_);
+
+        //restore after rotate screen
         if(null != savedInstanceState){
             String url = (String)savedInstanceState.getCharSequence("selected_url");
             if(null != url){
@@ -276,7 +285,7 @@ public class PodcastListPreference
     private void saveSettingJSON(){
         try {
             List<Podcast> lst = new ArrayList<Podcast>();
-            for(int i = 0; i < adapter_.getCount(); i++){
+            for(int i = 0; i < adapter_.getItemCount(); i++){
                 lst.add(adapter_.getItem(i));
             }
             saveSettingJSON(this, lst);
@@ -292,7 +301,7 @@ public class PodcastListPreference
     //tab separated text
     private StringBuffer exportSetting(){
         StringBuffer sb = new StringBuffer();
-        for(int i = 0; i < adapter_.getCount(); i++){
+        for(int i = 0; i < adapter_.getItemCount(); i++){
             Podcast pinfo = adapter_.getItem(i);
             String title = pinfo.getTitle();
             String url = pinfo.getURL().toString();
@@ -386,7 +395,6 @@ public class PodcastListPreference
         default:
             break;
         }
-
     }
     
     private class SimpleRequest
@@ -437,7 +445,7 @@ public class PodcastListPreference
             }
             //TODO: use hash
             boolean duplicate = false;
-            for(int i = 0; i < adapter_.getCount(); i++){
+            for(int i = 0; i < adapter_.getItemCount(); i++){
                 if(urlStr.equals(adapter_.getItem(i).getURL().toString())){
                     //TODO: show toast
                     Log.d(TAG, "duplicate: " + urlStr);
@@ -480,7 +488,7 @@ public class PodcastListPreference
         else if (view.getId() == R.id.checkbox) {
             CheckBox checkbox = (CheckBox) view;
             isChanged_ = true;
-            Podcast info = (Podcast) checkbox.getTag();
+            PodcastRealm info = (PodcastRealm) checkbox.getTag();
             Realm realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             info.setEnabled(!info.getEnabled());
@@ -906,165 +914,152 @@ public class PodcastListPreference
     }
     
     public class PodcastAdapter
-        extends RealmBaseAdapter<PodcastRealm>
-        implements ListAdapter
+        extends RealmRecyclerViewAdapter<PodcastRealm, Holder>
     {
         public PodcastAdapter(Context context, OrderedRealmCollection<PodcastRealm> list) {
-            super(context, list);
+            super(context, list, true);
         }
         
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view;
-            if (null == convertView) {
-                view = View.inflate(PodcastListPreference.this, R.layout.podcast_select_item, null);
-            }
-            else {
-                view = convertView;
-            }
-            Podcast info = getItem(position);
+        public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.podcast_select_item, parent, false);
+            return new Holder(v);
+        }
+        
+        @Override
+        public void onBindViewHolder(Holder holder, int position) {
+            PodcastRealm info = getData().get(position);
+            holder.info_ = info;
             String iconURL = info.getIconURL();
             //Log.d(TAG, "getView: icon: " + iconURL);
-            ImageView icon = (ImageView)view.findViewById(R.id.podcast_icon);
             if(null != iconURL){
                 Glide.with(getApplicationContext())
                     .load(iconURL)
-                    .into(icon);
-                icon.setVisibility(View.VISIBLE);
+                    .into(holder.icon_);
+                holder.icon_.setVisibility(View.VISIBLE);
             }
             else{
                 //set dummy image?
-                icon.setVisibility(View.GONE);
+                holder.icon_.setVisibility(View.GONE);
             }
-            CheckBox check = (CheckBox) view.findViewById(R.id.checkbox);
-            check.setOnClickListener(PodcastListPreference.this);
-            check.setTag(info);
             
-            TextView urlView = (TextView) view.findViewById(R.id.podcast_url);
+            //TextView urlView = (TextView) view.findViewById(R.id.podcast_url);
             //add check
             String title = info.getTitle();
             String urlStr = info.getURL().toString();
-            TextView label = (TextView) view.findViewById(R.id.podcast_title_label);
+
             if (null == title) {
                 title = urlStr;
             }
-            label.setText(title);
-            
-            check.setChecked(info.getEnabled());
+            holder.title_.setText(title);
 
-            ImageButton detailButton = (ImageButton)view.findViewById(R.id.detail_button);
-            detailButton.setTag(info);
-            detailButton.setOnClickListener(new DetailButtonListener());
+            holder.checkbox_.setOnClickListener(PodcastListPreference.this);
+            holder.checkbox_.setTag(info);
+            holder.checkbox_.setChecked(info.getEnabled());
+
+            holder.detailButton_.setTag(info);
+            holder.detailButton_.setOnClickListener(new DetailButtonListener());
             
             Option opt = optionMap_.get(urlStr);
-            View v = view.findViewById(R.id.podcast_detail_view);
-            View authView = view.findViewById(R.id.podcast_auth_view);
             
             if(null != opt && opt.expand_){
-                urlView.setText(urlStr);
-                urlView.setVisibility(View.VISIBLE);
+                holder.podcastURL_.setText(urlStr);
+                holder.podcastURL_.setVisibility(View.VISIBLE);
                 
-                ImageButton upButton = (ImageButton) view.findViewById(R.id.move_up);
-                ImageButton downButton = (ImageButton) view.findViewById(R.id.move_down);
-                ImageButton deleteButton = (ImageButton) view.findViewById(R.id.delete);
-                deleteButton.setTag(info);
-                deleteButton.setOnClickListener(new RemoveButtonListener());
-                upButton.setTag(info);
-                upButton.setOnClickListener(new MoveupButtonListener());
-                downButton.setTag(info);
-                downButton.setOnClickListener(new MovedownButtonListener());
-                ImageButton shareButton = (ImageButton)view.findViewById(R.id.podcast_share);
-                shareButton.setTag(info);
-                shareButton.setOnClickListener(new ShareButtonListener());
+                holder.deleteButton_.setTag(info);
+                holder.deleteButton_.setOnClickListener(new RemoveButtonListener());
+                holder.moveUpButton_.setTag(info);
+                holder.moveUpButton_.setOnClickListener(new MoveupButtonListener());
+                holder.moveDownButton_.setTag(info);
+                holder.moveDownButton_.setOnClickListener(new MovedownButtonListener());
+                holder.shareButton_.setTag(info);
+                holder.shareButton_.setOnClickListener(new ShareButtonListener());
                 
-                Button enterPasswordButton = (Button)view.findViewById(R.id.auth_info);
-                enterPasswordButton.setTag(info);
-                enterPasswordButton.setOnClickListener(new EnterPasswordButtonListener());
+                holder.loginButton_.setTag(info);
+                holder.loginButton_.setOnClickListener(new EnterPasswordButtonListener());
 
                 int imageId = R.drawable.ic_lock_outline_white_24dp;
                 Context context = PodcastListPreference.this;
                 int imageColor = ContextCompat.getColor(context, R.color.green);
-                ImageButton statusIcon = (ImageButton)view.findViewById(R.id.status_icon);
                 Log.d(TAG, "status: " + info.getTitle() + " " + info.getStatus());
-                EditText usernameEdit = (EditText)view.findViewById(R.id.username);
-                EditText passwordEdit = (EditText)view.findViewById(R.id.password);
                 switch(info.getStatus()){
                 case Podcast.UNKNOWN:
                     //TODO: change icon
-                    authView.setVisibility(View.GONE);
+                    holder.authView_.setVisibility(View.GONE);
                     imageId = R.drawable.ic_error_outline_white_24dp;
                     imageColor = ContextCompat.getColor(context, R.color.white);
                     break;
                 case Podcast.PUBLIC:
-                    authView.setVisibility(View.GONE);
+                    holder.authView_.setVisibility(View.GONE);
                     imageId = R.drawable.ic_public_white_24dp;
                     imageColor = ContextCompat.getColor(context, R.color.green);
                     break;
                 case Podcast.AUTH_REQUIRED_LOCKED:
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
-                        authView.setVisibility(View.VISIBLE);
+                        holder.authView_.setVisibility(View.VISIBLE);
                         if(null != info.getUsername()){
-                            usernameEdit.setText(info.getUsername());
+                            holder.usernameEdit_.setText(info.getUsername());
                         }
                         else {
-                            usernameEdit.setText("");
+                            holder.usernameEdit_.setText("");
                         }
                         if(null != info.getPassword()){
-                            passwordEdit.setText(info.getPassword());
+                            holder.passwordEdit_.setText(info.getPassword());
                         }
                         else {
-                            passwordEdit.setText("");
+                            holder.passwordEdit_.setText("");
                         }
                     }
                     else {
-                        authView.setVisibility(View.GONE);
+                        holder.authView_.setVisibility(View.GONE);
                     }
                     imageId = R.drawable.ic_lock_outline_white_24dp;
                     imageColor = ContextCompat.getColor(context, R.color.yellow);
                     break;
                 case Podcast.AUTH_REQUIRED_UNLOCKED:
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
-                        authView.setVisibility(View.VISIBLE);
+                        holder.authView_.setVisibility(View.VISIBLE);
                         if(null != info.getUsername()){
-                            usernameEdit.setText(info.getUsername());
+                            holder.usernameEdit_.setText(info.getUsername());
                         }
                         else {
-                            usernameEdit.setText("");
+                            holder.usernameEdit_.setText("");
                         }
                         if(null != info.getPassword()){
-                            passwordEdit.setText(info.getPassword());
+                            holder.passwordEdit_.setText(info.getPassword());
                         }
                         else {
-                            passwordEdit.setText("");
+                            holder.passwordEdit_.setText("");
                         }
                     }
                     else {
-                        authView.setVisibility(View.GONE);
+                        holder.authView_.setVisibility(View.GONE);
                     }
                     imageId = R.drawable.ic_lock_open_white_24dp;
                     imageColor = ContextCompat.getColor(context, R.color.green);
                     break;
                 case Podcast.ERROR:
-                    authView.setVisibility(View.GONE);
+                    holder.authView_.setVisibility(View.GONE);
                     imageId = R.drawable.ic_error_outline_white_24dp;
                     imageColor = ContextCompat.getColor(context, R.color.pink);
                     break;
                 default:
                     break;
                 }
-                statusIcon.setImageResource(imageId);
-                statusIcon.getDrawable().setColorFilter(imageColor, PorterDuff.Mode.SRC_IN);
-                detailButton.setImageResource(R.drawable.ic_expand_less_white_24dp);
-                v.setVisibility(View.VISIBLE);
+                holder.statusButton_.setImageResource(imageId);
+                holder.statusButton_.getDrawable().setColorFilter(imageColor, PorterDuff.Mode.SRC_IN);
+                holder.detailButton_.setImageResource(R.drawable.ic_expand_less_white_24dp);
+                holder.authView_.setVisibility(View.VISIBLE);
+                holder.detailView_.setVisibility(View.VISIBLE);
             }
             else {
-                urlView.setVisibility(View.GONE);
-                authView.setVisibility(View.GONE);
+                holder.podcastURL_.setVisibility(View.GONE);
+                holder.authView_.setVisibility(View.GONE);
                 //TODO: remove listener?
-                detailButton.setImageResource(R.drawable.ic_expand_more_white_24dp);
-                v.setVisibility(View.GONE);
+                holder.detailButton_.setImageResource(R.drawable.ic_expand_more_white_24dp);
+                holder.detailView_.setVisibility(View.GONE);
             }
-            return view;
         }
     }
 
@@ -1308,6 +1303,63 @@ public class PodcastListPreference
                 task_ = new CheckTask();
                 task_.execute(new SimpleRequest(info.getParsedURL(), info.getUsername(), info.getPassword(), info));
             }
+        }
+    }
+
+    private class Holder
+        extends RecyclerView.ViewHolder
+        implements View.OnLongClickListener
+    {
+        public TextView title_;
+        public ImageView icon_;
+        public CheckBox checkbox_;
+        public ImageButton detailButton_;
+        public TextView podcastURL_;
+        public ImageButton moveDownButton_;
+        public ImageButton moveUpButton_;
+        public ImageButton shareButton_;
+        public ImageButton deleteButton_;
+        public ImageButton statusButton_;
+        public EditText usernameEdit_;
+        public EditText passwordEdit_;
+        public Button loginButton_;
+        
+        public LinearLayout authView_;
+        public LinearLayout detailView_;
+        public PodcastRealm info_;
+        
+        public Holder(View view){
+            super(view);
+            info_ = null;
+            icon_ = (ImageView)view.findViewById(R.id.podcast_icon);
+            checkbox_ = (CheckBox)view.findViewById(R.id.checkbox);
+            title_ = (TextView)view.findViewById(R.id.podcast_title_label);
+            detailButton_ = (ImageButton)view.findViewById(R.id.detail_button);
+            podcastURL_ = (TextView)view.findViewById(R.id.podcast_url);
+            moveDownButton_ = (ImageButton)view.findViewById(R.id.move_down);
+            moveUpButton_ = (ImageButton)view.findViewById(R.id.move_up);
+            shareButton_ = (ImageButton)view.findViewById(R.id.podcast_share);
+            deleteButton_ = (ImageButton)view.findViewById(R.id.delete);
+            statusButton_ = (ImageButton)view.findViewById(R.id.status_icon);
+            usernameEdit_ = (EditText)view.findViewById(R.id.username);
+            passwordEdit_ = (EditText)view.findViewById(R.id.password);
+            loginButton_ = (Button)view.findViewById(R.id.auth_info);
+            authView_  = (LinearLayout)view.findViewById(R.id.podcast_auth_view);
+            detailView_ = (LinearLayout)view.findViewById(R.id.podcast_detail_view);
+            view.setOnLongClickListener(this);
+        }
+
+        //enable selected item only
+        @Override
+        public boolean onLongClick(View v) {
+            Realm realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            for(PodcastRealm info: podcastModel_){
+                info.setEnabled(false);
+            }
+            info_.setEnabled(true);
+            realm.commitTransaction();
+            return true;
         }
     }
 }
