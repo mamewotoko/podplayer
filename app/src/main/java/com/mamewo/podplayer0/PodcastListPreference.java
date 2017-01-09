@@ -187,7 +187,6 @@ public class PodcastListPreference
             try{
                 //loadJSONFileIntoDB();
                 storeJSONSetting();
-                storeDefaultPodcastList();
             }
             catch(JSONException e){
                 Log.d(TAG, "load error(JSON)", e);
@@ -196,6 +195,8 @@ public class PodcastListPreference
                 Log.d(TAG, "load error", e);
             }
         }
+        //TODO: add condition
+        storeDefaultPodcastList();
         podcastModel_ = realm.where(PodcastRealm.class).findAll();
         changeListener_ = new RealmChangeListener<RealmResults<PodcastRealm>>(){
                 @Override
@@ -256,6 +257,7 @@ public class PodcastListPreference
     public void storeDefaultPodcastList() {
         String[] allTitles = getResources().getStringArray(R.array.pref_podcastlist_keys);
         String[] allURLs = getResources().getStringArray(R.array.pref_podcastlist_urls);
+        Log.d(TAG, "storeDefaultPodcastList: " + allTitles.length);
         List<Podcast> list = new ArrayList<Podcast>();
 
         Realm realm = Realm.getDefaultInstance();
@@ -264,9 +266,15 @@ public class PodcastListPreference
             String title = allTitles[i];
             String url = allURLs[i];
             //TODO: get config and fetch icon
-            RealmResults<PodcastRealm> existing = realm.where(PodcastRealm.class).equalTo("url", url).findAll();
-            if(existing.size() > 0){
-                continue;
+            try{
+                RealmResults<PodcastRealm> existing = realm.where(PodcastRealm.class).equalTo("url", url).findAll();
+                if(existing.size() > 0){
+                    Log.d(TAG, "existing "+i+ "; " + existing.get(0).getTitle());
+                    continue;
+                }
+            }
+            catch(IllegalArgumentException e){
+                Log.d(TAG, "illegal argument exception", e);
             }
             PodcastRealm info = realm.createObject(PodcastRealm.class);
             info.setTitle(title);
@@ -728,6 +736,8 @@ public class PodcastListPreference
                             }
                             else {
                                 //PodcastBuilder<PodcastRealm> b = createPodcastBuilder();
+
+                                int nextId = realm.where(PodcastRealm.class).max("id").intValue()+1;
                                 realm.beginTransaction();
                                 PodcastRealm info = realm.createObject(PodcastRealm.class);
                                 info.setTitle(url.toString());

@@ -38,13 +38,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 
 import com.mamewo.podplayer0.parser.BaseGetPodcastTask;
-import com.mamewo.podplayer0.parser.EpisodeInfo;
+//import com.mamewo.podplayer0.parser.EpisodeInfo;
 //import com.mamewo.podplayer0.parser.PodcastInfo;
 import com.mamewo.podplayer0.parser.Podcast;
 
 import com.mamewo.podplayer0.db.PodcastRealm;
+import com.mamewo.podplayer0.db.EpisodeRealm;
 
 import io.realm.RealmResults;
+import io.realm.Realm;
 
 import com.bumptech.glide.Glide;
 import static com.mamewo.podplayer0.Const.*;
@@ -69,7 +71,7 @@ public class PodplayerCardActivity
     private Spinner selector_;
     private ImageButton playButton_;
     //filtered list
-    private List<EpisodeInfo> currentList_;
+    private RealmResults<EpisodeRealm> currentList_;
         
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,17 +109,17 @@ public class PodplayerCardActivity
             PreferenceManager.getDefaultSharedPreferences(this);
         syncPreference(pref, "ALL");
         
-        List<EpisodeInfo> playlist = player_.getCurrentPlaylist();
+        RealmResults<EpisodeRealm> playlist = player_.getCurrentPlaylist();
         //player -playlist-> app
         if (null != playlist) {
             state_.latestList_ = playlist;
-            state_.loadedEpisode_ = new ArrayList<List<EpisodeInfo>>();
-            for(int i = 0; i < state_.podcastList_.size(); i++){
-                state_.loadedEpisode_.add(new ArrayList<EpisodeInfo>());
-            }
-            for(EpisodeInfo info: state_.latestList_){
-                state_.loadedEpisode_.get(info.index_).add(info);
-            }
+            // state_.loadedEpisode_ = new ArrayList<List<EpisodeRealm>>();
+            // for(int i = 0; i < state_.podcastList_.size(); i++){
+            //     state_.loadedEpisode_.add(new ArrayList<EpisodeRealm>());
+            // }
+            // for(EpisodeRealm info: state_.latestList_){
+            //     state_.loadedEpisode_.get(info.index_).add(info);
+            // }
         }
     }
 
@@ -176,7 +178,7 @@ public class PodplayerCardActivity
     
     //TODO: tuning
     private void filterSelectedPodcast(){
-        List<EpisodeInfo> l;
+        RealmResults<EpisodeRealm> l;
         //TODO: design incremnetal add 
         if(selector_.getSelectedItemPosition() == 0){
             //-1: all
@@ -187,17 +189,20 @@ public class PodplayerCardActivity
         }
         else {
             String title = (String)selector_.getSelectedItem();
-            int selected = podcastTitle2Index(title);
+            Realm realm = Realm.getDefaultInstance();
+            RealmResults<PodcastRealm> infoList = realm.where(PodcastRealm.class).equalTo("title", title).findAll();
+            int podcastId = infoList.get(0).getId();
+            l = realm.where(EpisodeRealm.class).equalTo("podcast.id", podcastId).findAll();
 
-            l = state_.loadedEpisode_.get(selected);
-            if(currentOrder_ == REVERSE_APPEARANCE_ORDER){
-                ///XXX provide view
-                List<EpisodeInfo> reversed = new ArrayList<EpisodeInfo>();
-                for(int i = 0; i < l.size(); i++){
-                    reversed.add(l.get(l.size()-1-i));
-                }
-                l = reversed;
-            }
+            //l = state_.loadedEpisode_.get(selected);
+            // if(currentOrder_ == REVERSE_APPEARANCE_ORDER){
+            //     ///XXX provide view
+            //     List<EpisodeInfo> reversed = new ArrayList<EpisodeInfo>();
+            //     for(int i = 0; i < l.size(); i++){
+            //         reversed.add(l.get(l.size()-1-i));
+            //     }
+            //     l = reversed;
+            // }
         }
         //TODO: selected item is removed
         currentList_ = l;
@@ -225,7 +230,7 @@ public class PodplayerCardActivity
 
         Resources res = getResources();
         boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
-        List<EpisodeInfo> playlist = state_.latestList_;
+        RealmResults<EpisodeRealm> playlist = state_.latestList_;
         if ((!start) || doLoad) {
             //reload
             //episodeListView_.startRefresh();
@@ -246,9 +251,6 @@ public class PodplayerCardActivity
                 player_.pauseMusic();
             }
             else {
-                if (null == state_.loadedEpisode_ || state_.loadedEpisode_.isEmpty()) {
-                    return;
-                }
                 updatePlaylist();
                 if(! player_.restartMusic()) {
                     player_.playMusic();
@@ -285,7 +287,7 @@ public class PodplayerCardActivity
         //TODO
     }
 
-    private boolean playByInfo(EpisodeInfo info) {
+    private boolean playByInfo(EpisodeRealm info) {
         //umm...
         int playPos;
         for(playPos = 0; playPos < state_.latestList_.size(); playPos++) {
@@ -308,7 +310,7 @@ public class PodplayerCardActivity
     }
     
     @Override
-    public void onStartMusic(EpisodeInfo info) {
+    public void onStartMusic(int episodeId) {
 		//setProgressBarIndeterminateVisibility(false);
 		//currentPlayPosition_.setMax(player_.getDuration());
 		//int pos = player_.getCurrentPositionMsec();
@@ -319,7 +321,7 @@ public class PodplayerCardActivity
     }
 
     @Override
-    public void onStartLoadingMusic(EpisodeInfo info) {
+    public void onStartLoadingMusic(int episodeId) {
         //Log.d(TAG, "onStartLoadingMusic");
         updateUI();
     }
@@ -333,17 +335,17 @@ public class PodplayerCardActivity
     public class ItemClickListener
         implements View.OnClickListener
     {
-        private EpisodeInfo info_;
+        private EpisodeRealm info_;
         
-        public ItemClickListener(EpisodeInfo info){
+        public ItemClickListener(EpisodeRealm info){
             info_ = info;
         }
 
         @Override
         public void onClick(View view){
             Log.d(TAG, "onClick: "+view.toString());
-            EpisodeInfo info = info_;
-            EpisodeInfo current = player_.getCurrentPodInfo();
+            EpisodeRealm info = info_;
+            EpisodeRealm current = player_.getCurrentPodInfo();
             if(null != current && current.getURL().equals(info.getURL())) {
                 if(player_.isPlaying()) {
                     player_.pauseMusic();
@@ -364,9 +366,9 @@ public class PodplayerCardActivity
     public class ItemLongClickListener
         implements View.OnLongClickListener
     {
-        private EpisodeInfo info_;
+        private EpisodeRealm info_;
         
-        public ItemLongClickListener(EpisodeInfo info){
+        public ItemLongClickListener(EpisodeRealm info){
             info_ = info;
         }
 
@@ -409,13 +411,13 @@ public class PodplayerCardActivity
 
         @Override
         public void onBindViewHolder(EpisodeHolder holder, int position){
-            final EpisodeInfo episode = currentList_.get(position);
+            final EpisodeRealm episode = currentList_.get(position);
             holder.titleView_.setText(episode.getTitle());
-            holder.timeView_.setText(episode.getPubdateString(dateFormat_));
+            holder.timeView_.setText(episode.getPubdateStr(dateFormat_));
             holder.container_.setOnClickListener(new ItemClickListener(episode));
             holder.container_.setOnLongClickListener(new ItemLongClickListener(episode));
 
-            EpisodeInfo current = player_.getCurrentPodInfo();
+            EpisodeRealm current = player_.getCurrentPodInfo();
             if(current != null && current.getURL().equals(episode.getURL())) {
                 //TODO: cache!
                 if(player_.isPlaying()) {
@@ -431,7 +433,8 @@ public class PodplayerCardActivity
             else {
                 holder.stateIcon_.setVisibility(View.GONE);
             }
-            String iconURL = state_.podcastList_.get(episode.getIndex()).getIconURL();
+            String iconURL = episode.getPodcast().getIconURL();
+                //state_.podcastList_.get(episode.getIndex()).getIconURL();
             //TODO: add showicon setting
             if(null != iconURL){
                 //TODO: check previous icon url
@@ -497,10 +500,10 @@ public class PodplayerCardActivity
         }
         
         @Override
-        protected void onProgressUpdate(EpisodeInfo... values){
-            for (int i = 0; i < values.length; i++) {
-                state_.mergeEpisode(values[i]);
-            }
+        protected void onProgressUpdate(EpisodeRealm... values){
+            // for (int i = 0; i < values.length; i++) {
+            //     state_.mergeEpisode(values[i]);
+            // }
             count_ += values.length;
             if(count_ - displayedCount_ > UPDATE_THRES){
                 filterSelectedPodcast();

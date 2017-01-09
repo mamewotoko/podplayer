@@ -32,12 +32,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.mamewo.podplayer0.parser.BaseGetPodcastTask;
-import com.mamewo.podplayer0.parser.EpisodeInfo;
+//import com.mamewo.podplayer0.parser.EpisodeInfo;
 //import com.mamewo.podplayer0.parser.PodcastInfo;
 import com.mamewo.podplayer0.parser.Podcast;
 import com.markupartist.android.widget.PullToRefreshListView;
 
 import com.mamewo.podplayer0.db.PodcastRealm;
+import com.mamewo.podplayer0.db.EpisodeRealm;
 import io.realm.RealmResults;
 
 import com.bumptech.glide.Glide;
@@ -63,7 +64,7 @@ public class PodplayerActivity
     //state_.loadedEpisode_: all data
     //private SeekBar currentPlayPosition_;
     private EpisodeAdapter adapter_;
-    private List<EpisodeInfo> currentList_;
+    private RealmResults<EpisodeRealm> currentList_;
     //number of items for one screen (small phone)
     static final
     public int EPISODE_BUF_SIZE = 10;
@@ -155,8 +156,8 @@ public class PodplayerActivity
             return;
         }
         //refresh header is added....
-        EpisodeInfo info = (EpisodeInfo)adapter_.getItem(pos-1);
-        EpisodeInfo current = player_.getCurrentPodInfo();
+        EpisodeRealm info = (EpisodeRealm)adapter_.getItem(pos-1);
+        EpisodeRealm current = player_.getCurrentPodInfo();
         if(current != null && current.getURL().equals(info.getURL())) {
             Log.d(TAG, "onItemClick: URL: " + current.getURL());
             if(player_.isPlaying()) {
@@ -178,7 +179,7 @@ public class PodplayerActivity
         }
     }
 
-    private boolean playByInfo(EpisodeInfo info) {
+    private boolean playByInfo(EpisodeRealm info) {
         //umm...
         int playPos;
         for(playPos = 0; playPos < state_.latestList_.size(); playPos++) {
@@ -196,7 +197,7 @@ public class PodplayerActivity
 
     //UI is updated in following callback methods
     @Override
-    public void onStartMusic(EpisodeInfo info) {
+    public void onStartMusic(int episodeId) {
 		//setProgressBarIndeterminateVisibility(false);
 		//currentPlayPosition_.setMax(player_.getDuration());
 		//int pos = player_.getCurrentPositionMsec();
@@ -206,7 +207,7 @@ public class PodplayerActivity
     }
 
     @Override
-    public void onStartLoadingMusic(EpisodeInfo info) {
+    public void onStartLoadingMusic(int episodeId) {
         updateUI();
     }
 
@@ -256,12 +257,12 @@ public class PodplayerActivity
                 view = convertView;
                 holder = (EpisodeHolder)view.getTag();
             }
-            EpisodeInfo episode = (EpisodeInfo)getItem(position);
+            EpisodeRealm episode = (EpisodeRealm)getItem(position);
             holder.titleView_.setText(episode.getTitle());
 
             holder.timeView_.setText(episode.getPubdateString(dateFormat_));
 
-            EpisodeInfo current = player_.getCurrentPodInfo();
+            EpisodeRealm current = player_.getCurrentPodInfo();
             if(current != null && current.getURL().equals(episode.getURL())) {
                 //TODO: cache!
                 if(player_.isPlaying()) {
@@ -316,11 +317,11 @@ public class PodplayerActivity
         }
 
         @Override
-        protected void onProgressUpdate(EpisodeInfo... values){
-            for (int i = 0; i < values.length; i++) {
-                state_.mergeEpisode(values[i]);
-                //adapter_.add(values[i]);
-            }
+        protected void onProgressUpdate(EpisodeRealm... values){
+            // for (int i = 0; i < values.length; i++) {
+            //     state_.mergeEpisode(values[i]);
+            //     //adapter_.add(values[i]);
+            // }
             //Log.d(TAG, "onProgressUpdate");
             filterSelectedPodcast();
             //adapter_.notifyDataSetChanged();
@@ -373,7 +374,7 @@ public class PodplayerActivity
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
-        EpisodeInfo info = (EpisodeInfo)adapter_.getItem(pos-1);
+        EpisodeRealm info = (EpisodeRealm)adapter_.getItem(pos-1);
         Resources res = getResources();
         boolean enableLongClick = pref_.getBoolean("enable_long_click", res.getBoolean(R.bool.default_enable_long_click));
         if ((! enableLongClick) || null == info.getLink()) {
@@ -396,28 +397,18 @@ public class PodplayerActivity
 
     //TODO: tuning
     private void filterSelectedPodcast(){
-        List<EpisodeInfo> l;
+        RealmResults<EpisodeRealm> l;
         //TODO: design incremnetal add 
         if(selector_.getSelectedItemPosition() == 0){
             //-1: all
-
-            //TODO: reduce call?
-            updatePlaylist();
             l = state_.latestList_;
         }
         else {
             String title = (String)selector_.getSelectedItem();
-            int selected = podcastTitle2Index(title);
-
-            l = state_.loadedEpisode_.get(selected);
-            if(currentOrder_ == REVERSE_APPEARANCE_ORDER){
-                ///XXX provide view
-                List<EpisodeInfo> reversed = new ArrayList<EpisodeInfo>();
-                for(int i = 0; i < l.size(); i++){
-                    reversed.add(l.get(l.size()-1-i));
-                }
-                l = reversed;
-            }
+            Realm realm = Realm.getDefaultInstance();
+            RealmResults<PodcastRealm> infoList = realm.where(PodcastRealm.class).equalTo("title", title).findAll();
+            int podcastId = infoList.get(0).getId();
+            l = realm.where(EpisodeRealm.class).equalTo("podcast.id", podcastId).findAll();
         }
         //TODO: selected item is removed
         currentList_ = l;
@@ -456,17 +447,7 @@ public class PodplayerActivity
         playButton_.setEnabled(true);
         syncPreference(pref_, "ALL");
         //TODO: move to base?
-        List<EpisodeInfo> playlist = player_.getCurrentPlaylist();
-        if (null != playlist) {
-            state_.latestList_ = playlist;
-            state_.loadedEpisode_ = new ArrayList<List<EpisodeInfo>>();
-            for(int i = 0; i < state_.podcastList_.size(); i++){
-                state_.loadedEpisode_.add(new ArrayList<EpisodeInfo>());
-            }
-            for(EpisodeInfo info: state_.latestList_){
-                state_.loadedEpisode_.get(info.index_).add(info);
-            }
-        }
+        RealmResults<EpisodeRealm> playlist = player_.getCurrentPlaylist();
     }
 
     @Override
@@ -494,7 +475,7 @@ public class PodplayerActivity
         selector_.setAdapter(adapter);
         Resources res = getResources();
         boolean doLoad = pref_.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
-        List<EpisodeInfo> playlist = state_.latestList_;
+        RealmResults<EpisodeRealm> playlist = state_.latestList_;
         if ((!start) || doLoad) {
             //reload
             episodeListView_.startRefresh();

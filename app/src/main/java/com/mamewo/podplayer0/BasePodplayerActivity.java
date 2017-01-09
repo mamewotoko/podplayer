@@ -18,6 +18,7 @@ import com.mamewo.podplayer0.parser.Podcast;
 //import com.mamewo.podplayer0.parser.PodcastInfo;
 
 import com.mamewo.podplayer0.db.PodcastRealm;
+import com.mamewo.podplayer0.db.EpisodeRealm;
 import static com.mamewo.podplayer0.Const.*;
 
 import android.media.AudioManager;
@@ -62,8 +63,6 @@ abstract public class BasePodplayerActivity
     ServiceConnection
 {
     final static
-    private Podcast[] DUMMY_INFO_LIST = new Podcast[0];
-    final static
     public String HTTP_CACHE_DIR = "http_cache";
     //16mbyte
     final static
@@ -98,7 +97,9 @@ abstract public class BasePodplayerActivity
         //mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         Realm.init(getApplicationContext());
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder().build();
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder()
+            .schemaVersion(1)
+            .build();
         Realm.setDefaultConfiguration(realmConfig);
         
         pref_ = PreferenceManager.getDefaultSharedPreferences(this);
@@ -180,7 +181,8 @@ abstract public class BasePodplayerActivity
             return;
         }
         //boolean reversed = currentOrder_ == REVERSE_APPEARANCE_ORDER;
-        player_.setPlaylist(state_.list(currentOrder_));
+        //TODO: pass filter, sort order
+        player_.setPlaylist();
     }
 
     public boolean isLoading() {
@@ -194,7 +196,7 @@ abstract public class BasePodplayerActivity
         }
         //state_.loadedEpisode_.clear();
         loadTask_ = task;
-        loadTask_.execute(state_.podcastList_.toArray(DUMMY_INFO_LIST));
+        loadTask_.execute();
     }
 
     public void showMessage(String message) {
@@ -237,19 +239,6 @@ abstract public class BasePodplayerActivity
         syncPreference(pref, key);
     }
 
-    //XXX remove
-    public void savePodcastList() {
-        // try{
-        //     PodcastListPreference.saveSettingJSON(this, state_.podcastList_);
-        // }
-        // catch(JSONException e){
-        //     Log.d(TAG, "saveError", e);
-        // }
-        // catch(IOException e){
-        //     Log.d(TAG, "saveError", e);
-        // }
-    }
- 
     protected void syncPreference(SharedPreferences pref, String key){
         //Log.d(TAG, "syncPreference: " + key);
         boolean updateAll = "ALL".equals(key);
@@ -370,12 +359,11 @@ abstract public class BasePodplayerActivity
         private static final long serialVersionUID = 1L;
         protected RealmResults<PodcastRealm> podcastList_;
         //same order with podcastList_
-        protected List<List<EpisodeInfo>> loadedEpisode_;
         protected Date lastUpdatedDate_;
-        protected List<EpisodeInfo> latestList_;
+        protected RealmResults<EpisodeRealm> latestList_;
         
         private PodplayerState() {
-            loadedEpisode_ = new ArrayList<List<EpisodeInfo>>();
+            loadedEpisode_ = null;
             podcastList_ = null;
             lastUpdatedDate_ = null;
             latestList_ = new ArrayList<EpisodeInfo>();
@@ -383,7 +371,8 @@ abstract public class BasePodplayerActivity
         
         public void loadRealm(){
             Realm realm = Realm.getDefaultInstance();
-            podcastList_ = realm.where(PodcastRealm.class).findAll();
+            podcastList_ = realm.where(PodcastRealm.class).equalTo("enabled", true).findAll();
+            latestList_ = realm.where(EpisodeRealm.class).findAll();
         }
         
         // static
@@ -395,51 +384,12 @@ abstract public class BasePodplayerActivity
         //     }
         // }
         
-        public List<EpisodeInfo> list(int orderSetting){
+        public RealmResults<EpisodeRealm> list(int orderSetting){
             //Log.d(TAG, "list: "+orderSetting);
-            List l = new ArrayList<EpisodeInfo>();
-            for(List<EpisodeInfo> loaded: loadedEpisode_){
-                if(REVERSE_APPEARANCE_ORDER == orderSetting){
-                    for(int i = 0; i < loaded.size(); i++){
-                        l.add(loaded.get(loaded.size()-1-i));
-                    }
-                }
-                else {
-                    l.addAll(loaded);
-                }
-            }
-            //l: filitered
-            //TODO:check config
-            // if(PUBDATE_ORDER == orderSetting || REVERSE_PUBDATE_ORDER == orderSetting){
-            //     sortEpisodeByDate(l, REVERSE_PUBDATE_ORDER == orderSetting);
-            // }
-            latestList_.clear();
-            latestList_.addAll(l);
-            return l;
-        }
-
-        //TODO: use hash
-        public void mergeEpisode(EpisodeInfo episode){
-            //called by AsyncTask ...
-            if(loadedEpisode_.size() <= episode.index_){
-                return;
-            }
-
-            //TODO: binary search by date? (sort by date first)
-            List<EpisodeInfo> targetList = loadedEpisode_.get(episode.index_);
-            int s = targetList.size();
-            for(int i = 0; i < s; i++){
-                EpisodeInfo existing = targetList.get(s-1-i);
-                //different episode
-                if(episode.index_ != existing.index_){
-                    targetList.add(episode);
-                    return;
-                }
-                else if(episode.equalEpisode(existing)){
-                    return;
-                }
-            }
-            targetList.add(episode);
+            String[] sortFields = { "podcast.id", "occurIndex"};
+            Sort[] order = { Sort.ASCENDING, Sort.ASCENDING };
+            latestList_ = realm.where(EpisodeRealm.class).sort(sortFields, order).findAll();
+            return latestList_;
         }
     }
 }

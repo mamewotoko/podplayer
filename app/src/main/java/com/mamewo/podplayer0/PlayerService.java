@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import com.mamewo.podplayer0.parser.EpisodeInfo;
+//import com.mamewo.podplayer0.parser.EpisodeInfo;
+import com.mamewo.podplayer0.db.EpisodeRealm;
 import com.mamewo.podplayer0.parser.Util;
+import io.realm.RealmResults;
 
 import static com.mamewo.podplayer0.Const.*;
 
@@ -68,7 +70,7 @@ public class PlayerService
 	final static
 	private int NOTIFY_PLAYING_ID = 1;
 	private final IBinder binder_ = new LocalBinder();
-	private List<EpisodeInfo> currentPlaylist_;
+	private RealmResults<EpisodeRealm> currentPlaylist_;
 	private int playCursor_;
 	private MediaPlayer player_;
 	private PlayerStateListener listener_;
@@ -78,7 +80,7 @@ public class PlayerService
 	private boolean isPausing_;
 	private ComponentName mediaButtonReceiver_;
 	private long previousPrevKeyTime_;
-	private EpisodeInfo currentPlaying_;
+	private EpisodeRealm currentPlaying_;
 	private	SharedPreferences pref_;
 
 	//error code
@@ -122,8 +124,12 @@ public class PlayerService
 	// 	return (networkInfo != null && networkInfo.isConnected());
 	// }
 
-	public void setPlaylist(List<EpisodeInfo> playlist) {
-		currentPlaylist_ = playlist;
+    //TODO: pass query 
+	public void setPlaylist() {
+		//currentPlaylist_ = playlist;
+        //add test
+        Realm realm = Realm.getDefaultInstance();
+        currentPlaylist_ = realm.where(EpisodeInfo.class).findAll();
 	}
 
 	//previous tune when previous is clicked twice quickly
@@ -223,7 +229,7 @@ public class PlayerService
 		return (! stopOnPrepared_) && (isPreparing_ || player_.isPlaying());
 	}
 
-	public List<EpisodeInfo> getCurrentPlaylist() {
+	public RealmResults<EpisodeRealm> getCurrentPlaylist() {
 		return currentPlaylist_;
 	}
 	
@@ -231,7 +237,7 @@ public class PlayerService
 	 * get current playing or pausing music
 	 * @return current music info
 	 */
-	public EpisodeInfo getCurrentPodInfo(){
+	public EpisodeRealm getCurrentPodInfo(){
 		if (null != currentPlaylist_) {
 			return currentPlaying_;
 		}
@@ -351,7 +357,7 @@ public class PlayerService
 			return false;
 		}
 		if(null != listener_){
-			listener_.onStartLoadingMusic(currentPlaying_);
+			listener_.onStartLoadingMusic(currentPlaying_.getId());
 		}
 		return true;
 	}
@@ -517,7 +523,7 @@ public class PlayerService
 		player_.start();
         showNotification(currentPlaying_.getTitle());
 		if(null != listener_){
-			listener_.onStartMusic(currentPlaying_);
+			listener_.onStartMusic(currentPlaying_.getId());
 		}
 	}
 
@@ -580,7 +586,7 @@ public class PlayerService
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 		String code = ErrorCode2String(extra);
-		EpisodeInfo info = currentPlaying_;
+		EpisodeRealm info = currentPlaying_;
 		Log.i(TAG, "onError: what: " + what + " error code: " + code + " url: " + info.getURL());
 		//TODO: show error message to GUI
 		isPreparing_ = false;
@@ -643,8 +649,8 @@ public class PlayerService
 	}
 	
 	public interface PlayerStateListener {
-		void onStartLoadingMusic(EpisodeInfo info);
-		void onStartMusic(EpisodeInfo info);
+		void onStartLoadingMusic(int episodeId);
+		void onStartMusic(int episodeId);
 		void onStopMusic(int mode);
 	}
 

@@ -19,6 +19,7 @@ import okhttp3.OkHttpClient;
 import io.realm.RealmResults;
 import io.realm.Realm;
 import com.mamewo.podplayer0.db.PodcastRealm;
+import com.mamewo.podplayer0.db.EpisodeRealm;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -26,7 +27,7 @@ import android.util.Log;
 import android.util.Base64;
 
 public class BaseGetPodcastTask
-    extends AsyncTask<Podcast, EpisodeInfo, Void>
+    extends AsyncTask<Podcast, EpisodeRealm, Void>
 {
     private Context context_;
     private OkHttpClient client_;
@@ -57,7 +58,7 @@ public class BaseGetPodcastTask
         context_ = context;
         limit_ = limit;
         client_ = client;
-        buffer_ = new ArrayList<EpisodeInfo>();
+        buffer_ = new ArrayList<EpisodeRealm>();
         publishBufferSize_ = publishBufferSize;
         authRequired_ = new ArrayList<Podcast>();
     }
@@ -76,9 +77,8 @@ public class BaseGetPodcastTask
     @Override
     protected Void doInBackground(Podcast... tm) {
         XmlPullParserFactory factory;
-        //XXX
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<PodcastRealm> podcastInfo = realm.where(PodcastRealm.class).findAll();
+        RealmResults<PodcastRealm> podcastInfo = realm.where(PodcastRealm.class).equalTo("enabled", true).findAll();
         
         try {
             factory = XmlPullParserFactory.newInstance();
@@ -190,7 +190,20 @@ public class BaseGetPodcastTask
                                 if(title == null) {
                                     title = podcastURL;
                                 }
-                                EpisodeInfo info = new EpisodeInfo(pinfo, podcastURL, title, pubdate, link, i);
+                                //
+                                //EpisodeInfo info = new EpisodeInfo(pinfo, podcastURL, title, pubdate, link, i);
+                                realm.beginTransaction();
+                                EpisodeRealm info = realm.createObject(EpisodeRealm.class);
+                                int nextId = realm.where(EpisodeRealm.class).max("id").intValue() + 1;
+                                info.setId(nextId);
+                                info.setPodcast(pinfo);
+                                info.setURL(podcastURL);
+                                info.setTitle(title);
+                                info.setPubdateStr(pubdate);
+                                info.setLink(link);
+                                info.setOccurIndex(episodeCount);
+                                realm.commitTransaction();
+                                
                                 buffer_.add(info);
                                 if (buffer_.size() >= publishBufferSize_) {
                                     //Log.d(TAG, "publish: "+podcastURL+" "+title);

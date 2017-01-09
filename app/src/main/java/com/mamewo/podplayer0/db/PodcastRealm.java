@@ -7,7 +7,6 @@ import android.util.Log;
 import com.mamewo.podplayer0.parser.Podcast;
 import com.mamewo.podplayer0.parser.PodcastBuilder;
 
-import io.realm.RealmObject;
 import io.realm.RealmModel;
 import io.realm.annotations.RealmClass;
 import io.realm.annotations.Ignore;
@@ -21,69 +20,79 @@ public class PodcastRealm
                Serializable
 {
     private static final long serialVersionUID = 76131894671950703L;
-    private String title_;
-    private String url_;
-    private boolean enabled_;
-    private String iconURL_;
+    private int id;
+    private String title;
+    private String url;
+    private boolean enabled;
+    private String iconURL;
 
     //TODO: hold in secure area?
-    private String username_;
-    private String password_;
-    private int status_;
-
+    private String username;
+    private String password;
+    private int status;
+    
     @Ignore
     private URL parsedURL_;
     
     public PodcastRealm(){
-        title_ = null;
-        url_ = null;
-        enabled_ = true;
-        iconURL_ = null;
-        username_ = null;
-        password_ = null;
-        status_ = Podcast.UNKNOWN;
+        id = 0;
+        title = null;
+        url = null;
+        enabled = true;
+        iconURL = null;
+        username = null;
+        password = null;
+        status = Podcast.UNKNOWN;
     }
     
     public String getTitle(){
-        return title_;
+        return title;
     }
 
     public void setTitle(String title){
-        title_ = title;
+        this.title = title;
     }
     
     public void setURL(String url) {
-        url_ = url;
+        this.url = url;
         try{
-            parsedURL_ = new URL(url_);
+            parsedURL_ = new URL(url);
         }
         catch(MalformedURLException e){
             Log.d(TAG, "parse url", e);
             parsedURL_ = null;
         }
     }
-    
-    public String getURL(){
-        return url_.toString();
+
+    public int getId(){
+        return id;
     }
 
-    //XXX
+    public void setId(int id){
+        this.id = id;
+    }
+    
+    public String getURL(){
+        return url;
+    }
+
     public URL getParsedURL(){
         try{
-            return new URL(url_);
+            parsedURL_ = new URL(url);
         }
         catch(MalformedURLException e){
             Log.d(TAG, "parse url", e);
-            return null;
+            parsedURL_ = null;
         }
+        return parsedURL_;
     }
     
     public URL getURLWithAuthInfo(){
         try{
-            if(null != username_ && null != password_){
-                return new URL(addUserInfo(url_));
+            if(null != this.username && null != this.password){
+                return new URL(addUserInfo(url));
             }
-            return new URL(url_);
+            return parsedURL_;
         }
         catch (MalformedURLException e){
             return null;
@@ -91,56 +100,56 @@ public class PodcastRealm
     }
 
     public boolean getEnabled(){
-        return enabled_;
+        return enabled;
     }
 
     public void setEnabled(boolean enabled){
-        enabled_ = enabled;
+        this.enabled = enabled;
     }
     
     public String getIconURL(){
-        return iconURL_;
+        return iconURL;
     }
 
     public String getIconURLWithAuthInfo(){
-        return addUserInfo(iconURL_);
+        return addUserInfo(iconURL);
     }
 
     public void setIconURL(String url){
-        iconURL_ = url;
+        iconURL = url;
     }
 
     public String getUsername(){
-        return username_;
+        return username;
     }
 
     public void setUsername(String username){
-        username_ = username;
+        this.username = username;
     }
 
     public String getPassword(){
-        return password_;
+        return password;
     }
 
     public void setPassword(String password){
-        password_ = password;
+        this.password = password;
     }
 
     public String addUserInfo(String url){
-        Log.d(TAG, "addUserInfo: " + url + " " + username_ + " " + password_);
-        if(null == url || null == username_ || null == password_){
+        Log.d(TAG, "addUserInfo: " + url + " " + this.username + " " + this.password);
+        if(null == url || null == this.username || null == this.password){
             return url;
         }
         int pos = url.indexOf("://");
-        return url.substring(0, pos) + "://" + username_ +":"+password_+"@"+url.substring(pos+3);
+        return url.substring(0, pos) + "://" + this.username +":"+this.password+"@"+url.substring(pos+3);
     }
 
     public int getStatus(){
-        return status_;
+        return status;
     }
 
     public void setStatus(int status){
-        status_ = status;
+        this.status = status;
     }
 
     static

@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mamewo.podplayer0.parser.BaseGetPodcastTask;
-import com.mamewo.podplayer0.parser.EpisodeInfo;
-//import com.mamewo.podplayer0.parser.PodcastInfo;
-import com.mamewo.podplayer0.parser.Podcast;
-
+import com.mamewo.podplayer0.db.PodcastRealm;
+import com.mamewo.podplayer0.db.EpisodeRealm;
 
 import static com.mamewo.podplayer0.Const.*;
 
@@ -202,8 +200,8 @@ public class PodplayerExpActivity
                                 int childPosition,
                                 long id)
     {
-        EpisodeInfo episode = (EpisodeInfo)adapter_.getChild(groupPosition, childPosition);
-        EpisodeInfo current = player_.getCurrentPodInfo();
+        EpisodeRealm episode = (EpisodeRealm)adapter_.getChild(groupPosition, childPosition);
+        EpisodeRealm current = player_.getCurrentPodInfo();
         if(current != null && current.getURL().equals(episode.getURL())) {
             if(player_.isPlaying()) {
                 player_.pauseMusic();
@@ -221,7 +219,7 @@ public class PodplayerExpActivity
         return true;
     }
 
-    private void playByInfo(EpisodeInfo episode) {
+    private void playByInfo(EpisodeRealm episode) {
         //umm...
         if(state_.latestList_ == null){
             return;
@@ -265,7 +263,8 @@ public class PodplayerExpActivity
 
         @Override
         public int getChildrenCount(int groupPosition) {
-            return state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition)).size();
+            //return state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition)).size();
+            return 0;
         }
 
         @Override
@@ -285,19 +284,20 @@ public class PodplayerExpActivity
 
         @Override
         public Object getChild(int groupPosition, int childPosition) {
-            List<EpisodeInfo> group = state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition));
-            int pos;
-            switch(currentOrder_){
-            case REVERSE_APPEARANCE_ORDER:
-                pos = group.size()-1-childPosition;
-                break;
-            case APPEARANCE_ORDER:
-                //fall through
-            default:
-                pos = childPosition;
-                break;
-            }
-            return group.get(pos);
+            //List<EpisodeInfo> group = state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition));
+            // int pos;
+            // switch(currentOrder_){
+            // case REVERSE_APPEARANCE_ORDER:
+            //     pos = group.size()-1-childPosition;
+            //     break;
+            // case APPEARANCE_ORDER:
+            //     //fall through
+            // default:
+            //     pos = childPosition;
+            //     break;
+            // }
+            // return group.get(pos);
+            return null;
         }
         
         @Override
@@ -315,18 +315,17 @@ public class PodplayerExpActivity
             }
             TextView titleView = (TextView)view.findViewById(R.id.text1);
             TextView countView = (TextView)view.findViewById(R.id.text2);
-            Podcast info = state_.podcastList_.get(filteredItemIndex_.get(groupPosition));
+            PodcastRealm info = state_.podcastList_.get(filteredItemIndex_.get(groupPosition));
             titleView.setText(info.getTitle());
-            int childNum = state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition)).size();
             String numStr;
-            if (childNum <= 1) {
-                //TODO: localize
-                numStr = childNum + " item";
-            }
-            else {
-                numStr = childNum + " items";
-            }
-            countView.setText(numStr);
+            // if (childNum <= 1) {
+            //     //TODO: localize
+            //     numStr = childNum + " item";
+            // }
+            // else {
+            //     numStr = childNum + " items";
+            // }
+            // countView.setText(numStr);
             return view;
         }
 
@@ -353,10 +352,10 @@ public class PodplayerExpActivity
                 view = convertView;
                 holder = (EpisodeHolder)view.getTag();
             }
-            EpisodeInfo episode = (EpisodeInfo)getChild(groupPosition, childPosition);
+            EpisodeRealm episode = (EpisodeRealm)getChild(groupPosition, childPosition);
             holder.titleView_.setText(episode.getTitle());
-            holder.timeView_.setText(episode.getPubdateString(dateFormat_));
-            EpisodeInfo current = player_.getCurrentPodInfo();
+            holder.timeView_.setText(episode.getPubdateStr());
+            EpisodeRealm current = player_.getCurrentPodInfo();
             if(current != null && current.getURL().equals(episode.getURL())) {
                 //cache!
                 if(player_.isPlaying()) {
@@ -374,7 +373,8 @@ public class PodplayerExpActivity
             }
 
             //TODO: use string or uri
-            String iconURL = state_.podcastList_.get(episode.getIndex()).getIconURL();
+            String iconURL = episode.getPodcast().getIconURL();
+            //String iconURL = state_.podcastList_.get(episode.getIndex()).getIconURL();
             if(showPodcastIcon_ && null != iconURL){
                 //to avoid image flicker
                 String displayedIconURL = holder.displayedIconURL_;
@@ -412,19 +412,12 @@ public class PodplayerExpActivity
         }
 
         @Override
-        protected void onProgressUpdate(EpisodeInfo... values){
-            for (EpisodeInfo episode: values) {
-                //state_.loadedEpisode_.add(info);
-                state_.mergeEpisode(episode);
-            }
+        protected void onProgressUpdate(EpisodeRealm... values){
             updateUI();
         }
 
         private void onFinished(){
             loadTask_ = null;
-            savePodcastList();
-            setProgressBarIndeterminateVisibility(false);
-            //TODO: merge playlist
             updatePlaylist();
             reloadButton_.setContentDescription(getResources().getString(R.string.action_reload));
 			reloadButton_.setImageResource(R.drawable.ic_sync_white_24dp);            
@@ -456,7 +449,7 @@ public class PodplayerExpActivity
         int groupPosition = ExpandableListView.getPackedPositionGroup(id);
         int childPosition = ExpandableListView.getPackedPositionChild(id);
 
-        EpisodeInfo episode = (EpisodeInfo)adapter_.getChild(groupPosition, childPosition);
+        EpisodeRealm episode = (EpisodeRealm)adapter_.getChild(groupPosition, childPosition);
         if(episode.getLink() == null){
             return true;
         }
@@ -495,14 +488,12 @@ public class PodplayerExpActivity
     }
 
     @Override
-    public void onStartLoadingMusic(EpisodeInfo episode) {
-        setProgressBarIndeterminateVisibility(false);
-        updateUI();        
+    public void onStartLoadingMusic(int episodeId) {
+        updateUI();
     }
 
     @Override
-    public void onStartMusic(EpisodeInfo episode) {
-        setProgressBarIndeterminateVisibility(true);
+    public void onStartMusic(int episodeId) {
         updateUI();
     }
 
