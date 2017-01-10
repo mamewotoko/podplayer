@@ -132,7 +132,12 @@ public class PlayerService
 		//currentPlaylist_ = playlist;
         //add test
         Realm realm = Realm.getDefaultInstance();
-        podcastList_ = realm.where(PodcastRealm.class).equalTo("enabled", true).equalTo("title", title).findAll();
+        if(null == title){
+            podcastList_ = realm.where(PodcastRealm.class).equalTo("enabled", true).findAll();
+        }
+        else {
+            podcastList_ = realm.where(PodcastRealm.class).equalTo("enabled", true).equalTo("title", title).findAll();
+        }
         if(podcastList_.size() > 0){
             Long[] podcastIdList = new Long[podcastList_.size()];
             

@@ -343,7 +343,6 @@ abstract public class BasePodplayerActivity
         }
         else if("play".equals(p.name)) {
             //TODO: apply filter
-            updatePlaylist(null);
             if(! player_.restartMusic()) {
                 player_.playMusic();
             }

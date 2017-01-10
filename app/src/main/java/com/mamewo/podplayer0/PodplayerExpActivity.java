@@ -77,6 +77,7 @@ public class PodplayerExpActivity
         expandableList_ =
                 (ExpandableListView) findViewById(R.id.exp_list);
         expandableList_.setOnItemLongClickListener(this);
+        expandableList_.setOnChildClickListener(this);
         Realm realm = Realm.getDefaultInstance();
         groupList_ = new ArrayList<RealmResults<EpisodeRealm>>();
         for(int i = 0; i < state_.podcastList_.size(); i++){
@@ -212,6 +213,9 @@ public class PodplayerExpActivity
     {
         EpisodeRealm episode = (EpisodeRealm)adapter_.getChild(groupPosition, childPosition);
         EpisodeRealm current = player_.getCurrentPodInfo();
+        Log.d(TAG, "onChildClick");
+        Log.d(TAG, "clicked: "+episode);
+        Log.d(TAG, "current: "+current);
         if(current != null && current.getId() == current.getId()) {
             if(player_.isPlaying()) {
                 player_.pauseMusic();
@@ -223,6 +227,7 @@ public class PodplayerExpActivity
             }
         }
         else {
+            Log.d(TAG, "onChildClick: playByInfo");
             updatePlaylist(null);
             playByInfo(episode);
         }
