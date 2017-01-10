@@ -216,7 +216,7 @@ public class PodplayerExpActivity
         Log.d(TAG, "onChildClick");
         Log.d(TAG, "clicked: "+episode);
         Log.d(TAG, "current: "+current);
-        if(current != null && current.getId() == current.getId()) {
+        if(current != null && current.getId() == episode.getId()) {
             if(player_.isPlaying()) {
                 player_.pauseMusic();
             }
@@ -242,7 +242,7 @@ public class PodplayerExpActivity
         int playPos = -1;
         //skip! use list size
         for(int pos = 0; pos < state_.latestList_.size(); pos++) {
-            if(state_.latestList_.get(pos) == episode) {
+            if(state_.latestList_.get(pos).getId() == episode.getId()) {
                 playPos = pos;
                 break;
             }
