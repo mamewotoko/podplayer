@@ -53,6 +53,7 @@ import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
 import android.support.v7.app.AppCompatActivity;
 
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import io.realm.Sort;
 import io.realm.RealmResults;
 import io.realm.RealmConfiguration;
@@ -374,18 +375,19 @@ abstract public class BasePodplayerActivity
         }
         
         public void loadRealm(){
-            loadRealm(null);
+            loadRealm(null, true);
         }
 
-        public void loadRealm(String title){
+        public void loadRealm(String title, boolean skipListened){
             Realm realm = Realm.getDefaultInstance();
             //TODO: sort
+            RealmQuery<PodcastRealm> query = realm.where(PodcastRealm.class);
             if(null != title){
-                podcastList_ = realm.where(PodcastRealm.class).equalTo("enabled", true).equalTo("title", title).findAll();
+                query = query.equalTo("title", title);
             }
-            else {
-                podcastList_ = realm.where(PodcastRealm.class).equalTo("enabled", true).findAll();
-            }
+            podcastList_ = query.findAll();
+
+            RealmQuery<EpisodeRealm> episodeQuery = realm.where(EpisodeRealm.class);
             if(podcastList_.size() > 0){
                 Long[] podcastIdList = new Long[podcastList_.size()];
                 
@@ -394,16 +396,22 @@ abstract public class BasePodplayerActivity
                 }
                 //String[] sortFields = { "podcast.id", "occurIndex"};
                 //Sort[] order = { Sort.ASCENDING, Sort.ASCENDING };
-                latestList_ = realm.where(EpisodeRealm.class).in("podcast.id", podcastIdList).findAll();
+                episodeQuery = episodeQuery.in("podcast.id", podcastIdList);
             }
             else {
-                latestList_ = realm.where(EpisodeRealm.class).findAll();
+                episodeQuery = realm.where(EpisodeRealm.class);
             }
+            if(skipListened){
+                episodeQuery = episodeQuery.isNull("listened");
+            }
+            latestList_ = episodeQuery.findAll();
             
             //TODO: remove change listener
             podcastList_.addChangeListener(new RealmChangeListener<RealmResults<PodcastRealm>>(){
                     @Override
                     public void onChange(RealmResults<PodcastRealm> results){
+                        //TODO: get form pref
+                        //loadRealm(null, true);
                         notifyPodcastListChanged(results);
                     }
                 });

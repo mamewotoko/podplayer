@@ -511,6 +511,10 @@ public class PodplayerExpActivity
         updateUI();
     }
 
+    @Override
+    public void onCompleteMusic(long episodeId) {
+        //TODO: log
+    }
     // @Override
     // protected void notifyLatestListChanged(){
     //     adapter_.notifyDataSetChanged();

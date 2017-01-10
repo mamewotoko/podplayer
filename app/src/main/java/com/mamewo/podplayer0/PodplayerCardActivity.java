@@ -326,6 +326,10 @@ public class PodplayerCardActivity
     }
 
     @Override
+    public void onCompleteMusic(long episodeId) {
+    }
+        
+    @Override
     public void onStartLoadingMusic(long episodeId) {
         //Log.d(TAG, "onStartLoadingMusic");
         updateUI();

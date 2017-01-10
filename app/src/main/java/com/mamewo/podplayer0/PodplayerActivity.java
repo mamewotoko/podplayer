@@ -39,6 +39,7 @@ import com.markupartist.android.widget.PullToRefreshListView;
 
 import com.mamewo.podplayer0.db.PodcastRealm;
 import com.mamewo.podplayer0.db.EpisodeRealm;
+import com.mamewo.podplayer0.db.ListenedEpisodeRealm;
 import io.realm.RealmResults;
 import io.realm.Realm;
 //import io.realm.RealmChangeListener;
@@ -221,18 +222,20 @@ public class PodplayerActivity
     @Override
     public void onCompleteMusic(long episodeId){
         Realm realm = Realm.getDefaultInstance();
-        Episode episode = realm.where(EpisodeRealm.class).equalTo("id", episodeId);
-        if(episode.size() == 0){
+        RealmResults<EpisodeRealm> result = realm.where(EpisodeRealm.class).equalTo("id", episodeId).findAll();
+        if(result.size() == 0){
             Log.d(TAG, "onCompleteMusic: no episode");
             return;
         }
-        //TODO: async
-        ListenedEpisodeRealm listened = realm.createObject(ListenedEpisodeRealm.class);
+        EpisodeRealm listened = result.get(0);
+        //TODO: async write
+        ListenedEpisodeRealm entry = realm.createObject(ListenedEpisodeRealm.class);
         realm.beginTransaction();
-        listened.setDate(new Date());
-        listened.setEpisode(episode);
-        listened.setPodcastTitle(episode.getPodcast().getTitle());
-        listened.setEpisodeTitle(episode.getTitle());
+        entry.setDate(new Date());
+        entry.setEpisode(listened);
+        entry.setPodcastTitle(listened.getPodcast().getTitle());
+        entry.setEpisodeTitle(listened.getTitle());
+        listened.setListened(entry);
         realm.commitTransaction();
     }
 
@@ -500,7 +503,7 @@ public class PodplayerActivity
 
     private void filterSelectedPodcast(){
         String title = getFilterPodcastTitle();
-        state_.loadRealm(title);
+        state_.loadRealm(title, true);
         episodeListView_.hideHeader();
         adapter_.notifyDataSetChanged();
     }

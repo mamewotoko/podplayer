@@ -27,6 +27,7 @@ public class EpisodeRealm
     private String link;
     private Date pubdate;
     private int occurIndex;
+    private ListenedEpisodeRealm listened;
 
     public EpisodeRealm(){
         id = 0;
@@ -36,6 +37,7 @@ public class EpisodeRealm
         pubdatestr = null;
         link = null;
         pubdate = null;
+        listened = null;
     }
 
     public long getId(){
@@ -124,5 +126,13 @@ public class EpisodeRealm
 
     public void setOccurIndex(int index){
         this.occurIndex = index;
+    }
+
+    public ListenedEpisodeRealm getListened(){
+        return listened;
+    }
+    
+    public void setListened(ListenedEpisodeRealm listened){
+        this.listened = listened;
     }
 }
