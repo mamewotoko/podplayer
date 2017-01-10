@@ -35,6 +35,8 @@ import android.widget.ImageButton;
 import com.bumptech.glide.Glide;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.ActionBar;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class PodplayerExpActivity
     extends BasePodplayerActivity
@@ -51,8 +53,9 @@ public class PodplayerExpActivity
     private ExpandableListView expandableList_;
     private ExpAdapter adapter_;
     //private int currentOrder_;
-    private List<Integer> filteredItemIndex_;
-
+    //private List<Integer> filteredItemIndex_;
+    private List<RealmResults<EpisodeRealm>> groupList_;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,10 +73,17 @@ public class PodplayerExpActivity
         playButton_.setOnLongClickListener(this);
         playButton_.setEnabled(false);
         //XXX filteredItemIndex_ -> adapter_
-        filteredItemIndex_ = new ArrayList<Integer>();
+        //filteredItemIndex_ = new ArrayList<Integer>();
         expandableList_ =
                 (ExpandableListView) findViewById(R.id.exp_list);
         expandableList_.setOnItemLongClickListener(this);
+        Realm realm = Realm.getDefaultInstance();
+        groupList_ = new ArrayList<RealmResults<EpisodeRealm>>();
+        for(int i = 0; i < state_.podcastList_.size(); i++){
+            RealmResults<EpisodeRealm> result = realm.where(EpisodeRealm.class).equalTo("podcast.id", state_.podcastList_.get(i).getId()).findAll();
+            groupList_.add(result);
+            //TODO: add listener
+        }
         adapter_ = new ExpAdapter();
         expandableList_.setAdapter(adapter_);
         expandButton_ = (ImageButton) findViewById(R.id.expand_button);
@@ -258,13 +268,13 @@ public class PodplayerExpActivity
 
         @Override
         public int getGroupCount() {
-            return filteredItemIndex_.size();
+            return groupList_.size();
         }
 
         @Override
         public int getChildrenCount(int groupPosition) {
             //return state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition)).size();
-            return 0;
+            return groupList_.get(groupPosition).size();
         }
 
         @Override
@@ -279,7 +289,7 @@ public class PodplayerExpActivity
 
         @Override
         public Object getGroup(int groupPosition){
-            return state_.podcastList_.get(filteredItemIndex_.get(groupPosition));
+            return groupList_.get(groupPosition);
         }
 
         @Override
@@ -297,7 +307,7 @@ public class PodplayerExpActivity
             //     break;
             // }
             // return group.get(pos);
-            return null;
+            return groupList_.get(groupPosition).get(childPosition);
         }
         
         @Override
@@ -315,17 +325,18 @@ public class PodplayerExpActivity
             }
             TextView titleView = (TextView)view.findViewById(R.id.text1);
             TextView countView = (TextView)view.findViewById(R.id.text2);
-            PodcastRealm info = state_.podcastList_.get(filteredItemIndex_.get(groupPosition));
+            PodcastRealm info = state_.podcastList_.get(groupPosition);
             titleView.setText(info.getTitle());
+            int childNum = groupList_.get(groupPosition).size();
             String numStr;
-            // if (childNum <= 1) {
-            //     //TODO: localize
-            //     numStr = childNum + " item";
-            // }
-            // else {
-            //     numStr = childNum + " items";
-            // }
-            // countView.setText(numStr);
+            if (childNum <= 1) {
+                //TODO: localize
+                numStr = childNum + " item";
+            }
+            else {
+                numStr = childNum + " items";
+            }
+            countView.setText(numStr);
             return view;
         }
 
@@ -399,7 +410,6 @@ public class PodplayerExpActivity
 
     @Override
     public void onStopMusic(int mode) {
-        setProgressBarIndeterminateVisibility(false);
         updateUI();
     }
     // end of callback methods
@@ -418,7 +428,6 @@ public class PodplayerExpActivity
 
         private void onFinished(){
             loadTask_ = null;
-            updatePlaylist(null);
             reloadButton_.setContentDescription(getResources().getString(R.string.action_reload));
 			reloadButton_.setImageResource(R.drawable.ic_sync_white_24dp);            
         }
@@ -508,6 +517,24 @@ public class PodplayerExpActivity
     //     adapter_.notifyDataSetChanged();
     // }
 
+    @Override
+    public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
+        groupList_.clear();
+        Realm realm = Realm.getDefaultInstance();
+
+        for(int i = 0; i < state_.podcastList_.size(); i++){
+            RealmResults<EpisodeRealm> result = realm.where(EpisodeRealm.class).equalTo("podcast.id", state_.podcastList_.get(i).getId()).findAll();
+            groupList_.add(result);
+            //TODO: add listener
+        }
+        adapter_.notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyLatestListChanged(RealmResults<EpisodeRealm> results){
+        adapter_.notifyDataSetChanged();
+    }
+    
     static
     private class EpisodeHolder {
         TextView titleView_;
