@@ -95,6 +95,7 @@ public class PodplayerActivity
         //adapter_ is initialized after player initialized
         adapter_ = new EpisodeAdapter();
         episodeListView_.setAdapter(adapter_);
+        updateSelector();
         //currentPlayPosition_ = (SeekBar) findViewById(R.id.seekbar);
         //currentPlayPosition_.setOnSeekBarChangeListener(this);
     }

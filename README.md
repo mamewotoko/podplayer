@@ -55,6 +55,8 @@ How to run UI test using Robotium
 
 TODO
 ----
+* display author info of episode/podcast
+* ask stop playing episode when exit menu is selected
 * realm integration
   * putlltorefresh view
     * filter
