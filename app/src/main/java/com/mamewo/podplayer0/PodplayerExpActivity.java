@@ -212,7 +212,7 @@ public class PodplayerExpActivity
     {
         EpisodeRealm episode = (EpisodeRealm)adapter_.getChild(groupPosition, childPosition);
         EpisodeRealm current = player_.getCurrentPodInfo();
-        if(current != null && current.getURL().equals(episode.getURL())) {
+        if(current != null && current.getId() == current.getId()) {
             if(player_.isPlaying()) {
                 player_.pauseMusic();
             }
