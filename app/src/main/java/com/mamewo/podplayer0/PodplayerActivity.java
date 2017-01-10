@@ -174,13 +174,10 @@ public class PodplayerActivity
             Log.d(TAG, "current: title "+current.getTitle());
             Log.d(TAG, "onItemClick: URL: " + current.getURL());
             if(player_.isPlaying()) {
-                Log.d(TAG, "onItemClick1");
                 player_.pauseMusic();
             }
             else {
-                Log.d(TAG, "onItemClick2");
                 if(! player_.restartMusic()){
-                    Log.d(TAG, "onItemClick3");
                     playByInfo(info);
                 }
             }
@@ -218,6 +215,25 @@ public class PodplayerActivity
         //currentPlayPosition_.setProgress(pos);
         //timer
         updateUI();
+    }
+
+    //xxxx
+    @Override
+    public void onCompleteMusic(long episodeId){
+        Realm realm = Realm.getDefaultInstance();
+        Episode episode = realm.where(EpisodeRealm.class).equalTo("id", episodeId);
+        if(episode.size() == 0){
+            Log.d(TAG, "onCompleteMusic: no episode");
+            return;
+        }
+        //TODO: async
+        ListenedEpisodeRealm listened = realm.createObject(ListenedEpisodeRealm.class);
+        realm.beginTransaction();
+        listened.setDate(new Date());
+        listened.setEpisode(episode);
+        listened.setPodcastTitle(episode.getPodcast().getTitle());
+        listened.setEpisodeTitle(episode.getTitle());
+        realm.commitTransaction();
     }
 
     @Override

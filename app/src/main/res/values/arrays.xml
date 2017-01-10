@@ -67,7 +67,7 @@
 
     <string-array name="view_mode_title">
       <item>Pull to refresh list</item>
-      <item>Expandable</item>
+      <item>Expandable list</item>
       <item>Card</item>
     </string-array>>
 
