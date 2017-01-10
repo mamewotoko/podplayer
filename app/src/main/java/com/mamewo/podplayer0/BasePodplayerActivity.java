@@ -40,6 +40,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
+import android.widget.SpinnerAdapter;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
@@ -85,10 +86,16 @@ abstract public class BasePodplayerActivity
     static final
     public int ICON_DISK_CACHE_BYTES = 64*1024*1024;
     protected int currentOrder_;
-
     // abstract protected void onPodcastListChanged(boolean start);
     // abstract protected void notifyOrderChanged(int order);
     //abstract protected void notifyLatestListChanged();
+    
+    public void notifyPodcastListChanged(RealmResults<PodcastRealm> result){
+    }
+
+    public void notifyLatestListChanged(RealmResults<EpisodeRealm> result){
+    }
+    
     protected SharedPreferences pref_;
     protected DateFormat dateFormat_;
     //remove
@@ -116,8 +123,8 @@ abstract public class BasePodplayerActivity
         final Resources res = getResources();
 
         state_ = new PodplayerState();
-        //
         state_.loadRealm();
+        //
         connection_ = conn;
         //TODO: handle error
         bindService(intent, conn, Context.BIND_AUTO_CREATE);
@@ -163,6 +170,7 @@ abstract public class BasePodplayerActivity
     @Override
     protected void onStart() {
         super.onStart();
+        state_.loadRealm();        
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         //TODO: check current activity and preference
         if (uiSettingChanged_) {
@@ -173,12 +181,6 @@ abstract public class BasePodplayerActivity
         }
     }
     
-    // @Override
-    // protected void onSaveInstanceState(Bundle outState) {
-    //     outState.putSerializable("state", state_);
-    //     super.onSaveInstanceState(outState);
-    // }
-
     public void updatePlaylist() {
         if(null == player_){
             return;
@@ -355,7 +357,7 @@ abstract public class BasePodplayerActivity
         showMessage(p.name);
     }
 
-    final public static
+    final public
     class PodplayerState
         implements Serializable
     {
@@ -372,23 +374,50 @@ abstract public class BasePodplayerActivity
         }
         
         public void loadRealm(){
-            Realm realm = Realm.getDefaultInstance();
-            podcastList_ = realm.where(PodcastRealm.class).equalTo("enabled", true).findAll();
-
-            String[] sortFields = { "podcast.id", "occurIndex"};
-            Sort[] order = { Sort.ASCENDING, Sort.ASCENDING };
-            latestList_ = realm.where(EpisodeRealm.class).findAll();
-            //TODO: remove change listener
-
-            // RealmChangeListener<RealmResults<EpisodeRealm>> listener =
-            //     new RealmChangeListener<RealmResults<EpisodeRealm>>(){
-            //         @Override
-            //         public void onChange(RealmResults<EpisodeRealm> results){
-            //             notifyLatestListChanged();
-            //         }
-            //     };
-            // latestList_.addChangeListener(listener);
+            loadRealm(null);
         }
+
+        public void loadRealm(String title){
+            Realm realm = Realm.getDefaultInstance();
+            //TODO: sort
+            if(null != title){
+                podcastList_ = realm.where(PodcastRealm.class).equalTo("enabled", true).equalTo("title", title).findAll();
+            }
+            else {
+                podcastList_ = realm.where(PodcastRealm.class).equalTo("enabled", true).findAll();
+            }
+            if(podcastList_.size() > 0){
+                Integer[] podcastIdList = new Integer[podcastList_.size()];
+                
+                for(int i = 0; i < podcastList_.size(); i++){
+                    podcastIdList[i] = podcastList_.get(i).getId();
+                }
+                //String[] sortFields = { "podcast.id", "occurIndex"};
+                //Sort[] order = { Sort.ASCENDING, Sort.ASCENDING };
+                latestList_ = realm.where(EpisodeRealm.class).in("podcast.id", podcastIdList).findAll();
+            }
+            else {
+                latestList_ = realm.where(EpisodeRealm.class).findAll();
+            }
+            
+            //TODO: remove change listener
+            podcastList_.addChangeListener(new RealmChangeListener<RealmResults<PodcastRealm>>(){
+                    @Override
+                    public void onChange(RealmResults<PodcastRealm> results){
+                        notifyPodcastListChanged(results);
+                    }
+                });
+            
+            RealmChangeListener<RealmResults<EpisodeRealm>> listener =
+                new RealmChangeListener<RealmResults<EpisodeRealm>>(){
+                    @Override
+                    public void onChange(RealmResults<EpisodeRealm> results){
+                        notifyLatestListChanged(results);
+                    }
+                };
+            latestList_.addChangeListener(listener);
+        }
+
         
         // static
         // public void sortEpisodeByDate(List<EpisodeInfo> lst, boolean latestFirst){

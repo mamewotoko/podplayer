@@ -41,7 +41,7 @@ import com.mamewo.podplayer0.db.PodcastRealm;
 import com.mamewo.podplayer0.db.EpisodeRealm;
 import io.realm.RealmResults;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
+//import io.realm.RealmChangeListener;
 
 import com.bumptech.glide.Glide;
 import android.support.v7.widget.Toolbar;
@@ -92,24 +92,23 @@ public class PodplayerActivity
         episodeListView_.setOnRefreshListener(this);
         episodeListView_.setOnCancelListener(this);
         //initial dummy
-        currentList_ = state_.latestList_;
-
         //adapter_ is initialized after player initialized
         adapter_ = new EpisodeAdapter();
         episodeListView_.setAdapter(adapter_);
         //currentPlayPosition_ = (SeekBar) findViewById(R.id.seekbar);
         //currentPlayPosition_.setOnSeekBarChangeListener(this);
-
-        //TODO: remove
-        RealmChangeListener<RealmResults<EpisodeRealm>> changeListener = new RealmChangeListener<RealmResults<EpisodeRealm>>(){
-                @Override
-                public void onChange(RealmResults<EpisodeRealm> results){
-                        adapter_.notifyDataSetChanged();
-                }
-            };
-        state_.latestList_.addChangeListener(changeListener);
     }
 
+    @Override
+    public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
+        updateSelector();
+    }
+
+    @Override
+    public void notifyLatestListChanged(RealmResults<EpisodeRealm> results){
+        adapter_.notifyDataSetChanged();
+    }
+    
     private void updateUI() {
         adapter_.notifyDataSetChanged();
         updatePlayButton();
@@ -238,12 +237,12 @@ public class PodplayerActivity
         
         @Override
         public int getCount(){
-            return currentList_.size();
+            return state_.latestList_.size();
         }
 
         @Override
         public Object getItem(int position){
-            return currentList_.get(position);
+            return state_.latestList_.get(position);
         }
         
         @Override
@@ -432,12 +431,12 @@ public class PodplayerActivity
 
     @Override
     public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
-        //filterSelectedPodcast();
+        filterSelectedPodcast();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapter) {
-        //filterSelectedPodcast();
+        filterSelectedPodcast();
     }
     
     private int podcastTitle2Index(String title){
@@ -468,6 +467,29 @@ public class PodplayerActivity
         player_ = null;
     }
 
+    private void updateSelector(){
+        List<String> list = new ArrayList<String>();
+        list.add(getString(R.string.selector_all));
+        for(PodcastRealm info: state_.podcastList_){
+            list.add(info.getTitle());
+        }
+        //stop loading?
+        ArrayAdapter<String> adapter =
+            new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
+		adapter.setDropDownViewResource(android.support.v7.appcompat.R.layout.support_simple_spinner_dropdown_item);
+        selector_.setAdapter(adapter);
+    }
+
+    private void filterSelectedPodcast(){
+        if(selector_.getSelectedItemPosition() == 0){
+            state_.loadRealm();
+            return;
+        }
+        String title = (String)selector_.getSelectedItem();
+        state_.loadRealm(title);
+        adapter_.notifyDataSetChanged();
+    }
+    
     // @Override
     // protected void notifyLatestListChanged(){
     //     adapter_.notifyDataSetChanged();
