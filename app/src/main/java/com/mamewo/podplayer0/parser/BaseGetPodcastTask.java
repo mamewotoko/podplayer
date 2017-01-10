@@ -87,6 +87,7 @@ public class BaseGetPodcastTask
             Log.i(TAG, "cannot get xml parser", e1);
             return null;
         }
+        realm.beginTransaction();
         for(int i = 0; i < podcastInfo.size(); i++) {
             PodcastRealm pinfo = podcastInfo.get(i);
             if(isCancelled()){
@@ -114,16 +115,16 @@ public class BaseGetPodcastTask
                 if(response.code() == 401){
                     //TODO: queue auth request and retry
                     Log.i(TAG, "auth required: "+url);
-                    realm.beginTransaction();
+                    //realm.beginTransaction();
                     pinfo.setStatus(Podcast.AUTH_REQUIRED_LOCKED);
-                    realm.commitTransaction();
+                    //realm.commitTransaction();
                     continue;
                 }
                 if(!response.isSuccessful()){
                     Log.i(TAG, "http error: "+response.message()+", "+url.toString());
-                    realm.beginTransaction();
+                    //realm.beginTransaction();
                     pinfo.setStatus(Podcast.ERROR);
-                    realm.commitTransaction();
+                    //realm.commitTransaction();
                     continue;
                 }
                 is = response.body().byteStream();
@@ -134,7 +135,7 @@ public class BaseGetPodcastTask
                 //TODO: use reader or give correct encoding
                 parser.setInput(is, "UTF-8");
                 String title = null;
-                String podcastURL = null;
+                String episodeURL = null;
                 String iconURL = null;
                 String pubdate = "";
                 TagName tagName = TagName.NONE;
@@ -156,14 +157,14 @@ public class BaseGetPodcastTask
                         }
                         else if("enclosure".equalsIgnoreCase(currentName)) {
                             //TODO: check type attribute
-                            podcastURL = parser.getAttributeValue(null, "url");
+                            episodeURL = parser.getAttributeValue(null, "url");
                         }
                         else if("itunes:image".equalsIgnoreCase(currentName)) {
                             if(null == iconURL) {
                                 iconURL = parser.getAttributeValue(null, "href");
-                                realm.beginTransaction();
+                                //realm.beginTransaction();
                                 pinfo.setIconURL(iconURL);
-                                realm.commitTransaction();
+                                //realm.commitTransaction();
                             }
                         }
                     }
@@ -186,31 +187,39 @@ public class BaseGetPodcastTask
                     else if(eventType == XmlPullParser.END_TAG) {
                         String currentName = parser.getName();
                         if("item".equalsIgnoreCase(currentName)) {
-                            if(podcastURL != null) {
+                            if(episodeURL != null) {
                                 if(title == null) {
-                                    title = podcastURL;
+                                    title = episodeURL;
                                 }
                                 //
-                                //EpisodeInfo info = new EpisodeInfo(pinfo, podcastURL, title, pubdate, link, i);
-                                realm.beginTransaction();
-                                EpisodeRealm info = realm.createObject(EpisodeRealm.class);
-                                int nextId = realm.where(EpisodeRealm.class).max("id").intValue() + 1;
-                                info.setId(nextId);
-                                info.setPodcast(pinfo);
-                                info.setURL(podcastURL);
-                                info.setTitle(title);
-                                info.setPubdateStr(pubdate);
-                                info.setLink(link);
+                                //EpisodeInfo info = new EpisodeInfo(pinfo, episodeURL, title, pubdate, link, i);
+                                //realm.beginTransaction();
+
+                                RealmResults<EpisodeRealm> existing = realm.where(EpisodeRealm.class).equalTo("url", episodeURL).findAll();
+                                EpisodeRealm info;
+                                if(existing.size() > 0 && existing.get(0).getTitle().equals(title)){
+                                    info = existing.get(0);
+                                }
+                                else {
+                                    info = realm.createObject(EpisodeRealm.class);
+                                    int nextId = realm.where(EpisodeRealm.class).max("id").intValue() + 1;
+                                    info.setId(nextId);
+                                    info.setTitle(title);
+                                    info.setURL(episodeURL);
+                                    info.setPodcast(pinfo);
+                                    info.setPubdateStr(pubdate);
+                                    info.setLink(link);
+                                }
                                 info.setOccurIndex(episodeCount);
-                                realm.commitTransaction();
+                                //realm.commitTransaction();
                                 
                                 buffer_.add(info.getTitle());
                                 if (buffer_.size() >= publishBufferSize_) {
-                                    //Log.d(TAG, "publish: "+podcastURL+" "+title);
+                                    //Log.d(TAG, "publish: "+episodeURL+" "+title);
                                     publish();
                                 }
                             }
-                            podcastURL = null;
+                            episodeURL = null;
                             title = null;
                             link = null;
                             episodeCount++;
@@ -226,14 +235,14 @@ public class BaseGetPodcastTask
                     parser.next();
                 }
                 publish();
-                realm.beginTransaction();
+                //realm.beginTransaction();
                 if(null != pinfo.getUsername() && null != pinfo.getPassword()){
                     pinfo.setStatus(Podcast.AUTH_REQUIRED_UNLOCKED);
                 }
                 else {
                     pinfo.setStatus(Podcast.PUBLIC);
                 }
-                realm.commitTransaction();
+                //realm.commitTransaction();
                 response.close();
             }
             catch (IOException e) {
@@ -254,6 +263,7 @@ public class BaseGetPodcastTask
                 }
             }
         }
+        realm.commitTransaction();
         return null;
     }
     

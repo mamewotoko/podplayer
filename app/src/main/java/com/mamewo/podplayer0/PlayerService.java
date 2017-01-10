@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 //import com.mamewo.podplayer0.parser.EpisodeInfo;
+import com.mamewo.podplayer0.db.PodcastRealm;
 import com.mamewo.podplayer0.db.EpisodeRealm;
 import com.mamewo.podplayer0.parser.Util;
 import io.realm.RealmResults;
@@ -71,6 +72,7 @@ public class PlayerService
 	final static
 	private int NOTIFY_PLAYING_ID = 1;
 	private final IBinder binder_ = new LocalBinder();
+	private RealmResults<PodcastRealm> podcastList_;
 	private RealmResults<EpisodeRealm> currentPlaylist_;
 	private int playCursor_;
 	private MediaPlayer player_;
@@ -126,13 +128,26 @@ public class PlayerService
 	// }
 
     //TODO: pass query 
-	public void setPlaylist() {
+	public void setPlaylist(String title) {
 		//currentPlaylist_ = playlist;
         //add test
         Realm realm = Realm.getDefaultInstance();
-        currentPlaylist_ = realm.where(EpisodeRealm.class).findAll();
+        podcastList_ = realm.where(PodcastRealm.class).equalTo("enabled", true).equalTo("title", title).findAll();
+        if(podcastList_.size() > 0){
+            Long[] podcastIdList = new Long[podcastList_.size()];
+            
+            for(int i = 0; i < podcastList_.size(); i++){
+                podcastIdList[i] = podcastList_.get(i).getId();
+            }
+            //String[] sortFields = { "podcast.id", "occurIndex"};
+            //Sort[] order = { Sort.ASCENDING, Sort.ASCENDING };
+            currentPlaylist_ = realm.where(EpisodeRealm.class).in("podcast.id", podcastIdList).findAll();
+        }
+        else {
+            currentPlaylist_ = realm.where(EpisodeRealm.class).findAll();
+        }
 	}
-
+  
 	//previous tune when previous is clicked twice quickly
 	public void playPrevious(){
 		long currentTime = System.currentTimeMillis();
@@ -650,8 +665,8 @@ public class PlayerService
 	}
 	
 	public interface PlayerStateListener {
-		void onStartLoadingMusic(int episodeId);
-		void onStartMusic(int episodeId);
+		void onStartLoadingMusic(long episodeId);
+		void onStartMusic(long episodeId);
 		void onStopMusic(int mode);
 	}
 

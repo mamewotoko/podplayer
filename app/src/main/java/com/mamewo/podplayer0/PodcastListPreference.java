@@ -276,7 +276,7 @@ public class PodcastListPreference
                 Log.d(TAG, "illegal argument exception", e);
             }
             PodcastRealm info = realm.createObject(PodcastRealm.class);
-            int id = realm.where(PodcastRealm.class).max("id").intValue()+1;
+            long id = realm.where(PodcastRealm.class).max("id").longValue()+1;
             info.setId(id);
             info.setTitle(title);
             info.setURL(url);
@@ -740,7 +740,7 @@ public class PodcastListPreference
 
                                 realm.beginTransaction();
                                 PodcastRealm info = realm.createObject(PodcastRealm.class);
-                                int id = realm.where(PodcastRealm.class).max("id").intValue()+1;
+                                long id = realm.where(PodcastRealm.class).max("id").longValue()+1;
                                 info.setId(id);
                                 info.setTitle(url.toString());
                                 info.setURL(url.toString());
@@ -766,7 +766,7 @@ public class PodcastListPreference
                         //PodcastBuilder<PodcastRealm> b = createPodcastBuilder();
                         realm.beginTransaction();
                         PodcastRealm info = realm.createObject(PodcastRealm.class);
-                        int id = realm.where(PodcastRealm.class).max("id").intValue() + 1;
+                        long id = realm.where(PodcastRealm.class).max("id").longValue() + 1;
                         info.setId(id);
                         info.setTitle(url.toString());
                         info.setURL(url.toString());
@@ -868,7 +868,7 @@ public class PodcastListPreference
                         //PodcastBuilder<PodcastRealm> builder = createPodcastBuilder();
                         realm.beginTransaction();
                         PodcastRealm info = realm.createObject(PodcastRealm.class);
-                        int id = realm.where(PodcastRealm.class).max("id").intValue()+1;
+                        long id = realm.where(PodcastRealm.class).max("id").longValue()+1;
                         info.setId(id);
                         info.setTitle(title);
                         info.setURL(url.toString());
@@ -1192,7 +1192,7 @@ public class PodcastListPreference
             }
 			//PodcastInfo info = new PodcastInfo(title, url, iconURL, enabled, username, password, status);
             PodcastRealm info = realm.createObject(PodcastRealm.class);
-            int id = realm.where(PodcastRealm.class).max("id").intValue()+1;
+            long id = realm.where(PodcastRealm.class).max("id").longValue()+1;
             info.setId(id);
             info.setTitle(title);
             info.setURL(url.toString());

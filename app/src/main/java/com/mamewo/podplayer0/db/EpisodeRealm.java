@@ -19,7 +19,7 @@ public class EpisodeRealm
     static final String DATE_PATTERN = "EEE, dd MMM yyyy HH:mm:ss Z";
     static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_PATTERN, Locale.US);
 
-    private int id;
+    private long id;
     private PodcastRealm podcast;
     @Index private String url;
     private String title;
@@ -38,11 +38,11 @@ public class EpisodeRealm
         pubdate = null;
     }
 
-    public int getId(){
+    public long getId(){
         return id;
     }
 
-    public void setId(int id){
+    public void setId(long id){
         this.id = id;
     }
 

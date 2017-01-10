@@ -184,14 +184,14 @@ public class PodplayerCardActivity
             //-1: all
 
             //TODO: reduce call?
-            updatePlaylist();
+            updatePlaylist(null);
             l = state_.latestList_;
         }
         else {
             String title = (String)selector_.getSelectedItem();
             Realm realm = Realm.getDefaultInstance();
             RealmResults<PodcastRealm> infoList = realm.where(PodcastRealm.class).equalTo("title", title).findAll();
-            int podcastId = infoList.get(0).getId();
+            long podcastId = infoList.get(0).getId();
             l = realm.where(EpisodeRealm.class).equalTo("podcast.id", podcastId).findAll();
 
             //l = state_.loadedEpisode_.get(selected);
@@ -256,7 +256,7 @@ public class PodplayerCardActivity
                 player_.pauseMusic();
             }
             else {
-                updatePlaylist();
+                updatePlaylist(null);
                 if(! player_.restartMusic()) {
                     player_.playMusic();
                 }
@@ -315,7 +315,7 @@ public class PodplayerCardActivity
     }
     
     @Override
-    public void onStartMusic(int episodeId) {
+    public void onStartMusic(long episodeId) {
 		//setProgressBarIndeterminateVisibility(false);
 		//currentPlayPosition_.setMax(player_.getDuration());
 		//int pos = player_.getCurrentPositionMsec();
@@ -326,7 +326,7 @@ public class PodplayerCardActivity
     }
 
     @Override
-    public void onStartLoadingMusic(int episodeId) {
+    public void onStartLoadingMusic(long episodeId) {
         //Log.d(TAG, "onStartLoadingMusic");
         updateUI();
     }
@@ -519,7 +519,7 @@ public class PodplayerCardActivity
         private void onFinished() {
             loadTask_ = null;
             //updateUI();
-            updatePlaylist();
+            updatePlaylist(null);
             adapter_.notifyDataSetChanged();
         }
 

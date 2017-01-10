@@ -151,7 +151,7 @@ public class PodplayerActivity
                 player_.pauseMusic();
             }
             else {
-                updatePlaylist();
+                updatePlaylist(null);
                 if(! player_.restartMusic()) {
                     player_.playMusic();
                 }
@@ -170,7 +170,7 @@ public class PodplayerActivity
         EpisodeRealm current = player_.getCurrentPodInfo();
         Log.d(TAG, "current: "+current);
         Log.d(TAG, "clicked: "+info);
-        if(current != null && current.getURL().equals(info.getURL())) {
+        if(current != null && current.getId() == info.getId()) {
             Log.d(TAG, "current: title "+current.getTitle());
             Log.d(TAG, "onItemClick: URL: " + current.getURL());
             if(player_.isPlaying()) {
@@ -186,9 +186,9 @@ public class PodplayerActivity
             }
         }
         else {
-            updatePlaylist();
+            //pass query
+            updatePlaylist(getFilterPodcastTitle());
             boolean result = playByInfo(info);
-            Log.d(TAG, "onItemClick4: " + result);
         }
     }
 
@@ -196,7 +196,8 @@ public class PodplayerActivity
         //umm...
         int playPos;
         for(playPos = 0; playPos < state_.latestList_.size(); playPos++) {
-            if(state_.latestList_.get(playPos).getId() == info.getId()) {
+            if(state_.latestList_.get(playPos).getId() == info.getId()
+               && state_.latestList_.get(playPos).getPodcast().getId() == info.getPodcast().getId()) {
                 break;
             }
         }
@@ -210,7 +211,7 @@ public class PodplayerActivity
 
     //UI is updated in following callback methods
     @Override
-    public void onStartMusic(int episodeId) {
+    public void onStartMusic(long episodeId) {
 		//setProgressBarIndeterminateVisibility(false);
 		//currentPlayPosition_.setMax(player_.getDuration());
 		//int pos = player_.getCurrentPositionMsec();
@@ -220,7 +221,7 @@ public class PodplayerActivity
     }
 
     @Override
-    public void onStartLoadingMusic(int episodeId) {
+    public void onStartLoadingMusic(long episodeId) {
         updateUI();
     }
 
@@ -248,7 +249,7 @@ public class PodplayerActivity
         
         @Override
         public long getItemId(int position){
-            return position;
+            return state_.latestList_.get(position).getId();
         }
         
         @Override
@@ -355,7 +356,7 @@ public class PodplayerActivity
             //dummy
             //sortEpisodeByDate(true);
             //TODO: Sync playlist
-            updatePlaylist();
+            updatePlaylist(null);
             updateUI();
         }
         
@@ -482,13 +483,18 @@ public class PodplayerActivity
     }
 
     private void filterSelectedPodcast(){
+        String title = getFilterPodcastTitle();
+        state_.loadRealm(title);
+        episodeListView_.hideHeader();
+        adapter_.notifyDataSetChanged();
+    }
+    
+    private String getFilterPodcastTitle(){
         if(selector_.getSelectedItemPosition() == 0){
-            state_.loadRealm();
-            return;
+            return null;
         }
         String title = (String)selector_.getSelectedItem();
-        state_.loadRealm(title);
-        adapter_.notifyDataSetChanged();
+        return title;
     }
     
     // @Override

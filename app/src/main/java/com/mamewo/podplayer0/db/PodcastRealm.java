@@ -10,6 +10,7 @@ import com.mamewo.podplayer0.parser.PodcastBuilder;
 import io.realm.RealmModel;
 import io.realm.annotations.RealmClass;
 import io.realm.annotations.Ignore;
+import io.realm.annotations.Index;
 
 import static com.mamewo.podplayer0.Const.*;
 
@@ -20,9 +21,9 @@ public class PodcastRealm
                Serializable
 {
     private static final long serialVersionUID = 76131894671950703L;
-    private int id;
+    private long id;
     private String title;
-    private String url;
+    @Index private String url;
     private boolean enabled;
     private String iconURL;
 
@@ -64,11 +65,11 @@ public class PodcastRealm
         }
     }
 
-    public int getId(){
+    public long getId(){
         return id;
     }
 
-    public void setId(int id){
+    public void setId(long id){
         this.id = id;
     }
     

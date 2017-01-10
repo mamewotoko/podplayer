@@ -123,7 +123,7 @@ public class PodplayerExpActivity
                 player_.pauseMusic();
             }
             else {
-                updatePlaylist();
+                updatePlaylist(null);
                 if(! player_.restartMusic()) {
                     player_.playMusic();
                 }
@@ -213,7 +213,7 @@ public class PodplayerExpActivity
             }
         }
         else {
-            updatePlaylist();
+            updatePlaylist(null);
             playByInfo(episode);
         }
         return true;
@@ -418,7 +418,7 @@ public class PodplayerExpActivity
 
         private void onFinished(){
             loadTask_ = null;
-            updatePlaylist();
+            updatePlaylist(null);
             reloadButton_.setContentDescription(getResources().getString(R.string.action_reload));
 			reloadButton_.setImageResource(R.drawable.ic_sync_white_24dp);            
         }
@@ -488,12 +488,12 @@ public class PodplayerExpActivity
     // }
 
     @Override
-    public void onStartLoadingMusic(int episodeId) {
+    public void onStartLoadingMusic(long episodeId) {
         updateUI();
     }
 
     @Override
-    public void onStartMusic(int episodeId) {
+    public void onStartMusic(long episodeId) {
         updateUI();
     }
 

@@ -181,13 +181,13 @@ abstract public class BasePodplayerActivity
         }
     }
     
-    public void updatePlaylist() {
+    public void updatePlaylist(String title) {
         if(null == player_){
             return;
         }
         //boolean reversed = currentOrder_ == REVERSE_APPEARANCE_ORDER;
         //TODO: pass filter, sort order
-        player_.setPlaylist();
+        player_.setPlaylist(title);
     }
 
     public boolean isLoading() {
@@ -342,7 +342,8 @@ abstract public class BasePodplayerActivity
             player_.playNext();
         }
         else if("play".equals(p.name)) {
-            updatePlaylist();
+            //TODO: apply filter
+            updatePlaylist(null);
             if(! player_.restartMusic()) {
                 player_.playMusic();
             }
@@ -387,7 +388,7 @@ abstract public class BasePodplayerActivity
                 podcastList_ = realm.where(PodcastRealm.class).equalTo("enabled", true).findAll();
             }
             if(podcastList_.size() > 0){
-                Integer[] podcastIdList = new Integer[podcastList_.size()];
+                Long[] podcastIdList = new Long[podcastList_.size()];
                 
                 for(int i = 0; i < podcastList_.size(); i++){
                     podcastIdList[i] = podcastList_.get(i).getId();
