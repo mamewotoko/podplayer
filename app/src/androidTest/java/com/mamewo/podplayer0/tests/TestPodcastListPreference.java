@@ -5,7 +5,7 @@ import junit.framework.Assert;
 import com.robotium.solo.Solo;
 import com.robotium.solo.Solo.Config;
 
-import com.mamewo.lib.podcast_parser.PodcastInfo;
+import com.mamewo.podplayer0.db.PodcastRealm;
 import com.mamewo.podplayer0.PodcastListPreference;
 import com.mamewo.podplayer0.R;
 
@@ -53,7 +53,6 @@ public class TestPodcastListPreference
     public void testAddFail() {
         solo_.sleep(1000);
         ListAdapter adapter = solo_.getCurrentViews(ListView.class, false).get(0).getAdapter();
-        //PodcastInfo prevInfo = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
         String url = "http://www.google.co.jp/";
         int prevCount = adapter.getCount();
         solo_.enterText((EditText)solo_.getView(R.id.url_edit), url);
@@ -74,7 +73,7 @@ public class TestPodcastListPreference
         solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
         solo_.waitForDialogToClose(20000);
         Assert.assertEquals(prevCount+1, adapter.getCount());
-        PodcastInfo info = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
+        PodcastRealm info = (PodcastRealm)adapter.getItem(adapter.getCount()-1);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_success");
         Assert.assertEquals("check url", url, info.getURL().toString());
     }
@@ -89,7 +88,7 @@ public class TestPodcastListPreference
         solo_.clickOnView(solo_.getView(R.id.add_podcast_button));
         solo_.waitForDialogToClose(20000);
         Assert.assertEquals(prevCount+1, adapter.getCount());
-        PodcastInfo info = (PodcastInfo)adapter.getItem(adapter.getCount()-1);
+        PodcastRealm info = (PodcastRealm)adapter.getItem(adapter.getCount()-1);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_with_bom_success");
         Assert.assertEquals("check url", url, info.getURL().toString());
     }
