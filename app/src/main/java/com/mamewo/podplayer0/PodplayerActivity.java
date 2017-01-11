@@ -107,12 +107,13 @@ public class PodplayerActivity
     @Override
     public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
         updateSelector();
-        //TODO: 
+        loadRealm(getFilterPodcastTitle());
         adapter_.notifyDataSetChanged();
     }
 
     @Override
     public void notifyLatestListChanged(RealmResults<EpisodeRealm> results){
+        loadRealm(getFilterPodcastTitle());
         adapter_.notifyDataSetChanged();
     }
     
@@ -474,13 +475,11 @@ public class PodplayerActivity
 
     @Override
     public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
-        Log.d(TAG, "onItemSelected: "+pos);
         filterSelectedPodcast();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapter) {
-        Log.d(TAG, "onNothingSelected: ");
         filterSelectedPodcast();
     }
     
@@ -547,7 +546,6 @@ public class PodplayerActivity
         }
         return groupList_.get(n-1);
     }
- 
    
     // @Override
     // protected void notifyLatestListChanged(){

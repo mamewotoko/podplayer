@@ -74,6 +74,7 @@ public class PodplayerCardActivity
     private ImageButton playButton_;
     private RealmResults<PodcastRealm> podcastList_;
     private RealmResults<EpisodeRealm> latestList_;
+    private List<RealmResults<EpisodeRealm>> groupList_;
     //filtered list
         
     @Override
@@ -92,17 +93,34 @@ public class PodplayerCardActivity
 
         selector_ = (Spinner) findViewById(R.id.podcast_selector);
         selector_.setOnItemSelectedListener(this);
-        
+
+        groupList_ = new ArrayList<RealmResults<EpisodeRealm>>();
         loadRealm(null);
+        recyclerView_ = (RecyclerView)findViewById(R.id.recycler_view);
         adapter_ = new EpisodeAdapter();
         recyclerView_.setAdapter(adapter_);
-        recyclerView_ = (RecyclerView)findViewById(R.id.recycler_view);
+
         layoutManager_ = new LinearLayoutManager(this);
         recyclerView_.setLayoutManager(layoutManager_);
 
-        //updateSelector();
+        updateSelector();
     }
 
+    @Override
+    public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
+        updateSelector();
+
+        loadRealm(getFilterPodcastTitle());
+        //TODO: 
+        adapter_.notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyLatestListChanged(RealmResults<EpisodeRealm> results){
+        loadRealm(getFilterPodcastTitle());
+        adapter_.notifyDataSetChanged();
+    }
+   
     //called initialize time or rotate screen
     @Override
     public void onServiceConnected(ComponentName name, IBinder binder) {
@@ -144,6 +162,41 @@ public class PodplayerCardActivity
         }
         return handled;
     }
+
+    private void updateSelector(){
+        List<String> list = new ArrayList<String>();
+        list.add(getString(R.string.selector_all));
+        for(PodcastRealm info: podcastList_){
+            list.add(info.getTitle());
+        }
+        //stop loading?
+        ArrayAdapter<String> adapter =
+            new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
+		adapter.setDropDownViewResource(android.support.v7.appcompat.R.layout.support_simple_spinner_dropdown_item);
+        selector_.setAdapter(adapter);
+    }
+
+    private void filterSelectedPodcast(){
+        String title = getFilterPodcastTitle();
+        loadRealm(title);
+        adapter_.notifyDataSetChanged();
+    }
+
+    private String getFilterPodcastTitle(){
+        if(selector_.getSelectedItemPosition() == 0){
+            return null;
+        }
+        String title = (String)selector_.getSelectedItem();
+        return title;
+    }
+
+    public RealmResults<EpisodeRealm> getCurentEpisodeList(){
+        int n = selector_.getSelectedItemPosition();
+        if(n == 0 || n < 0){
+            return latestList_;
+        }
+        return groupList_.get(n-1);
+    }
     
     private int podcastTitle2Index(String title){
         //List<Podcast> list = state_.podcastList_;
@@ -167,28 +220,21 @@ public class PodplayerCardActivity
         filterSelectedPodcast();
     }
 
-    private String getFilterPodcastTitle(){
-        if(selector_.getSelectedItemPosition() == 0){
-            return null;
-        }
-        String title = (String)selector_.getSelectedItem();
-        return title;
-    }
-
     public void loadRealm(String title){
         //TODO: sort
         boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
         SimpleQuery q = new SimpleQuery(title, skipListened);
         podcastList_ = q.getPodcastList();
         latestList_ = q.getEpisodeList(podcastList_);
-            
+
+        for(PodcastRealm podcast: podcastList_){
+            groupList_.add(q.getEpisodeList(podcast.getId()));
+        }
+        
         //TODO: remove change listener
         podcastList_.addChangeListener(new RealmChangeListener<RealmResults<PodcastRealm>>(){
                 @Override
                 public void onChange(RealmResults<PodcastRealm> results){
-                    //TODO: get form pref
-                    // boolean skip = pref_.getBoolean("skip_listened_episode", res.getBoolean(R.bool.default_skip_listened_episode));
-                    // loadRealm(null, skip);
                     notifyPodcastListChanged(results);
                 }
             });
@@ -203,13 +249,7 @@ public class PodplayerCardActivity
         latestList_.addChangeListener(listener);
     }
     
-    //TODO: tuning
-    private void filterSelectedPodcast(){
-        String title = getFilterPodcastTitle();
-        loadRealm(title);
-        adapter_.notifyDataSetChanged();
-    }
-    
+
     // @Override
     // protected void onPodcastListChanged(boolean start) {
     //     //Log.d(TAG, "onPodcastListChanged");
@@ -293,20 +333,26 @@ public class PodplayerCardActivity
     //     //TODO
     // }
 
-    private boolean playByInfo(EpisodeRealm info) {
-        //umm...
-        int playPos;
-        for(playPos = 0; playPos < latestList_.size(); playPos++) {
-            if(latestList_.get(playPos) == info) {
-                break;
-            }
-        }
-        if (playPos < 0){
-            //Log.i(TAG, "playByInfo: info is not found: " + info.getURL());
-            return false;
-        }
+    // private boolean playByInfo(EpisodeRealm info) {
+    //     //umm...
+    //     int playPos;
+    //     for(playPos = 0; playPos < latestList_.size(); playPos++) {
+    //         if(latestList_.get(playPos) == info) {
+    //             break;
+    //         }
+    //     }
+    //     if (playPos < 0){
+    //         //Log.i(TAG, "playByInfo: info is not found: " + info.getURL());
+    //         return false;
+    //     }
 
-        return player_.playNth(playPos);
+    //     return player_.playNth(playPos);
+    // }
+
+    private void playEpisode(EpisodeRealm episode) {
+        updatePlaylist(null);
+        //TODO: pass episode id
+        player_.playById(episode.getId());
     }
 
     public void updateUI(){
@@ -362,12 +408,12 @@ public class PodplayerCardActivity
                 }
                 else {
                     if(! player_.restartMusic()){
-                        playByInfo(info);
+                        playEpisode(info);
                     }
                 }
             }
             else {
-                playByInfo(info);
+                playEpisode(info);
             }
         }
     }
@@ -421,30 +467,35 @@ public class PodplayerCardActivity
 
         @Override
         public void onBindViewHolder(EpisodeHolder holder, int position){
-            final EpisodeRealm episode = latestList_.get(position);
+            final EpisodeRealm episode = getCurentEpisodeList().get(position);
             holder.titleView_.setText(episode.getTitle());
             holder.timeView_.setText(episode.getPubdateStr(dateFormat_));
             holder.container_.setOnClickListener(new ItemClickListener(episode));
             holder.container_.setOnLongClickListener(new ItemLongClickListener(episode));
 
-            EpisodeRealm current = player_.getCurrentPodInfo();
-            if(current != null && current.getURL().equals(episode.getURL())) {
-                //TODO: cache!
-                if(player_.isPlaying()) {
-                    holder.stateIcon_.setImageResource(R.drawable.ic_play_arrow_white_24dp);
-                    holder.stateIcon_.setContentDescription(getString(R.string.icon_desc_playing));
-                }
-                else {
-                    holder.stateIcon_.setImageResource(R.drawable.ic_pause_white_24dp);
-                    holder.stateIcon_.setContentDescription(getString(R.string.icon_desc_pausing));
-                }
-                holder.stateIcon_.setVisibility(View.VISIBLE);
-            }
-            else {
+            if(null == player_){
                 holder.stateIcon_.setVisibility(View.GONE);
             }
+            else {
+                EpisodeRealm current = player_.getCurrentPodInfo();
+                if(current != null && current.getURL().equals(episode.getURL())) {
+                    //TODO: cache!
+                    if(player_.isPlaying()) {
+                        holder.stateIcon_.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+                        holder.stateIcon_.setContentDescription(getString(R.string.icon_desc_playing));
+                    }
+                    else {
+                        holder.stateIcon_.setImageResource(R.drawable.ic_pause_white_24dp);
+                        holder.stateIcon_.setContentDescription(getString(R.string.icon_desc_pausing));
+                    }
+                    holder.stateIcon_.setVisibility(View.VISIBLE);
+                }
+                else {
+                    holder.stateIcon_.setVisibility(View.GONE);
+                }
+            }
             String iconURL = episode.getPodcast().getIconURL();
-                //state_.podcastList_.get(episode.getIndex()).getIconURL();
+            //state_.podcastList_.get(episode.getIndex()).getIconURL();
             //TODO: add showicon setting
             if(null != iconURL){
                 //TODO: check previous icon url
@@ -470,7 +521,7 @@ public class PodplayerCardActivity
 
         @Override
         public int getItemCount(){
-            return latestList_.size();
+            return getCurentEpisodeList().size();
         }
     }
 
