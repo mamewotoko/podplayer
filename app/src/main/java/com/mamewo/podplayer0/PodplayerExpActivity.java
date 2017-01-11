@@ -6,6 +6,7 @@ import java.util.List;
 import com.mamewo.podplayer0.parser.BaseGetPodcastTask;
 import com.mamewo.podplayer0.db.PodcastRealm;
 import com.mamewo.podplayer0.db.EpisodeRealm;
+import com.mamewo.podplayer0.db.SimpleQuery;
 
 import static com.mamewo.podplayer0.Const.*;
 
@@ -54,6 +55,7 @@ public class PodplayerExpActivity
     private ExpAdapter adapter_;
     //private int currentOrder_;
     //private List<Integer> filteredItemIndex_;
+    private RealmResults<PodcastRealm> podcastList_;
     private List<RealmResults<EpisodeRealm>> groupList_;
     
     @Override
@@ -79,9 +81,13 @@ public class PodplayerExpActivity
         expandableList_.setOnItemLongClickListener(this);
         expandableList_.setOnChildClickListener(this);
         Realm realm = Realm.getDefaultInstance();
+        boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
+                
+        SimpleQuery q = new SimpleQuery(null, skipListened);
+        podcastList_ = q.getPodcastList();
         groupList_ = new ArrayList<RealmResults<EpisodeRealm>>();
-        for(int i = 0; i < state_.podcastList_.size(); i++){
-            RealmResults<EpisodeRealm> result = realm.where(EpisodeRealm.class).equalTo("podcast.id", state_.podcastList_.get(i).getId()).findAll();
+        for(int i = 0; i < podcastList_.size(); i++){
+            RealmResults<EpisodeRealm> result = q.getEpisodeList(podcastList_.get(i).getId());
             groupList_.add(result);
             //TODO: add listener
         }
@@ -222,36 +228,22 @@ public class PodplayerExpActivity
             }
             else {
                 if(! player_.restartMusic()){
-                    playByInfo(episode);
+                    playEpisode(episode);
                 }
             }
         }
         else {
             Log.d(TAG, "onChildClick: playByInfo");
             updatePlaylist(null);
-            playByInfo(episode);
+            playEpisode(episode);
         }
         return true;
     }
 
-    private void playByInfo(EpisodeRealm episode) {
-        //umm...
-        if(state_.latestList_ == null){
-            return;
-        }
-        int playPos = -1;
-        //skip! use list size
-        for(int pos = 0; pos < state_.latestList_.size(); pos++) {
-            if(state_.latestList_.get(pos).getId() == episode.getId()) {
-                playPos = pos;
-                break;
-            }
-        }
-        if (playPos < 0){
-            Log.i(TAG, "playByInfo: info is not found: " + episode.getURL());
-            return;
-        }
-        player_.playNth(playPos);
+    private void playEpisode(EpisodeRealm episode) {
+        updatePlaylist(null);
+        //TODO: pass episode id
+        player_.playById(episode.getId());
     }
     
     public class ExpAdapter
@@ -330,7 +322,7 @@ public class PodplayerExpActivity
             }
             TextView titleView = (TextView)view.findViewById(R.id.text1);
             TextView countView = (TextView)view.findViewById(R.id.text2);
-            PodcastRealm info = state_.podcastList_.get(groupPosition);
+            PodcastRealm info = podcastList_.get(groupPosition);
             titleView.setText(info.getTitle());
             int childNum = groupList_.get(groupPosition).size();
             String numStr;
@@ -529,11 +521,11 @@ public class PodplayerExpActivity
     @Override
     public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
         groupList_.clear();
-        Realm realm = Realm.getDefaultInstance();
-
-        for(int i = 0; i < state_.podcastList_.size(); i++){
-            RealmResults<EpisodeRealm> result = realm.where(EpisodeRealm.class).equalTo("podcast.id", state_.podcastList_.get(i).getId()).findAll();
-            groupList_.add(result);
+        boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
+        SimpleQuery q = new SimpleQuery(null, skipListened);
+        for(int i = 0; i < results.size(); i++){
+            RealmResults<EpisodeRealm> episodes = q.getEpisodeList(results.get(i).getId());
+            groupList_.add(episodes);
             //TODO: add listener
         }
         adapter_.notifyDataSetChanged();

@@ -87,7 +87,7 @@ abstract public class BasePodplayerActivity
     static final
     public int ICON_DISK_CACHE_BYTES = 64*1024*1024;
     protected int currentOrder_;
-    // abstract protected void onPodcastListChanged(boolean start);
+    //abstract protected void onPodcastListChanged(boolean start);
     // abstract protected void notifyOrderChanged(int order);
     //abstract protected void notifyLatestListChanged();
     
@@ -124,7 +124,6 @@ abstract public class BasePodplayerActivity
         final Resources res = getResources();
 
         state_ = new PodplayerState();
-        state_.loadRealm();
         //
         connection_ = conn;
         //TODO: handle error
@@ -171,7 +170,6 @@ abstract public class BasePodplayerActivity
     @Override
     protected void onStart() {
         super.onStart();
-        state_.loadRealm();        
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         //TODO: check current activity and preference
         if (uiSettingChanged_) {
@@ -188,7 +186,8 @@ abstract public class BasePodplayerActivity
         }
         //boolean reversed = currentOrder_ == REVERSE_APPEARANCE_ORDER;
         //TODO: pass filter, sort order
-        player_.setPlaylist(title);
+        boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
+        player_.setPlaylistQuery(title, skipListened);
     }
 
     public boolean isLoading() {
@@ -309,6 +308,7 @@ abstract public class BasePodplayerActivity
         }
         if(updateAll || "date_format".equals(key)){
             dateFormat_ = new SimpleDateFormat(pref.getString("date_format", YYYYMMDD_24H));
+            //notifyDatasetChanged
         }
         //following block should be last one of this function
         if (updateAll || "podcastlist2".equals(key)) {
@@ -363,69 +363,12 @@ abstract public class BasePodplayerActivity
         implements Serializable
     {
         private static final long serialVersionUID = 1L;
-        protected RealmResults<PodcastRealm> podcastList_;
         //same order with podcastList_
         protected Date lastUpdatedDate_;
-        protected RealmResults<EpisodeRealm> latestList_;
         
         private PodplayerState() {
-            podcastList_ = null;
             lastUpdatedDate_ = null;
-            latestList_ = null;
         }
-        
-        public void loadRealm(){
-            loadRealm(null, true);
-        }
-
-        public void loadRealm(String title, boolean skipListened){
-            Realm realm = Realm.getDefaultInstance();
-            //TODO: sort
-            RealmQuery<PodcastRealm> query = realm.where(PodcastRealm.class);
-            if(null != title){
-                query = query.equalTo("title", title);
-            }
-            podcastList_ = query.findAll();
-
-            RealmQuery<EpisodeRealm> episodeQuery = realm.where(EpisodeRealm.class);
-            if(podcastList_.size() > 0){
-                Long[] podcastIdList = new Long[podcastList_.size()];
-                
-                for(int i = 0; i < podcastList_.size(); i++){
-                    podcastIdList[i] = podcastList_.get(i).getId();
-                }
-                //String[] sortFields = { "podcast.id", "occurIndex"};
-                //Sort[] order = { Sort.ASCENDING, Sort.ASCENDING };
-                episodeQuery = episodeQuery.in("podcast.id", podcastIdList);
-            }
-            else {
-                episodeQuery = realm.where(EpisodeRealm.class);
-            }
-            if(skipListened){
-                episodeQuery = episodeQuery.isNull("listened");
-            }
-            latestList_ = episodeQuery.findAll();
-            
-            //TODO: remove change listener
-            podcastList_.addChangeListener(new RealmChangeListener<RealmResults<PodcastRealm>>(){
-                    @Override
-                    public void onChange(RealmResults<PodcastRealm> results){
-                        //TODO: get form pref
-                        //loadRealm(null, true);
-                        notifyPodcastListChanged(results);
-                    }
-                });
-            
-            RealmChangeListener<RealmResults<EpisodeRealm>> listener =
-                new RealmChangeListener<RealmResults<EpisodeRealm>>(){
-                    @Override
-                    public void onChange(RealmResults<EpisodeRealm> results){
-                        notifyLatestListChanged(results);
-                    }
-                };
-            latestList_.addChangeListener(listener);
-        }
-
         
         // static
         // public void sortEpisodeByDate(List<EpisodeInfo> lst, boolean latestFirst){

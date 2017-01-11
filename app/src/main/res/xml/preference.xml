@@ -24,6 +24,12 @@
         android:summaryOff="@string/pref_do_not_load_automatically"
         android:summaryOn="@string/pref_load_podcasts_when_app_starts"
         android:title="@string/pref_autoload_podcast" />
+    <CheckBoxPreference
+        android:key="skip_listened_episode"
+        android:defaultValue="@bool/default_skip_listened_episode"
+        android:summaryOff="@string/pref_summary_do_not_skip_listened_episode"
+        android:summaryOn="@string/pref_summary_skip_listened_episode"
+        android:title="@string/pref_skip_listened_episode_title" />
   </PreferenceCategory>
   <PreferenceCategory android:title="@string/pref_gesture_category" >
     <CheckBoxPreference

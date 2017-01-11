@@ -8,6 +8,7 @@ import java.util.HashMap;
 //import com.mamewo.podplayer0.parser.EpisodeInfo;
 import com.mamewo.podplayer0.db.PodcastRealm;
 import com.mamewo.podplayer0.db.EpisodeRealm;
+import com.mamewo.podplayer0.db.SimpleQuery;
 import com.mamewo.podplayer0.parser.Util;
 import io.realm.RealmResults;
 import io.realm.Realm;
@@ -128,29 +129,12 @@ public class PlayerService
 	// }
 
     //TODO: pass query 
-	public void setPlaylist(String title) {
+	public void setPlaylistQuery(String title, boolean skipListened) {
 		//currentPlaylist_ = playlist;
         //add test
-        Realm realm = Realm.getDefaultInstance();
-        if(null == title){
-            podcastList_ = realm.where(PodcastRealm.class).equalTo("enabled", true).findAll();
-        }
-        else {
-            podcastList_ = realm.where(PodcastRealm.class).equalTo("enabled", true).equalTo("title", title).findAll();
-        }
-        if(podcastList_.size() > 0){
-            Long[] podcastIdList = new Long[podcastList_.size()];
-            
-            for(int i = 0; i < podcastList_.size(); i++){
-                podcastIdList[i] = podcastList_.get(i).getId();
-            }
-            //String[] sortFields = { "podcast.id", "occurIndex"};
-            //Sort[] order = { Sort.ASCENDING, Sort.ASCENDING };
-            currentPlaylist_ = realm.where(EpisodeRealm.class).in("podcast.id", podcastIdList).findAll();
-        }
-        else {
-            currentPlaylist_ = realm.where(EpisodeRealm.class).findAll();
-        }
+        SimpleQuery query = new SimpleQuery(title, skipListened);
+        podcastList_ = query.getPodcastList();
+        currentPlaylist_ = query.getEpisodeList(podcastList_);
 	}
   
 	//previous tune when previous is clicked twice quickly
@@ -296,6 +280,21 @@ public class PlayerService
 		return playMusic();
 	}
 
+	public boolean playById(long id) {
+        int pos = -1;
+        for(int i = 0; i < currentPlaylist_.size(); i++){
+            if(id == currentPlaylist_.get(i).getId()){
+                pos = i;
+                break;
+            }
+        }
+        if(pos < 0){
+            Log.d(TAG, "playById: not found: "+id);
+        }
+		return playNth(pos);
+    }
+    
+    
 	/**
 	 * start music from paused position
 	 * @return true if succeed
