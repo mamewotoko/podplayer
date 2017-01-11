@@ -105,17 +105,17 @@ public class PodplayerActivity
         //currentPlayPosition_.setOnSeekBarChangeListener(this);
     }
 
-    @Override
-    public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
-        updateSelector();
-        String title = getFilterPodcastTitle();
-        loadRealm(title);
-    }
+    // @Override
+    // public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
+    //     updateSelector();
+    //     String title = getFilterPodcastTitle();
+    //     loadRealm(title);
+    // }
 
-    @Override
-    public void notifyLatestListChanged(RealmResults<EpisodeRealm> results){
-        adapter_.notifyDataSetChanged();
-    }
+    // @Override
+    // public void notifyLatestListChanged(RealmResults<EpisodeRealm> results){
+    //     adapter_.notifyDataSetChanged();
+    // }
     
     private void updateUI() {
         adapter_.notifyDataSetChanged();
@@ -214,33 +214,20 @@ public class PodplayerActivity
             }
             else {
                 if(! player_.restartMusic()){
-                    playByInfo(info);
+                    playEpisode(info);
                 }
             }
         }
         else {
             //pass query
-            boolean result = playByInfo(info);
+            boolean result = playEpisode(info);
         }
     }
 
-    private boolean playByInfo(EpisodeRealm info) {
-        //umm...
-        int playPos;
-        for(playPos = 0; playPos < latestList_.size(); playPos++) {
-            if(latestList_.get(playPos).getId() == info.getId()
-               && latestList_.get(playPos).getPodcast().getId() == info.getPodcast().getId()) {
-                break;
-            }
-        }
-        if (playPos < 0){
-            Log.i(TAG, "playByInfo: info is not found: " + info.getURL());
-            return false;
-        }
-        boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
-        updatePlaylist(getFilterPodcastTitle());
+    private void playEpisode(EpisodeRealm episode) {
+        updatePlaylist(null);
         //TODO: pass episode id
-        return player_.playNth(playPos);
+        player_.playById(episode.getId());
     }
 
     //UI is updated in following callback methods
@@ -488,11 +475,13 @@ public class PodplayerActivity
 
     @Override
     public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
+        Log.d(TAG, "onItemSelected: "+pos);
         filterSelectedPodcast();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapter) {
+        Log.d(TAG, "onNothingSelected: ");
         filterSelectedPodcast();
     }
     
