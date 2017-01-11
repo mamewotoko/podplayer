@@ -32,9 +32,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.mamewo.podplayer0.parser.BaseGetPodcastTask;
-//import com.mamewo.podplayer0.parser.EpisodeInfo;
-//import com.mamewo.podplayer0.parser.PodcastInfo;
-import com.mamewo.podplayer0.parser.Podcast;
 import com.markupartist.android.widget.PullToRefreshListView;
 
 import com.mamewo.podplayer0.db.PodcastRealm;
@@ -70,6 +67,7 @@ public class PodplayerActivity
     private EpisodeAdapter adapter_;
     private RealmResults<PodcastRealm> podcastList_;
     private RealmResults<EpisodeRealm> latestList_;
+    private List<RealmResults<EpisodeRealm>> groupList_;
 
     //number of items for one screen (small phone)
     static final
@@ -97,25 +95,26 @@ public class PodplayerActivity
         episodeListView_.setOnCancelListener(this);
         //initial dummy
         //adapter_ is initialized after player initialized
-        loadRealm(getFilterPodcastTitle());
+        loadRealm(null);
         adapter_ = new EpisodeAdapter();
         episodeListView_.setAdapter(adapter_);
+        groupList_ = new ArrayList<RealmResults<EpisodeRealm>>();
         updateSelector();
         //currentPlayPosition_ = (SeekBar) findViewById(R.id.seekbar);
         //currentPlayPosition_.setOnSeekBarChangeListener(this);
     }
 
-    // @Override
-    // public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
-    //     updateSelector();
-    //     String title = getFilterPodcastTitle();
-    //     loadRealm(title);
-    // }
+    @Override
+    public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
+        updateSelector();
+        //TODO: 
+        adapter_.notifyDataSetChanged();
+    }
 
-    // @Override
-    // public void notifyLatestListChanged(RealmResults<EpisodeRealm> results){
-    //     adapter_.notifyDataSetChanged();
-    // }
+    @Override
+    public void notifyLatestListChanged(RealmResults<EpisodeRealm> results){
+        adapter_.notifyDataSetChanged();
+    }
     
     private void updateUI() {
         adapter_.notifyDataSetChanged();
@@ -140,7 +139,11 @@ public class PodplayerActivity
         SimpleQuery q = new SimpleQuery(title, skipListened);
         podcastList_ = q.getPodcastList();
         latestList_ = q.getEpisodeList(podcastList_);
-            
+        groupList_ = new ArrayList<RealmResults<EpisodeRealm>>();
+
+        for(PodcastRealm podcast: podcastList_){
+            groupList_.add(q.getEpisodeList(podcast.getId()));
+        }
         //TODO: remove change listener
         podcastList_.addChangeListener(new RealmChangeListener<RealmResults<PodcastRealm>>(){
                 @Override
@@ -219,8 +222,7 @@ public class PodplayerActivity
             }
         }
         else {
-            //pass query
-            boolean result = playEpisode(info);
+            playEpisode(info);
         }
     }
 
@@ -281,24 +283,24 @@ public class PodplayerActivity
         
         @Override
         public int getCount(){
-            return latestList_.size();
+            return getCurentEpisodeList().size();
         }
 
         @Override
         public Object getItem(int position){
-            return latestList_.get(position);
+            return getCurentEpisodeList().get(position);
         }
         
         @Override
         public long getItemId(int position){
-            return latestList_.get(position).getId();
+            return getCurentEpisodeList().get(position).getId();
         }
         
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View view;
             EpisodeHolder holder;
-            
+
             if (null == convertView) {
                 view = View.inflate(PodplayerActivity.this, R.layout.episode_item, null);
                 holder = new EpisodeHolder();
@@ -371,11 +373,8 @@ public class PodplayerActivity
     private class GetPodcastTask
         extends BaseGetPodcastTask
     {
-        private Podcast prevPodInfo_;
-        
         public GetPodcastTask(int limit) {
             super(PodplayerActivity.this, client_, limit, EPISODE_BUF_SIZE);
-            prevPodInfo_ = null;
         }
 
         @Override
@@ -488,7 +487,7 @@ public class PodplayerActivity
     private int podcastTitle2Index(String title){
         RealmResults<PodcastRealm> list = podcastList_;
         for(int i = 0; i < list.size(); i++) {
-            Podcast info = list.get(i);
+            PodcastRealm info = list.get(i);
             if(title.equals(info.getTitle())) {
                 return i;
             }
@@ -540,7 +539,16 @@ public class PodplayerActivity
         String title = (String)selector_.getSelectedItem();
         return title;
     }
-    
+
+    public RealmResults<EpisodeRealm> getCurentEpisodeList(){
+        int n = selector_.getSelectedItemPosition();
+        if(n == 0 || n < 0){
+            return latestList_;
+        }
+        return groupList_.get(n-1);
+    }
+ 
+   
     // @Override
     // protected void notifyLatestListChanged(){
     //     adapter_.notifyDataSetChanged();

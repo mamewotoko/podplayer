@@ -90,16 +90,17 @@ public class PodplayerCardActivity
         playButton_.setOnClickListener(this);
         playButton_.setEnabled(false);
 
-        loadRealm(getFilterPodcastTitle());
+        selector_ = (Spinner) findViewById(R.id.podcast_selector);
+        selector_.setOnItemSelectedListener(this);
+        
+        loadRealm(null);
+        adapter_ = new EpisodeAdapter();
+        recyclerView_.setAdapter(adapter_);
         recyclerView_ = (RecyclerView)findViewById(R.id.recycler_view);
         layoutManager_ = new LinearLayoutManager(this);
         recyclerView_.setLayoutManager(layoutManager_);
 
-        selector_ = (Spinner) findViewById(R.id.podcast_selector);
-        selector_.setOnItemSelectedListener(this);
-        
-        adapter_ = new EpisodeAdapter();
-        recyclerView_.setAdapter(adapter_);
+        //updateSelector();
     }
 
     //called initialize time or rotate screen
@@ -175,7 +176,6 @@ public class PodplayerCardActivity
     }
 
     public void loadRealm(String title){
-        Realm realm = Realm.getDefaultInstance();
         //TODO: sort
         boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
         SimpleQuery q = new SimpleQuery(title, skipListened);

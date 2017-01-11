@@ -363,21 +363,26 @@ public class PodplayerExpActivity
             EpisodeRealm episode = (EpisodeRealm)getChild(groupPosition, childPosition);
             holder.titleView_.setText(episode.getTitle());
             holder.timeView_.setText(episode.getPubdateStr(dateFormat_));
-            EpisodeRealm current = player_.getCurrentPodInfo();
-            if(current != null && current.getURL().equals(episode.getURL())) {
-                //cache!
-                if(player_.isPlaying()) {
-                    holder.stateIcon_.setImageResource(R.drawable.ic_play_arrow_white_24dp);
-                    holder.stateIcon_.setContentDescription(getString(R.string.icon_desc_playing));
-                }
-                else {
-                    holder.stateIcon_.setImageResource(R.drawable.ic_pause_white_24dp);
-                    holder.stateIcon_.setContentDescription(getString(R.string.icon_desc_pausing));
-                }
-                holder.stateIcon_.setVisibility(View.VISIBLE);
+            if(player_ == null){
+                holder.stateIcon_.setVisibility(View.GONE);
             }
             else {
-                holder.stateIcon_.setVisibility(View.GONE);
+                EpisodeRealm current = player_.getCurrentPodInfo();
+                if(current != null && current.getURL().equals(episode.getURL())) {
+                    //cache!
+                    if(player_.isPlaying()) {
+                        holder.stateIcon_.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+                        holder.stateIcon_.setContentDescription(getString(R.string.icon_desc_playing));
+                    }
+                    else {
+                        holder.stateIcon_.setImageResource(R.drawable.ic_pause_white_24dp);
+                        holder.stateIcon_.setContentDescription(getString(R.string.icon_desc_pausing));
+                    }
+                    holder.stateIcon_.setVisibility(View.VISIBLE);
+                }
+                else {
+                    holder.stateIcon_.setVisibility(View.GONE);
+                }
             }
 
             //TODO: use string or uri
