@@ -116,19 +116,16 @@ public class PodplayerActivity
 
     @Override
     public void notifyEpisodeListAllChanged(RealmResults<EpisodeRealm> results){
-        //loadRealm(getFilterPodcastTitle());
         adapter_.notifyDataSetChanged();
     }
 
     @Override
     public void notifyEpisodeListGroupChanged(long podcastId, RealmResults<EpisodeRealm> results){
-        //loadRealm(getFilterPodcastTitle());
         adapter_.notifyDataSetChanged();
     }
 
     @Override
     public void notifyQuerySettingChanged(){
-        //loadRealm(getFilterPodcastTitle());
         episodeListView_.hideHeader();
         adapter_.notifyDataSetChanged();
     }
@@ -374,13 +371,7 @@ public class PodplayerActivity
 
         @Override
         protected void onProgressUpdate(String... values){
-            // for (int i = 0; i < values.length; i++) {
-            //     state_.mergeEpisode(values[i]);
-            //     //adapter_.add(values[i]);
-            // }
-            //Log.d(TAG, "onProgressUpdate");
-            //filterSelectedPodcast();
-            //adapter_.notifyDataSetChanged();
+            filterSelectedPodcast();
         }
 
         private void onFinished() {
@@ -389,8 +380,6 @@ public class PodplayerActivity
             episodeListView_.onRefreshComplete(getString(R.string.header_lastupdated) + dateFormat_.format(state_.lastUpdatedDate_));
             episodeListView_.hideHeader();
             loadTask_ = null;
-            //dummy
-            //sortEpisodeByDate(true);
             //TODO: Sync playlist
             updatePlaylist(null);
             updateUI();

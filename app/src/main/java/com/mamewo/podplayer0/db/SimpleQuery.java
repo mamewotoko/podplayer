@@ -61,6 +61,7 @@ public class SimpleQuery {
             internalPodcastListener_ = new RealmChangeListener<RealmResults<PodcastRealm>>(){
                 @Override
                 public void onChange(RealmResults<PodcastRealm> results){
+                    podcastList_ = results;
                     listener_.notifyPodcastListChanged(results);
                 }
             };
@@ -95,8 +96,6 @@ public class SimpleQuery {
                     episode.setPodcastIndex(index);
                 }
                 realm.commitTransaction();
-                // String[] keys = { "podcastIndex", "occurIndex" };
-                // Sort[] order = { Sort.ASCENDING, Sort.DESCENDING };
                 results = results.sort("podcastIndex", Sort.ASCENDING);
             }
         }
@@ -111,6 +110,7 @@ public class SimpleQuery {
             RealmChangeListener<RealmResults<EpisodeRealm>> l = new RealmChangeListener<RealmResults<EpisodeRealm>>(){
                 @Override
                 public void onChange(RealmResults<EpisodeRealm> results){
+                    episodeList_ = results;
                     listener_.notifyEpisodeListAllChanged(results);
                 }
                 };
@@ -136,6 +136,7 @@ public class SimpleQuery {
             RealmChangeListener<RealmResults<EpisodeRealm>> listener = new RealmChangeListener<RealmResults<EpisodeRealm>>(){
                 @Override
                 public void onChange(RealmResults<EpisodeRealm> results){
+                    podcastId2Episode_.put(podcastId, result);
                     listener_.notifyEpisodeListGroupChanged(podcastId, results);
                 }
             };
