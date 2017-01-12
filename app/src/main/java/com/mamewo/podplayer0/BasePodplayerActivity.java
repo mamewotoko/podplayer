@@ -96,6 +96,10 @@ abstract public class BasePodplayerActivity
 
     public void notifyLatestListChanged(RealmResults<EpisodeRealm> result){
     }
+
+    public void notifyQuerySettingChanged(){
+        
+    }
     
     protected SharedPreferences pref_;
     protected DateFormat dateFormat_;
@@ -268,17 +272,9 @@ abstract public class BasePodplayerActivity
             }
             gestureView.setEnabled(useGesture);
         }
-        if (updateAll || "gesture_score_threshold".equals(key)) {
-            gestureScoreThreshold_ =
-                    Double.valueOf(pref.getString("gesture_score_threshold",
-                                                res.getString(R.string.default_gesture_score_threshold)));
-        }
         if (updateAll || "show_podcast_icon".equals(key)) {
             showPodcastIcon_ = pref.getBoolean("show_podcast_icon", 
                                                 res.getBoolean(R.bool.default_show_podcast_icon));
-            //TODO: modify interface........
-            currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
-            //notifyOrderChanged(currentOrder_);
         }
         if("clear_response_cache".equals(key)){
             try{
@@ -304,26 +300,19 @@ abstract public class BasePodplayerActivity
         }
         if(updateAll || "episode_order".equals(key)){
             currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
-            //notifyOrderChanged(currentOrder_);
         }
         if(updateAll || "date_format".equals(key)){
             dateFormat_ = new SimpleDateFormat(pref.getString("date_format", YYYYMMDD_24H));
-            //notifyDatasetChanged
         }
-        //following block should be last one of this function
-        if (updateAll || "podcastlist2".equals(key)) {
-            Log.d(TAG, "podcastList load and update");
-            //state_.podcastList_ = PodcastListPreference.loadSettingRealm(this);
-            //TODO: reuse loaded episode
-            //state_.loadedEpisode_.clear();
-            //state_.latestList_.clear();
-            //TODO: clear all icon
-            // for(int i = 0; i < state_.podcastList_.size(); i++){
-            //     state_.loadedEpisode_.add(new ArrayList<EpisodeInfo>());
-            // }
-            //Log.d(TAG, "loadedEpisode_:" + state_.loadedEpisode_.size() + "; " + state_.podcastList_.size());
-            //onPodcastListChanged(updateAll);
+        if("episode_order".equals(key)
+           || "date_format".equals(key)
+           || "skip_listened_episode".equals(key)
+           || "episode_limit".equals(key)){
+            if(!uiSettingChanged_){
+                notifyQuerySettingChanged();
+            }
         }
+        
     }
 
     @Override

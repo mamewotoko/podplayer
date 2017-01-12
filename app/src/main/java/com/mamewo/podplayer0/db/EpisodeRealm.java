@@ -10,6 +10,7 @@ import java.util.Locale;
 import io.realm.RealmModel;
 import io.realm.annotations.RealmClass;
 import io.realm.annotations.Index;
+import io.realm.annotations.Ignore;
     
 @RealmClass
 public class EpisodeRealm
@@ -28,6 +29,7 @@ public class EpisodeRealm
     private Date pubdate;
     private int occurIndex;
     private ListenedEpisodeRealm listened;
+    @Ignore private long podcastIndex;
 
     public EpisodeRealm(){
         id = 0;
@@ -38,6 +40,7 @@ public class EpisodeRealm
         link = null;
         pubdate = null;
         listened = null;
+        podcastIndex = 0;
     }
 
     public long getId(){
@@ -134,5 +137,13 @@ public class EpisodeRealm
     
     public void setListened(ListenedEpisodeRealm listened){
         this.listened = listened;
+    }
+
+    public long getPodcastIndex(){
+        return podcastIndex;
+    }
+
+    public void setPodcastIndex(long index){
+        this.podcastIndex = index;
     }
 }

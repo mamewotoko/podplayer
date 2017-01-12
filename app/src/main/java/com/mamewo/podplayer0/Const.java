@@ -12,6 +12,10 @@ public class Const {
     public int APPEARANCE_ORDER = 0;
     static final
     public int REVERSE_APPEARANCE_ORDER = 1;
+    static final
+    public int DATE_OLDER_FIRST_ORDER = 2;
+    static final
+    public int DATE_LATEST_FIRST_ORDER = 3;
 
     static final
     public int VIEW_PULLTOREFRESH = 0;

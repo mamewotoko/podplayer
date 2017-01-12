@@ -116,6 +116,12 @@ public class PodplayerActivity
         loadRealm(getFilterPodcastTitle());
         adapter_.notifyDataSetChanged();
     }
+
+    @Override
+    public void notifyQuerySettingChanged(){
+        loadRealm(getFilterPodcastTitle());
+    }
+
     
     private void updateUI() {
         adapter_.notifyDataSetChanged();
@@ -137,7 +143,8 @@ public class PodplayerActivity
         Realm realm = Realm.getDefaultInstance();
         //TODO: sort
         boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
-        SimpleQuery q = new SimpleQuery(title, skipListened);
+        int order = Integer.valueOf(pref_.getString("episode_order", "0"));
+        SimpleQuery q = new SimpleQuery(title, skipListened, order);
         podcastList_ = q.getPodcastList();
         latestList_ = q.getEpisodeList(podcastList_);
         groupList_ = new ArrayList<RealmResults<EpisodeRealm>>();
