@@ -114,12 +114,15 @@ public class PodplayerActivity
     @Override
     public void notifyLatestListChanged(RealmResults<EpisodeRealm> results){
         loadRealm(getFilterPodcastTitle());
+        episodeListView_.hideHeader();
         adapter_.notifyDataSetChanged();
     }
 
     @Override
     public void notifyQuerySettingChanged(){
         loadRealm(getFilterPodcastTitle());
+        episodeListView_.hideHeader();
+        adapter_.notifyDataSetChanged();
     }
 
     
@@ -158,7 +161,6 @@ public class PodplayerActivity
                 public void onChange(RealmResults<PodcastRealm> results){
                     //TODO: get form pref
                     // boolean skip = pref_.getBoolean("skip_listened_episode", res.getBoolean(R.bool.default_skip_listened_episode));
-                    // loadRealm(null, skip);
                     notifyPodcastListChanged(results);
                 }
             });

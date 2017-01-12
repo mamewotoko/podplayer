@@ -46,14 +46,16 @@ public class SimpleQuery {
         RealmResults<EpisodeRealm> results;
         if(order_ == APPEARANCE_ORDER || order_ == REVERSE_APPEARANCE_ORDER){
             results = episodeQuery.findAll();
-            if(order_ == REVERSE_APPEARANCE_ORDER){
-                for(EpisodeRealm episode: results){
-                    episode.setPodcastIndex(episode.getPodcast().getId());
-                }
-                String[] keys = { "podcastIndex", "occurIndex" };
-                Sort[] order = { Sort.ASCENDING, Sort.DESCENDING };
-                results = results.sort(keys, order);
-            }
+            // if(order_ == REVERSE_APPEARANCE_ORDER){
+            //     for(EpisodeRealm episode: results){
+            //         realm.beginTransaction();
+            //         episode.setPodcastIndex(episode.getPodcast().getId());
+            //         realm.commitTransaction();
+            //     }
+            //     String[] keys = { "podcastIndex", "occurIndex" };
+            //     Sort[] order = { Sort.ASCENDING, Sort.DESCENDING };
+            //     results = results.sort(keys, order);
+            // }
         }
         else if(order_ == DATE_OLDER_FIRST_ORDER){
             results = episodeQuery.findAllSorted("pubdate", Sort.ASCENDING);

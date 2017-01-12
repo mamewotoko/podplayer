@@ -29,7 +29,7 @@ public class EpisodeRealm
     private Date pubdate;
     private int occurIndex;
     private ListenedEpisodeRealm listened;
-    @Ignore private long podcastIndex;
+    private long podcastIndex;
 
     public EpisodeRealm(){
         id = 0;
