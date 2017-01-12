@@ -222,31 +222,31 @@ public class PodplayerCardActivity
 
     public void loadRealm(String title){
         //TODO: sort
-        boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
-        SimpleQuery q = new SimpleQuery(title, skipListened);
-        podcastList_ = q.getPodcastList();
-        latestList_ = q.getEpisodeList(podcastList_);
+        // boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
+        // SimpleQuery q = new SimpleQuery(title, skipListened);
+        // podcastList_ = q.getPodcastList();
+        // latestList_ = q.getEpisodeList(podcastList_);
 
-        for(PodcastRealm podcast: podcastList_){
-            groupList_.add(q.getEpisodeList(podcast.getId()));
-        }
+        // for(PodcastRealm podcast: podcastList_){
+        //     groupList_.add(q.getEpisodeList(podcast.getId()));
+        // }
         
-        //TODO: remove change listener
-        podcastList_.addChangeListener(new RealmChangeListener<RealmResults<PodcastRealm>>(){
-                @Override
-                public void onChange(RealmResults<PodcastRealm> results){
-                    notifyPodcastListChanged(results);
-                }
-            });
+        // //TODO: remove change listener
+        // podcastList_.addChangeListener(new RealmChangeListener<RealmResults<PodcastRealm>>(){
+        //         @Override
+        //         public void onChange(RealmResults<PodcastRealm> results){
+        //             notifyPodcastListChanged(results);
+        //         }
+        //     });
         
-        RealmChangeListener<RealmResults<EpisodeRealm>> listener =
-            new RealmChangeListener<RealmResults<EpisodeRealm>>(){
-                @Override
-                    public void onChange(RealmResults<EpisodeRealm> results){
-                    notifyLatestListChanged(results);
-                }
-            };
-        latestList_.addChangeListener(listener);
+        // RealmChangeListener<RealmResults<EpisodeRealm>> listener =
+        //     new RealmChangeListener<RealmResults<EpisodeRealm>>(){
+        //         @Override
+        //             public void onChange(RealmResults<EpisodeRealm> results){
+        //             notifyLatestListChanged(results);
+        //         }
+        //     };
+        // latestList_.addChangeListener(listener);
     }
     
 

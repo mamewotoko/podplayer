@@ -134,7 +134,7 @@ public class PlayerService
         //add test
         SimpleQuery query = new SimpleQuery(title, skipListened);
         podcastList_ = query.getPodcastList();
-        currentPlaylist_ = query.getEpisodeList(podcastList_);
+        currentPlaylist_ = query.getEpisodeList();
 	}
   
 	//previous tune when previous is clicked twice quickly

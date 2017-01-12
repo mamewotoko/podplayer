@@ -51,12 +51,13 @@ import android.widget.ImageButton;
 public class PodplayerActivity
     extends BasePodplayerActivity
     implements OnClickListener,
-    OnItemClickListener,
-    OnItemLongClickListener,
-    OnItemSelectedListener,
-    PlayerService.PlayerStateListener,
-    PullToRefreshListView.OnRefreshListener,
-    PullToRefreshListView.OnCancelListener
+               OnItemClickListener,
+               OnItemLongClickListener,
+               OnItemSelectedListener,
+               PlayerService.PlayerStateListener,
+               PullToRefreshListView.OnRefreshListener,
+               PullToRefreshListView.OnCancelListener,
+               SimpleQuery.DataChangeListener
                //SeekBar.OnSeekBarChangeListener           
 {
     private ImageButton playButton_;
@@ -65,9 +66,10 @@ public class PodplayerActivity
     //adapter_: filtered view
     //private SeekBar currentPlayPosition_;
     private EpisodeAdapter adapter_;
-    private RealmResults<PodcastRealm> podcastList_;
-    private RealmResults<EpisodeRealm> latestList_;
+    // private RealmResults<PodcastRealm> podcastList_;
+    // private RealmResults<EpisodeRealm> latestList_;
     private List<RealmResults<EpisodeRealm>> groupList_;
+    private SimpleQuery currentQuery_;
 
     //number of items for one screen (small phone)
     static final
@@ -96,9 +98,10 @@ public class PodplayerActivity
         //initial dummy
         //adapter_ is initialized after player initialized
         loadRealm(null);
+
         adapter_ = new EpisodeAdapter();
         episodeListView_.setAdapter(adapter_);
-        groupList_ = new ArrayList<RealmResults<EpisodeRealm>>();
+        //groupList_ = new ArrayList<RealmResults<EpisodeRealm>>();
         updateSelector();
         //currentPlayPosition_ = (SeekBar) findViewById(R.id.seekbar);
         //currentPlayPosition_.setOnSeekBarChangeListener(this);
@@ -107,24 +110,28 @@ public class PodplayerActivity
     @Override
     public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
         updateSelector();
-        loadRealm(getFilterPodcastTitle());
+        //loadRealm(getFilterPodcastTitle());
         adapter_.notifyDataSetChanged();
     }
 
     @Override
-    public void notifyLatestListChanged(RealmResults<EpisodeRealm> results){
-        loadRealm(getFilterPodcastTitle());
-        episodeListView_.hideHeader();
+    public void notifyEpisodeListAllChanged(RealmResults<EpisodeRealm> results){
+        //loadRealm(getFilterPodcastTitle());
+        adapter_.notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyEpisodeListGroupChanged(long podcastId, RealmResults<EpisodeRealm> results){
+        //loadRealm(getFilterPodcastTitle());
         adapter_.notifyDataSetChanged();
     }
 
     @Override
     public void notifyQuerySettingChanged(){
-        loadRealm(getFilterPodcastTitle());
+        //loadRealm(getFilterPodcastTitle());
         episodeListView_.hideHeader();
         adapter_.notifyDataSetChanged();
     }
-
     
     private void updateUI() {
         adapter_.notifyDataSetChanged();
@@ -147,32 +154,10 @@ public class PodplayerActivity
         //TODO: sort
         boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
         int order = Integer.valueOf(pref_.getString("episode_order", "0"));
-        SimpleQuery q = new SimpleQuery(title, skipListened, order);
-        podcastList_ = q.getPodcastList();
-        latestList_ = q.getEpisodeList(podcastList_);
-        groupList_ = new ArrayList<RealmResults<EpisodeRealm>>();
-
-        for(PodcastRealm podcast: podcastList_){
-            groupList_.add(q.getEpisodeList(podcast.getId()));
+        currentQuery_ = new SimpleQuery(title, skipListened, order, this);
+        for(PodcastRealm podcast: currentQuery_.getPodcastList()){
+            currentQuery_.getEpisodeList(podcast.getId());
         }
-        //TODO: remove change listener
-        podcastList_.addChangeListener(new RealmChangeListener<RealmResults<PodcastRealm>>(){
-                @Override
-                public void onChange(RealmResults<PodcastRealm> results){
-                    //TODO: get form pref
-                    // boolean skip = pref_.getBoolean("skip_listened_episode", res.getBoolean(R.bool.default_skip_listened_episode));
-                    notifyPodcastListChanged(results);
-                }
-            });
-        
-        RealmChangeListener<RealmResults<EpisodeRealm>> listener =
-            new RealmChangeListener<RealmResults<EpisodeRealm>>(){
-                @Override
-                    public void onChange(RealmResults<EpisodeRealm> results){
-                    notifyLatestListChanged(results);
-                }
-            };
-        latestList_.addChangeListener(listener);
     }
 
     private void updatePlayButton(){
@@ -449,39 +434,6 @@ public class PodplayerActivity
         return true;
     }
 
-    // public void sortEpisodeByDate(boolean latestFirst){
-    //     //dummy
-    //     Log.d(TAG, "sort by pubdate");
-    //     Collections.sort(currentList_, new EpisodeInfo.PubdateComparator());
-    //     if(latestFirst){
-    //         Collections.reverse(currentList_);
-    //     }
-    // }
-
-    //TODO: tuning
-    // private void filterSelectedPodcast(){
-    //     RealmResults<EpisodeRealm> l;
-    //     //TODO: design incremnetal add 
-    //     if(selector_.getSelectedItemPosition() == 0){
-    //         //-1: all
-    //         l = state_.latestList_;
-    //     }
-    //     else {
-    //         String title = (String)selector_.getSelectedItem();
-    //         Realm realm = Realm.getDefaultInstance();
-    //         RealmResults<PodcastRealm> infoList = realm.where(PodcastRealm.class).equalTo("title", title).findAll();
-    //         int podcastId = infoList.get(0).getId();
-    //         l = realm.where(EpisodeRealm.class).equalTo("podcast.id", podcastId).findAll();
-    //     }
-    //     //TODO: selected item is removed
-    //     currentList_ = l;
-    //     //Log.d(TAG, "filterSelectedPodcast: "+ currentList_.size());
-    //     if (! isLoading()) {
-    //         episodeListView_.hideHeader();
-    //     }
-    //     adapter_.notifyDataSetChanged();
-    // }
-
     @Override
     public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
         filterSelectedPodcast();
@@ -493,7 +445,7 @@ public class PodplayerActivity
     }
     
     private int podcastTitle2Index(String title){
-        RealmResults<PodcastRealm> list = podcastList_;
+        RealmResults<PodcastRealm> list = currentQuery_.getPodcastList();
         for(int i = 0; i < list.size(); i++) {
             PodcastRealm info = list.get(i);
             if(title.equals(info.getTitle())) {
@@ -523,7 +475,7 @@ public class PodplayerActivity
     private void updateSelector(){
         List<String> list = new ArrayList<String>();
         list.add(getString(R.string.selector_all));
-        for(PodcastRealm info: podcastList_){
+        for(PodcastRealm info: currentQuery_.getPodcastList()){
             list.add(info.getTitle());
         }
         //stop loading?
@@ -551,53 +503,11 @@ public class PodplayerActivity
     public RealmResults<EpisodeRealm> getCurentEpisodeList(){
         int n = selector_.getSelectedItemPosition();
         if(n == 0 || n < 0){
-            return latestList_;
+            return currentQuery_.getEpisodeList();
         }
-        return groupList_.get(n-1);
+        //return groupList_.get(n-1);
+        return currentQuery_.getEpisodeList(n-1);
     }
-   
-    // @Override
-    // protected void notifyLatestListChanged(){
-    //     adapter_.notifyDataSetChanged();
-    // }
-    
-    // @Override
-    // protected void onPodcastListChanged(boolean start) {
-    //     Log.d(TAG, "onPodcastListChanged");
-    //     List<String> list = new ArrayList<String>();
-    //     list.add(getString(R.string.selector_all));
-    //     //stop loading?
-    //     for(int i = 0; i < state_.podcastList_.size(); i++) {
-    //         Podcast info = state_.podcastList_.get(i);
-    //         if (info.getEnabled()) {
-    //             list.add(info.getTitle());
-    //         }
-    //     }
-    //     ArrayAdapter<String> adapter =
-    //         new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-	// 	adapter.setDropDownViewResource(android.support.v7.appcompat.R.layout.support_simple_spinner_dropdown_item);
-
-    //     selector_.setAdapter(adapter);
-    //     Resources res = getResources();
-    //     boolean doLoad = pref_.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
-    //     RealmResults<EpisodeRealm> playlist = state_.latestList_;
-    //     if ((!start) || doLoad) {
-    //         //reload
-    //         episodeListView_.startRefresh();
-    //     }
-    //     else if (playlist != null && ! playlist.isEmpty()) {
-    //         //update list by loaded items
-    //         filterSelectedPodcast();
-    //         episodeListView_.onRefreshComplete(getString(R.string.header_lastupdated) + dateFormat_.format(state_.lastUpdatedDate_));
-    //     }
-    //     updateUI();
-    // }
-
-    // @Override
-    // public void notifyOrderChanged(int order){
-    //     updatePlaylist();
-    //     adapter_.notifyDataSetChanged();
-    // }
 
     // @Override
     // public void onProgressChanged(SeekBar bar, int progress, boolean fromUser){
