@@ -358,23 +358,5 @@ abstract public class BasePodplayerActivity
         private PodplayerState() {
             lastUpdatedDate_ = null;
         }
-        
-        // static
-        // public void sortEpisodeByDate(List<EpisodeInfo> lst, boolean latestFirst){
-        //     //dummy
-        //     Collections.sort(lst, new EpisodeInfo.PubdateComparator());
-        //     if(latestFirst){
-        //         Collections.reverse(lst);
-        //     }
-        // }
-        
-        // public RealmResults<EpisodeRealm> listg(int orderSetting){
-        //     //Log.d(TAG, "list: "+orderSetting);
-        //     Realm realm = Realm.getDefaultInstance();
-        //     String[] sortFields = { "podcast.id", "occurIndex"};
-        //     Sort[] order = { Sort.ASCENDING, Sort.ASCENDING };
-        //     latestList_ = realm.where(EpisodeRealm.class).findAll().sort(sortFields, order);
-        //     return latestList_;
-        // }
     }
 }

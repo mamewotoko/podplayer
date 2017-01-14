@@ -76,8 +76,8 @@
     </string-array>
 
     <string-array name="date_format_entries" translatable="false">
-      <item>yyyy/MM/dd HH:mm:ss Z\n(2017/01/07 13:10:34 +0900)</item>
-      <item>yyyy/MM/dd hh:mm:ss a Z\n(2017/01/07 01:10:34 PM +0900)</item>
+      <item>yyyy/MM/dd HH:mm:ss Z\n(2017/ 1/07 13:10:34 +0900)</item>
+      <item>yyyy/MM/dd hh:mm:ss a Z\n(2017/ 1/07 01:10:34 PM +0900)</item>
       <item>EEE, dd MMM yyyy HH:mm:ss Z\n(Sat, 7 Jan 2017 13:10:34 +0900)</item>
       <item>EEE, dd MMM yyyy hh:mm:ss a Z\n(Sat, 7 Jan 2017 01:10:34 PM +0900)</item>
     </string-array>
@@ -87,5 +87,12 @@
       <item>yyyy/MM/dd hh:mm:ss a Z</item>
       <item>EEE, dd MMM yyyy HH:mm:ss Z</item>
       <item>EEE, dd MMM yyyy hh:mm:ss a Z</item>
+    </string-array>
+
+    <string-array name="date_format_summary" translatable="false">
+      <item>2017/ 1/07 13:10:34 +0900</item>
+      <item>2017/ 1/07 01:10:34 PM +0900</item>
+      <item>Sat, 7 Jan 2017 13:10:34 +0900</item>
+      <item>Sat, 7 Jan 2017  1:10:34 PM +0900</item>
     </string-array>
 </resources>

@@ -108,4 +108,5 @@
     <string name="username">ユーザ名</string>
     <string name="password">パスワード</string>
     <string name="login">ログイン</string>
+
 </resources>

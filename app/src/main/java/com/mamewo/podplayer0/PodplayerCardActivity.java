@@ -110,7 +110,10 @@ public class PodplayerCardActivity
     @Override
     public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
         updateSelector();
-        //loadRealm(getFilterPodcastTitle());
+        boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
+        if(doLoad){
+            startGetPodcastTask();
+        }
         adapter_.notifyDataSetChanged();
     }
 
@@ -264,7 +267,7 @@ public class PodplayerCardActivity
     //     selector_.setAdapter(adapter);
 
     //     Resources res = getResources();
-    //     boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
+
     //     RealmResults<EpisodeRealm> playlist = state_.latestList_;
     //     if ((!start) || doLoad) {
     //         //reload

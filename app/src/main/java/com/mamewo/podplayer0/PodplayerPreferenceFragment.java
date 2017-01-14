@@ -45,6 +45,7 @@ public class PodplayerPreferenceFragment
     private Preference expandGroupIcon_;
     private SharedPreferences pref_;
     private ListPreference episodeOrder_;
+    private Preference dateFormat_;
     private String versionStr_;
     
     @Override
@@ -74,7 +75,7 @@ public class PodplayerPreferenceFragment
         license_.setOnPreferenceClickListener(this);
         mailToAuthor_ = findPreference("mail_to_author");
         mailToAuthor_.setOnPreferenceClickListener(this);
-
+        dateFormat_ = findPreference("date_format");
         expandInDefault_ = findPreference("expand_in_default");
         expandGroupIcon_ = findPreference("display_expand_icon_in_group");
         
@@ -138,6 +139,10 @@ public class PodplayerPreferenceFragment
         if(updateAll || "episode_order".equals(key)){
             int order = Integer.valueOf(pref.getString("episode_order", "0"));
             episodeOrder_.setSummary(res.getStringArray(R.array.episode_item_order_entries)[order]);
+        }
+        if(updateAll || "date_format".equals(key)){
+            int format = Integer.valueOf(pref.getStringArray("date_format", "0"));
+            dateFormat_.setSummary(res.getStringArray(R.array.date_format_summary)[format]);
         }
         if(updateAll || "view_mode".equals(key)){
             int viewMode = Integer.valueOf(pref.getString("view_mode", "0"));

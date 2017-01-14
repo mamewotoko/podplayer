@@ -32,7 +32,6 @@ import android.widget.ImageView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.ImageButton;
-//import android.view.Display;
 import com.bumptech.glide.Glide;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.ActionBar;
@@ -95,6 +94,12 @@ public class PodplayerExpActivity
         collapseButton_.setOnClickListener(this);
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        loadRealm();
+    }
+    
     public void loadRealm(){
         //TODO: sort
         boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
@@ -278,6 +283,7 @@ public class PodplayerExpActivity
         @Override
         public int getChildrenCount(int groupPosition) {
             PodcastRealm podcast = currentQuery_.getPodcastList().get(groupPosition);
+            Log.d(TAG, "getChildrenCount " + podcast);
             return currentQuery_.getEpisodeList(podcast.getId()).size();
         }
 
@@ -322,11 +328,19 @@ public class PodplayerExpActivity
             titleView.setText(info.getTitle());
             ImageView iconView = (ImageView)view.findViewById(R.id.episode_icon);
             String iconURL = currentQuery_.getPodcastList().get(groupPosition).getIconURL();
-            if(null != iconURL){
-                Glide
-                    .with(getApplicationContext())
-                    .load(iconURL)
-                    .into(iconView);
+            boolean displayIcon = pref_.getBoolean("display_expand_icon_in_group",
+                                                   getResources().getBoolean(R.bool.default_display_expand_icon_in_group));
+            if(displayIcon){
+                iconView.setVisibility(View.VISIBLE);
+                if(null != iconURL){
+                    Glide
+                        .with(getApplicationContext())
+                        .load(iconURL)
+                        .into(iconView);
+                }
+            }
+            else {
+                iconView.setVisibility(View.GONE);
             }
             int childNum = getChildrenCount(groupPosition);
             String numStr;
