@@ -54,8 +54,6 @@ public class PodplayerExpActivity
     private ImageButton collapseButton_;
     private ExpandableListView expandableList_;
     private ExpAdapter adapter_;
-    // private RealmResults<PodcastRealm> podcastList_;
-    // private List<RealmResults<EpisodeRealm>> groupList_;
     private SimpleQuery currentQuery_;
     
     @Override
@@ -75,7 +73,6 @@ public class PodplayerExpActivity
         playButton_.setOnLongClickListener(this);
         playButton_.setEnabled(false);
         //XXX filteredItemIndex_ -> adapter_
-        //filteredItemIndex_ = new ArrayList<Integer>();
         expandableList_ =
                 (ExpandableListView) findViewById(R.id.exp_list);
         // Display display = getWindowManager().getDefaultDisplay(); 
@@ -525,6 +522,12 @@ public class PodplayerExpActivity
 
     @Override
     public void notifyQuerySettingChanged(){
+        loadRealm();
+        adapter_.notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyUISettingChanged(){
         adapter_.notifyDataSetChanged();
     }
     

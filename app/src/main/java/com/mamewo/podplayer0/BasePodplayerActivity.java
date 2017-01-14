@@ -95,6 +95,8 @@ abstract public class BasePodplayerActivity
     // }
     abstract
     public void notifyQuerySettingChanged();
+    abstract
+    public void notifyUISettingChanged();
     
     protected SharedPreferences pref_;
     protected DateFormat dateFormat_;
@@ -307,7 +309,10 @@ abstract public class BasePodplayerActivity
                 notifyQuerySettingChanged();
             }
         }
-        
+        else if("display_episode_icon".equals(key)
+                || "display_expand_icon_in_group".equals(key)){
+            notifyUISettingChanged();
+        }
     }
 
     @Override

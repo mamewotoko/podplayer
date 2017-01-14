@@ -129,6 +129,11 @@ public class PodplayerCardActivity
         loadRealm(getFilterPodcastTitle());
         adapter_.notifyDataSetChanged();
     }
+
+    @Override
+    public void notifyUISettingChanged(){
+        adapter_.notifyDataSetChanged();
+    }
     
     //called initialize time or rotate screen
     @Override

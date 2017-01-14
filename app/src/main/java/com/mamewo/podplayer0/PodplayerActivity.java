@@ -126,6 +126,11 @@ public class PodplayerActivity
         loadRealm(getFilterPodcastTitle());
         adapter_.notifyDataSetChanged();
     }
+
+    @Override
+    public void notifyUISettingChanged(){
+        adapter_.notifyDataSetChanged();
+    }
     
     private void updateUI() {
         adapter_.notifyDataSetChanged();

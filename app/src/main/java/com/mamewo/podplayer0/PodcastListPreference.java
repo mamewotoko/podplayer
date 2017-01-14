@@ -1065,7 +1065,7 @@ public class PodcastListPreference
                 holder.statusButton_.setImageResource(imageId);
                 holder.statusButton_.getDrawable().setColorFilter(imageColor, PorterDuff.Mode.SRC_IN);
                 holder.detailButton_.setImageResource(R.drawable.ic_expand_less_white_24dp);
-                holder.podcastURL_.setVisibility(View.GONE);
+                holder.podcastURL_.setVisibility(View.VISIBLE);
                 holder.detailView_.setVisibility(View.VISIBLE);
             }
             else {

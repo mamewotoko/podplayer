@@ -82,7 +82,6 @@ TODO
   * notification
   * landscape UI
   * enable episode long click
-* support TV
 * fix bug
   * open Podcast list editor, press detail button, rotate screen
     -> crash
