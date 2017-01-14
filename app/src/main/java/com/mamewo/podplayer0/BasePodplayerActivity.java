@@ -87,19 +87,14 @@ abstract public class BasePodplayerActivity
     static final
     public int ICON_DISK_CACHE_BYTES = 64*1024*1024;
     protected int currentOrder_;
-    //abstract protected void onPodcastListChanged(boolean start);
-    // abstract protected void notifyOrderChanged(int order);
-    //abstract protected void notifyLatestListChanged();
     
-    public void notifyPodcastListChanged(RealmResults<PodcastRealm> result){
-    }
+    // public void notifyPodcastListChanged(RealmResults<PodcastRealm> result){
+    // }
 
-    public void notifyLatestListChanged(RealmResults<EpisodeRealm> result){
-    }
-
-    public void notifyQuerySettingChanged(){
-        
-    }
+    // public void notifyLatestListChanged(RealmResults<EpisodeRealm> result){
+    // }
+    abstract
+    public void notifyQuerySettingChanged();
     
     protected SharedPreferences pref_;
     protected DateFormat dateFormat_;

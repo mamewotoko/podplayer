@@ -42,10 +42,11 @@ import io.realm.RealmResults;
 public class PodplayerExpActivity
     extends BasePodplayerActivity
     implements OnClickListener,
-    OnLongClickListener,
-    OnItemLongClickListener,
-    PlayerService.PlayerStateListener,
-    OnChildClickListener
+               OnLongClickListener,
+               OnItemLongClickListener,
+               PlayerService.PlayerStateListener,
+               OnChildClickListener,
+               SimpleQuery.DataChangeListener
 {
     private ImageButton playButton_;
 	private ImageView reloadButton_;
@@ -495,11 +496,24 @@ public class PodplayerExpActivity
 
     @Override
     public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
+        Log.d(TAG, "exp notifyPodcastListChanged");
         adapter_.notifyDataSetChanged();
     }
 
     @Override
-    public void notifyLatestListChanged(RealmResults<EpisodeRealm> results){
+    public void notifyEpisodeListAllChanged(RealmResults<EpisodeRealm> results){
+        Log.d(TAG, "exp notifyEpisodeListAllChanged");
+        adapter_.notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyEpisodeListGroupChanged(long podcastId, RealmResults<EpisodeRealm> results){
+        Log.d(TAG, "exp notifyEpisodeListGroupChanged");
+        adapter_.notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyQuerySettingChanged(){
         adapter_.notifyDataSetChanged();
     }
     
