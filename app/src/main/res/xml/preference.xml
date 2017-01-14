@@ -63,6 +63,14 @@
         android:summaryOff="@string/pref_collapse"
         android:summaryOn="@string/pref_expand"
         android:title="@string/pref_expand_list_in_default" />
+    <CheckBoxPreference
+        android:key="display_expand_icon_in_group"
+        android:defaultValue="@bool/default_display_expand_icon_in_group"
+        android:title="@string/pref_display_expand_icon_in_group" />
+    <CheckBoxPreference
+        android:key="display_episode_icon"
+        android:defaultValue="@bool/default_display_episode_icon"
+        android:title="@string/pref_display_episode_icon" />
     <ListPreference 
         android:key="episode_limit"
         android:defaultValue="@string/default_episode_limit"
@@ -71,6 +79,7 @@
         android:entryValues="@array/pref_episode_limit_values"
         android:title="@string/pref_episode_limit_title"
         />
+
     <ListPreference
 	android:key="episode_order"
 	android:entries="@array/episode_item_order_entries"
@@ -78,12 +87,6 @@
 	android:defaultValue="0"
 	android:title="@string/pref_episode_order"
 	/>
-    <CheckBoxPreference
-        android:key="show_podcast_icon"
-        android:defaultValue="@bool/default_show_podcast_icon"
-        android:summaryOff="@string/pref_icon_hide"
-        android:summaryOn="@string/pref_icon_show"
-        android:title="@string/pref_show_podcast_icon" />
     <ListPreference
 	android:key="date_format"
 	android:entries="@array/date_format_entries"

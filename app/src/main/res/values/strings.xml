@@ -26,7 +26,8 @@
     <string name="pref_expand">expand</string>
     <string name="pref_collapse">collapse</string>
     <string name="pref_expand_list_in_default">Expand list in default</string>
-    <string name="pref_show_podcast_icon">Display podcast icon</string>
+    <string name="pref_display_expand_icon_in_group">Display icon in group item</string>
+    <string name="pref_display_episode_icon">Display episode icon</string>
     <string name="pref_date_format">Date format</string>
     <string name="pref_general_category">General</string>
     <string name="pref_network_category">Network</string>

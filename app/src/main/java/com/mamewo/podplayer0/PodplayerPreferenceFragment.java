@@ -42,6 +42,7 @@ public class PodplayerPreferenceFragment
     //private Preference scoreThreshold_;
     private Preference clearCache_;
     private Preference episodeLimit_;
+    private Preference expandGroupIcon_;
     private SharedPreferences pref_;
     private ListPreference episodeOrder_;
     private String versionStr_;
@@ -75,7 +76,8 @@ public class PodplayerPreferenceFragment
         mailToAuthor_.setOnPreferenceClickListener(this);
 
         expandInDefault_ = findPreference("expand_in_default");
-
+        expandGroupIcon_ = findPreference("display_expand_icon_in_group");
+        
         //CheckBoxPreference cachePreference = (CheckBoxPreference)findPreference("use_response_cache");
         clearCache_ = findPreference("clear_response_cache");
         clearCache_.setOnPreferenceClickListener(this);
@@ -124,11 +126,6 @@ public class PodplayerPreferenceFragment
         if (updateAll || "read_timeout".equals(key)) {
             readTimeout_.setSummary(readTimeout_.getEntry());
         }
-        // if (updateAll || "gesture_score_threshold".equals(key)) {    
-        //     double threshold = Double.valueOf(pref.getString("gesture_score_threshold", 
-        //                                                     res.getString(R.string.default_gesture_score_threshold)));
-        //     scoreThreshold_.setSummary(String.format("%.2f", threshold));
-        // }
         if (updateAll || "episode_limit".equals(key)){
             int limit = Integer.valueOf(pref.getString("episode_limit", 
                                                         res.getString(R.string.default_episode_limit)));
@@ -146,6 +143,7 @@ public class PodplayerPreferenceFragment
             int viewMode = Integer.valueOf(pref.getString("view_mode", "0"));
             viewModePref_.setSummary(res.getStringArray(R.array.view_mode_title)[viewMode]);
             expandInDefault_.setEnabled(viewMode == VIEW_EXP);
+            expandGroupIcon_.setEnabled(viewMode == VIEW_EXP);
         }
     }
 

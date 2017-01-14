@@ -267,9 +267,9 @@ abstract public class BasePodplayerActivity
             }
             gestureView.setEnabled(useGesture);
         }
-        if (updateAll || "show_podcast_icon".equals(key)) {
-            showPodcastIcon_ = pref.getBoolean("show_podcast_icon", 
-                                                res.getBoolean(R.bool.default_show_podcast_icon));
+        if (updateAll || "display_episode_icon".equals(key)) {
+            showPodcastIcon_ = pref.getBoolean("display_episode_icon", 
+                                                res.getBoolean(R.bool.default_display_episode_icon));
         }
         if("clear_response_cache".equals(key)){
             try{
