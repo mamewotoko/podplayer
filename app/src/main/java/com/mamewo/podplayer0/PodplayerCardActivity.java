@@ -525,8 +525,8 @@ public class PodplayerCardActivity
             // }
             count_ += values.length;
             if(count_ - displayedCount_ > UPDATE_THRES){
-                adapter_.notifyDataSetChanged();
                 displayedCount_ = count_;
+                adapter_.notifyDataSetChanged();
             }
         }
         

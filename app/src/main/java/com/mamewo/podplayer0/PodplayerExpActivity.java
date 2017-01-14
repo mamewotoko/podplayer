@@ -90,13 +90,6 @@ public class PodplayerExpActivity
         collapseButton_.setOnClickListener(this);
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        loadRealm();
-        
-    }
-    
     public void loadRealm(){
         //TODO: sort
         boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
@@ -444,6 +437,7 @@ public class PodplayerExpActivity
             loadTask_ = null;
             reloadButton_.setContentDescription(getResources().getString(R.string.action_reload));
 			reloadButton_.setImageResource(R.drawable.ic_sync_white_24dp);            
+            updateUI();
         }
         
         @Override
@@ -513,6 +507,10 @@ public class PodplayerExpActivity
         boolean doLoad = pref_.getBoolean("load_on_start", getResources().getBoolean(R.bool.default_load_on_start));
         if(doLoad && null == state_.lastUpdatedDate_){
             loadPodcast();
+        }
+        boolean expandInDefault = pref_.getBoolean("expand_in_default", getResources().getBoolean(R.bool.default_expand_in_default));
+        if (expandInDefault) { 
+            expandOrCollapseAll(true);
         }
         adapter_.notifyDataSetChanged();
     }

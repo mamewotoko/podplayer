@@ -93,7 +93,6 @@ public class PodplayerActivity
         episodeListView_.setOnRefreshListener(this);
         episodeListView_.setOnCancelListener(this);
         //initial dummy
-        //adapter_ is initialized after player initialized
         loadRealm();
 
         adapter_ = new EpisodeAdapter();
@@ -479,9 +478,6 @@ public class PodplayerActivity
     }
 
     private void filterSelectedPodcast(){
-        String title = getFilterPodcastTitle();
-        Log.d(TAG, "filterSelectedPodcast "+title);
-        loadRealm();
         episodeListView_.hideHeader();
         adapter_.notifyDataSetChanged();
     }
