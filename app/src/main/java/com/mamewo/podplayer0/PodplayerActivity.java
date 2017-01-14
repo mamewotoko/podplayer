@@ -66,9 +66,6 @@ public class PodplayerActivity
     //adapter_: filtered view
     //private SeekBar currentPlayPosition_;
     private EpisodeAdapter adapter_;
-    // private RealmResults<PodcastRealm> podcastList_;
-    // private RealmResults<EpisodeRealm> latestList_;
-    private List<RealmResults<EpisodeRealm>> groupList_;
     private SimpleQuery currentQuery_;
 
     //number of items for one screen (small phone)
@@ -101,7 +98,6 @@ public class PodplayerActivity
 
         adapter_ = new EpisodeAdapter();
         episodeListView_.setAdapter(adapter_);
-        //groupList_ = new ArrayList<RealmResults<EpisodeRealm>>();
         updateSelector();
         //currentPlayPosition_ = (SeekBar) findViewById(R.id.seekbar);
         //currentPlayPosition_.setOnSeekBarChangeListener(this);
@@ -147,8 +143,6 @@ public class PodplayerActivity
     }
 
     public void loadRealm(String title){
-        Realm realm = Realm.getDefaultInstance();
-        //TODO: sort
         boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
         int order = Integer.valueOf(pref_.getString("episode_order", "0"));
         currentQuery_ = new SimpleQuery(title, skipListened, order, this);
@@ -494,7 +488,6 @@ public class PodplayerActivity
         if(n == 0 || n < 0){
             return currentQuery_.getEpisodeList();
         }
-        //return groupList_.get(n-1);
         return currentQuery_.getEpisodeList(n-1);
     }
 

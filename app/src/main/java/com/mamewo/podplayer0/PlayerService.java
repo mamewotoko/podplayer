@@ -401,6 +401,9 @@ public class PlayerService
 
 	//TODO: correct paused state
 	public void pauseMusic() {
+        if(!player_.isPlaying()){
+            return;
+        }
 		Log.d(TAG, "pauseMusic: " + player_.isPlaying());
 		if (isPreparing_) {
 			stopOnPrepared_ = true;
@@ -413,7 +416,7 @@ public class PlayerService
 		isPausing_ = true;
 		stopForeground(false);
         //TODO: update notificatoion (button)
-		showNotification(currentPlaying_.getTitle());
+        showNotification(currentPlaying_.getTitle());
 		if(null != listener_){
 			listener_.onStopMusic(PAUSE);
 		}

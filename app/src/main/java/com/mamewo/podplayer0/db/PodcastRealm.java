@@ -6,7 +6,6 @@ import java.net.MalformedURLException;
 import android.util.Log;
 import com.mamewo.podplayer0.parser.Podcast;
 import com.mamewo.podplayer0.parser.PodcastBuilder;
-
 import io.realm.RealmModel;
 import io.realm.annotations.RealmClass;
 import io.realm.annotations.Ignore;
@@ -31,6 +30,7 @@ public class PodcastRealm
     private String username;
     private String password;
     private int status;
+    private int occurIndex;
     
     @Ignore
     private URL parsedURL_;
@@ -44,6 +44,7 @@ public class PodcastRealm
         username = null;
         password = null;
         status = Podcast.UNKNOWN;
+        occurIndex = 0;
     }
     
     public String getTitle(){
@@ -151,6 +152,14 @@ public class PodcastRealm
 
     public void setStatus(int status){
         this.status = status;
+    }
+
+    public int getOccurIndex(){
+        return occurIndex;
+    }
+
+    public void setOccurIndex(int index){
+        this.occurIndex = index;
     }
 
     static

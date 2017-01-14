@@ -136,7 +136,7 @@ public class SimpleQuery {
             RealmChangeListener<RealmResults<EpisodeRealm>> listener = new RealmChangeListener<RealmResults<EpisodeRealm>>(){
                 @Override
                 public void onChange(RealmResults<EpisodeRealm> results){
-                    podcastId2Episode_.put(podcastId, result);
+                    podcastId2Episode_.put(podcastId, results);
                     listener_.notifyEpisodeListGroupChanged(podcastId, results);
                 }
             };

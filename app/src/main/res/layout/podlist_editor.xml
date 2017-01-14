@@ -12,7 +12,7 @@
       app:title="@string/app_podcastlist_title"
       >
   </android.support.v7.widget.Toolbar>
-  <android.support.v7.widget.RecyclerView
+  <ListView
       android:id="@+id/podlist"
       android:layout_width="fill_parent"
       android:descendantFocusability="beforeDescendants"

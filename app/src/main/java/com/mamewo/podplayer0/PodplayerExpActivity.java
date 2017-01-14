@@ -53,10 +53,9 @@ public class PodplayerExpActivity
     private ImageButton collapseButton_;
     private ExpandableListView expandableList_;
     private ExpAdapter adapter_;
-    //private int currentOrder_;
-    //private List<Integer> filteredItemIndex_;
-    private RealmResults<PodcastRealm> podcastList_;
-    private List<RealmResults<EpisodeRealm>> groupList_;
+    // private RealmResults<PodcastRealm> podcastList_;
+    // private List<RealmResults<EpisodeRealm>> groupList_;
+    private SimpleQuery currentQuery_;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,17 +79,13 @@ public class PodplayerExpActivity
                 (ExpandableListView) findViewById(R.id.exp_list);
         expandableList_.setOnItemLongClickListener(this);
         expandableList_.setOnChildClickListener(this);
-        Realm realm = Realm.getDefaultInstance();
-        boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
-                
-        SimpleQuery q = new SimpleQuery(null, skipListened);
-        podcastList_ = q.getPodcastList();
-        groupList_ = new ArrayList<RealmResults<EpisodeRealm>>();
-        for(int i = 0; i < podcastList_.size(); i++){
-            RealmResults<EpisodeRealm> result = q.getEpisodeList(podcastList_.get(i).getId());
-            groupList_.add(result);
-            //TODO: add listener
-        }
+       
+        // currentQuery_ = new SimpleQuery(null, skipListened);
+        // for(PodcastRealm podcast: currentQuery_.getPodcastList()){
+        //     currentQuery_.getEpisodeList(podcast.getId());
+        // }
+        loadRealm();
+
         adapter_ = new ExpAdapter();
         expandableList_.setAdapter(adapter_);
         expandButton_ = (ImageButton) findViewById(R.id.expand_button);
@@ -99,6 +94,16 @@ public class PodplayerExpActivity
         collapseButton_.setOnClickListener(this);
     }
 
+    public void loadRealm(){
+        //TODO: sort
+        boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
+        int order = Integer.valueOf(pref_.getString("episode_order", "0"));
+        currentQuery_ = new SimpleQuery(null, skipListened, order);
+        for(PodcastRealm podcast: currentQuery_.getPodcastList()){
+            currentQuery_.getEpisodeList(podcast.getId());
+        }
+    }
+    
     private void updateUI() {
         if(null == player_) {
             return;
@@ -265,13 +270,14 @@ public class PodplayerExpActivity
 
         @Override
         public int getGroupCount() {
-            return groupList_.size();
+
+            return currentQuery_.getPodcastList().size();
         }
 
         @Override
         public int getChildrenCount(int groupPosition) {
-            //return state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition)).size();
-            return groupList_.get(groupPosition).size();
+            PodcastRealm podcast = currentQuery_.getPodcastList().get(groupPosition);
+            return currentQuery_.getEpisodeList(podcast.getId()).size();
         }
 
         @Override
@@ -286,25 +292,14 @@ public class PodplayerExpActivity
 
         @Override
         public Object getGroup(int groupPosition){
-            return groupList_.get(groupPosition);
+            RealmResults<PodcastRealm> podcastList = currentQuery_.getPodcastList();
+            return podcastList.get(groupPosition);
         }
 
         @Override
         public Object getChild(int groupPosition, int childPosition) {
-            //List<EpisodeInfo> group = state_.loadedEpisode_.get(filteredItemIndex_.get(groupPosition));
-            // int pos;
-            // switch(currentOrder_){
-            // case REVERSE_APPEARANCE_ORDER:
-            //     pos = group.size()-1-childPosition;
-            //     break;
-            // case APPEARANCE_ORDER:
-            //     //fall through
-            // default:
-            //     pos = childPosition;
-            //     break;
-            // }
-            // return group.get(pos);
-            return groupList_.get(groupPosition).get(childPosition);
+            PodcastRealm podcast = currentQuery_.getPodcastList().get(groupPosition);
+            return currentQuery_.getEpisodeList(podcast.getId()).get(childPosition);
         }
         
         @Override
@@ -322,9 +317,9 @@ public class PodplayerExpActivity
             }
             TextView titleView = (TextView)view.findViewById(R.id.text1);
             TextView countView = (TextView)view.findViewById(R.id.text2);
-            PodcastRealm info = podcastList_.get(groupPosition);
+            PodcastRealm info = currentQuery_.getPodcastList().get(groupPosition);
             titleView.setText(info.getTitle());
-            int childNum = groupList_.get(groupPosition).size();
+            int childNum = getChildrenCount(groupPosition);
             String numStr;
             if (childNum <= 1) {
                 //TODO: localize
@@ -473,31 +468,6 @@ public class PodplayerExpActivity
         return true;
     }
 
-    //TODO: fetch current playing episode to update currentPodInfo
-    // @Override
-    // protected void onPodcastListChanged(boolean start) {
-    //     filteredItemIndex_.clear();
-    //     for(int i = 0; i < state_.podcastList_.size(); i++) {
-    //         if(state_.podcastList_.get(i).getEnabled()){
-    //             filteredItemIndex_.add(i);
-    //         }
-    //     }
-    //     SharedPreferences pref =
-    //             PreferenceManager.getDefaultSharedPreferences(this);
-    //     Resources res = getResources();
-    //     boolean expandInDefault = pref.getBoolean("expand_in_default", res.getBoolean(R.bool.default_expand_in_default));
-    //     if (expandInDefault) { 
-    //         expandOrCollapseAll(true);
-    //     }
-    //     expandableList_.setOnChildClickListener(this);
-    //     boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
-    //     updateUI();
-    //     //List<EpisodeInfo> playlist = state_.loadedEpisode_;
-    //     if ((!start) || doLoad) {
-    //         loadPodcast();
-    //     }
-    // }
-
     @Override
     public void onStartLoadingMusic(long episodeId) {
         updateUI();
@@ -525,14 +495,6 @@ public class PodplayerExpActivity
 
     @Override
     public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
-        groupList_.clear();
-        boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
-        SimpleQuery q = new SimpleQuery(null, skipListened);
-        for(int i = 0; i < results.size(); i++){
-            RealmResults<EpisodeRealm> episodes = q.getEpisodeList(results.get(i).getId());
-            groupList_.add(episodes);
-            //TODO: add listener
-        }
         adapter_.notifyDataSetChanged();
     }
 
