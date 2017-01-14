@@ -96,7 +96,7 @@ public class PodplayerCardActivity
         boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
         int order = Integer.valueOf(pref_.getString("episode_order", "0"));
 
-        loadRealm(null);
+        loadRealm();
         recyclerView_ = (RecyclerView)findViewById(R.id.recycler_view);
         adapter_ = new EpisodeAdapter();
         recyclerView_.setAdapter(adapter_);
@@ -110,9 +110,9 @@ public class PodplayerCardActivity
     @Override
     public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
         updateSelector();
-        boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
-        if(doLoad){
-            startGetPodcastTask();
+        boolean doLoad = pref_.getBoolean("load_on_start", getResources().getBoolean(R.bool.default_load_on_start));
+        if(doLoad && (null == state_.lastUpdatedDate_ || adapter_.getItemCount() == 0)){
+            loadPodcast();
         }
         adapter_.notifyDataSetChanged();
     }
@@ -129,7 +129,7 @@ public class PodplayerCardActivity
     
     @Override
     public void notifyQuerySettingChanged(){
-        loadRealm(getFilterPodcastTitle());
+        loadRealm();
         adapter_.notifyDataSetChanged();
     }
 
@@ -194,8 +194,7 @@ public class PodplayerCardActivity
     }
 
     private void filterSelectedPodcast(){
-        String title = getFilterPodcastTitle();
-        loadRealm(title);
+        loadRealm();
         adapter_.notifyDataSetChanged();
     }
 
@@ -207,6 +206,7 @@ public class PodplayerCardActivity
         return title;
     }
 
+    //filter
     public RealmResults<EpisodeRealm> getCurentEpisodeList(){
         int n = selector_.getSelectedItemPosition();
         if(n == 0 || n < 0){
@@ -238,53 +238,14 @@ public class PodplayerCardActivity
         filterSelectedPodcast();
     }
 
-    public void loadRealm(String title){
+    public void loadRealm(){
         boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
         int order = Integer.valueOf(pref_.getString("episode_order", "0"));
-        currentQuery_ = new SimpleQuery(title, skipListened, order, this);
+        currentQuery_ = new SimpleQuery(null, skipListened, order, this);
         for(PodcastRealm podcast: currentQuery_.getPodcastList()){
             currentQuery_.getEpisodeList(podcast.getId());
         }
     }
-
-    // @Override
-    // protected void onPodcastListChanged(boolean start) {
-    //     //Log.d(TAG, "onPodcastListChanged");
-    //     SharedPreferences pref=
-    //             PreferenceManager.getDefaultSharedPreferences(this);
-    //     List<String> list = new ArrayList<String>();
-    //     list.add(getString(R.string.selector_all));
-    //     //stop loading?
-    //     for(int i = 0; i < state_.podcastList_.size(); i++) {
-    //         Podcast info = state_.podcastList_.get(i);
-    //         if (info.getEnabled()) {
-    //             list.add(info.getTitle());
-    //         }
-    //     }
-    //     ArrayAdapter<String> adapter =
-    //             new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-	// 	adapter.setDropDownViewResource(android.support.v7.appcompat.R.layout.support_simple_spinner_dropdown_item);
-    //     selector_.setAdapter(adapter);
-
-    //     Resources res = getResources();
-
-    //     RealmResults<EpisodeRealm> playlist = state_.latestList_;
-    //     if ((!start) || doLoad) {
-    //         //reload
-    //         //episodeListView_.startRefresh();
-    //         loadPodcast();
-    //     }
-    //     else if (playlist != null && ! playlist.isEmpty()) {
-    //         //update list by loaded items
-    //         filterSelectedPodcast();
-    //     }
-    //     updateUI();
-    // }
-
-    // @Override
-    // protected void notifyLatestListChanged(){
-    //     adapter_.notifyDataSetChanged();
-    // }
     
     @Override
     public void onClick(View v) {
@@ -322,7 +283,7 @@ public class PodplayerCardActivity
                 PreferenceManager.getDefaultSharedPreferences(this);
         Resources res = getResources();
         int limit = Integer.valueOf(pref.getString("episode_limit", res.getString(R.string.default_episode_limit)));
-        startLoading(new GetPodcastTask(limit));
+        startLoading(new GetPodcastTask());
     }
     
     // @Override
@@ -552,8 +513,8 @@ public class PodplayerCardActivity
         private int count_;
         private int displayedCount_;
         
-        public GetPodcastTask(int limit) {
-            super(PodplayerCardActivity.this, client_, limit, EPISODE_BUF_SIZE);
+        public GetPodcastTask() {
+            super(PodplayerCardActivity.this, client_, -1, EPISODE_BUF_SIZE);
             count_ = 0;
         }
         
@@ -564,14 +525,13 @@ public class PodplayerCardActivity
             // }
             count_ += values.length;
             if(count_ - displayedCount_ > UPDATE_THRES){
-                filterSelectedPodcast();
+                adapter_.notifyDataSetChanged();
                 displayedCount_ = count_;
             }
         }
         
         private void onFinished() {
             loadTask_ = null;
-            //updateUI();
             updatePlaylist(null);
             adapter_.notifyDataSetChanged();
         }

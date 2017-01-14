@@ -141,8 +141,8 @@ public class PodplayerPreferenceFragment
             episodeOrder_.setSummary(res.getStringArray(R.array.episode_item_order_entries)[order]);
         }
         if(updateAll || "date_format".equals(key)){
-            int format = Integer.valueOf(pref.getStringArray("date_format", "0"));
-            dateFormat_.setSummary(res.getStringArray(R.array.date_format_summary)[format]);
+            String format = pref.getString("date_format", res.getString(R.string.default_date_format));
+            dateFormat_.setSummary(format);
         }
         if(updateAll || "view_mode".equals(key)){
             int viewMode = Integer.valueOf(pref.getString("view_mode", "0"));

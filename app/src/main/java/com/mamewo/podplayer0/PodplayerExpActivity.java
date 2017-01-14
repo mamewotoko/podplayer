@@ -80,10 +80,6 @@ public class PodplayerExpActivity
         expandableList_.setOnItemLongClickListener(this);
         expandableList_.setOnChildClickListener(this);
        
-        // currentQuery_ = new SimpleQuery(null, skipListened);
-        // for(PodcastRealm podcast: currentQuery_.getPodcastList()){
-        //     currentQuery_.getEpisodeList(podcast.getId());
-        // }
         loadRealm();
 
         adapter_ = new ExpAdapter();
@@ -98,6 +94,7 @@ public class PodplayerExpActivity
     public void onResume(){
         super.onResume();
         loadRealm();
+        
     }
     
     public void loadRealm(){
@@ -134,12 +131,9 @@ public class PodplayerExpActivity
         reloadButton_.setContentDescription(getResources().getString(R.string.action_abort));
 		reloadButton_.setImageResource(R.drawable.ic_clear_white_24dp);
         updateUI();
-        SharedPreferences pref=
-                PreferenceManager.getDefaultSharedPreferences(this);
         Resources res = getResources();
-        int limit = Integer.valueOf(pref.getString("episode_limit", res.getString(R.string.default_episode_limit)));
         Log.d(TAG, "loadPodcast");
-        GetPodcastTask task = new GetPodcastTask(limit);
+        GetPodcastTask task = new GetPodcastTask();
         startLoading(task);
     }
 
@@ -437,8 +431,8 @@ public class PodplayerExpActivity
     private class GetPodcastTask
         extends BaseGetPodcastTask
     {
-        public GetPodcastTask(int limit) {
-            super(PodplayerExpActivity.this, client_, limit);
+        public GetPodcastTask() {
+            super(PodplayerExpActivity.this, client_, -1);
         }
 
         @Override
@@ -465,10 +459,8 @@ public class PodplayerExpActivity
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
-        SharedPreferences pref=
-                PreferenceManager.getDefaultSharedPreferences(this);
         Resources res = getResources();
-        boolean enableLongClick = pref.getBoolean("enable_long_click", res.getBoolean(R.bool.default_enable_long_click));
+        boolean enableLongClick = pref_.getBoolean("enable_long_click", res.getBoolean(R.bool.default_enable_long_click));
         if (! enableLongClick) {
             return false;
         }
@@ -518,7 +510,10 @@ public class PodplayerExpActivity
 
     @Override
     public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
-        Log.d(TAG, "exp notifyPodcastListChanged");
+        boolean doLoad = pref_.getBoolean("load_on_start", getResources().getBoolean(R.bool.default_load_on_start));
+        if(doLoad && null == state_.lastUpdatedDate_){
+            loadPodcast();
+        }
         adapter_.notifyDataSetChanged();
     }
 

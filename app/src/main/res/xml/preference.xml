@@ -89,9 +89,9 @@
 	/>
     <ListPreference
 	android:key="date_format"
+        android:defaultValue="@string/default_date_format"
 	android:entries="@array/date_format_entries"
 	android:entryValues="@array/date_format_entries_value"
-	android:defaultValue="yyyy/MM/dd HH:mm Z"
 	android:title="@string/pref_date_format"
 	/>
   </PreferenceCategory>

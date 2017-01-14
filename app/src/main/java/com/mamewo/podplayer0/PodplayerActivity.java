@@ -94,7 +94,7 @@ public class PodplayerActivity
         episodeListView_.setOnCancelListener(this);
         //initial dummy
         //adapter_ is initialized after player initialized
-        loadRealm(null);
+        loadRealm();
 
         adapter_ = new EpisodeAdapter();
         episodeListView_.setAdapter(adapter_);
@@ -103,17 +103,13 @@ public class PodplayerActivity
         //currentPlayPosition_.setOnSeekBarChangeListener(this);
     }
 
-    @Override
-    public void onResume(){
 
-    }
-    
     @Override
     public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
         updateSelector();
-        boolean doLoad = pref.getBoolean("load_on_start", res.getBoolean(R.bool.default_load_on_start));
-        if(doLoad){
-            startGetPodcastTask();
+        boolean doLoad = pref_.getBoolean("load_on_start", getResources().getBoolean(R.bool.default_load_on_start));
+        if(doLoad && (null == state_.lastUpdatedDate_ || adapter_.getCount() == 0)){
+            loadPodcast();
         }
         adapter_.notifyDataSetChanged();
     }
@@ -131,7 +127,7 @@ public class PodplayerActivity
     @Override
     public void notifyQuerySettingChanged(){
         episodeListView_.hideHeader();
-        loadRealm(getFilterPodcastTitle());
+        loadRealm();
         adapter_.notifyDataSetChanged();
     }
 
@@ -145,21 +141,20 @@ public class PodplayerActivity
         updatePlayButton();
     }
 
-    private void startGetPodcastTask() {
+    private void loadPodcast() {
         if (isLoading()) {
             Log.i(TAG, "Already loading");
             return;
         }
         Resources res = getResources();
-        int limit = Integer.valueOf(pref_.getString("episode_limit", res.getString(R.string.default_episode_limit)));
-        GetPodcastTask task = new GetPodcastTask(limit);
+        GetPodcastTask task = new GetPodcastTask();
         startLoading(task);
     }
 
-    public void loadRealm(String title){
+    public void loadRealm(){
         boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
         int order = Integer.valueOf(pref_.getString("episode_order", "0"));
-        currentQuery_ = new SimpleQuery(title, skipListened, order, this);
+        currentQuery_ = new SimpleQuery(null, skipListened, order, this);
         for(PodcastRealm podcast: currentQuery_.getPodcastList()){
             currentQuery_.getEpisodeList(podcast.getId());
         }
@@ -318,6 +313,7 @@ public class PodplayerActivity
             EpisodeRealm episode = (EpisodeRealm)getItem(position);
             holder.titleView_.setText(episode.getTitle());
 
+            Log.d(TAG, "getView: pubdate " + episode.getPubdateStr(dateFormat_) + " " + episode);
             holder.timeView_.setText(episode.getPubdateStr(dateFormat_));
 
             if(player_ == null){
@@ -373,8 +369,8 @@ public class PodplayerActivity
     private class GetPodcastTask
         extends BaseGetPodcastTask
     {
-        public GetPodcastTask(int limit) {
-            super(PodplayerActivity.this, client_, limit, EPISODE_BUF_SIZE);
+        public GetPodcastTask() {
+            super(PodplayerActivity.this, client_, -1, EPISODE_BUF_SIZE);
         }
 
         @Override
@@ -383,10 +379,10 @@ public class PodplayerActivity
         }
 
         private void onFinished() {
-            //TODO: change format of date
             state_.lastUpdatedDate_ = new Date();
             episodeListView_.onRefreshComplete(getString(R.string.header_lastupdated) + dateFormat_.format(state_.lastUpdatedDate_));
             episodeListView_.hideHeader();
+            updateSelector();
             loadTask_ = null;
             //TODO: Sync playlist
             updatePlaylist(null);
@@ -406,7 +402,7 @@ public class PodplayerActivity
 
     @Override
     public void onRefresh() {
-        startGetPodcastTask();
+        loadPodcast();
     }
 
     @Override
@@ -484,7 +480,8 @@ public class PodplayerActivity
 
     private void filterSelectedPodcast(){
         String title = getFilterPodcastTitle();
-        loadRealm(title);
+        Log.d(TAG, "filterSelectedPodcast "+title);
+        loadRealm();
         episodeListView_.hideHeader();
         adapter_.notifyDataSetChanged();
     }
@@ -502,7 +499,8 @@ public class PodplayerActivity
         if(n == 0 || n < 0){
             return currentQuery_.getEpisodeList();
         }
-        return currentQuery_.getEpisodeList(n-1);
+        PodcastRealm info = currentQuery_.getPodcastList().get(n-1);
+        return currentQuery_.getEpisodeList(info.getId());
     }
 
     // @Override

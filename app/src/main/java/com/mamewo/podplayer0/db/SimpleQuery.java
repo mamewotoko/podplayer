@@ -55,8 +55,12 @@ public class SimpleQuery {
             return podcastList_;
         }
         Realm realm = Realm.getDefaultInstance();
-        RealmQuery<PodcastRealm> query = null;
-        podcastList_ = realm.where(PodcastRealm.class).equalTo("enabled", true).findAll();
+        RealmQuery<PodcastRealm> query = realm.where(PodcastRealm.class).equalTo("enabled", true);
+        if(null != title_){
+            query.equalTo("title", title_);
+        }
+        podcastList_ = query.findAllSorted("occurIndex", Sort.ASCENDING);
+            
         if(null != listener_){
             internalPodcastListener_ = new RealmChangeListener<RealmResults<PodcastRealm>>(){
                 @Override

@@ -299,7 +299,9 @@ abstract public class BasePodplayerActivity
             currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
         }
         if(updateAll || "date_format".equals(key)){
-            dateFormat_ = new SimpleDateFormat(pref.getString("date_format", YYYYMMDD_24H));
+            String format = pref.getString("date_format", YYYYMMDD_24H); 
+            Log.d(TAG, "date_format: " + format);
+            dateFormat_ = new SimpleDateFormat(format);
         }
         if("episode_order".equals(key)
            || "date_format".equals(key)
