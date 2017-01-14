@@ -32,7 +32,7 @@ import android.widget.ImageView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.ImageButton;
-
+//import android.view.Display;
 import com.bumptech.glide.Glide;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.ActionBar;
@@ -78,6 +78,9 @@ public class PodplayerExpActivity
         //filteredItemIndex_ = new ArrayList<Integer>();
         expandableList_ =
                 (ExpandableListView) findViewById(R.id.exp_list);
+        // Display display = getWindowManager().getDefaultDisplay(); 
+        // int width = display.getWidth();
+        // expandableList_.setIndicatorBounds(width-50, width);
         expandableList_.setOnItemLongClickListener(this);
         expandableList_.setOnChildClickListener(this);
        
@@ -320,6 +323,14 @@ public class PodplayerExpActivity
             TextView countView = (TextView)view.findViewById(R.id.text2);
             PodcastRealm info = currentQuery_.getPodcastList().get(groupPosition);
             titleView.setText(info.getTitle());
+            ImageView iconView = (ImageView)view.findViewById(R.id.episode_icon);
+            String iconURL = currentQuery_.getPodcastList().get(groupPosition).getIconURL();
+            if(null != iconURL){
+                Glide
+                    .with(getApplicationContext())
+                    .load(iconURL)
+                    .into(iconView);
+            }
             int childNum = getChildrenCount(groupPosition);
             String numStr;
             if (childNum <= 1) {

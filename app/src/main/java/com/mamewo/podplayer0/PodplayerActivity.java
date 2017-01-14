@@ -123,6 +123,7 @@ public class PodplayerActivity
     @Override
     public void notifyQuerySettingChanged(){
         episodeListView_.hideHeader();
+        loadRealm(getFilterPodcastTitle());
         adapter_.notifyDataSetChanged();
     }
     

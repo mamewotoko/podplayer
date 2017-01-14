@@ -73,11 +73,9 @@ public class PodplayerCardActivity
     private EpisodeAdapter adapter_;
     private Spinner selector_;
     private ImageButton playButton_;
-    private RealmResults<PodcastRealm> podcastList_;
-    private RealmResults<EpisodeRealm> latestList_;
-    private List<RealmResults<EpisodeRealm>> groupList_;
     //filtered list
-        
+    private SimpleQuery currentQuery_;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +93,9 @@ public class PodplayerCardActivity
         selector_ = (Spinner) findViewById(R.id.podcast_selector);
         selector_.setOnItemSelectedListener(this);
 
-        groupList_ = new ArrayList<RealmResults<EpisodeRealm>>();
+        boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
+        int order = Integer.valueOf(pref_.getString("episode_order", "0"));
+
         loadRealm(null);
         recyclerView_ = (RecyclerView)findViewById(R.id.recycler_view);
         adapter_ = new EpisodeAdapter();
@@ -126,6 +126,7 @@ public class PodplayerCardActivity
     
     @Override
     public void notifyQuerySettingChanged(){
+        loadRealm(getFilterPodcastTitle());
         adapter_.notifyDataSetChanged();
     }
     
@@ -174,7 +175,7 @@ public class PodplayerCardActivity
     private void updateSelector(){
         List<String> list = new ArrayList<String>();
         list.add(getString(R.string.selector_all));
-        for(PodcastRealm info: podcastList_){
+        for(PodcastRealm info: currentQuery_.getPodcastList()){
             list.add(info.getTitle());
         }
         //stop loading?
@@ -201,14 +202,15 @@ public class PodplayerCardActivity
     public RealmResults<EpisodeRealm> getCurentEpisodeList(){
         int n = selector_.getSelectedItemPosition();
         if(n == 0 || n < 0){
-            return latestList_;
+            return currentQuery_.getEpisodeList();
         }
-        return groupList_.get(n-1);
+        PodcastRealm info = currentQuery_.getPodcastList().get(n-1);
+        return currentQuery_.getEpisodeList(info.getId());
     }
     
     private int podcastTitle2Index(String title){
         //List<Podcast> list = state_.podcastList_;
-        RealmResults<PodcastRealm> list = podcastList_;
+        RealmResults<PodcastRealm> list = currentQuery_.getPodcastList();
         for(int i = 0; i < list.size(); i++) {
             Podcast info = list.get(i);
             if(title.equals(info.getTitle())) {
@@ -229,17 +231,13 @@ public class PodplayerCardActivity
     }
 
     public void loadRealm(String title){
-        //TODO: sort
-        // boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
-        // SimpleQuery q = new SimpleQuery(title, skipListened);
-        // podcastList_ = q.getPodcastList();
-        // latestList_ = q.getEpisodeList(podcastList_);
-
-        // for(PodcastRealm podcast: podcastList_){
-        //     groupList_.add(q.getEpisodeList(podcast.getId()));
-        // }
+        boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
+        int order = Integer.valueOf(pref_.getString("episode_order", "0"));
+        currentQuery_ = new SimpleQuery(title, skipListened, order, this);
+        for(PodcastRealm podcast: currentQuery_.getPodcastList()){
+            currentQuery_.getEpisodeList(podcast.getId());
+        }
     }
-    
 
     // @Override
     // protected void onPodcastListChanged(boolean start) {

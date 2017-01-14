@@ -199,9 +199,9 @@ public class TestPodplayerActivity
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "add_auth");
 
         //enter username and password
-        RecyclerView list = (RecyclerView)solo_.getView(R.id.podlist);
-        RecyclerView.Adapter adapter = list.getAdapter();
-        int count = adapter.getItemCount();
+        ListView list = (ListView)solo_.getView(R.id.podlist);
+        ListAdapter adapter = list.getAdapter();
+        int count = adapter.getCount();
 
         View v = list.getChildAt(count-1);
 
