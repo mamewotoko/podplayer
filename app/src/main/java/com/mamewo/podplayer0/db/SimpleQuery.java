@@ -77,6 +77,9 @@ public class SimpleQuery {
         if(null != episodeList_){
             return episodeList_;
         }
+        if(null == podcastList_){
+            getPodcastList();
+        }
         Realm realm = Realm.getDefaultInstance();
         RealmQuery<EpisodeRealm> episodeQuery = realm.where(EpisodeRealm.class);
         if(podcastList_.size() > 0){

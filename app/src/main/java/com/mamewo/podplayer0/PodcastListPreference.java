@@ -149,6 +149,7 @@ public class PodcastListPreference
         }
     }
 
+   
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,21 +163,22 @@ public class PodcastListPreference
         podcastView_ = (ListView) findViewById(R.id.podlist);
         client_ = new OkHttpClient();
         dialogID_ = -1;
-        Log.d(TAG, "json exists: "+configJSONExists());
-        if(configJSONExists()){
-            try{
-                //loadJSONFileIntoDB();
-                storeJSONSetting();
-            }
-            catch(JSONException e){
-                Log.d(TAG, "load error(JSON)", e);
-            }
-            catch(IOException e){
-                Log.d(TAG, "load error", e);
-            }
-        }
-        //TODO: add condition
-        storeDefaultPodcastList();
+        // Log.d(TAG, "json exists: "+configJSONExists());
+        // if(configJSONExists(this)){
+        //     try{
+        //         //loadJSONFileIntoDB();
+        //         storeJSONSetting(this);
+        //     }
+        //     catch(JSONException e){
+        //         Log.d(TAG, "load error(JSON)", e);
+        //     }
+        //     catch(IOException e){
+        //         Log.d(TAG, "load error", e);
+        //     }
+        // }
+        // //TODO: add condition
+        // storeDefaultPodcastList(this);
+        initData(this);
         Realm realm = Realm.getDefaultInstance();
         podcastList_ = realm.where(PodcastRealm.class).findAllSorted("occurIndex", Sort.ASCENDING);
         changeListener_ = new RealmChangeListener<RealmResults<PodcastRealm>>(){
@@ -218,6 +220,24 @@ public class PodcastListPreference
         });
     }
 
+    static
+    public void initData(Context context){
+        if(configJSONExists(context)){
+            try{
+                //loadJSONFileIntoDB();
+                storeJSONSetting(context);
+            }
+            catch(JSONException e){
+                Log.d(TAG, "load error(JSON)", e);
+            }
+            catch(IOException e){
+                Log.d(TAG, "load error", e);
+            }
+        }
+        //TODO: add condition
+        storeDefaultPodcastList(context);
+    }
+    
     @Override
     public void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
@@ -234,10 +254,11 @@ public class PodcastListPreference
         removeDialog(dialogID_);
         super.onDestroy();
     }
-    
-    public void storeDefaultPodcastList() {
-        String[] allTitles = getResources().getStringArray(R.array.pref_podcastlist_keys);
-        String[] allURLs = getResources().getStringArray(R.array.pref_podcastlist_urls);
+
+    static
+    public void storeDefaultPodcastList(Context context) {
+        String[] allTitles = context.getResources().getStringArray(R.array.pref_podcastlist_keys);
+        String[] allURLs = context.getResources().getStringArray(R.array.pref_podcastlist_urls);
         Log.d(TAG, "storeDefaultPodcastList: " + allTitles.length);
         List<Podcast> list = new ArrayList<Podcast>();
 
@@ -250,7 +271,6 @@ public class PodcastListPreference
             try{
                 RealmResults<PodcastRealm> existing = realm.where(PodcastRealm.class).equalTo("url", url).findAll();
                 if(existing.size() > 0){
-                    Log.d(TAG, "existing "+i+ "; " + existing.get(0).getTitle());
                     continue;
                 }
             }
@@ -1072,19 +1092,21 @@ public class PodcastListPreference
             return view;
         }
     }
-    
-    public boolean configJSONExists(){
-        File configFile = getFileStreamPath(CONFIG_FILENAME);
+
+    static
+    public boolean configJSONExists(Context context){
+        File configFile = context.getFileStreamPath(CONFIG_FILENAME);
         return configFile.exists();
     }
-   
-    private void storeJSONSetting()
+
+    static
+    public void storeJSONSetting(Context context)
             throws IOException, JSONException
     {
         Log.d(TAG, "loadJSONFileIntoDB");
         Realm realm = Realm.getDefaultInstance();
         //TODO: move to podcastinfo
-        FileInputStream fis = getApplicationContext().openFileInput(CONFIG_FILENAME);
+        FileInputStream fis = context.getApplicationContext().openFileInput(CONFIG_FILENAME);
         StringBuffer sb = new StringBuffer();
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
