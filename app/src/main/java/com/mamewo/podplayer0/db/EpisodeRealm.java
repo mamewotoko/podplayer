@@ -39,7 +39,7 @@ public class EpisodeRealm
         pubdatestr = null;
         link = null;
         pubdate = null;
-        listened = null;
+        listened = null;      
         podcastIndex = 0;
     }
 
@@ -110,7 +110,7 @@ public class EpisodeRealm
         }
         return pubdate;
     }
-
+   
     public void setPubdate(Date pubdate){
         this.pubdate = pubdate;
     }

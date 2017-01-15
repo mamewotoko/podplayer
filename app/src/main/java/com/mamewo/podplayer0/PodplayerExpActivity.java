@@ -510,10 +510,11 @@ public class PodplayerExpActivity
         if(doLoad && null == state_.lastUpdatedDate_){
             loadPodcast();
         }
-        // boolean expandInDefault = pref_.getBoolean("expand_in_default", getResources().getBoolean(R.bool.default_expand_in_default));
-        // if (expandInDefault) { 
-        //     expandOrCollapseAll(true);
-        // }
+        updateUI();
+        boolean expandInDefault = pref_.getBoolean("expand_in_default", getResources().getBoolean(R.bool.default_expand_in_default));
+        if (expandInDefault) { 
+            expandOrCollapseAll(true);
+        }
         adapter_.notifyDataSetChanged();
     }
 

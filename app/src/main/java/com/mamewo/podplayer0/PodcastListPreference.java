@@ -141,25 +141,11 @@ public class PodcastListPreference
     private RealmResults<PodcastRealm> podcastList_;
     private int dialogID_;
     private RealmChangeListener<RealmResults<PodcastRealm>> changeListener_;
-        
-    static
-    private Class<PodcastRealm.PodcastRealmBuilder> podcastBuilderClass_ = PodcastRealm.PodcastRealmBuilder.class;
     
     private class Option {
         public boolean expand_;
         public Option(){
             expand_ = false;
-        }
-    }
-
-    static
-    private PodcastRealm.PodcastRealmBuilder createPodcastBuilder(){
-        try{
-            return podcastBuilderClass_.newInstance();
-        }
-        catch(Exception e){
-            Log.d(TAG, "builder craete error", e);
-            return null;
         }
     }
 
@@ -1065,10 +1051,18 @@ public class PodcastListPreference
                 holder.statusButton_.setImageResource(imageId);
                 holder.statusButton_.getDrawable().setColorFilter(imageColor, PorterDuff.Mode.SRC_IN);
                 holder.detailButton_.setImageResource(R.drawable.ic_expand_less_white_24dp);
+                if(null != info.getCopyright()){
+                    holder.copyright_.setText(info.getCopyright());
+                    holder.copyright_.setVisibility(View.VISIBLE);
+                }
+                else {
+                    holder.copyright_.setVisibility(View.GONE);
+                }
                 holder.podcastURL_.setVisibility(View.VISIBLE);
                 holder.detailView_.setVisibility(View.VISIBLE);
             }
             else {
+                holder.copyright_.setVisibility(View.GONE);
                 holder.podcastURL_.setVisibility(View.GONE);
                 holder.authView_.setVisibility(View.GONE);
                 //TODO: remove listener?
@@ -1311,6 +1305,7 @@ public class PodcastListPreference
         public CheckBox checkbox_;
         public ImageButton detailButton_;
         public TextView podcastURL_;
+        public TextView copyright_;
         public ImageButton moveDownButton_;
         public ImageButton moveUpButton_;
         public ImageButton shareButton_;
@@ -1329,6 +1324,7 @@ public class PodcastListPreference
             title_ = (TextView)view.findViewById(R.id.podcast_title_label);
             detailButton_ = (ImageButton)view.findViewById(R.id.detail_button);
             podcastURL_ = (TextView)view.findViewById(R.id.podcast_url);
+            copyright_ = (TextView)view.findViewById(R.id.copyright);
             moveDownButton_ = (ImageButton)view.findViewById(R.id.move_down);
             moveUpButton_ = (ImageButton)view.findViewById(R.id.move_up);
             shareButton_ = (ImageButton)view.findViewById(R.id.podcast_share);

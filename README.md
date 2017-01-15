@@ -129,7 +129,6 @@ TODO
   * use com.android.support:design (material design)
   * notification layout
   * use RecyclerView
-    * episodelist, podcast list editor
     * animation
     * efficient memory use?
   * material icon: change loading icon of pulltorefresh  

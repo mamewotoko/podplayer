@@ -102,7 +102,6 @@ public class PodplayerActivity
         //currentPlayPosition_.setOnSeekBarChangeListener(this);
     }
 
-
     @Override
     public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
         updateSelector();
@@ -369,7 +368,7 @@ public class PodplayerActivity
         extends BaseGetPodcastTask
     {
         public GetPodcastTask() {
-            super(PodplayerActivity.this, client_, -1, EPISODE_BUF_SIZE);
+            super(PodplayerActivity.this, client_, EPISODE_BUF_SIZE);
         }
 
         @Override

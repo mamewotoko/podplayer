@@ -25,6 +25,8 @@ public class PodcastRealm
     @Index private String url;
     private boolean enabled;
     private String iconURL;
+    private String copyright;
+    private String description;
 
     //TODO: hold in secure area?
     private String username;
@@ -43,6 +45,8 @@ public class PodcastRealm
         iconURL = null;
         username = null;
         password = null;
+        copyright = null;
+        description = null;
         status = Podcast.UNKNOWN;
         occurIndex = 0;
     }
@@ -137,6 +141,22 @@ public class PodcastRealm
         this.password = password;
     }
 
+    public String getCopyright(){
+        return copyright;
+    }
+
+    public void setCopyright(String copyright){
+        this.copyright = copyright;
+    }
+
+    public String getDescription(){
+        return description;
+    }
+
+    public void setDescription(String description){
+        this.description = description;
+    }
+    
     public String addUserInfo(String url){
         Log.d(TAG, "addUserInfo: " + url + " " + this.username + " " + this.password);
         if(null == url || null == this.username || null == this.password){
@@ -160,56 +180,5 @@ public class PodcastRealm
 
     public void setOccurIndex(int index){
         this.occurIndex = index;
-    }
-
-    static
-    public class PodcastRealmBuilder
-        implements PodcastBuilder<PodcastRealm>
-    {
-        private PodcastRealm info_;
-
-        public PodcastRealmBuilder(){
-            info_ = new PodcastRealm();
-        }
-
-        @Override
-        public void setTitle(String title){
-            info_.setTitle(title);
-        }
-
-        @Override
-        public void setURL(String url){
-            info_.setURL(url);
-        }
-
-        @Override
-        public void setIconURL(String iconURL){
-            info_.setIconURL(iconURL);
-        }
-
-        @Override
-        public void setEnabled(boolean enabled){
-            info_.setEnabled(enabled);
-        }
-        
-        @Override
-        public void setUsername(String username){
-            info_.setUsername(username);
-        }
-
-        @Override
-        public void setPassword(String password){
-            info_.setPassword(password);
-        }
-
-        @Override
-        public void setStatus(int status){
-            info_.setStatus(status);
-        }
-
-        @Override
-        public PodcastRealm build(){
-            return info_;
-        }
     }
 }

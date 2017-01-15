@@ -514,7 +514,7 @@ public class PodplayerCardActivity
         private int displayedCount_;
         
         public GetPodcastTask() {
-            super(PodplayerCardActivity.this, client_, -1, EPISODE_BUF_SIZE);
+            super(PodplayerCardActivity.this, client_, EPISODE_BUF_SIZE);
             count_ = 0;
         }
         

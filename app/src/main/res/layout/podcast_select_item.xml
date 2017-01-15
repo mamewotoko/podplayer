@@ -50,6 +50,16 @@
   </LinearLayout>
   <!--     android:width="0dip" -->
   <TextView
+      android:id="@+id/copyright"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="4dp"
+      android:layout_marginRight="4dp"
+      android:textIsSelectable="true"
+      android:singleLine="false"
+      android:textAppearance="?android:attr/textAppearanceSmall"
+      />
+  <TextView
       android:id="@+id/podcast_url"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"

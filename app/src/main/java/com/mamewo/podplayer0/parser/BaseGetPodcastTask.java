@@ -31,7 +31,6 @@ public class BaseGetPodcastTask
 {
     private Context context_;
     private OkHttpClient client_;
-    private int limit_;
     private List<String> buffer_;
     final static
     private int DEFAULT_BUFFER_SIZE = 10;
@@ -44,7 +43,7 @@ public class BaseGetPodcastTask
     private String TAG = "podparser";
 
     private enum TagName {
-        TITLE, PUBDATE, LINK, NONE
+        TITLE, PUBDATE, LINK, COPYRIGHT, DESCRIPTION, NONE
     }
 
     /**
@@ -52,19 +51,17 @@ public class BaseGetPodcastTask
      */
     public BaseGetPodcastTask(Context context,
                               OkHttpClient client,
-                              int limit,
                               int publishBufferSize)
     {
         context_ = context;
-        limit_ = limit;
         client_ = client;
         buffer_ = new ArrayList<String>();
         publishBufferSize_ = publishBufferSize;
         authRequired_ = new ArrayList<PodcastRealm>();
     }
 
-    public BaseGetPodcastTask(Context context, OkHttpClient client, int limit) {
-        this(context, client, limit, DEFAULT_BUFFER_SIZE);
+    public BaseGetPodcastTask(Context context, OkHttpClient client) {
+        this(context, client, DEFAULT_BUFFER_SIZE);
     }
 
     public List<PodcastRealm> getAuthRequiredList(){
@@ -142,11 +139,15 @@ public class BaseGetPodcastTask
                 int eventType;
                 String link = null;
                 int episodeCount = 0;
-
+                boolean inItem = false;
+                
                 while((eventType = parser.getEventType()) != XmlPullParser.END_DOCUMENT && !isCancelled()) {
                     if(eventType == XmlPullParser.START_TAG) {
                         String currentName = parser.getName();
-                        if("title".equalsIgnoreCase(currentName)) {
+                        if("item".equalsIgnoreCase(currentName)) {
+                            inItem = true;
+                        }
+                        else if("title".equalsIgnoreCase(currentName)) {
                             tagName = TagName.TITLE;
                         }
                         else if("pubdate".equalsIgnoreCase(currentName)) {
@@ -154,6 +155,12 @@ public class BaseGetPodcastTask
                         }
                         else if("link".equalsIgnoreCase(currentName)) {
                             tagName = TagName.LINK;
+                        }
+                        else if("copyright".equalsIgnoreCase(currentName)){
+                            tagName = TagName.COPYRIGHT;
+                        }
+                        else if("itunes:description".equalsIgnoreCase(currentName)){
+                            tagName = TagName.DESCRIPTION;
                         }
                         else if("enclosure".equalsIgnoreCase(currentName)) {
                             //TODO: check type attribute
@@ -179,6 +186,16 @@ public class BaseGetPodcastTask
                             break;
                         case LINK:
                             link = parser.getText();
+                            break;
+                        case COPYRIGHT:
+                            if(!inItem){
+                                pinfo.setCopyright(parser.getText());
+                            }
+                            break;
+                        case DESCRIPTION:
+                            if(!inItem){
+                                pinfo.setDescription(parser.getText());
+                            }
                             break;
                         default:
                             break;
@@ -223,9 +240,7 @@ public class BaseGetPodcastTask
                             title = null;
                             link = null;
                             episodeCount++;
-                            if(0 < limit_ && limit_ <= episodeCount){
-                                break;
-                            }
+                            inItem = false;
                         }
                         else {
                             //always set to NONE, because there is no nested tag for now
