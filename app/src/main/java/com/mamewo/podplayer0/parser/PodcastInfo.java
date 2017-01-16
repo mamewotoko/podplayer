@@ -5,7 +5,7 @@ import java.net.URL;
 import java.io.Serializable;
 import java.net.URL;
 import java.net.MalformedURLException;
-import android.util.Log;
+import com.mamewo.podplayer0.util.Log;
 
 public class PodcastInfo 
     implements Serializable,

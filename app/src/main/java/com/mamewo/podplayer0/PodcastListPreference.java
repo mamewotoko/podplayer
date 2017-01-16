@@ -60,7 +60,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import com.mamewo.podplayer0.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;

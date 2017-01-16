@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.text.DateFormat;
-import android.util.Log;
+import com.mamewo.podplayer0.util.Log;
 
 public class EpisodeInfo
     implements Serializable

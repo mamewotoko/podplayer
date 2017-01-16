@@ -23,7 +23,7 @@ import com.mamewo.podplayer0.db.EpisodeRealm;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+import com.mamewo.podplayer0.util.Log;
 import android.util.Base64;
 
 public class BaseGetPodcastTask

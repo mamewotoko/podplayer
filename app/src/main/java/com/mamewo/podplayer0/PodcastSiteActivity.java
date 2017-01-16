@@ -3,7 +3,7 @@ package com.mamewo.podplayer0;
 import java.util.List;
 import java.util.ArrayList;
 
-import android.util.Log;
+import com.mamewo.podplayer0.util.Log;
 import android.webkit.WebView;
 import android.webkit.JavascriptInterface;
 import android.os.Bundle;

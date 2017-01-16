@@ -3,7 +3,7 @@ package com.mamewo.podplayer0.db;
 import java.io.Serializable;
 import java.net.URL;
 import java.net.MalformedURLException;
-import android.util.Log;
+import com.mamewo.podplayer0.util.Log;
 import com.mamewo.podplayer0.parser.Podcast;
 import com.mamewo.podplayer0.parser.PodcastBuilder;
 import io.realm.RealmModel;
