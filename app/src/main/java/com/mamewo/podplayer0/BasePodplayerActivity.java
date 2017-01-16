@@ -87,12 +87,8 @@ abstract public class BasePodplayerActivity
     static final
     public int ICON_DISK_CACHE_BYTES = 64*1024*1024;
     protected int currentOrder_;
-    
-    // public void notifyPodcastListChanged(RealmResults<PodcastRealm> result){
-    // }
+    protected int episodeLimit_;
 
-    // public void notifyLatestListChanged(RealmResults<EpisodeRealm> result){
-    // }
     abstract
     public void notifyQuerySettingChanged();
     abstract
@@ -148,6 +144,8 @@ abstract public class BasePodplayerActivity
             .readTimeout(timeoutSec, TimeUnit.SECONDS)
             .cache(new Cache(cacheDir, HTTP_CACHE_SIZE))
             .build();
+        //TODO: async?
+        PodcastListPreference.initData(this);
     }
 
     @Override
@@ -297,6 +295,9 @@ abstract public class BasePodplayerActivity
         }
         if(updateAll || "episode_order".equals(key)){
             currentOrder_ = Integer.valueOf(pref.getString("episode_order", "0"));
+        }
+        if(updateAll || "episode_limit".equals(key)){
+            episodeLimit_ = Integer.valueOf(pref.getString("episode_limit", "-1"));
         }
         if(updateAll || "date_format".equals(key)){
             String format = pref.getString("date_format", YYYYMMDD_24H); 

@@ -407,6 +407,52 @@ public class PodplayerCardActivity
             return true;
         }
     }
+
+    public int getCurrentCount(){
+        int n = selector_.getSelectedItemPosition();
+        if(episodeLimit_ < 0){
+            if(n == 0 || n < 0){
+                return currentQuery_.getEpisodeList().size();
+            }
+            PodcastRealm info = currentQuery_.getPodcastList().get(n-1);
+            return currentQuery_.getEpisodeList(info.getId()).size();
+        }
+        if(n == 0 || n < 0){
+            int size = 0;
+            for(PodcastRealm info: currentQuery_.getPodcastList()){
+                long id = info.getId();
+                size += Math.min(currentQuery_.getEpisodeList(id).size(), episodeLimit_);
+            }
+            return size;
+        }
+        PodcastRealm info = currentQuery_.getPodcastList().get(n-1);
+        return Math.min(currentQuery_.getEpisodeList(info.getId()).size(), episodeLimit_);
+    }
+
+    public EpisodeRealm getCurrentItem(int pos){
+        int n = selector_.getSelectedItemPosition();
+        if(episodeLimit_ < 0){
+            if(n == 0 || n < 0){
+                return currentQuery_.getEpisodeList().get(pos);
+            }
+            PodcastRealm info = currentQuery_.getPodcastList().get(n-1);
+            return currentQuery_.getEpisodeList(info.getId()).get(pos);
+        }
+        if(n == 0 || n < 0){
+            int remain = pos;
+            for(PodcastRealm info: currentQuery_.getPodcastList()){
+                long id = info.getId();
+                RealmResults<EpisodeRealm> lst = currentQuery_.getEpisodeList(id);
+                int virtsize = Math.min(lst.size(), episodeLimit_);
+                if(remain < virtsize){
+                    return lst.get(remain);
+                }
+                remain -= virtsize;
+            }
+        }
+        PodcastRealm info = currentQuery_.getPodcastList().get(n-1);
+        return currentQuery_.getEpisodeList(info.getId()).get(pos);
+    }
     
     private class EpisodeAdapter
         extends RecyclerView.Adapter<EpisodeHolder>
@@ -425,7 +471,7 @@ public class PodplayerCardActivity
 
         @Override
         public void onBindViewHolder(EpisodeHolder holder, int position){
-            final EpisodeRealm episode = getCurentEpisodeList().get(position);
+            final EpisodeRealm episode = getCurrentItem(position);
             holder.titleView_.setText(episode.getTitle());
             holder.timeView_.setText(episode.getPubdateStr(dateFormat_));
             holder.container_.setOnClickListener(new ItemClickListener(episode));
@@ -479,7 +525,8 @@ public class PodplayerCardActivity
 
         @Override
         public int getItemCount(){
-            return getCurentEpisodeList().size();
+            //return getCurentEpisodeList().size();
+            return getCurrentCount();
         }
     }
 

@@ -163,22 +163,7 @@ public class PodcastListPreference
         podcastView_ = (ListView) findViewById(R.id.podlist);
         client_ = new OkHttpClient();
         dialogID_ = -1;
-        // Log.d(TAG, "json exists: "+configJSONExists());
-        // if(configJSONExists(this)){
-        //     try{
-        //         //loadJSONFileIntoDB();
-        //         storeJSONSetting(this);
-        //     }
-        //     catch(JSONException e){
-        //         Log.d(TAG, "load error(JSON)", e);
-        //     }
-        //     catch(IOException e){
-        //         Log.d(TAG, "load error", e);
-        //     }
-        // }
-        // //TODO: add condition
-        // storeDefaultPodcastList(this);
-        initData(this);
+
         Realm realm = Realm.getDefaultInstance();
         podcastList_ = realm.where(PodcastRealm.class).findAllSorted("occurIndex", Sort.ASCENDING);
         changeListener_ = new RealmChangeListener<RealmResults<PodcastRealm>>(){

@@ -276,12 +276,14 @@ public class PodplayerActivity
         
         @Override
         public int getCount(){
-            return getCurentEpisodeList().size();
+            //return getCurentEpisodeList().size();
+            return getCurrentCount();
         }
 
         @Override
         public Object getItem(int position){
-            return getCurentEpisodeList().get(position);
+            //return getCurentEpisodeList().get(position);
+            return getCurrentItem(position);
         }
         
         @Override
@@ -498,6 +500,52 @@ public class PodplayerActivity
         return currentQuery_.getEpisodeList(info.getId());
     }
 
+    public int getCurrentCount(){
+        int n = selector_.getSelectedItemPosition();
+        if(episodeLimit_ < 0){
+            if(n == 0 || n < 0){
+                return currentQuery_.getEpisodeList().size();
+            }
+            PodcastRealm info = currentQuery_.getPodcastList().get(n-1);
+            return currentQuery_.getEpisodeList(info.getId()).size();
+        }
+        if(n == 0 || n < 0){
+            int size = 0;
+            for(PodcastRealm info: currentQuery_.getPodcastList()){
+                long id = info.getId();
+                size += Math.min(currentQuery_.getEpisodeList(id).size(), episodeLimit_);
+            }
+            return size;
+        }
+        PodcastRealm info = currentQuery_.getPodcastList().get(n-1);
+        return Math.min(currentQuery_.getEpisodeList(info.getId()).size(), episodeLimit_);
+    }
+
+    public EpisodeRealm getCurrentItem(int pos){
+        int n = selector_.getSelectedItemPosition();
+        if(episodeLimit_ < 0){
+            if(n == 0 || n < 0){
+                return currentQuery_.getEpisodeList().get(pos);
+            }
+            PodcastRealm info = currentQuery_.getPodcastList().get(n-1);
+            return currentQuery_.getEpisodeList(info.getId()).get(pos);
+        }
+        if(n == 0 || n < 0){
+            int remain = pos;
+            for(PodcastRealm info: currentQuery_.getPodcastList()){
+                long id = info.getId();
+                RealmResults<EpisodeRealm> lst = currentQuery_.getEpisodeList(id);
+                int virtsize = Math.min(lst.size(), episodeLimit_);
+                if(remain < virtsize){
+                    return lst.get(remain);
+                }
+                remain -= virtsize;
+            }
+        }
+        PodcastRealm info = currentQuery_.getPodcastList().get(n-1);
+        return currentQuery_.getEpisodeList(info.getId()).get(pos);
+    }
+    
     // @Override
     // public void onProgressChanged(SeekBar bar, int progress, boolean fromUser){
     //     if(!fromUser){

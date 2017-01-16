@@ -271,8 +271,11 @@ public class PodplayerExpActivity
         @Override
         public int getChildrenCount(int groupPosition) {
             PodcastRealm podcast = currentQuery_.getPodcastList().get(groupPosition);
-            Log.d(TAG, "getChildrenCount " + podcast);
-            return currentQuery_.getEpisodeList(podcast.getId()).size();
+            int lstsize = currentQuery_.getEpisodeList(podcast.getId()).size();
+            if(episodeLimit_ > 0){
+                lstsize = Math.min(lstsize, episodeLimit_);
+            }
+            return lstsize;
         }
 
         @Override
