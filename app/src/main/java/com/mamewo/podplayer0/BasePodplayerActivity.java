@@ -307,7 +307,8 @@ abstract public class BasePodplayerActivity
         if("episode_order".equals(key)
            || "date_format".equals(key)
            || "skip_listened_episode".equals(key)
-           || "episode_limit".equals(key)){
+           || "episode_limit".equals(key)
+           || "podcastlist2".equals(key)){
             if(!uiSettingChanged_){
                 notifyQuerySettingChanged();
             }

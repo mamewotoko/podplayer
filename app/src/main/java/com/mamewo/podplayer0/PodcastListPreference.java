@@ -720,6 +720,7 @@ public class PodcastListPreference
                                 info.setStatus(Podcast.AUTH_REQUIRED_LOCKED);
                                 realm.commitTransaction();
                                 publishProgress(info.getTitle());
+                                isChanged_ = true;
                             }
                             result = true;
                             Log.i(TAG, "auth required: "+url.toString());
