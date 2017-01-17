@@ -279,6 +279,7 @@ public class BaseGetPodcastTask
             }
         }
         realm.commitTransaction();
+        realm.close();
         return null;
     }
     

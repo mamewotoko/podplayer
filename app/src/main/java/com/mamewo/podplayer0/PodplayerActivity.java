@@ -103,6 +103,13 @@ public class PodplayerActivity
     }
 
     @Override
+    public void onDestroy(){
+        Realm realm = Realm.getDefaultInstance();
+        realm.close();
+        super.onDestroy();
+    }
+    
+    @Override
     public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
         updateSelector();
         boolean doLoad = pref_.getBoolean("load_on_start", getResources().getBoolean(R.bool.default_load_on_start));
