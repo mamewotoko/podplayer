@@ -91,6 +91,12 @@ public class PodplayerExpActivity
         collapseButton_.setOnClickListener(this);
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+        loadPodcast();
+    }
+    
     public void loadRealm(){
         //TODO: sort
         boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));

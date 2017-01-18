@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import com.mamewo.podplayer0.util.Log;
 import android.os.Bundle;
 import android.os.IBinder;
-//import android.os.Vibrator;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -38,8 +37,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 
 import com.mamewo.podplayer0.parser.BaseGetPodcastTask;
-//import com.mamewo.podplayer0.parser.EpisodeInfo;
-//import com.mamewo.podplayer0.parser.PodcastInfo;
 import com.mamewo.podplayer0.parser.Podcast;
 
 import com.mamewo.podplayer0.db.PodcastRealm;
@@ -103,10 +100,15 @@ public class PodplayerCardActivity
 
         layoutManager_ = new LinearLayoutManager(this);
         recyclerView_.setLayoutManager(layoutManager_);
-
-        updateSelector();
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+        updateSelector();
+        loadPodcast();
+    }
+    
     @Override
     public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
         updateSelector();
