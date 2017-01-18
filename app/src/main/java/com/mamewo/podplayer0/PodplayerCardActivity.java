@@ -72,6 +72,7 @@ public class PodplayerCardActivity
     private ImageButton playButton_;
     //filtered list
     private SimpleQuery currentQuery_;
+    private Menu menu_;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -162,6 +163,10 @@ public class PodplayerCardActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.cardmenu, menu);
+        menu_ = menu;
+        if(isLoading()){
+            menu_.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_clear_white_24dp));
+        }
         return true;
     }
 
@@ -280,6 +285,9 @@ public class PodplayerCardActivity
         if (isLoading()) {
             Log.i(TAG, "Already loading");
             return;
+        }
+        if(menu_ != null){
+            menu_.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_clear_white_24dp));
         }
         SharedPreferences pref=
                 PreferenceManager.getDefaultSharedPreferences(this);
@@ -582,6 +590,7 @@ public class PodplayerCardActivity
         private void onFinished() {
             loadTask_ = null;
             updatePlaylist(null);
+            menu_.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_sync_white_24dp));
             adapter_.notifyDataSetChanged();
         }
 

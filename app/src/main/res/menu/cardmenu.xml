@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
+  <item android:id="@+id/reload_menu"
+        android:title="reload"
+        android:icon="@drawable/ic_sync_white_24dp"
+        app:showAsAction="ifRoom"
+        />
+
   <item android:id="@+id/podcast_list_menu"
         android:title="@string/podcast_list_menu"
         android:icon="@drawable/ic_playlist_add_white_24dp"
@@ -8,11 +14,6 @@
         />
   <!-- @string/reload_menu -->
 
-  <item android:id="@+id/reload_menu"
-        android:title="reload"
-        android:icon="@drawable/ic_sync_white_24dp"
-        app:showAsAction="ifRoom"
-        />
   <item android:id="@+id/pref_menu"
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/preference_menu"
