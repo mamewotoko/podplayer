@@ -97,11 +97,16 @@ public class PodplayerActivity
 
         adapter_ = new EpisodeAdapter();
         episodeListView_.setAdapter(adapter_);
-        updateSelector();
         //currentPlayPosition_ = (SeekBar) findViewById(R.id.seekbar);
         //currentPlayPosition_.setOnSeekBarChangeListener(this);
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+        updateAndLoad();
+    }
+    
     @Override
     public void onDestroy(){
         Realm realm = Realm.getDefaultInstance();
@@ -111,6 +116,10 @@ public class PodplayerActivity
     
     @Override
     public void notifyPodcastListChanged(RealmResults<PodcastRealm> results){
+        updateAndLoad();
+    }
+
+    public void updateAndLoad(){
         updateSelector();
         boolean doLoad = pref_.getBoolean("load_on_start", getResources().getBoolean(R.bool.default_load_on_start));
         if(doLoad && (null == state_.lastUpdatedDate_ || adapter_.getCount() == 0)){
