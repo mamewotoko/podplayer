@@ -318,9 +318,6 @@ public class PodcastListPreference
         Intent i;
         switch(item.getItemId()) {
         case R.id.podcast_page_menu:
-            // i =
-            //     new Intent(Intent.ACTION_VIEW, Uri.parse(PODCAST_SITE_URL));
-            // startActivity(new Intent(i));
             Intent intent = new Intent(this, PodcastSiteActivity.class);
             startActivityForResult(intent, PODCAST_SITE_REQUEST_CODE);
             handled = true;
@@ -329,8 +326,6 @@ public class PodcastListPreference
             showDialog(EXPORT_DIALOG);
             break;
         case R.id.scan_qrcode_menu:
-            //i = new Intent("com.google.zxing.client.android.SCAN");
-            //startActivityForResult(i, SCAN_QRCODE_REQUEST_CODE);
             IntentIntegrator integrator = new IntentIntegrator(this);
             integrator.setBeepEnabled(false);
             integrator.initiateScan();
@@ -343,8 +338,21 @@ public class PodcastListPreference
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        Log.d(TAG, "requestCode: "+requestCode);
         switch(requestCode){
-        case SCAN_QRCODE_REQUEST_CODE:
+        case PODCAST_SITE_REQUEST_CODE:
+            Log.d(TAG, "data: "+data);
+            if(null == data){
+                break;
+            }
+            String urls = data.getStringExtra(PodcastSiteActivity.PODCAST_SITE_URLS);
+            //String urlStr = String.join("\n", urls);
+            urlEdit_.setText(urls);
+            startCheckURLText();
+            break;
+        default:
+            //different code returned (e.g. 49374)
+            //case SCAN_QRCODE_REQUEST_CODE:
             IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
             if(scanResult == null){
             //DISPLAY toast message?
@@ -360,18 +368,6 @@ public class PodcastListPreference
             }
             urlEdit_.setText(orig);
             startCheckURLText();
-            break;
-        case PODCAST_SITE_REQUEST_CODE:
-            Log.d(TAG, "data: "+data);
-            if(null == data){
-                break;
-            }
-            String urls = data.getStringExtra(PodcastSiteActivity.PODCAST_SITE_URLS);
-            //String urlStr = String.join("\n", urls);
-            urlEdit_.setText(urls);
-            startCheckURLText();
-            break;
-        default:
             break;
         }
     }
