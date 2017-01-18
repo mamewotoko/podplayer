@@ -123,7 +123,7 @@ public class PodplayerActivity
         updateSelector();
         boolean doLoad = pref_.getBoolean("load_on_start", getResources().getBoolean(R.bool.default_load_on_start));
         if(doLoad && (null == state_.lastUpdatedDate_ || adapter_.getCount() == 0)){
-            loadPodcast();
+            episodeListView_.startRefresh();
         }
         adapter_.notifyDataSetChanged();
     }
