@@ -297,7 +297,6 @@ abstract public class BasePodplayerActivity
         }
         if(updateAll || "date_format".equals(key)){
             String format = pref.getString("date_format", YYYYMMDD_24H); 
-            Log.d(TAG, "date_format: " + format);
             dateFormat_ = new SimpleDateFormat(format);
         }
         if("episode_order".equals(key)

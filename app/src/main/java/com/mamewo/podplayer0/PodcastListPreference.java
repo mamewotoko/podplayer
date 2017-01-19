@@ -244,7 +244,6 @@ public class PodcastListPreference
     public void storeDefaultPodcastList(Context context) {
         String[] allTitles = context.getResources().getStringArray(R.array.pref_podcastlist_keys);
         String[] allURLs = context.getResources().getStringArray(R.array.pref_podcastlist_urls);
-        Log.d(TAG, "storeDefaultPodcastList: " + allTitles.length);
         List<Podcast> list = new ArrayList<Podcast>();
 
         Realm realm = Realm.getDefaultInstance();
@@ -937,7 +936,6 @@ public class PodcastListPreference
             }
             PodcastRealm info = (PodcastRealm)getItem(position);
             String iconURL = info.getIconURL();
-            //Log.d(TAG, "getView: icon: " + iconURL);
             if(null != iconURL){
                 Glide.with(getApplicationContext())
                     .load(iconURL)

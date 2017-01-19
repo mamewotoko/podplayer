@@ -328,8 +328,6 @@ public class PodplayerActivity
             }
             EpisodeRealm episode = (EpisodeRealm)getItem(position);
             holder.titleView_.setText(episode.getTitle());
-
-            Log.d(TAG, "getView: pubdate " + episode.getPubdateStr(dateFormat_) + " " + episode);
             holder.timeView_.setText(episode.getPubdateStr(dateFormat_));
 
             if(player_ == null){
