@@ -3,6 +3,9 @@ jdk:
   - oraclejdk8
 #  - openjdk7
 
+git:
+  sbumodules: false
+
 android:
     components:
         - tools
