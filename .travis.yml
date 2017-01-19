@@ -4,8 +4,12 @@ jdk:
 #  - openjdk7
 
 git:
-  sbumodules: false
+  submodules: false
 
+before_install:
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+  - git submodule update --init --recursive  
+  
 android:
     components:
         - tools
@@ -16,8 +20,5 @@ android:
     licences:
         - '.+'
 
-before_install:
-  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
-  - git submodule update --init --recursive  
 script:  
   - ./gradlew assembleDebug assembleDebugAndroidTest
