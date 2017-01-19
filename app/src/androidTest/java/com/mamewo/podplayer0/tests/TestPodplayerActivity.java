@@ -201,7 +201,8 @@ public class TestPodplayerActivity
         //enter username and password
         ListView list = (ListView)solo_.getView(R.id.podlist);
         ListAdapter adapter = list.getAdapter();
-        int count = adapter.getCount();
+        //int count = adapter.getCount();
+        int count = 6;
 
         View v = list.getChildAt(count-1);
 
@@ -248,7 +249,8 @@ public class TestPodplayerActivity
 
         ListView list = (ListView)solo_.getView(R.id.podlist);
         ListAdapter adapter = list.getAdapter();
-        int count = adapter.getCount();
+        //int count = adapter.getCount();
+        int count = 6;
 
         View v = list.getChildAt(count-1);
         View expand = v.findViewById(R.id.detail_button);
