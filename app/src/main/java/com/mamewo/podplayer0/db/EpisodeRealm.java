@@ -76,7 +76,7 @@ public class EpisodeRealm
     }
 
     public String getPubdateStr(DateFormat dateFormat){
-        if(null != pubdate){
+        if(null == pubdate){
             return pubdatestr;
         }
         synchronized(dateFormat){

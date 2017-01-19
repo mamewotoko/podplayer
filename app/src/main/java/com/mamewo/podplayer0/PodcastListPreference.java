@@ -832,7 +832,6 @@ public class PodcastListPreference
                         realm.commitTransaction();
                     }
                     else {
-                        //PodcastBuilder<PodcastRealm> builder = createPodcastBuilder();
                         realm.beginTransaction();
                         PodcastRealm info = realm.createObject(PodcastRealm.class);
                         long id = realm.where(PodcastRealm.class).max("id").longValue()+1;
