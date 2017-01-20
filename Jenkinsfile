@@ -37,7 +37,8 @@ node('podplayer_pipeline') {
 
     echo 'merge report'
     sh 'sh -x ci/snapci/03_report.sh'
-
+    sh 'rm -rf app/build/intermediates app/build/generated app/build/tmp'
+    
     publishHTML(target: [allowMissing: true,
                          alwaysLinkToLastBuild: false,
                          keepAll: true,
