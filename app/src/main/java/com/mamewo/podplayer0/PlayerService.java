@@ -129,10 +129,10 @@ public class PlayerService
 	// }
 
     //TODO: pass query 
-	public void setPlaylistQuery(String title, boolean skipListened) {
+	public void setPlaylistQuery(String title, boolean skipListened, int order) {
 		//currentPlaylist_ = playlist;
         //add test
-        SimpleQuery query = new SimpleQuery(title, skipListened);
+        SimpleQuery query = new SimpleQuery(title, skipListened, order);
         podcastList_ = query.getPodcastList();
         currentPlaylist_ = query.getEpisodeList();
 	}

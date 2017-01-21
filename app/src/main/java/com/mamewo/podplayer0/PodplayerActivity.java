@@ -36,7 +36,6 @@ import com.markupartist.android.widget.PullToRefreshListView;
 
 import com.mamewo.podplayer0.db.PodcastRealm;
 import com.mamewo.podplayer0.db.EpisodeRealm;
-import com.mamewo.podplayer0.db.ListenedEpisodeRealm;
 import com.mamewo.podplayer0.db.SimpleQuery;
 import io.realm.RealmResults;
 import io.realm.RealmChangeListener;
@@ -264,12 +263,7 @@ public class PodplayerActivity
         EpisodeRealm listened = result.get(0);
         //TODO: async write
         realm.beginTransaction();
-        ListenedEpisodeRealm entry = realm.createObject(ListenedEpisodeRealm.class);
-        entry.setDate(new Date());
-        entry.setEpisode(listened);
-        entry.setPodcastTitle(listened.getPodcast().getTitle());
-        entry.setEpisodeTitle(listened.getTitle());
-        listened.setListened(entry);
+        listened.setListenedDate(new Date());
         realm.commitTransaction();
     }
 
@@ -319,6 +313,7 @@ public class PodplayerActivity
                 holder.timeView_ = (TextView)view.findViewById(R.id.episode_time);
                 holder.stateIcon_ = (ImageView)view.findViewById(R.id.play_icon);
                 holder.episodeIcon_ = (ImageView)view.findViewById(R.id.episode_icon);
+                holder.listenedView_ = (TextView)view.findViewById(R.id.listened_time);
                 holder.displayedIconURL_ = null;
                 view.setTag(holder);
             }
@@ -329,7 +324,14 @@ public class PodplayerActivity
             EpisodeRealm episode = (EpisodeRealm)getItem(position);
             holder.titleView_.setText(episode.getTitle());
             holder.timeView_.setText(episode.getPubdateStr(dateFormat_));
-
+            if(episode.getListened() != null){
+                // TODO: format
+                holder.listenedView_.setText(dateFormat_.format(episode.getListened()));
+                holder.listenedView_.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.listenedView_.setVisibility(View.GONE);
+            }
             if(player_ == null){
                 holder.stateIcon_.setVisibility(View.GONE);
             }
@@ -585,5 +587,6 @@ public class PodplayerActivity
         ImageView stateIcon_;
         ImageView episodeIcon_;
         String displayedIconURL_;
+        TextView listenedView_;
     }
 }

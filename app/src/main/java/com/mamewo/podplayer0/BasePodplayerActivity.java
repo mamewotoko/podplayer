@@ -99,6 +99,7 @@ abstract public class BasePodplayerActivity
     //remove
     //private FirebaseAnalytics mFirebaseAnalytics;
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Obtain the FirebaseAnalytics instance.
@@ -186,7 +187,8 @@ abstract public class BasePodplayerActivity
         //boolean reversed = currentOrder_ == REVERSE_APPEARANCE_ORDER;
         //TODO: pass filter, sort order
         boolean skipListened = pref_.getBoolean("skip_listened_episode", getResources().getBoolean(R.bool.default_skip_listened_episode));
-        player_.setPlaylistQuery(title, skipListened);
+        int order = Integer.valueOf(pref_.getString("episode_order", "0"));
+        player_.setPlaylistQuery(title, skipListened, order);
     }
 
     public boolean isLoading() {

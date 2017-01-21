@@ -24,6 +24,7 @@
         android:summaryOff="@string/pref_do_not_load_automatically"
         android:summaryOn="@string/pref_load_podcasts_when_app_starts"
         android:title="@string/pref_autoload_podcast" />
+
     <CheckBoxPreference
         android:key="skip_listened_episode"
         android:defaultValue="@bool/default_skip_listened_episode"
