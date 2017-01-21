@@ -483,7 +483,15 @@ public class PodplayerCardActivity
         public void onBindViewHolder(EpisodeHolder holder, int position){
             final EpisodeRealm episode = getCurrentItem(position);
             holder.titleView_.setText(episode.getTitle());
-            holder.timeView_.setText(episode.getPubdateStr(dateFormat_));
+            holder.timeView_.setText(getResources().getString(R.string.published_date)+" "+episode.getPubdateStr(dateFormat_));
+            if(episode.getListened() != null){
+                holder.listenedView_.setText(getResources().getString(R.string.listened_date)+" "+episode.getPubdateStr(dateFormat_));
+                holder.listenedView_.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.listenedView_.setVisibility(View.GONE);
+            }
+
             holder.container_.setOnClickListener(new ItemClickListener(episode));
             holder.container_.setOnLongClickListener(new ItemLongClickListener(episode));
 
@@ -546,6 +554,7 @@ public class PodplayerCardActivity
     {
         public TextView titleView_;
         public TextView timeView_;
+        public TextView listenedView_;
         public ImageView stateIcon_;
         public ImageView episodeIcon_;
         public View container_;
@@ -555,6 +564,7 @@ public class PodplayerCardActivity
             super(view);
             titleView_ = (TextView)view.findViewById(R.id.episode_title);
             timeView_ = (TextView)view.findViewById(R.id.episode_time);
+            listenedView_ = (TextView)view.findViewById(R.id.listened_time);
             stateIcon_ =  (ImageView)view.findViewById(R.id.play_icon);
             episodeIcon_ = (ImageView)view.findViewById(R.id.episode_icon);
             container_ = view;

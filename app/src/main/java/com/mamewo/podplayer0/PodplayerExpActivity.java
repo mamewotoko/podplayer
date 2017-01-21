@@ -368,6 +368,7 @@ public class PodplayerExpActivity
                 holder.timeView_ = (TextView)view.findViewById(R.id.episode_time);
                 holder.stateIcon_ = (ImageView)view.findViewById(R.id.play_icon);
                 holder.episodeIcon_ = (ImageView)view.findViewById(R.id.episode_icon);
+                holder.listenedView_ = (TextView)view.findViewById(R.id.listened_time);
                 holder.displayedIconURL_ = null;
                 view.setTag(holder);
             }
@@ -377,7 +378,17 @@ public class PodplayerExpActivity
             }
             EpisodeRealm episode = (EpisodeRealm)getChild(groupPosition, childPosition);
             holder.titleView_.setText(episode.getTitle());
-            holder.timeView_.setText(episode.getPubdateStr(dateFormat_));
+            holder.timeView_.setText(getResources().getString(R.string.published_date)+" "+episode.getPubdateStr(dateFormat_));
+
+            if(null != episode.getListened()){
+                holder.listenedView_.setText(getResources().getString(R.string.listened_date)
+                                             +" "+dateFormat_.format(episode.getListened()));
+                holder.listenedView_.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.listenedView_.setVisibility(View.GONE);
+            }
+            
             if(player_ == null){
                 holder.stateIcon_.setVisibility(View.GONE);
             }
@@ -554,6 +565,7 @@ public class PodplayerExpActivity
     private class EpisodeHolder {
         TextView titleView_;
         TextView timeView_;
+        TextView listenedView_;
         ImageView stateIcon_;
         ImageView episodeIcon_;
         String displayedIconURL_;

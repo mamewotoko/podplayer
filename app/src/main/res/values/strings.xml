@@ -48,7 +48,7 @@
 
     <string name="play">Play</string>
     <string name="pause">Pause</string>
-
+  
     <string name="add">Add</string>
     <string name="error_malformed_url">Malformed URL</string>
     <string name="dialog_checking_podcast_url">Checking podcast URL &#8230;</string>
@@ -82,6 +82,9 @@
     <string name="pref_episode_limit_summary">{0} episode(s)</string>
     <string name="pref_episode_nolimit_summary">No limit</string>
 
+    <string name="published_date">Published:</string>
+    <string name="listened_date">Listened:</string>
+    
     <string name="pref_episode_order">Episode order</string>
 
     <string name="action_play">Play</string>

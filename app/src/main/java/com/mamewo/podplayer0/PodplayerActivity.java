@@ -323,10 +323,12 @@ public class PodplayerActivity
             }
             EpisodeRealm episode = (EpisodeRealm)getItem(position);
             holder.titleView_.setText(episode.getTitle());
-            holder.timeView_.setText(episode.getPubdateStr(dateFormat_));
+            holder.timeView_.setText(getResources().getString(R.string.published_date)
+                                     +" "+episode.getPubdateStr(dateFormat_));
             if(episode.getListened() != null){
                 // TODO: format
-                holder.listenedView_.setText(dateFormat_.format(episode.getListened()));
+                holder.listenedView_.setText(getResources().getString(R.string.listened_date)
+                                             +" "+dateFormat_.format(episode.getListened()));
                 holder.listenedView_.setVisibility(View.VISIBLE);
             }
             else {
