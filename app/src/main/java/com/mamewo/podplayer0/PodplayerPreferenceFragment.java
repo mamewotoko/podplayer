@@ -3,6 +3,8 @@ package com.mamewo.podplayer0;
 import static com.mamewo.podplayer0.Const.*;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -141,8 +143,9 @@ public class PodplayerPreferenceFragment
             episodeOrder_.setSummary(res.getStringArray(R.array.episode_item_order_entries)[order]);
         }
         if(updateAll || "date_format".equals(key)){
-            String format = pref.getString("date_format", res.getString(R.string.default_date_format));
-            dateFormat_.setSummary(format);
+            String formatStr = pref.getString("date_format", res.getString(R.string.default_date_format));
+            SimpleDateFormat format = new SimpleDateFormat(formatStr);
+            dateFormat_.setSummary(format.format(new Date()));
         }
         if(updateAll || "view_mode".equals(key)){
             int viewMode = Integer.valueOf(pref.getString("view_mode", "0"));

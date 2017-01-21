@@ -16,11 +16,9 @@
       android:contentDescription="@string/icon_desc_episode_none"
       android:focusable="false"
       />
-  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
+  <LinearLayout android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
     <TextView
         android:id="@+id/text1"
@@ -37,5 +35,5 @@
         android:text=""
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    </LinearLayout>e
+    </LinearLayout>
 </LinearLayout>
