@@ -84,7 +84,7 @@
 
     <string name="published_date">Published:</string>
     <string name="listened_date">Listened:</string>
-    
+    <string name="cache_cleared">Cache is cleared</string>
     <string name="pref_episode_order">Episode order</string>
 
     <string name="action_play">Play</string>

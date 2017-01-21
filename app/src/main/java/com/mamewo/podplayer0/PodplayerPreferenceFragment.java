@@ -5,7 +5,7 @@ import static com.mamewo.podplayer0.Const.*;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+import android.widget.Toast;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -95,6 +95,10 @@ public class PodplayerPreferenceFragment
         super.onDestroy();
     }
 
+    public void showMessage(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public boolean onPreferenceClick(Preference item) {
         if (item == podcastList_) {
@@ -109,6 +113,7 @@ public class PodplayerPreferenceFragment
             pref_.edit()
                 .putBoolean("clear_response_cache", !flag)
                 .commit();
+            showMessage(getResources().getString(R.string.cache_cleared));
             return true;
         }
         if(item == mailToAuthor_){
