@@ -64,8 +64,9 @@ adb logcat -v time > app/build/logcat.log &
 ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerActivityLand -PspoonOutput=spoon_land_${AVD_NAME}
 
 ## TODO: get serial id
-adb -s emulator-5554 emu kill
+SERIALNO=$(adb get-serialno)
+adb -s emulator-$SERIALNO emu kill
 #kill %1
-android delete avd $AVD_NAME
+android delete avd -n $AVD_NAME
 
 sleep 10
