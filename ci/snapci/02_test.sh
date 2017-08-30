@@ -39,10 +39,11 @@ AVD_NAME=emu_${TARGET}_${SCREEN_SIZE}_${LANGUAGE}_${COUNTRY}
 echo "android create avd -n $AVD_NAME -b $ABI -t $TARGET -c 32M --skin $SCREEN_SIZE"
 echo no | android create avd --force -n $AVD_NAME --abi $ABI -t $TARGET -c 32M --skin $SCREEN_SIZE || exit 1
 emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -no-window &
+EMULATOR_PID=$!
+
 sleep 90
 STATUS=$(adb wait-for-device shell getprop init.svc.bootanim)
 echo STATUS: stopped is expected: $STATUS
-
 # echo STATUS1: $STATUS
 # if [ "$STATUS" != "stopped" ]; then
 #     sleep 60
@@ -54,19 +55,22 @@ echo STATUS: stopped is expected: $STATUS
 #     exit 1
 # fi
 #adb uninstall com.mamewo.podplayer0 || true
-./gradlew uninstallAll installDebug
-adb logcat -v time > app/build/logcat.log &
+{
+    ./gradlew uninstallAll installDebug
+    adb logcat -v time > app/build/logcat.log &
 
-./gradlew spoonDebug -PspoonOutput=spoon_${AVD_NAME}
-./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity -PspoonOutput=spoon_exp_${AVD_NAME}
-./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerCardActivity -PspoonOutput=spoon_card_${AVD_NAME}
-./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodcastListPreference -PspoonOutput=spoon_podlist_${AVD_NAME}
-./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerActivityLand -PspoonOutput=spoon_land_${AVD_NAME}
+    ./gradlew spoonDebug -PspoonOutput=spoon_${AVD_NAME}
+    ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity -PspoonOutput=spoon_exp_${AVD_NAME}
+    ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerCardActivity -PspoonOutput=spoon_card_${AVD_NAME}
+    ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodcastListPreference -PspoonOutput=spoon_podlist_${AVD_NAME}
+    ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerActivityLand -PspoonOutput=spoon_land_${AVD_NAME}
+}
 
+# finally
 ## TODO: get serial id
 SERIALNO=$(adb get-serialno)
 adb -s emulator-$SERIALNO emu kill
-#kill %1
+sleep 5
+kill -9 $EMULATOR_PID || true
 android delete avd -n $AVD_NAME
 
-sleep 10
