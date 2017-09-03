@@ -32,6 +32,8 @@ if [ -z "$ABI" ]; then
     ABI="default;x86"
 fi
 
+TEST=$6
+
 AVD_NAME=emu_${TARGET}_${SCREEN_SIZE}_${LANGUAGE}_${COUNTRY}
 
 #echo ----
@@ -67,13 +69,17 @@ echo STATUS: stopped is expected: $STATUS
 
 ./gradlew uninstallAll installDebug
 adb logcat -v time > app/build/logcat.log &
+LOGCAT_PID=$!
 
-./gradlew spoonDebug -PspoonOutput=spoon_${AVD_NAME}
-./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity -PspoonOutput=spoon_exp_${AVD_NAME}
-./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerCardActivity -PspoonOutput=spoon_card_${AVD_NAME}
-./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodcastListPreference -PspoonOutput=spoon_podlist_${AVD_NAME}
-./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerActivityLand -PspoonOutput=spoon_land_${AVD_NAME}
-
+{
+    ./gradlew spoonDebug -PspoonOutput=spoon_${AVD_NAME}
+    if [ -z "$TEST" ]; then
+        ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity -PspoonOutput=spoon_exp_${AVD_NAME}
+        ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerCardActivity -PspoonOutput=spoon_card_${AVD_NAME}
+        ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodcastListPreference -PspoonOutput=spoon_podlist_${AVD_NAME}
+        ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerActivityLand -PspoonOutput=spoon_land_${AVD_NAME}
+    fi
+}
 
 # finally
 ## TODO: get serial id
@@ -81,6 +87,7 @@ SERIALNO=$(adb get-serialno)
 adb -s $SERIALNO emu kill
 sleep 5
 kill -9 $EMULATOR_PID || true
+kill $LOGCAT_PID || true
 avdmanager delete avd -n $AVD_NAME
 
 # TODO: uninstall package sdk
