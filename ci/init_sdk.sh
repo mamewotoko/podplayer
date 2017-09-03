@@ -8,4 +8,4 @@
 # echo y | android update sdk --no-ui --all --filter sys-img-armeabi-v7a-android-10 > /dev/null
 # echo y | android update sdk --no-ui --all --filter sys-img-armeabi-v7a-android-19 > /dev/null
 
-echo y | sdkmanager "build-tools;26.0.1" emulator "platform-tools" "extras;android;m2repository" "extras;google;m2repository"
+echo y | sdkmanager "build-tools;26.0.1" emulator "platform-tools" "extras;android;m2repository" "extras;google;m2repository" "platforms;android-24"
