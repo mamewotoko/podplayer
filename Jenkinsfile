@@ -7,7 +7,7 @@ node('podplayer_pipeline') {
   }
 
   stage('Build') {
-    env.PATH="${env.JAVA_HOME}/bin:${env.ANDROID_HOME}/tools:${env.ANDROID_HOME}/platform-tools:${env.PATH}"
+    env.PATH="${env.JAVA_HOME}/bin:${env.ANDROID_HOME}/tools:${env.ANDROID_HOME}/tools/bin:${env.ANDROID_HOME}/platform-tools:${env.PATH}"
     sh './gradlew clean assembleDebug lint'
   }
 
