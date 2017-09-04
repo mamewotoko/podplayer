@@ -52,7 +52,8 @@ echo no | avdmanager create avd -n $AVD_NAME -c 32M -f -k "system-images;${TARGE
 ( cd $ANDROID_HOME/tools; emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -gpu off -no-window ) &
 EMULATOR_PID=$!
 
-sleep 90
+sleep 120
+adb devices
 STATUS=$(adb wait-for-device shell getprop init.svc.bootanim)
 echo STATUS: stopped is expected: $STATUS
 # echo STATUS1: $STATUS
