@@ -1,4 +1,6 @@
 #! /bin/bash
+trap "kill 0" SIGINT
+
 # ANDROID_HOME=/opt/android-sdk
 #set -e
 
@@ -50,7 +52,6 @@ echo no | avdmanager create avd -n $AVD_NAME -c 32M -f -k "system-images;${TARGE
 
 #( emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -no-window ) &
 ( cd $ANDROID_HOME/tools; emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -gpu off -no-window ) &
-EMULATOR_PID=$!
 
 sleep 120
 adb devices
@@ -85,9 +86,10 @@ LOGCAT_PID=$!
 # finally
 ## TODO: get serial id
 SERIALNO=$(adb get-serialno)
-adb -s $SERIALNO emu kill
-sleep 5
-kill -9 $EMULATOR_PID || true
+if [ -n "$SERIALNO" ]; then
+    adb -s $SERIALNO emu kill
+    sleep 5
+fi
 kill $LOGCAT_PID || true
 avdmanager delete avd -n $AVD_NAME
 
