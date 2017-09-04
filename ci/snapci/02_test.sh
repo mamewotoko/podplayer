@@ -1,5 +1,5 @@
 #! /bin/bash
-trap "kill 0" SIGINT
+#trap "kill 0" SIGINT
 
 # ANDROID_HOME=/opt/android-sdk
 #set -e
@@ -51,7 +51,10 @@ echo "avdmanager create avd -n $AVD_NAME -c 32M -f -k system-images;${TARGET};${
 echo no | avdmanager create avd -n $AVD_NAME -c 32M -f -k "system-images;${TARGET};${ABI}" || exit 1
 
 #( emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -no-window ) &
-( cd $ANDROID_HOME/tools; emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -gpu off -no-window ) &
+pushd $ANDROID_HOME/tools
+emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -gpu off -no-window  &
+EMULATOR_PID=$!
+popd
 
 sleep 120
 adb devices
@@ -91,6 +94,8 @@ if [ -n "$SERIALNO" ]; then
     sleep 5
 fi
 kill $LOGCAT_PID || true
+kill -9 $EMULATOR_PID || true
+adb kill-server || true
 avdmanager delete avd -n $AVD_NAME
 
 # TODO: uninstall package sdk
