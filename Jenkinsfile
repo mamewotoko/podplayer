@@ -32,7 +32,6 @@ node('podplayer_pipeline') {
         sh 'bash -x ci/snapci/02_test.sh sv se 1280x800 android-19 "default;x86"'
         sh 'bash -x ci/snapci/02_test.sh sv se 480x800 android-19 "default;x86"'
       }
-      sh 'killall -9 qemu-system-i386'
     }
   }
 
