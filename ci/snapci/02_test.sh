@@ -94,7 +94,8 @@ kill $LOGCAT_PID || true
 #kill -9 $EMULATOR_PID || true
 killall -9 qemu-system-i386 || true
 adb kill-server || true
-avdmanager delete avd -n $AVD_NAME
 pgrep -P $$ -l
+avdmanager delete avd -n $AVD_NAME
+
 
 # TODO: uninstall package sdk
