@@ -54,6 +54,7 @@ echo no | avdmanager create avd -n $AVD_NAME -c 32M -f -k "system-images;${TARGE
 pushd $ANDROID_HOME/tools
 emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -gpu off -no-window  &
 EMULATOR_PID=$!
+echo emulator pid $!
 popd
 
 sleep 120
@@ -91,8 +92,8 @@ LOGCAT_PID=$!
 adb devices | grep -e emulator -e online | cut -f1 | while read line; do adb -s $line emu kill; done
 adb kill-server
 kill $LOGCAT_PID || true
-#kill -9 $EMULATOR_PID || true
-killall -9 qemu-system-i386 || true
+kill -9 $EMULATOR_PID || true
+#killall -9 qemu-system-i386 || true
 adb kill-server || true
 pgrep -P $$ -l
 avdmanager delete avd -n $AVD_NAME
