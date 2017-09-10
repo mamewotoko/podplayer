@@ -90,7 +90,6 @@ LOGCAT_PID=$!
 # finally
 ## TODO: get serial id
 adb devices | grep -e emulator -e online | cut -f1 | while read line; do adb -s $line emu kill || true ; done
-adb kill-server
 kill $LOGCAT_PID || true
 kill -9 $EMULATOR_PID || true
 killall -9 qemu-system-i386 || true
