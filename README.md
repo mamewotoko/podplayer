@@ -201,7 +201,7 @@ The podplayer uses the following software, resource and tool.
 License
 -------
 
-    Copyright (c) 2012-2016 Takashi Masuyama. All rights reserved.
+    Copyright (c) 2012-2017 Takashi Masuyama. All rights reserved.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
