@@ -7,6 +7,10 @@ Screenshot
 ![main screen](https://raw.githubusercontent.com/mamewotoko/podplayer/master/doc/mainscreen.png)
 ![gestures](https://raw.githubusercontent.com/mamewotoko/podplayer/master/doc/gesture_dialog.png)
 
+Video
+-----
+[![podplayer](https://img.youtube.com/vi/WbFhnjb_RTg/0.jpg)](https://www.youtube.com/watch?v=WbFhnjb_RTg "podplayer")
+
 Google Play
 ------------
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" width="192" height="75">](https://play.google.com/store/apps/details?id=com.mamewo.podplayer0)
