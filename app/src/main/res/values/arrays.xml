@@ -7,6 +7,7 @@
         <item>Wall Street Journal This Morning</item>
         <item>BBC: The English We Speak</item>
         <item>Voice of America (VOA)</item>
+        <item>NHKラジオニュース</item>
     </string-array>
     
    <string-array name="pref_podcastlist_urls" translatable="false">
@@ -14,6 +15,7 @@
       <item>http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml</item>
       <item>http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml</item>
       <item>http://learningenglish.voanews.com/podcast/</item>
+      <item>https://www.nhk.or.jp/r-news/podcast/nhkradionews.xml</item>
     </string-array>
     
     <string-array name="pref_timeout_titles">
