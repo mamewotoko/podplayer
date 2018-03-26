@@ -2,69 +2,71 @@
 <resources
     xmlns:tools="http://schemas.android.com/tools"
     tools:locale="en">
-    <string-array name="pref_podcastlist_keys" translatable="false">
-        <item>NHK WORLD RADIO JAPAN</item>
-        <item>Wall Street Journal This Morning</item>
-        <item>BBC: The English We Speak</item>
-        <item>Voice of America (VOA)</item>
-    </string-array>
-    
-   <string-array name="pref_podcastlist_urls" translatable="false">
-      <item>http://www.nhk.or.jp/rj/podcast/rss/english.xml</item>     
-      <item>http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml</item>
-      <item>http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml</item>
-      <item>http://learningenglish.voanews.com/podcast/</item>
-    </string-array>
-    
-    <string-array name="pref_timeout_titles">
-        <item>None</item>
-        <item>15 sec</item>
-        <item>30 sec</item>
-        <item>60 sec</item>
-        <item>120 sec</item>
-    </string-array>
-    
-    <string-array name="pref_timeout_values" translatable="false">
-        <item>0</item>
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>120</item>
-    </string-array>
-    <string-array name="pref_episode_limit_titles">
-        <item>No limit</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>5</item>
-   </string-array>
-   
-   <string-array name="pref_episode_limit_values" translatable="false">
-       <item>-1</item>
-       <item>1</item>
-       <item>2</item>
-       <item>3</item>
-       <item>5</item>
-    </string-array>
+  <string-array name="pref_podcastlist_keys" translatable="false">
+    <item>NHK WORLD RADIO JAPAN</item>
+    <item>Wall Street Journal This Morning</item>
+    <item>BBC: The English We Speak</item>
+    <item>Voice of America (VOA)</item>
+    <item>NHKラジオニュース</item>
+  </string-array>
 
-    <string-array name="episode_item_order_entries">
-      <item>Order of appearance</item>
-      <item>Reversed order of appearance</item>
-      <item>Order of pubDate(oldest first)</item>
-      <item>Reversed order of pubDate(latest first)</item>
-    </string-array>
+  <string-array name="pref_podcastlist_urls" translatable="false">
+    <item>http://www.nhk.or.jp/rj/podcast/rss/english.xml</item>
+    <item>http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml</item>
+    <item>http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml</item>
+    <item>http://learningenglish.voanews.com/podcast/</item>
+    <item>https://www.nhk.or.jp/r-news/podcast/nhkradionews.xml</item>
+  </string-array>
 
-    <string-array name="episode_item_order_entries_value" translatable="false">
-      <item>0</item>
-      <item>1</item>
-      <item>2</item>
-      <item>3</item>
-    </string-array>
+  <string-array name="pref_timeout_titles">
+    <item>None</item>
+    <item>15 sec</item>
+    <item>30 sec</item>
+    <item>60 sec</item>
+    <item>120 sec</item>
+  </string-array>
 
-    <string-array name="view_mode_title">
-      <item>Pull to refresh list</item>
-      <item>Expandable list</item>
-      <item>Card</item>
+  <string-array name="pref_timeout_values" translatable="false">
+    <item>0</item>
+    <item>15</item>
+    <item>30</item>
+    <item>60</item>
+    <item>120</item>
+  </string-array>
+  <string-array name="pref_episode_limit_titles">
+    <item>No limit</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>5</item>
+  </string-array>
+
+  <string-array name="pref_episode_limit_values" translatable="false">
+    <item>-1</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>5</item>
+  </string-array>
+
+  <string-array name="episode_item_order_entries">
+    <item>Order of appearance</item>
+    <item>Reversed order of appearance</item>
+    <item>Order of pubDate(oldest first)</item>
+    <item>Reversed order of pubDate(latest first)</item>
+  </string-array>
+
+  <string-array name="episode_item_order_entries_value" translatable="false">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+  </string-array>
+
+  <string-array name="view_mode_title">
+    <item>Pull to refresh list</item>
+    <item>Expandable list</item>
+    <item>Card</item>
     </string-array>>
 
     <string-array name="view_mode_values" translatable="false">

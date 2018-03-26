@@ -59,6 +59,8 @@ How to run UI test using Robotium
 
 TODO
 ----
+* add filter of language, region 
+* add weather news?
 * display author info of episode/podcast
 * ask stop playing episode when exit menu is selected
 * realm integration
