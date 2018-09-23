@@ -17,9 +17,9 @@ android {
     defaultConfig {
         applicationId "com.mamewo.podplayer0"
         minSdkVersion 10
-        targetSdkVersion 24
-        versionCode 14
-        versionName "1.2.0"
+        targetSdkVersion 26
+        versionCode 15
+        versionName "1.2.1"
 
         //For espresso
         //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
