@@ -96,8 +96,10 @@ killall -9 qemu-system-i386 || true
 adb kill-server || true
 pgrep -P $$ -l
 
-# remove
-# avdmanager delete avd -n $AVD_NAME
+ps auxww > ps_${AVD_NAME}.txt
+
+# remove avd
+avdmanager delete avd -n $AVD_NAME
 
 # kill all child process
 pkill -P $$
