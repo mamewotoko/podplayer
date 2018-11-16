@@ -95,7 +95,10 @@ kill -9 $EMULATOR_PID || true
 killall -9 qemu-system-i386 || true
 adb kill-server || true
 pgrep -P $$ -l
-avdmanager delete avd -n $AVD_NAME
+
+# remove
+# avdmanager delete avd -n $AVD_NAME
+
 # kill all child process
 pkill -P $$
 exit 0
