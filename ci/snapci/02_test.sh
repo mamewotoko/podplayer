@@ -99,8 +99,8 @@ pgrep -P $$ -l
 ps auxww | tee ps_${AVD_NAME}.txt
 
 # remove avd
-# avdmanager delete avd -n $AVD_NAME
-rm -rf $HOME/.android/avd/emu_android*
+avdmanager delete avd -n $AVD_NAME | tee avdmanager_delete_${AVD_NAME}.txt
+# rm -rf $HOME/.android/avd/emu_android*
 
 # kill all child process
 pkill -P $$
