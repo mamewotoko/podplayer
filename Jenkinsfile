@@ -52,12 +52,6 @@ node('podplayer_pipeline') {
                         ])
   }
 }
-post {
-     always {
-       //collect process info
-       sh 'ps auxww --sort command | tee ps_after.txt'
-     }
-}
 
 def publishSpoonResult(target, resolution, lang, country){
     publishHTML(target: [allowMissing: true,
