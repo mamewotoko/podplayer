@@ -22,7 +22,7 @@ How to build
 ------------
 1. Install "Android support repository" using [Android SDK Manager](https://developer.android.com/studio/intro/update.html?hl=ja#sdk-manager)
 
-  Install script (in spapci): ` ci/snapci/init_android.sh ` 
+  Install script: ` ci/snapci/init_android.sh ` 
 
 2. Clone source
 
@@ -42,6 +42,13 @@ apk file created in ` ./app/build/outputs/apk/app-debug.apk `
 
 A file bin/podplayer-debug.apk is created if succeed.
 
+Continuous build
+---------------------------------
+
+    ```
+    ./gradlew -t assembleDebug
+    ```
+
 How to run UI test using Robotium
 ---------------------------------
 1. Connect android device or start android emulator
@@ -59,6 +66,7 @@ How to run UI test using Robotium
 
 TODO
 ----
+* update lib
 * add download feature
 * support pcast, podto, podcast schema
 * add filter of language, region 
@@ -205,7 +213,7 @@ The podplayer uses the following software, resource and tool.
 License
 -------
 
-    Copyright (c) 2012-2017 Takashi Masuyama. All rights reserved.
+    Copyright (c) 2012-2019 Takashi Masuyama. All rights reserved.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
