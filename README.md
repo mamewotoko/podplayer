@@ -45,9 +45,9 @@ A file bin/podplayer-debug.apk is created if succeed.
 Continuous build
 ---------------------------------
 
-    ```
-    ./gradlew -t assembleDebug
-    ```
+```
+./gradlew -t assembleDebug
+```
 
 How to run UI test using Robotium
 ---------------------------------
