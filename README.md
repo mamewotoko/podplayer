@@ -68,7 +68,7 @@ TODO
 ----
 * update lib
 * add download feature
-* support pcast, podto, podcast schema
+* support adding podcast from link with pcast, podto, podcast schema 
 * add filter of language, region 
 * add weather news?
 * display author info of episode/podcast
@@ -199,7 +199,6 @@ TODO
 * add error handling
 * write user guide?
 * display playing icon in group of expandable list
-* upload demo movie to youtube
 
 Third-party libraries
 ---------------------
