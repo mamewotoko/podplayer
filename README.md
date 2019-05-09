@@ -205,7 +205,8 @@ Third-party libraries
 The podplayer uses the following software, resource and tool.
 * [Pull To Refresh for Android](https://github.com/johannilsson/android-pulltorefresh)
   Copyright (c) 2011 [Johan Nilsson](http://markupartist.com)  
-* [Glide](https://github.com/bumptech/glide)  
+* [Glide](https://github.com/bumptech/glide)
+* [realm/realm-java](https://github.com/realm/realm-java)
 * [Meterial icons](https://design.google.com/icons/)
 * Gesture data is built with GestureBuilder sample application of android (legacy/GestureBuilder)
 
