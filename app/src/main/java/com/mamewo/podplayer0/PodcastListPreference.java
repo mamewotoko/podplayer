@@ -165,7 +165,10 @@ public class PodcastListPreference
         dialogID_ = -1;
 
         Realm realm = Realm.getDefaultInstance();
-        podcastList_ = realm.where(PodcastRealm.class).findAllSorted("occurIndex", Sort.ASCENDING);
+        podcastList_ = realm.where(PodcastRealm.class)
+            .findAll()
+            .sort(new String[]{"occurIndex"},
+                  new Sort[]{Sort.ASCENDING});
         changeListener_ = new RealmChangeListener<RealmResults<PodcastRealm>>(){
                 @Override
                 public void onChange(RealmResults<PodcastRealm> results){

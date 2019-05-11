@@ -59,8 +59,9 @@ public class SimpleQuery {
         if(null != title_){
             query.equalTo("title", title_);
         }
-        podcastList_ = query.findAllSorted("occurIndex", Sort.ASCENDING);
-            
+        //ascending order
+        podcastList_ = query.findAll().sort("occurIndex");
+        
         if(null != listener_){
             internalPodcastListener_ = new RealmChangeListener<RealmResults<PodcastRealm>>(){
                 @Override
@@ -74,6 +75,7 @@ public class SimpleQuery {
     }
 
     public RealmResults<EpisodeRealm> getEpisodeList(){
+        String[] pubdateFieldName = new String[]{"pubdate"};
         if(null != episodeList_){
             return episodeList_;
         }
@@ -107,10 +109,12 @@ public class SimpleQuery {
             }
         }
         else if(order_ == DATE_OLDER_FIRST_ORDER){
-            results = episodeQuery.findAllSorted("pubdate", Sort.ASCENDING);
+            results = episodeQuery.findAll().sort(pubdateFieldName,
+                                                  new Sort[]{Sort.ASCENDING});
         }
         else {
-            results = episodeQuery.findAllSorted("pubdate", Sort.DESCENDING);
+            results = episodeQuery.findAll().sort(pubdateFieldName,
+                                                  new Sort[]{Sort.DESCENDING});
         }
         episodeList_ = results;
         if(listener_ != null){

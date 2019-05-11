@@ -13,30 +13,30 @@ apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "26.0.1"
+    buildToolsVersion '28.0.3'
     defaultConfig {
-        applicationId "com.mamewo.podplayer0"
+        applicationId 'com.mamewo.podplayer0'
         minSdkVersion 10
         targetSdkVersion 26
         versionCode 15
-        versionName "1.2.1"
+        versionName '1.2.1'
 
         //For espresso
-        //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        //testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
 
     signingConfigs {
         release {
-            if (System.getenv("KEYSTORE") != null) {
-                storeFile file(System.getenv("KEYSTORE"))
-                storePassword System.getenv("KEYSTORE_PASSWORD")
-                keyAlias System.getenv("KEY_ALIAS")
-                keyPassword System.getenv("KEY_PASSWORD")
+            if (System.getenv('KEYSTORE') != null) {
+                storeFile file(System.getenv('KEYSTORE'))
+                storePassword System.getenv('KEYSTORE_PASSWORD')
+                keyAlias System.getenv('KEY_ALIAS')
+                keyPassword System.getenv('KEY_PASSWORD')
             } else {
                 storeFile null
-                storePassword ""
-                keyAlias ""
-                keyPassword ""
+                storePassword ''
+                keyAlias ''
+                keyPassword ''
             }
         }
     }
@@ -60,7 +60,7 @@ spoon {
     //   resolutionStrategy.force 'com.android.support:support-annotations:23.1.1'
     // }
 
-    //instrumentationArgs = ["package=com.mamewo.podplayer0.tests"]
+    //instrumentationArgs = ['package=com.mamewo.podplayer0.tests']
     if (project.hasProperty('spoonClassName')) {
         className = project.spoonClassName
     } else {
@@ -70,7 +70,7 @@ spoon {
         methodName = project.spoonMethodName
     }
     if (project.hasProperty('spoonOutput')) {
-        baseOutputDir = file("$buildDir/" + project.spoonOutput)
+        baseOutputDir = file('$buildDir/' + project.spoonOutput)
     }
     debug = true
 
@@ -81,21 +81,18 @@ spoon {
 }
 
 dependencies {
-    compile project(":pulltorefresh")
-    compile 'com.squareup.okhttp3:okhttp:3.4.1'
-    compile 'commons-io:commons-io:2.4'
-    
-    //androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
-    //androidTestCompile 'com.android.support:support-annotations:23.1.1'
-    //androidTestCompile 'com.android.support.test:runner:0.5'
-    compile 'com.android.support:support-v4:24.2.1'
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:preference-v7:24.2.1'
-    compile 'com.android.support:cardview-v7:24.2.1'
-    compile 'com.android.support:recyclerview-v7:24.2.1'
-    compile 'com.journeyapps:zxing-android-embedded:3.4.0'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'io.realm:android-adapters:1.4.0'
+  compile project(':pulltorefresh')
+  compile 'com.squareup.okhttp3:okhttp:3.4.1'
+  compile 'commons-io:commons-io:2.4'
+  
+  compile 'com.android.support:support-v4:24.2.1'
+  compile 'com.android.support:appcompat-v7:24.2.1'
+  compile 'com.android.support:preference-v7:24.2.1'
+  compile 'com.android.support:cardview-v7:24.2.1'
+  compile 'com.android.support:recyclerview-v7:24.2.1'
+  compile 'com.journeyapps:zxing-android-embedded:3.4.0'
+  compile 'com.github.bumptech.glide:glide:3.7.0'
+  compile 'io.realm:android-adapters:1.4.0'
     
     //compile 'com.google.firebase:firebase-core:10.0.1'
     androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.6.3'
