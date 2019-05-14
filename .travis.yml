@@ -1,24 +1,21 @@
 language: android
 jdk:
-  - oraclejdk8
-#  - openjdk7
-
+- oraclejdk8
 git:
   submodules: false
-
 before_install:
-  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
-  - git submodule update --init --recursive  
-  
+- openssl aes-256-cbc -K $encrypted_8661902f6ce3_key -iv $encrypted_8661902f6ce3_iv
+  -in podplayer.keystore.enc -out podplayer.keystore -d
+- sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+- git submodule update --init --recursive
 android:
-    components:
-        - tools
-        - build-tools-28.0.3
-        - android-24
-        - android-23
-        - extra-android-m2repository
-    licences:
-        - '.+'
-
-script:  
-  - ./gradlew assembleDebug assembleDebugAndroidTest
+  components:
+  - tools
+  - build-tools-28.0.3
+  - android-24
+  - android-23
+  - extra-android-m2repository
+  licences:
+  - ".+"
+script:
+- "./gradlew build"

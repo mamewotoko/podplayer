@@ -22,7 +22,7 @@ How to build
 ------------
 1. Install "Android support repository" using [Android SDK Manager](https://developer.android.com/studio/intro/update.html?hl=ja#sdk-manager)
 
-  Install script (in spapci): ` ci/snapci/init_android.sh ` 
+  Install script (in spapci): `ci/snapci/init_android.sh` 
 
 2. Clone source
 
@@ -38,7 +38,7 @@ How to build
     ./gradlew assembleDebug
     ```
 
-apk file created in ` ./app/build/outputs/apk/app-debug.apk `
+apk file created in `./app/build/outputs/apk/app-debug.apk`
 
 A file bin/podplayer-debug.apk is created if succeed.
 
