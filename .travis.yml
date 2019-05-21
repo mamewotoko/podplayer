@@ -1,13 +1,26 @@
 language: android
 jdk:
 - oraclejdk8
+dist: xenial
 git:
   submodules: false
+# record desktop
+# addons:
+#   apt:
+#     sources:
+#       - ppa:mc3man/trusty-media
+#     packages:
+#       - xvfb
+#       - x11-apps
+#       - imagemagick
+#       - ffmpeg
+
 before_install:
 - openssl aes-256-cbc -K $encrypted_8661902f6ce3_key -iv $encrypted_8661902f6ce3_iv
   -in podplayer.keystore.enc -out podplayer.keystore -d
 - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
 - git submodule update --init --recursive
+
 android:
   components:
   - tools
@@ -17,9 +30,10 @@ android:
   - extra-android-m2repository
   licences:
   - ".+"
+
 script:
-  - "./gradlew build"
+  - ./gradlew build
   - "curl -L 'https://drive.google.com/uc?id=1Ej8VgsW5RgK66Btb9p74tSdHMH3p4UNb&export=download' > gdrive"
   - chmod +x gdrive
+  - sh 02_test.sh
   - sh ci/upload.sh
-
