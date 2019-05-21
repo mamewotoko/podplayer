@@ -1,8 +1,11 @@
 #! /bin/bash
+
+PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools/:$ANDROID_HOME/tools/:$ANDROID_HOME/tools/bin/:$PATH
+
 #trap "kill 0" SIGINT
 
 # ANDROID_HOME=/opt/android-sdk
-#set -e
+set -e
 
 ## usage
 # lang country screen_size target abi
@@ -35,6 +38,8 @@ if [ -z "$ABI" ]; then
 fi
 
 TEST=$6
+WINDOW_OPT=-no-window
+#WINDOW_OPT=
 
 AVD_NAME=emu_${TARGET}_${SCREEN_SIZE}_${LANGUAGE}_${COUNTRY}
 
@@ -44,20 +49,18 @@ AVD_NAME=emu_${TARGET}_${SCREEN_SIZE}_${LANGUAGE}_${COUNTRY}
 
 echo y | sdkmanager "build-tools;26.0.1" "system-images;${TARGET};${ABI}" emulator "platform-tools" "platforms;${TARGET}" "extras;android;m2repository" "extras;google;m2repository"
 
-#echo "android create avd -n $AVD_NAME -b $ABI -c 32M -k "
-#echo no | android create avd --force -n $AVD_NAME -c 32M  || exit 1
 echo "avdmanager create avd -n $AVD_NAME -c 32M -f -k system-images;${TARGET};${ABI}"
 
 echo no | avdmanager create avd -n $AVD_NAME -c 32M -f -k "system-images;${TARGET};${ABI}" || exit 1
 
 #( emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -no-window ) &
-pushd $ANDROID_HOME/tools
-emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -gpu off -no-window  &
+
+emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -gpu off -no-boot-anim $WINDOW_OPT  &
 EMULATOR_PID=$!
 echo emulator pid $!
-popd
 
-sleep 120
+sleep 100
+adb shell input keyevent 82
 adb devices
 STATUS=$(adb wait-for-device shell getprop init.svc.bootanim)
 echo STATUS: stopped is expected: $STATUS
@@ -78,12 +81,12 @@ adb logcat -v time > app/build/logcat.log &
 LOGCAT_PID=$!
 
 {
-    ./gradlew spoonDebug -PspoonOutput=spoon_${AVD_NAME}
+    ./gradlew spoon -PspoonOutput=spoon_${AVD_NAME}
     if [ -z "$TEST" ]; then
-        ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity -PspoonOutput=spoon_exp_${AVD_NAME}
-        ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerCardActivity -PspoonOutput=spoon_card_${AVD_NAME}
-        ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodcastListPreference -PspoonOutput=spoon_podlist_${AVD_NAME}
-        ./gradlew spoonDebug -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerActivityLand -PspoonOutput=spoon_land_${AVD_NAME}
+        ./gradlew spoon -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity -PspoonOutput=spoon_exp_${AVD_NAME}
+        ./gradlew spoon -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerCardActivity -PspoonOutput=spoon_card_${AVD_NAME}
+        ./gradlew spoon -PspoonClassName=com.mamewo.podplayer0.tests.TestPodcastListPreference -PspoonOutput=spoon_podlist_${AVD_NAME}
+        ./gradlew spoon -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerActivityLand -PspoonOutput=spoon_land_${AVD_NAME}
     fi
 }
 
