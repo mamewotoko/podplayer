@@ -33,8 +33,7 @@ android:
 
 script:
   - echo $ANDROID_HOME
-  - ls $ANDROID_HOME/tools/bin
-  - find $ANDROID_HOME -name sdkmanager || true
+  - find $ANDROID_HOME
   - ./gradlew build
   - "curl -L 'https://drive.google.com/uc?id=1Ej8VgsW5RgK66Btb9p74tSdHMH3p4UNb&export=download' > gdrive"
   - chmod +x gdrive
