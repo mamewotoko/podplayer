@@ -60,8 +60,9 @@ EMULATOR_PID=$!
 echo emulator pid $!
 
 sleep 100
-adb shell input keyevent 82
 adb devices
+ps auxww | grep emulator
+adb shell input keyevent 82
 STATUS=$(adb wait-for-device shell getprop init.svc.bootanim)
 echo STATUS: stopped is expected: $STATUS
 # echo STATUS1: $STATUS
