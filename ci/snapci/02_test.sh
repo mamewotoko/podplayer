@@ -9,6 +9,8 @@ set -e
 
 ## usage
 # lang country screen_size target abi
+echo start
+adb devices
 
 LANGUAGE=$1
 if [ -z "$LANGUAGE" ]; then
@@ -61,8 +63,8 @@ echo emulator pid $!
 
 sleep 100
 adb devices
-ps auxww | grep emulator
-adb shell input keyevent 82
+# -d: connect to connected device (ignore offline device)
+adb shell -d input keyevent 82
 STATUS=$(adb wait-for-device shell getprop init.svc.bootanim)
 echo STATUS: stopped is expected: $STATUS
 # echo STATUS1: $STATUS
