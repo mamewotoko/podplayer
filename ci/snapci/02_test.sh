@@ -3,6 +3,7 @@
 PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools/:$ANDROID_HOME/tools/:$ANDROID_HOME/tools/bin/:$PATH
 
 #trap "kill 0" SIGINT
+trap 'kill $(jobs -p)' EXIT
 
 # ANDROID_HOME=/opt/android-sdk
 set -e
