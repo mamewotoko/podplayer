@@ -1,6 +1,10 @@
 language: android
 jdk:
-- oraclejdk8
+  - oraclejdk8
+  - oraclejdk10
+  - oraclejdk11
+  - openjdk10
+  - openjdk11  
 # dist: xenial
 git:
   submodules: false
