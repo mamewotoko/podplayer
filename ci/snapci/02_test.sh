@@ -51,8 +51,6 @@ echo "avdmanager create avd -n $AVD_NAME -c 32M -f -k system-images;${TARGET};${
 
 echo no | avdmanager create avd -n $AVD_NAME -c 32M -f -k "system-images;${TARGET};${ABI}" || exit 1
 
-#( emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -no-window ) &
-
 if [ "$TRAVIS" == "true" ]; then
     EMULATOR_OPT="-no-accel -gpu swiftshader"
 else
