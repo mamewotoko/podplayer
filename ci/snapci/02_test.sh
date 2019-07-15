@@ -36,7 +36,6 @@ fi
 
 ABI=$5
 if [ -z "$ABI" ]; then
-    #ABI="default;armeabi-v7a"
     ABI="default;x86"
 fi
 
@@ -46,10 +45,6 @@ WINDOW_OPT=-no-window
 
 AVD_NAME=emu_${TARGET}_${SCREEN_SIZE}_${LANGUAGE}_${COUNTRY}
 
-#echo ----
-#android list sdk -e --all
-#echo ----
-
 echo y | sdkmanager "build-tools;26.0.1" "system-images;${TARGET};${ABI}" emulator "platform-tools" "platforms;${TARGET}" "extras;android;m2repository" "extras;google;m2repository"
 
 echo "avdmanager create avd -n $AVD_NAME -c 32M -f -k system-images;${TARGET};${ABI}"
@@ -58,7 +53,13 @@ echo no | avdmanager create avd -n $AVD_NAME -c 32M -f -k "system-images;${TARGE
 
 #( emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -no-window ) &
 
-emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY -gpu off -no-boot-anim $WINDOW_OPT  &
+if [ "$TRAVIS" == "true" ]; then
+    EMULATOR_OPT="-no-accel -gpu swiftshader"
+else
+    EMULATOR_OPT="-gpu off"
+fi
+
+emulator -avd $AVD_NAME -prop persist.sys.language=$LANGUAGE -prop persist.sys.country=$COUNTRY $EMULATOR_OPT -no-boot-anim $WINDOW_OPT  &
 EMULATOR_PID=$!
 echo emulator pid $!
 
