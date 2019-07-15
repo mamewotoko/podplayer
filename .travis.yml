@@ -5,11 +5,12 @@ dist: xenial
 git:
   submodules: false
 # record desktop
-# addons:
-#   apt:
+addons:
+  apt:
+    packages:
+      - libc6
 #     sources:
 #       - ppa:mc3man/trusty-media
-#     packages:
 #       - xvfb
 #       - x11-apps
 #       - imagemagick
