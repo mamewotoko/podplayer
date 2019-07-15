@@ -1,6 +1,6 @@
 #! /bin/sh
 # define env GDRIVE_REFRESH_TOKEN, GDRIVE_DIR
-TARGET_DIR=$1
+TARGET=$1
 
 COMMIT=$(echo $TRAVIS_COMMIT | sed 's!^\(.\{10\}\).*!\1!')
 
