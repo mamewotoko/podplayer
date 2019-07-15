@@ -1,7 +1,7 @@
 language: android
 jdk:
 - oraclejdk8
-dist: xenial
+# dist: xenial
 git:
   submodules: false
 # record desktop
@@ -33,15 +33,13 @@ android:
   licences:
   - ".+"
 
-# script:
-#   - ./gradlew build
-#   - "curl -L 'https://drive.google.com/uc?id=1Ej8VgsW5RgK66Btb9p74tSdHMH3p4UNb&export=download' > gdrive"
-#   - chmod +x gdrive
-#   - sh ci/upload.sh
+script:
+  - ./ci/build.sh
+  - ./ci/test/sh
 
-jobs:
-  include:
-    - stage: build
-      script: ./ci/build.sh
-    - stage: test
-      script: ./ci/test.sh
+# jobs:
+#   include:
+#     - stage: build
+#       script: ./ci/build.sh
+#     - stage: test
+#       script: ./ci/test.sh
