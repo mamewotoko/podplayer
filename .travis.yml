@@ -35,7 +35,7 @@ android:
 
 script:
   - ./ci/build.sh
-  - ./ci/test/sh
+  - ./ci/test.sh
 
 # jobs:
 #   include:
