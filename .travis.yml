@@ -1,7 +1,8 @@
 language: android
 jdk:
   - oraclejdk8
-  - oraclejdk10
+# deprecated  
+#  - oraclejdk10
   - oraclejdk11
   - openjdk10
   - openjdk11  
@@ -39,11 +40,4 @@ android:
 
 script:
   - ./ci/build.sh
-  - ./ci/test.sh
-
-# jobs:
-#   include:
-#     - stage: build
-#       script: ./ci/build.sh
-#     - stage: test
-#       script: ./ci/test.sh
+#  - ./ci/test.sh
