@@ -98,6 +98,7 @@ LOGCAT_PID=$!
 adb devices | grep -e emulator -e online | cut -f1 | while read line; do adb -s $line emu kill || true ; done
 kill $LOGCAT_PID || true
 kill -9 $EMULATOR_PID || true
+timeout 120s wait $EMULATOR_PID
 killall -9 qemu-system-i386 || true
 adb kill-server || true
 pgrep -P $$ -l
