@@ -61,6 +61,7 @@ TODO
 ----
 * podcast list is slow (freezes)
   * loading icon
+* notification is not displayed on recent Android devices
 * add search UI to filter podcast by language, region, category
 * add weather news?
 * display author info of episode/podcast
