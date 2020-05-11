@@ -59,7 +59,7 @@ How to run UI test using Robotium
 
 TODO
 ----
-* podcast list is slow
+* podcast list is slow (freezes)
   * loading icon
 * add search UI to filter podcast by language, region, category
 * add weather news?
