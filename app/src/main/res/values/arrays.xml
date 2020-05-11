@@ -34,7 +34,7 @@
 
    <string-array name="pref_podcastlist_urls" translatable="false">
      <item>http://www.nhk.or.jp/rj/podcast/rss/english.xml</item>
-     <item>https://feed.podbean.com/acmbytecast/feed.xm</item>
+     <item>https://feed.podbean.com/acmbytecast/feed.xml</item>
      <item>https://feeds.simplecast.com/XA_851k3</item>
      <item>https://realpython.com/podcasts/rpp/feed</item>
      <item>http://mediapub.it.ox.ac.uk/feeds/137514/audio.xml</item>
