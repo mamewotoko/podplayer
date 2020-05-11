@@ -59,7 +59,9 @@ How to run UI test using Robotium
 
 TODO
 ----
-* add filter of language, region 
+* podcast list is slow
+  * loading icon
+* add search UI to filter podcast by language, region, category
 * add weather news?
 * display author info of episode/podcast
 * ask stop playing episode when exit menu is selected
@@ -203,7 +205,7 @@ The podplayer uses the following software, resource and tool.
 License
 -------
 
-    Copyright (c) 2012-2018 Takashi Masuyama. All rights reserved.
+    Copyright (c) 2012-2020 Takashi Masuyama. All rights reserved.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
