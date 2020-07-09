@@ -18,8 +18,8 @@ android {
         applicationId 'com.mamewo.podplayer0'
         minSdkVersion 10
         targetSdkVersion 26
-        versionCode 15
-        versionName '1.2.1'
+        versionCode 16
+        versionName '1.2.2'
 
         //For espresso
         //testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
@@ -50,7 +50,7 @@ android {
     }
 
     def isRunningOnTravis = System.getenv("CI") == "true"
-    
+
     if (isRunningOnTravis) {
         // configure keystore
         signingConfigs.release.storeFile = file("../podplayer.keystore")
@@ -92,9 +92,10 @@ spoon {
 
 dependencies {
   implementation project(':pulltorefresh')
-  implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+  implementation 'com.squareup.okhttp3:okhttp:3.12.0'
+  //  implementation 'com.squareup.okhttp3:okhttp:4.6.0'
   implementation 'commons-io:commons-io:2.4'
-  
+
   implementation 'com.android.support:support-v4:24.2.1'
   implementation 'com.android.support:appcompat-v7:24.2.1'
   implementation 'com.android.support:preference-v7:24.2.1'
@@ -103,7 +104,7 @@ dependencies {
   implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
   implementation 'com.github.bumptech.glide:glide:3.7.0'
   implementation 'io.realm:android-adapters:1.4.0'
-    
+
     //compile 'com.google.firebase:firebase-core:10.0.1'
     androidTestImplementation 'com.jayway.android.robotium:robotium-solo:5.6.3'
     androidTestImplementation 'com.squareup.spoon:spoon-client:1.6.4'
