@@ -13,7 +13,7 @@
     <string name="pref_autoload_podcast">Autoload podcast</string>
     <string name="pref_summary_do_not_skip_listened_episode">Do not skip</string>
     <string name="pref_summary_skip_listened_episode">Skip</string>
-    <string name="pref_skip_listened_episode_title">Skip listened spisode</string>
+    <string name="pref_skip_listened_episode_title">Skip listened episode</string>
     
     <string name="pref_do_not_load_automatically">Do not load automatically</string>
     <string name="pref_load_podcasts_when_app_starts">Load podcasts when app starts</string>

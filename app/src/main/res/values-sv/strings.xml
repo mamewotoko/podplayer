@@ -9,7 +9,12 @@
     <string name="pref_long_click_on">aktiverad</string>
     <string name="pref_long_click_off">funktionshindrade</string>
     <string name="pref_enable_long_click">Öppna länk på lång klick</string>
-    <string name="pref_autoload_podcast">Autoload podcast</string>
+
+    <string name="pref_summary_do_not_skip_listened_episode">hoppa inte över</string>
+    <string name="pref_summary_skip_listened_episode">hoppa</string>
+    <string name="pref_skip_listened_episode_title">Skip listened spisode</string>
+    
+    <string name="pref_autoload_podcast">Ladda podcast automatiskt</string>
     <string name="pref_do_not_load_automatically">Fyll inte automatiskt</string>
     <string name="pref_load_podcasts_when_app_starts">Fyll podcasts när appen startar</string>
     <string name="pref_read_timeout">Läs timeout</string>
@@ -20,6 +25,8 @@
     <string name="pref_pull_to_update_ui">dra att uppdatera UI</string>
     <string name="pref_expandable_list_ui">utbyggbart lista UI</string>
     <string name="pref_expand_list_in_default">utöka listan i standard</string>
+    <string name="pref_display_expand_icon_in_group">Display icon in group item</string>
+    
     <string name="pref_expand">expandera</string>
     <string name="pref_collapse">kollaps</string>
     <string name="pref_show_podcast_icon">Visa podcast ikon</string>
