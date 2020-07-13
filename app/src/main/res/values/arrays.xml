@@ -12,6 +12,7 @@
       <!-- guest -->
       <item>The Book Podcast</item>
       <!-- india -->
+      <!--
       <item>Josh Talks</item>
       <item>Play to Potential Podcast</item>
       <item>Desi Outsiders</item>
@@ -27,14 +28,19 @@
       <item>Books That Speak</item>
       <item>Culture Chaos : Stories of An Indian Abroad</item>
       <item>Bollywood Is For Lovers</item>
+      -->
       <!-- /india -->
       <item>Wall Street Journal This Morning</item>
       <item>BBC: The English We Speak</item>
       <item>Voice of America (VOA)</item>
+      <!--
       <item>エイゴの時間</item>
+      -->
       <item>Hapa英会話 Podcast</item>
       <item>外資系裏技英語</item>
+      <!--
       <item>勝手にENGLISH JOURNAL!</item>
+      -->
       <item>NHKラジオニュース</item>
     </string-array>
 
@@ -46,6 +52,8 @@
      <item>http://mediapub.it.ox.ac.uk/feeds/137514/audio.xml</item>
      <item>https://anchor.fm/s/10dc4730/podcast/rss</item>
      <!-- india podcast -->
+     <!-- investigating -->
+     <!--
      <item>https://audioboom.com/channels/4905444.rss</item>
      <item>https://audioboom.com/channels/4903808.rss</item>
      <item>https://audioboom.com/channels/4907155.rss</item>
@@ -61,14 +69,19 @@
      <item>https://audioboom.com/channels/4937959.rss</item>
      <item>https://audioboom.com/channels/4939690.rss</item>
      <item>https://audioboom.com/channels/4698690.rss</item>
+     -->
      <!-- /india -->
      <item>http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml</item>
      <item>http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml</item>
      <item>http://learningenglish.voanews.com/podcast/</item>
+     <!--
      <item>https://promptbox.net/eigonojikan/feed/</item>
+     -->
      <item>https://hapaeikaiwa.com/feed/</item>
      <item>https://urawazaeigo.libsyn.com/rss</item>
+     <!--
      <item>https://www.kej.tokyo/podcast?format=rss</item>
+     -->
      <item>https://www.nhk.or.jp/r-news/podcast/nhkradionews.xml</item>
      <!-- computer science -->
     </string-array>
