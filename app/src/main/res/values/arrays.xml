@@ -9,8 +9,6 @@
       <item>The Stack Overflow Podcast</item>
       <item>The Real Python Podcast</item>
       <item>Computer Science | University of Oxford Podcasts - Audio and Video Lectures</item>
-      <!-- guest -->
-      <item>The Book Podcast</item>
       <!-- india -->
       <!--
       <item>Josh Talks</item>
@@ -42,6 +40,8 @@
       <item>勝手にENGLISH JOURNAL!</item>
       -->
       <item>NHKラジオニュース</item>
+      <!-- guest -->
+      <item>The Book Podcast</item>
     </string-array>
 
    <string-array name="pref_podcastlist_urls" translatable="false">
@@ -50,7 +50,6 @@
      <item>https://feeds.simplecast.com/XA_851k3</item>
      <item>https://realpython.com/podcasts/rpp/feed</item>
      <item>http://mediapub.it.ox.ac.uk/feeds/137514/audio.xml</item>
-     <item>https://anchor.fm/s/10dc4730/podcast/rss</item>
      <!-- india podcast -->
      <!-- investigating -->
      <!--
@@ -83,8 +82,8 @@
      <item>https://www.kej.tokyo/podcast?format=rss</item>
      -->
      <item>https://www.nhk.or.jp/r-news/podcast/nhkradionews.xml</item>
-     <!-- computer science -->
-    </string-array>
+     <item>https://anchor.fm/s/10dc4730/podcast/rss</item>
+   </string-array>
 
     <string-array name="pref_timeout_titles">
         <item>None</item>
