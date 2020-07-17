@@ -33,15 +33,15 @@ public class PodcastRealm
     private String password;
     private int status;
     private int occurIndex;
-    
+
     @Ignore
     private URL parsedURL_;
-    
+
     public PodcastRealm(){
         id = 0;
         title = null;
         url = null;
-        enabled = true;
+        enabled = false;
         iconURL = null;
         username = null;
         password = null;
@@ -50,7 +50,7 @@ public class PodcastRealm
         status = Podcast.UNKNOWN;
         occurIndex = 0;
     }
-    
+
     public String getTitle(){
         return title;
     }
@@ -58,7 +58,7 @@ public class PodcastRealm
     public void setTitle(String title){
         this.title = title;
     }
-    
+
     public void setURL(String url) {
         this.url = url;
         try{
@@ -77,7 +77,7 @@ public class PodcastRealm
     public void setId(long id){
         this.id = id;
     }
-    
+
     public String getURL(){
         return url;
     }
@@ -92,7 +92,7 @@ public class PodcastRealm
         }
         return parsedURL_;
     }
-    
+
     public URL getURLWithAuthInfo(){
         try{
             if(null != this.username && null != this.password){
@@ -112,7 +112,7 @@ public class PodcastRealm
     public void setEnabled(boolean enabled){
         this.enabled = enabled;
     }
-    
+
     public String getIconURL(){
         return iconURL;
     }
@@ -156,7 +156,7 @@ public class PodcastRealm
     public void setDescription(String description){
         this.description = description;
     }
-    
+
     public String addUserInfo(String url){
         Log.d(TAG, "addUserInfo: " + url + " " + this.username + " " + this.password);
         if(null == url || null == this.username || null == this.password){

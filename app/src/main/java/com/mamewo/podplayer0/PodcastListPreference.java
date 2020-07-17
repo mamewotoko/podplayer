@@ -125,7 +125,7 @@ public class PodcastListPreference
     private int SCAN_QRCODE_REQUEST_CODE = 3232;
     static final
     private int PODCAST_SITE_REQUEST_CODE = 3233;
-        
+
     final static
     private String PODCAST_SITE_URL = "http://mamewo.ddo.jp/podcast/podcast.html";
     private PodcastRealm selectedPodcastInfo_;
@@ -141,7 +141,7 @@ public class PodcastListPreference
     private RealmResults<PodcastRealm> podcastList_;
     private int dialogID_;
     private RealmChangeListener<RealmResults<PodcastRealm>> changeListener_;
-    
+
     private class Option {
         public boolean expand_;
         public Option(){
@@ -149,11 +149,11 @@ public class PodcastListPreference
         }
     }
 
-   
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         setContentView(R.layout.podlist_editor);
         setTitle(R.string.app_podcastlist_title);
         addButton_ = (Button) findViewById(R.id.add_podcast_button);
@@ -165,7 +165,10 @@ public class PodcastListPreference
         dialogID_ = -1;
 
         Realm realm = Realm.getDefaultInstance();
-        podcastList_ = realm.where(PodcastRealm.class).findAllSorted("occurIndex", Sort.ASCENDING);
+        podcastList_ = realm.where(PodcastRealm.class)
+            .findAll()
+            .sort(new String[]{"occurIndex"},
+                  new Sort[]{Sort.ASCENDING});
         changeListener_ = new RealmChangeListener<RealmResults<PodcastRealm>>(){
                 @Override
                 public void onChange(RealmResults<PodcastRealm> results){
@@ -191,7 +194,7 @@ public class PodcastListPreference
                 }
             }
         }
-        
+
         //show back button ono toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -222,7 +225,7 @@ public class PodcastListPreference
         //TODO: add condition
         storeDefaultPodcastList(context);
     }
-    
+
     @Override
     public void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
@@ -230,7 +233,7 @@ public class PodcastListPreference
             outState.putCharSequence("selected_url", selectedPodcastInfo_.getURL().toString());
         }
     }
-    
+
     @Override
     public void onDestroy(){
         Log.d(TAG, "onDestroy: dialog" + dialogID_);
@@ -248,6 +251,17 @@ public class PodcastListPreference
 
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
+        //XXX 
+        String[] defaultEnabledTitles = {
+            "NHK WORLD RADIO JAPAN",
+            "Wall Street Journal This Morning",
+            "BBC: The English We Speak",
+            "Voice of America (VOA)",            
+            //"ACM ByteCast",
+            //"The Stack Overflow Podcast",
+            //"The Real Python Podcast",
+            //"Computer Science | University of Oxford Podcasts - Audio and Video Lectures"
+        };
         for (int i = 0; i < allTitles.length; i++) {
             String title = allTitles[i];
             String url = allURLs[i];
@@ -266,7 +280,15 @@ public class PodcastListPreference
             info.setId(id);
             info.setTitle(title);
             info.setURL(url);
-            info.setEnabled(true);
+            //TODO: select some podcast
+            info.setEnabled(false);
+            for(int j = 0; j < defaultEnabledTitles.length; j++){
+                String defaultTitle = defaultEnabledTitles[j];
+                if(title.equals(defaultTitle)){
+                    info.setEnabled(true);
+                    break;
+                }
+            }
         }
         realm.commitTransaction();
     }
@@ -303,7 +325,7 @@ public class PodcastListPreference
             pref.edit().putBoolean("podcastlist2", !prevValue).apply();
         }
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -316,11 +338,11 @@ public class PodcastListPreference
         boolean handled = false;
         Intent i;
         switch(item.getItemId()) {
-        case R.id.podcast_page_menu:
-            Intent intent = new Intent(this, PodcastSiteActivity.class);
-            startActivityForResult(intent, PODCAST_SITE_REQUEST_CODE);
-            handled = true;
-            break;
+        // case R.id.podcast_page_menu:
+        //     Intent intent = new Intent(this, PodcastSiteActivity.class);
+        //     startActivityForResult(intent, PODCAST_SITE_REQUEST_CODE);
+        //     handled = true;
+        //     break;
         case R.id.export_podcast_menu:
             showDialog(EXPORT_DIALOG);
             break;
@@ -334,7 +356,7 @@ public class PodcastListPreference
         }
         return handled;
     }
-    
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         Log.d(TAG, "requestCode: "+requestCode);
@@ -370,14 +392,14 @@ public class PodcastListPreference
             break;
         }
     }
-    
+
     private class SimpleRequest
     {
         private URL url_;
         private String username_;
         private String password_;
         private PodcastRealm prevInfo_;
-        
+
         public SimpleRequest(URL url, String username, String password, PodcastRealm prevInfo){
             url_ = url;
             username_ = username;
@@ -408,7 +430,7 @@ public class PodcastListPreference
 
     public void startCheckURLText(){
         String[] urlStrList = urlEdit_.getText().toString().split("\n");
-        
+
         //check url
         //String[] urlStrList = urlStr.split("\n");
         int malformed = 0;
@@ -453,7 +475,7 @@ public class PodcastListPreference
         }
         task_.execute(reqlist);
     }
-    
+
     @Override
     public void onClick(View view) {
         if (view == addButton_) {
@@ -470,7 +492,7 @@ public class PodcastListPreference
             checkbox.setChecked(info.getEnabled());
         }
     }
- 
+
     private Bitmap createQRCode(String content){
         //Map<EncodeHintType, Object> hints = null;
         BitMatrix result;
@@ -484,14 +506,14 @@ public class PodcastListPreference
         int heightScreen = display.getHeight();
         int smallerDimension = (widthScreen < heightScreen) ? widthScreen : heightScreen;
         smallerDimension = smallerDimension*7/8;
-        try{ 
+        try {
             result = new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE, smallerDimension, smallerDimension, hints);
         }
         catch(Exception e){
             Log.d(TAG, "QR code error:", e);
             return null;
         }
-                                
+
         int width = result.getWidth();
         int height = result.getHeight();
         int[] pixels = new int[width * height];
@@ -505,14 +527,14 @@ public class PodcastListPreference
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
         return bitmap;
     }
-    
+
     @Override
     protected Dialog onCreateDialog(int id, Bundle bundle) {
         Log.d(TAG, "onCreateDialog: " + id);
         Dialog dialog;
         AlertDialog.Builder builder = null;
         View view;
-        
+
         switch(id){
         case CHECKING_DIALOG:
             ProgressDialog progressDialog = new ProgressDialog(this);
@@ -566,7 +588,7 @@ public class PodcastListPreference
                                 Bundle b = new Bundle();
                                 b.putCharSequence("title", selectedPodcastInfo_.getTitle());
                                 b.putCharSequence("url", selectedPodcastInfo_.getURL().toString());
-                                
+
                                 showDialog(QRCODE_DIALOG, b);
                             }
                         }
@@ -591,12 +613,12 @@ public class PodcastListPreference
         //dialog_ = dialog;
         return dialog;
     }
-    
+
     @Override
     protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
         AlertDialog.Builder builder = null;
         dialogID_ = id;
-        
+
         switch(id){
         case CHECKING_DIALOG:
             dialog_ = dialog;
@@ -618,7 +640,7 @@ public class PodcastListPreference
             }
             String url = selectedPodcastInfo_.getURL().toString();
             Bitmap bitmap = createQRCode(url);
-            
+
             ImageView qrCode = (ImageView)dialog.findViewById(R.id.qr_code);
             qrCode.setImageBitmap(bitmap);
             TextView titleView = (TextView)dialog.findViewById(R.id.title);
@@ -630,13 +652,13 @@ public class PodcastListPreference
             break;
         }
     }
-    
+
     //check that podcast XML is valid
     public class CheckTask
         extends AsyncTask<SimpleRequest, String, Boolean>
     {
         private boolean addItem_;
-        
+
         public CheckTask(boolean addItem){
             addItem_ = addItem;
         }
@@ -672,7 +694,7 @@ public class PodcastListPreference
                 String iconURL = null;
                 String title = null;
                 Response response = null;
-                boolean isRSS = false;                
+                boolean isRSS = false;
                 try {
                     ///XXX
                     Request.Builder builder = new Request.Builder();
@@ -748,7 +770,7 @@ public class PodcastListPreference
                     //TODO: check content-type
                     is = response.body().byteStream();
                     is = new BOMInputStream(is, false);
-                    
+
                     XmlPullParser parser = factory.newPullParser();
                     parser.setInput(is, "UTF-8");
                     boolean inTitle = false;
@@ -843,7 +865,7 @@ public class PodcastListPreference
                         info.setPassword(password);
                         info.setStatus(status);
 
-                        realm.commitTransaction();                        
+                        realm.commitTransaction();
                         publishProgress(info.getTitle());
                     }
                     result = true;
@@ -851,7 +873,7 @@ public class PodcastListPreference
             }
             return result;
         }
-        
+
         @Override
         protected void onProgressUpdate(String... titles){
             // for(int i = 0; i < values.length; i++){
@@ -870,7 +892,7 @@ public class PodcastListPreference
             urlEdit_.clearFocus();
             isChanged_ = true;
         }
-        
+
         @Override
         protected void onPostExecute(Boolean result) {
             task_ = null;
@@ -884,7 +906,7 @@ public class PodcastListPreference
                 adapter_.notifyDataSetChanged();
             }
         }
-        
+
         @Override
         protected void onCancelled() {
             showMessage(getString(R.string.msg_add_podcast_cancelled));
@@ -893,7 +915,7 @@ public class PodcastListPreference
             dialog_ = null;
         }
     }
-    
+
     public class PodcastAdapter
         extends ArrayAdapter<PodcastRealm>
     {
@@ -961,13 +983,13 @@ public class PodcastListPreference
 
             holder.detailButton_.setTag(info);
             holder.detailButton_.setOnClickListener(new DetailButtonListener());
-            
+
             Option opt = optionMap_.get(urlStr);
-            
+
             if(null != opt && opt.expand_){
                 holder.podcastURL_.setText(urlStr);
                 holder.podcastURL_.setVisibility(View.VISIBLE);
-                
+
                 holder.deleteButton_.setTag(info);
                 holder.deleteButton_.setOnClickListener(new RemoveButtonListener());
                 holder.moveUpButton_.setTag(info);
@@ -1162,7 +1184,7 @@ public class PodcastListPreference
         }
         realm.commitTransaction();
     }
-    
+
     public void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
@@ -1236,12 +1258,12 @@ public class PodcastListPreference
                 }
             }
             realm.commitTransaction();
-            
+
             isChanged_ = true;
             adapter_.notifyDataSetChanged();
         }
     }
-    
+
     private class ShareButtonListener
         implements View.OnClickListener
     {
@@ -1256,7 +1278,7 @@ public class PodcastListPreference
             showDialog(SHARE_PODCAST_DIALOG, b);
         }
     }
-    
+
     private class DetailButtonListener
         implements View.OnClickListener
     {
@@ -1278,7 +1300,7 @@ public class PodcastListPreference
     {
         @Override
         public void onClick(View v){
-            PodcastRealm info = (PodcastRealm)v.getTag();            
+            PodcastRealm info = (PodcastRealm)v.getTag();
             ViewParent parent = v.getParent();
             if(null == parent){
                 //Log.d(TAG, "parent is null");
@@ -1315,10 +1337,10 @@ public class PodcastListPreference
         public EditText usernameEdit_;
         public EditText passwordEdit_;
         public Button loginButton_;
-        
+
         public LinearLayout authView_;
         public LinearLayout detailView_;
-        
+
         public Holder(View view){
             icon_ = (ImageView)view.findViewById(R.id.podcast_icon);
             checkbox_ = (CheckBox)view.findViewById(R.id.checkbox);

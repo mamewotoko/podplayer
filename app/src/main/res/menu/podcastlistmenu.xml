@@ -13,9 +13,12 @@
       android:title="@string/export_podcast_menu"
       >
   </item>
+  <!-- TODO: fix bug that cannot return to configure screen -->
+  <!--
   <item
       android:id="@+id/podcast_page_menu"
       android:icon="@android:drawable/ic_menu_slideshow"
       android:title="@string/podcast_webpage_menu">
   </item>
+  -->
 </menu>

@@ -38,7 +38,7 @@ How to build
     ./gradlew assembleDebug
     ```
 
-apk file created in ` ./app/build/outputs/apk/app-debug.apk `
+apk file created in `./app/build/outputs/apk/app-debug.apk`
 
 A file bin/podplayer-debug.apk is created if succeed.
 
@@ -70,6 +70,10 @@ TODO
 * add download feature
 * support adding podcast from link with pcast, podto, podcast schema 
 * add filter of language, region 
+* podcast list is slow (freezes)
+  * loading icon
+* notification is not displayed on recent Android devices
+* add search UI to filter podcast by language, region, category
 * add weather news?
 * display author info of episode/podcast
 * ask stop playing episode when exit menu is selected
@@ -213,7 +217,7 @@ The podplayer uses the following software, resource and tool.
 License
 -------
 
-    Copyright (c) 2012-2019 Takashi Masuyama. All rights reserved.
+    Copyright (c) 2012-2020 Takashi Masuyama. All rights reserved.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

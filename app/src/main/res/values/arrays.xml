@@ -5,6 +5,10 @@
 
     <string-array name="pref_podcastlist_keys" translatable="false">
       <item>NHK WORLD RADIO JAPAN</item>
+      <item>ACM ByteCast</item>
+      <item>The Stack Overflow Podcast</item>
+      <item>The Real Python Podcast</item>
+      <item>Computer Science | University of Oxford Podcasts - Audio and Video Lectures</item>
       <!-- india -->
       <item>Josh Talks</item>
       <item>Play to Potential Podcast</item>
@@ -25,12 +29,23 @@
       <item>Wall Street Journal This Morning</item>
       <item>BBC: The English We Speak</item>
       <item>Voice of America (VOA)</item>
+      <item>エイゴの時間</item>
+      <item>Hapa英会話 Podcast</item>
+      <item>外資系裏技英語</item>
+      <item>勝手にENGLISH JOURNAL!</item>
       <item>NHKラジオニュース</item>
+      <!-- guest -->
+      <item>The Book Podcast</item>
     </string-array>
 
    <string-array name="pref_podcastlist_urls" translatable="false">
      <item>http://www.nhk.or.jp/rj/podcast/rss/english.xml</item>
+     <item>https://feed.podbean.com/acmbytecast/feed.xml</item>
+     <item>https://feeds.simplecast.com/XA_851k3</item>
+     <item>https://realpython.com/podcasts/rpp/feed</item>
+     <item>http://mediapub.it.ox.ac.uk/feeds/137514/audio.xml</item>
      <!-- india podcast -->
+     <!-- investigating -->
      <item>https://audioboom.com/channels/4905444.rss</item>
      <item>https://audioboom.com/channels/4903808.rss</item>
      <item>https://audioboom.com/channels/4907155.rss</item>
@@ -48,10 +63,15 @@
      <item>https://audioboom.com/channels/4698690.rss</item>
      <!-- /india -->
      <item>http://feeds.wsjonline.com/wsj/podcast_wall_street_journal_this_morning?format=xml</item>
-      <item>http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml</item>
-      <item>http://learningenglish.voanews.com/podcast/</item>
-      <item>https://www.nhk.or.jp/r-news/podcast/nhkradionews.xml</item>
-    </string-array>
+     <item>http://downloads.bbc.co.uk/podcasts/worldservice/tae/rss.xml</item>
+     <item>http://learningenglish.voanews.com/podcast/</item>
+     <item>https://promptbox.net/eigonojikan/feed/</item>
+     <item>https://hapaeikaiwa.com/feed/</item>
+     <item>https://urawazaeigo.libsyn.com/rss</item>
+     <item>https://www.kej.tokyo/podcast?format=rss</item>
+     <item>https://www.nhk.or.jp/r-news/podcast/nhkradionews.xml</item>
+     <item>https://anchor.fm/s/10dc4730/podcast/rss</item>
+   </string-array>
 
     <string-array name="pref_timeout_titles">
         <item>None</item>

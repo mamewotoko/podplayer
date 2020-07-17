@@ -1,24 +1,43 @@
 language: android
 jdk:
   - oraclejdk8
-#  - openjdk7
-
+# deprecated  
+#  - oraclejdk10
+  - oraclejdk11
+  - openjdk10
+  - openjdk11  
+# dist: xenial
 git:
   submodules: false
+# record desktop
+addons:
+  apt:
+    packages:
+      - libc6
+#     sources:
+#       - ppa:mc3man/trusty-media
+#       - xvfb
+#       - x11-apps
+#       - imagemagick
+#       - ffmpeg
 
 before_install:
-  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
-  - git submodule update --init --recursive  
-  
-android:
-    components:
-        - tools
-        - build-tools-26.0.1
-        - android-24
-        - android-23
-        - extra-android-m2repository
-    licences:
-        - '.+'
+- openssl aes-256-cbc -K $encrypted_8661902f6ce3_key -iv $encrypted_8661902f6ce3_iv
+  -in podplayer.keystore.enc -out podplayer.keystore -d
+- sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+- git submodule update --init --recursive
 
-script:  
-  - ./gradlew assembleDebug assembleDebugAndroidTest
+android:
+  components:
+  - tools
+  - platform-tools  
+  - build-tools-28.0.3
+  - android-24
+  - android-26
+  - extra-android-m2repository
+  licences:
+  - ".+"
+
+script:
+  - ./ci/build.sh
+#  - ./ci/test.sh
