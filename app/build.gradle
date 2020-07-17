@@ -19,7 +19,8 @@ android {
         minSdkVersion 10
         //to use java.util.Objects minSdkVersion is 19
         //minSdkVersion 19
-        targetSdkVersion 26
+        //now Google Play accepts SDK over 28
+        targetSdkVersion 28
         versionCode 16
         versionName '1.2.2'
 
