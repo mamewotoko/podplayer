@@ -17,7 +17,7 @@ android {
     defaultConfig {
         applicationId 'com.mamewo.podplayer0'
         minSdkVersion 10
-        //to use java.util.Objects
+        //to use java.util.Objects minSdkVersion is 19
         //minSdkVersion 19
         targetSdkVersion 26
         versionCode 16
@@ -93,9 +93,9 @@ spoon {
 }
 
 dependencies {
-   implementation project(':pulltorefresh')
+  implementation project(':pulltorefresh')
   implementation 'com.squareup.okhttp3:okhttp:3.12.3'
-  //  implementation 'com.squareup.okhttp3:okhttp:4.6.0'
+  //implementation 'com.squareup.okhttp3:okhttp:4.6.0'
   implementation 'commons-io:commons-io:2.4'
 
   implementation 'com.android.support:support-v4:24.2.1'

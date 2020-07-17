@@ -251,6 +251,17 @@ public class PodcastListPreference
 
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
+        //XXX 
+        String[] defaultEnabledTitles = {
+            "NHK WORLD RADIO JAPAN",
+            "Wall Street Journal This Morning",
+            "BBC: The English We Speak",
+            "Voice of America (VOA)",            
+            //"ACM ByteCast",
+            //"The Stack Overflow Podcast",
+            //"The Real Python Podcast",
+            //"Computer Science | University of Oxford Podcasts - Audio and Video Lectures"
+        };
         for (int i = 0; i < allTitles.length; i++) {
             String title = allTitles[i];
             String url = allURLs[i];
@@ -271,6 +282,13 @@ public class PodcastListPreference
             info.setURL(url);
             //TODO: select some podcast
             info.setEnabled(false);
+            for(int j = 0; j < defaultEnabledTitles.length; j++){
+                String defaultTitle = defaultEnabledTitles[j];
+                if(title.equals(defaultTitle)){
+                    info.setEnabled(true);
+                    break;
+                }
+            }
         }
         realm.commitTransaction();
     }
@@ -320,11 +338,11 @@ public class PodcastListPreference
         boolean handled = false;
         Intent i;
         switch(item.getItemId()) {
-        case R.id.podcast_page_menu:
-            Intent intent = new Intent(this, PodcastSiteActivity.class);
-            startActivityForResult(intent, PODCAST_SITE_REQUEST_CODE);
-            handled = true;
-            break;
+        // case R.id.podcast_page_menu:
+        //     Intent intent = new Intent(this, PodcastSiteActivity.class);
+        //     startActivityForResult(intent, PODCAST_SITE_REQUEST_CODE);
+        //     handled = true;
+        //     break;
         case R.id.export_podcast_menu:
             showDialog(EXPORT_DIALOG);
             break;
