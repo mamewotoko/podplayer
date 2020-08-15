@@ -21,8 +21,8 @@ android {
         //minSdkVersion 19
         //now Google Play accepts SDK over 28
         targetSdkVersion 28
-        versionCode 16
-        versionName '1.2.2'
+        versionCode 17
+        versionName '1.2.3'
 
         //For espresso
         //testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
