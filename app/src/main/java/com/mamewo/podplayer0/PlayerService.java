@@ -16,6 +16,8 @@ import io.realm.Realm;
 import static com.mamewo.podplayer0.Const.*;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -118,7 +120,7 @@ public class PlayerService
 	private int INFO_FORMAT_CHANGED = MEDIA_ERROR_BASE - 12;
 	final static
 	private int INFO_DISCONTINUITY = MEDIA_ERROR_BASE - 13;
-	
+
 	//TODO: check
 	// static
 	// public boolean isNetworkConnected(Context context) {
@@ -128,7 +130,7 @@ public class PlayerService
 	// 	return (networkInfo != null && networkInfo.isConnected());
 	// }
 
-    //TODO: pass query 
+    //TODO: pass query
 	public void setPlaylistQuery(String title, boolean skipListened, int order) {
 		//currentPlaylist_ = playlist;
         //add test
@@ -136,7 +138,7 @@ public class PlayerService
         podcastList_ = query.getPodcastList();
         currentPlaylist_ = query.getEpisodeList();
 	}
-  
+
 	//previous tune when previous is clicked twice quickly
 	public void playPrevious(){
 		long currentTime = System.currentTimeMillis();
@@ -156,7 +158,7 @@ public class PlayerService
 		}
 		previousPrevKeyTime_ = currentTime;
 	}
-	
+
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
 		//null intent is passed when service is restarted after killed on Android 4.0
@@ -226,7 +228,7 @@ public class PlayerService
 		}
 		return START_STICKY;
 	}
-	
+
 	public boolean isPlaying() {
         if(null == player_){
             return false;
@@ -237,7 +239,7 @@ public class PlayerService
 	public RealmResults<EpisodeRealm> getCurrentPlaylist() {
 		return currentPlaylist_;
 	}
-	
+
 	/**
 	 * get current playing or pausing music
 	 * @return current music info
@@ -248,7 +250,7 @@ public class PlayerService
 		}
 		return null;
 	}
-	
+
 	public boolean playNext() {
 		Log.d(TAG, "playNext");
 		if(currentPlaylist_ == null || currentPlaylist_.size() == 0) {
@@ -293,8 +295,8 @@ public class PlayerService
         }
 		return playNth(pos);
     }
-    
-    
+
+
 	/**
 	 * start music from paused position
 	 * @return true if succeed
@@ -343,7 +345,7 @@ public class PlayerService
             player_.reset();
             String username = currentPlaying_.getPodcast().getUsername();
             String password = currentPlaying_.getPodcast().getPassword();
-                
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                 Uri uri = Uri.parse(currentPlaying_.getURL());
                 Map<String, String> header = null;
@@ -352,7 +354,10 @@ public class PlayerService
                     header = new HashMap<String,String>();
                     header.put("Authorization", authHeader);
                 }
-                player_.setDataSource(this, uri, header);
+                //player_.setDataSource(this, uri, header);
+                //TODO: support header
+                String url = currentPlaying_.getURL();
+                player_.setDataSource(url);
             }
             else {
                 String url = currentPlaying_.getURL();
@@ -381,7 +386,7 @@ public class PlayerService
 		}
 		return true;
 	}
-	
+
 	public void stopMusic() {
 		if (isPreparing_) {
 			stopOnPrepared_ = true;
@@ -421,7 +426,7 @@ public class PlayerService
 			listener_.onStopMusic(PAUSE);
 		}
 	}
-	
+
 	public class LocalBinder
 		extends Binder
 	{
@@ -429,7 +434,7 @@ public class PlayerService
 			return PlayerService.this;
 		}
 	}
-	
+
 	@Override
 	public void onCreate(){
 		super.onCreate();
@@ -454,7 +459,7 @@ public class PlayerService
 		mediaButtonReceiver_ = new ComponentName(getPackageName(), Receiver.class.getName());
 		manager.registerMediaButtonEventReceiver(mediaButtonReceiver_);
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -469,7 +474,7 @@ public class PlayerService
 		currentPlaylist_ = null;
 		super.onDestroy();
 	}
-	
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		return binder_;
@@ -477,9 +482,23 @@ public class PlayerService
 
 	//TODO: show podcast title / episode title
 	private void showNotification(String episodeTitle) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Log.d(TAG, "showNotification create channel");
+
+            // String channelId = "com.mamewo.podplayer0";
+            // String channelName = "podplayer";
+            // NotificationChannel channel = new NotificationChannel(channelId,
+            //                                                       channelName,
+            //                                                       NotificationManager.IMPORTANCE_DEFAULT);
+            // NotificationManager manager = getSystemService(NotificationManager.class);
+            // manager.createNotificationChannel(channel);
+            //TODO: create channel
+            return;
+        }
+
 		RemoteViews rvs = new RemoteViews(getClass().getPackage().getName(), R.layout.notification);
 		rvs.setTextViewText(R.id.notification_title, episodeTitle);
-		
+
 		Intent pauseIntent = new Intent(this, getClass());
 		if(isPlaying()){
 			pauseIntent.setAction(STOP_MUSIC_ACTION);
@@ -497,7 +516,7 @@ public class PlayerService
 		}
 		PendingIntent pausePendingIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
 		rvs.setOnClickPendingIntent(R.id.notification_pause, pausePendingIntent);
-		
+
 		Intent prevIntent = new Intent(this, getClass());
 		prevIntent.setAction(PREVIOUS_MUSIC_ACTION);
 		PendingIntent previousPendingIntent = PendingIntent.getService(this, 0, prevIntent, 0);
@@ -518,7 +537,7 @@ public class PlayerService
 			.setOngoing(true)
 			.setContent(rvs);
 		//.setForegroundService(true)
-			//.setCategory(Notification.CATEGORY_TRANSPORT)
+        //.setCategory(Notification.CATEGORY_TRANSPORT)
 		Intent resultIntent = new Intent(this, USER_CLASS);
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 		stackBuilder.addParentStack(USER_CLASS);
@@ -671,7 +690,7 @@ public class PlayerService
 	public void clearOnStartMusicListener() {
 		listener_ = null;
 	}
-	
+
 	public interface PlayerStateListener {
 		void onStartLoadingMusic(long episodeId);
         void onCompleteMusic(long episodeId);
