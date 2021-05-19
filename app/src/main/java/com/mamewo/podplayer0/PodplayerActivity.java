@@ -61,10 +61,11 @@ public class PodplayerActivity
 {
     private ImageButton playButton_;
     private Spinner selector_;
-    private PullToRefreshListView episodeListView_;
+    //private PullToRefreshListView episodeListView_;
     //adapter_: filtered view
     //private SeekBar currentPlayPosition_;
-    private EpisodeAdapter adapter_;
+    //TODO:
+    //private EpisodeAdapter adapter_;
     private SimpleQuery currentQuery_;
 
     //number of items for one screen (small phone)
@@ -81,21 +82,23 @@ public class PodplayerActivity
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayShowTitleEnabled(false);
 
-		playButton_ = (ImageButton) findViewById(R.id.play_button);
+        playButton_ = (ImageButton) findViewById(R.id.play_button);
         playButton_.setOnClickListener(this);
         playButton_.setEnabled(false);
         selector_ = (Spinner) findViewById(R.id.podcast_selector);
         selector_.setOnItemSelectedListener(this);
-        episodeListView_ = (PullToRefreshListView) findViewById(R.id.list);
-        episodeListView_.setOnItemClickListener(this);
-        episodeListView_.setOnItemLongClickListener(this);
-        episodeListView_.setOnRefreshListener(this);
-        episodeListView_.setOnCancelListener(this);
+        //episodeListView_ = (PullToRefreshListView) findViewById(R.id.list);
+        //TODO:
+        // episodeListView_.setOnItemClickListener(this);
+        // episodeListView_.setOnItemLongClickListener(this);
+        // episodeListView_.setOnRefreshListener(this);
+        // episodeListView_.setOnCancelListener(this);
         //initial dummy
         loadRealm();
 
-        adapter_ = new EpisodeAdapter();
-        episodeListView_.setAdapter(adapter_);
+        // adapter_ = new EpisodeAdapter();
+        // episodeListView_.setAdapter(adapter_);
+
         //currentPlayPosition_ = (SeekBar) findViewById(R.id.seekbar);
         //currentPlayPosition_.setOnSeekBarChangeListener(this);
     }
@@ -121,36 +124,42 @@ public class PodplayerActivity
     public void updateAndLoad(){
         updateSelector();
         boolean doLoad = pref_.getBoolean("load_on_start", getResources().getBoolean(R.bool.default_load_on_start));
-        if(doLoad && (null == state_.lastUpdatedDate_ || adapter_.getCount() == 0)){
-            episodeListView_.startRefresh();
-        }
-        adapter_.notifyDataSetChanged();
+        // if(doLoad && (null == state_.lastUpdatedDate_ || adapter_.getCount() == 0)){
+        //     episodeListView_.startRefresh();
+        // }
+        //TODO
+        // adapter_.notifyDataSetChanged();
     }
 
     @Override
     public void notifyEpisodeListAllChanged(RealmResults<EpisodeRealm> results){
-        adapter_.notifyDataSetChanged();
+        //TODO
+        //adapter_.notifyDataSetChanged();
     }
 
     @Override
     public void notifyEpisodeListGroupChanged(long podcastId, RealmResults<EpisodeRealm> results){
-        adapter_.notifyDataSetChanged();
+        //TODO
+        //adapter_.notifyDataSetChanged();
     }
 
     @Override
     public void notifyQuerySettingChanged(){
-        episodeListView_.hideHeader();
+        //episodeListView_.hideHeader();
         loadRealm();
-        adapter_.notifyDataSetChanged();
+        //TODO
+        //adapter_.notifyDataSetChanged();
     }
 
     @Override
     public void notifyUISettingChanged(){
-        adapter_.notifyDataSetChanged();
+        //TODO
+        //adapter_.notifyDataSetChanged();
     }
     
     private void updateUI() {
-        adapter_.notifyDataSetChanged();
+        //TODO
+        // adapter_.notifyDataSetChanged();
         updatePlayButton();
     }
 
@@ -212,26 +221,27 @@ public class PodplayerActivity
         if(null == player_){
             return;
         }
-        //refresh header is added....
-        EpisodeRealm info = (EpisodeRealm)adapter_.getItem(pos-1);
-        EpisodeRealm current = player_.getCurrentPodInfo();
-        Log.d(TAG, "current: "+current);
-        Log.d(TAG, "clicked: "+info);
-        if(current != null && current.getId() == info.getId()) {
-            Log.d(TAG, "current: title "+current.getTitle());
-            Log.d(TAG, "onItemClick: URL: " + current.getURL());
-            if(player_.isPlaying()) {
-                player_.pauseMusic();
-            }
-            else {
-                if(! player_.restartMusic()){
-                    playEpisode(info);
-                }
-            }
-        }
-        else {
-            playEpisode(info);
-        }
+        return;
+        // //refresh header is added....
+        // EpisodeRealm info = (EpisodeRealm)adapter_.getItem(pos-1);
+        // EpisodeRealm current = player_.getCurrentPodInfo();
+        // Log.d(TAG, "current: "+current);
+        // Log.d(TAG, "clicked: "+info);
+        // if(current != null && current.getId() == info.getId()) {
+        //     Log.d(TAG, "current: title "+current.getTitle());
+        //     Log.d(TAG, "onItemClick: URL: " + current.getURL());
+        //     if(player_.isPlaying()) {
+        //         player_.pauseMusic();
+        //     }
+        //     else {
+        //         if(! player_.restartMusic()){
+        //             playEpisode(info);
+        //         }
+        //     }
+        // }
+        // else {
+        //     playEpisode(info);
+        // }
     }
 
     private void playEpisode(EpisodeRealm episode) {
@@ -398,8 +408,8 @@ public class PodplayerActivity
 
         private void onFinished() {
             state_.lastUpdatedDate_ = new Date();
-            episodeListView_.onRefreshComplete(getString(R.string.header_lastupdated) + dateFormat_.format(state_.lastUpdatedDate_));
-            episodeListView_.hideHeader();
+            // episodeListView_.onRefreshComplete(getString(R.string.header_lastupdated) + dateFormat_.format(state_.lastUpdatedDate_));
+            // episodeListView_.hideHeader();
             updateSelector();
             loadTask_ = null;
             //TODO: Sync playlist
@@ -433,16 +443,17 @@ public class PodplayerActivity
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
-        EpisodeRealm info = (EpisodeRealm)adapter_.getItem(pos-1);
-        Resources res = getResources();
-        boolean enableLongClick = pref_.getBoolean("enable_long_click", res.getBoolean(R.bool.default_enable_long_click));
-        if ((! enableLongClick) || null == info.getLink()) {
-            return false;
-        }
-        //TODO: skip if url does not refer html?
-        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(info.getLink()));
-        startActivity(i);
         return true;
+        // EpisodeRealm info = (EpisodeRealm)adapter_.getItem(pos-1);
+        // Resources res = getResources();
+        // boolean enableLongClick = pref_.getBoolean("enable_long_click", res.getBoolean(R.bool.default_enable_long_click));
+        // if ((! enableLongClick) || null == info.getLink()) {
+        //     return false;
+        // }
+        // //TODO: skip if url does not refer html?
+        // Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(info.getLink()));
+        // startActivity(i);
+        // return true;
     }
 
     @Override
@@ -497,8 +508,9 @@ public class PodplayerActivity
     }
 
     private void filterSelectedPodcast(){
-        episodeListView_.hideHeader();
-        adapter_.notifyDataSetChanged();
+        // episodeListView_.hideHeader();
+        //TODO
+        //adapter_.notifyDataSetChanged();
     }
     
     private String getFilterPodcastTitle(){

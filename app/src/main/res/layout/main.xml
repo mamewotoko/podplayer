@@ -35,10 +35,16 @@
       android:eventsInterceptionEnabled="true"
       android:gestureStrokeType="single"
       android:orientation="vertical" >
-    <com.markupartist.android.widget.PullToRefreshListView
-        android:id="@+id/list"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        />
+        >
+        <ListView
+            android:id="@+id/list"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            />
+    </android.support.v4.widget.SwipeRefreshLayout>    
   </android.gesture.GestureOverlayView>
 </LinearLayout>
