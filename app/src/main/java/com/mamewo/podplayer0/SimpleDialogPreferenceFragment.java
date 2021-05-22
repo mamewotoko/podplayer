@@ -1,6 +1,6 @@
 package com.mamewo.podplayer0;
 
-import android.support.v7.preference.PreferenceDialogFragmentCompat;
+import androidx.preference.PreferenceDialogFragmentCompat;
 import android.os.Bundle;
 import android.app.Dialog;
 import android.app.AlertDialog;
@@ -23,8 +23,8 @@ public class SimpleDialogPreferenceFragment
     implements View.OnClickListener
 
 {
-	static final
-	public String GITHUB_URL = "https://github.com/mamewotoko/podplayer";
+    static final
+    public String GITHUB_URL = "https://github.com/mamewotoko/podplayer";
     
     static
     public SimpleDialogPreferenceFragment newInstance(String key){
@@ -48,28 +48,28 @@ public class SimpleDialogPreferenceFragment
             builder.setTitle(R.string.pref_gesture_list);
         }
         else if("license".equals(key)) {
-			StringBuffer licenseText = new StringBuffer();
-			Resources res = getResources();
-			InputStream is = res.openRawResource(R.raw.apache20);
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			String line;
-			try {
-				while((line = br.readLine()) != null) {
-					licenseText.append(line+"\n");
-				}
-			}
-			catch(IOException e) {
-				Log.d(TAG, "cannot read license", e);
-			}
-			finally {
-				try{
-					br.close();
-					is.close();
-				}
-				catch(IOException e) {
-					//nop
-				}
-			}
+            StringBuffer licenseText = new StringBuffer();
+            Resources res = getResources();
+            InputStream is = res.openRawResource(R.raw.apache20);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line;
+            try {
+                while((line = br.readLine()) != null) {
+                    licenseText.append(line+"\n");
+                }
+            }
+            catch(IOException e) {
+                Log.d(TAG, "cannot read license", e);
+            }
+            finally {
+                try{
+                    br.close();
+                    is.close();
+                }
+                catch(IOException e) {
+                    //nop
+                }
+            }
             builder.setTitle(R.string.pref_license);
             builder.setMessage(licenseText.toString());
         }

@@ -73,7 +73,6 @@ import android.view.ViewParent;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-//import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
@@ -93,17 +92,15 @@ import android.content.DialogInterface.OnCancelListener;
 import okhttp3.OkHttpClient;
 import com.bumptech.glide.Glide;
 
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
-//import android.support.v7.widget.RecyclerView;
-//import android.support.v7.widget.LinearLayoutManager;
 import android.widget.ListView;
 import com.mamewo.podplayer0.db.PodcastRealm;
 
 public class PodcastListPreference
-	extends AppCompatActivity
+    extends AppCompatActivity
     implements OnClickListener,
     OnCancelListener
 {

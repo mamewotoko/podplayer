@@ -202,6 +202,8 @@ TODO
 * add error handling
 * write user guide?
 * display playing icon in group of expandable list
+* Use SwipeToRefreshView
+  * <https://developer.android.com/jetpack/androidx/migrate/class-mappings?hl=ja>
 
 Third-party libraries
 ---------------------

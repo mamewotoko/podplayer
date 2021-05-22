@@ -12,9 +12,9 @@ import android.content.Intent;
 import android.app.Activity;
 import android.widget.EditText;
 import android.webkit.WebChromeClient;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import static com.mamewo.podplayer0.Const.*;
 

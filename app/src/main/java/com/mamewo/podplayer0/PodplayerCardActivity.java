@@ -13,8 +13,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.DialogInterface;
 
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.ViewGroup;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -49,8 +49,8 @@ import io.realm.RealmChangeListener;
 
 import com.bumptech.glide.Glide;
 import static com.mamewo.podplayer0.Const.*;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.ActionBar;
 
 public class PodplayerCardActivity
     extends BasePodplayerActivity
@@ -196,7 +196,7 @@ public class PodplayerCardActivity
         //stop loading?
         ArrayAdapter<String> adapter =
             new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-		adapter.setDropDownViewResource(android.support.v7.appcompat.R.layout.support_simple_spinner_dropdown_item);
+		adapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
         selector_.setAdapter(adapter);
     }
 

@@ -50,7 +50,7 @@ import okhttp3.Cache;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;

@@ -28,11 +28,11 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.mamewo.podplayer0.parser.BaseGetPodcastTask;
-import com.markupartist.android.widget.PullToRefreshListView;
 
 import com.mamewo.podplayer0.db.PodcastRealm;
 import com.mamewo.podplayer0.db.EpisodeRealm;
@@ -43,8 +43,8 @@ import io.realm.Realm;
 //import io.realm.RealmChangeListener;
 
 import com.bumptech.glide.Glide;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.ActionBar;
 import android.widget.ImageButton;
 
 public class PodplayerActivity
@@ -54,19 +54,18 @@ public class PodplayerActivity
                OnItemLongClickListener,
                OnItemSelectedListener,
                PlayerService.PlayerStateListener,
-               PullToRefreshListView.OnRefreshListener,
-               PullToRefreshListView.OnCancelListener,
-               SimpleQuery.DataChangeListener
+               SimpleQuery.DataChangeListener,
+               SwipeRefreshLayout.OnRefreshListener
                //SeekBar.OnSeekBarChangeListener           
 {
     private ImageButton playButton_;
     private Spinner selector_;
-    //private PullToRefreshListView episodeListView_;
+    private ListView episodeListView_;
     //adapter_: filtered view
     //private SeekBar currentPlayPosition_;
-    //TODO:
-    //private EpisodeAdapter adapter_;
+    private EpisodeAdapter adapter_;
     private SimpleQuery currentQuery_;
+    SwipeRefreshLayout swipeView_;
 
     //number of items for one screen (small phone)
     static final
@@ -87,17 +86,21 @@ public class PodplayerActivity
         playButton_.setEnabled(false);
         selector_ = (Spinner) findViewById(R.id.podcast_selector);
         selector_.setOnItemSelectedListener(this);
+
+        episodeListView_ = (ListView) findViewById(R.id.list);
+        swipeView_ =  (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+
         //episodeListView_ = (PullToRefreshListView) findViewById(R.id.list);
         //TODO:
         // episodeListView_.setOnItemClickListener(this);
         // episodeListView_.setOnItemLongClickListener(this);
-        // episodeListView_.setOnRefreshListener(this);
+        swipeView_.setOnRefreshListener(this);
         // episodeListView_.setOnCancelListener(this);
         //initial dummy
         loadRealm();
 
-        // adapter_ = new EpisodeAdapter();
-        // episodeListView_.setAdapter(adapter_);
+        adapter_ = new EpisodeAdapter();
+        episodeListView_.setAdapter(adapter_);
 
         //currentPlayPosition_ = (SeekBar) findViewById(R.id.seekbar);
         //currentPlayPosition_.setOnSeekBarChangeListener(this);
@@ -253,9 +256,9 @@ public class PodplayerActivity
     //UI is updated in following callback methods
     @Override
     public void onStartMusic(long episodeId) {
-		//setProgressBarIndeterminateVisibility(false);
-		//currentPlayPosition_.setMax(player_.getDuration());
-		//int pos = player_.getCurrentPositionMsec();
+        //setProgressBarIndeterminateVisibility(false);
+        //currentPlayPosition_.setMax(player_.getDuration());
+        //int pos = player_.getCurrentPositionMsec();
         //currentPlayPosition_.setProgress(pos);
         //timer
         updateUI();
@@ -433,13 +436,13 @@ public class PodplayerActivity
         loadPodcast();
     }
 
-    @Override
-    public void onCancel() {
-        if (null != loadTask_) {
-            loadTask_.cancel(true);
-            loadTask_ = null;
-        }
-    }
+    // @Override
+    // public void onCancel() {
+    //     if (null != loadTask_) {
+    //         loadTask_.cancel(true);
+    //         loadTask_ = null;
+    //     }
+    // }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
@@ -503,7 +506,7 @@ public class PodplayerActivity
         //stop loading?
         ArrayAdapter<String> adapter =
             new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-		adapter.setDropDownViewResource(android.support.v7.appcompat.R.layout.support_simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
         selector_.setAdapter(adapter);
     }
 

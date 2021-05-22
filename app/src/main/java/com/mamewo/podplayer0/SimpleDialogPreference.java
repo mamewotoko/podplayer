@@ -2,7 +2,7 @@ package com.mamewo.podplayer0;
 
 import android.util.AttributeSet;
 import android.content.Context;
-import android.support.v7.preference.DialogPreference;
+import androidx.preference.DialogPreference;
 import android.app.Dialog;
 
 public class SimpleDialogPreference
