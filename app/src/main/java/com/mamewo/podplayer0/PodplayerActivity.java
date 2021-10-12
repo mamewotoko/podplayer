@@ -43,8 +43,8 @@ import io.realm.Realm;
 //import io.realm.RealmChangeListener;
 
 import com.bumptech.glide.Glide;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.ActionBar;
 import android.widget.ImageButton;
 
 public class PodplayerActivity
@@ -492,7 +492,7 @@ public class PodplayerActivity
         //stop loading?
         ArrayAdapter<String> adapter =
             new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-		adapter.setDropDownViewResource(android.support.v7.appcompat.R.layout.support_simple_spinner_dropdown_item);
+		//adapter.setDropDownViewResource(android.R.layout.support_simple_spinner_dropdown_item);
         selector_.setAdapter(adapter);
     }
 

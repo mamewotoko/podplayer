@@ -93,12 +93,12 @@ import android.content.DialogInterface.OnCancelListener;
 import okhttp3.OkHttpClient;
 import com.bumptech.glide.Glide;
 
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
-//import android.support.v7.widget.RecyclerView;
-//import android.support.v7.widget.LinearLayoutManager;
+//import androidx.appcompat.widget.RecyclerView;
+//import androidx.appcompat.widget.LinearLayoutManager;
 import android.widget.ListView;
 import com.mamewo.podplayer0.db.PodcastRealm;
 

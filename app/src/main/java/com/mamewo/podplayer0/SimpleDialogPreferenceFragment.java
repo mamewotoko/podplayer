@@ -1,6 +1,6 @@
 package com.mamewo.podplayer0;
 
-import android.support.v7.preference.PreferenceDialogFragmentCompat;
+import androidx.preference.PreferenceDialogFragmentCompat;
 import android.os.Bundle;
 import android.app.Dialog;
 import android.app.AlertDialog;

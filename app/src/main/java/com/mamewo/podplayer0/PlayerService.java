@@ -40,8 +40,8 @@ import com.mamewo.podplayer0.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 import android.widget.RemoteViews;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.TaskStackBuilder;
 
 public class PlayerService
 	extends Service
@@ -73,7 +73,7 @@ public class PlayerService
 	final static
 	private Class<MainActivity> USER_CLASS = MainActivity.class;
 	final static
-	private int NOTIFY_PLAYING_ID = 1;
+	private int NOTIFY_PLAYING_ID = 12332;
 	private final IBinder binder_ = new LocalBinder();
 	private RealmResults<PodcastRealm> podcastList_;
 	private RealmResults<EpisodeRealm> currentPlaylist_;
@@ -88,6 +88,9 @@ public class PlayerService
 	private long previousPrevKeyTime_;
 	private EpisodeRealm currentPlaying_;
 	private	SharedPreferences pref_;
+
+	final static
+	private Class<?> userClass_ = MainActivity.class;
 
 	//error code
 	//error code from base/include/media/stagefright/MediaErrors.h
@@ -482,70 +485,81 @@ public class PlayerService
 
 	//TODO: show podcast title / episode title
 	private void showNotification(String episodeTitle) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Log.d(TAG, "showNotification create channel");
+		// String channelId = "";
+		// if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+		// 	channelId = createNotificationChannel("com.mamewo.podplayer0", "PlayerService");
+		// }
+		NotificationChannel channel = new NotificationChannel("com.mamewo.podplayer0",
+															  "PodPlayer",
+															  NotificationManager.IMPORTANCE_DEFAULT);
+        int iconId = R.drawable.ic_status;
+        Log.d(TAG, "showNotification:" + episodeTitle);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channel.toString())
+            .setSmallIcon(R.drawable.ic_status)
+            .setContentTitle(episodeTitle)
+            .setAutoCancel(false)
+            .setOngoing(true);
 
-            // String channelId = "com.mamewo.podplayer0";
-            // String channelName = "podplayer";
-            // NotificationChannel channel = new NotificationChannel(channelId,
-            //                                                       channelName,
-            //                                                       NotificationManager.IMPORTANCE_DEFAULT);
-            // NotificationManager manager = getSystemService(NotificationManager.class);
-            // manager.createNotificationChannel(channel);
-            //TODO: create channel
-            return;
-        }
+        Intent resultIntent = new Intent(this, userClass_);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(userClass_);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(resultPendingIntent);
+        Notification note = builder.build();
+        Log.d(TAG, "startForeground");
+        startForeground(NOTIFY_PLAYING_ID, note);
+		
+		// RemoteViews rvs = new RemoteViews(getClass().getPackage().getName(), R.layout.notification);
+		// rvs.setTextViewText(R.id.notification_title, episodeTitle);
 
-		RemoteViews rvs = new RemoteViews(getClass().getPackage().getName(), R.layout.notification);
-		rvs.setTextViewText(R.id.notification_title, episodeTitle);
+		// Intent pauseIntent = new Intent(this, getClass());
+		// if(isPlaying()){
+		// 	pauseIntent.setAction(STOP_MUSIC_ACTION);
+		// 	rvs.setImageViewResource(R.id.notification_pause, android.R.drawable.ic_media_pause);
+		// 	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+		// 		rvs.setContentDescription(R.id.notification_pause, getString(R.string.notification_icon_desc_pause));
+		// 	}
+		// }
+		// else {
+		// 	pauseIntent.setAction(START_MUSIC_ACTION);
+		// 	rvs.setImageViewResource(R.id.notification_pause, android.R.drawable.ic_media_play);
+		// 	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+		// 		rvs.setContentDescription(R.id.notification_pause, getString(R.string.notification_icon_desc_play));
+		// 	}
+		// }
+		// PendingIntent pausePendingIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
+		// rvs.setOnClickPendingIntent(R.id.notification_pause, pausePendingIntent);
 
-		Intent pauseIntent = new Intent(this, getClass());
-		if(isPlaying()){
-			pauseIntent.setAction(STOP_MUSIC_ACTION);
-			rvs.setImageViewResource(R.id.notification_pause, android.R.drawable.ic_media_pause);
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-				rvs.setContentDescription(R.id.notification_pause, getString(R.string.notification_icon_desc_pause));
-			}
-		}
-		else {
-			pauseIntent.setAction(START_MUSIC_ACTION);
-			rvs.setImageViewResource(R.id.notification_pause, android.R.drawable.ic_media_play);
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-				rvs.setContentDescription(R.id.notification_pause, getString(R.string.notification_icon_desc_play));
-			}
-		}
-		PendingIntent pausePendingIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
-		rvs.setOnClickPendingIntent(R.id.notification_pause, pausePendingIntent);
+		// Intent prevIntent = new Intent(this, getClass());
+		// prevIntent.setAction(PREVIOUS_MUSIC_ACTION);
+		// PendingIntent previousPendingIntent = PendingIntent.getService(this, 0, prevIntent, 0);
+		// rvs.setOnClickPendingIntent(R.id.notification_previous, previousPendingIntent);
 
-		Intent prevIntent = new Intent(this, getClass());
-		prevIntent.setAction(PREVIOUS_MUSIC_ACTION);
-		PendingIntent previousPendingIntent = PendingIntent.getService(this, 0, prevIntent, 0);
-		rvs.setOnClickPendingIntent(R.id.notification_previous, previousPendingIntent);
+		// Intent nextIntent = new Intent(this, getClass());
+		// nextIntent.setAction(NEXT_MUSIC_ACTION);
+		// PendingIntent nextPendingIntent = PendingIntent.getService(this, 0, nextIntent, 0);
+		// rvs.setOnClickPendingIntent(R.id.notification_next, nextPendingIntent);
 
-		Intent nextIntent = new Intent(this, getClass());
-		nextIntent.setAction(NEXT_MUSIC_ACTION);
-		PendingIntent nextPendingIntent = PendingIntent.getService(this, 0, nextIntent, 0);
-		rvs.setOnClickPendingIntent(R.id.notification_next, nextPendingIntent);
-
-		//for backward compatibility
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-			.setSmallIcon(R.drawable.ic_status)
-			.setContentTitle(getString(R.string.app_name))
-			.setContentText(episodeTitle)
-            .setTicker(episodeTitle)
-			.setAutoCancel(false)
-			.setOngoing(true)
-			.setContent(rvs);
-		//.setForegroundService(true)
-        //.setCategory(Notification.CATEGORY_TRANSPORT)
-		Intent resultIntent = new Intent(this, USER_CLASS);
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		stackBuilder.addParentStack(USER_CLASS);
-		stackBuilder.addNextIntent(resultIntent);
-		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-		builder.setContentIntent(resultPendingIntent);
-		Notification note = builder.build();
-		startForeground(NOTIFY_PLAYING_ID, note);
+		// //for backward compatibility
+		// NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+		// 	.setSmallIcon(R.drawable.ic_status)
+		// 	.setContentTitle(getString(R.string.app_name))
+		// 	.setContentText(episodeTitle)
+        //     .setTicker(episodeTitle)
+		// 	.setAutoCancel(false)
+		// 	.setOngoing(true)
+		// 	.setContent(rvs);
+		// //.setForegroundService(true)
+        // //.setCategory(Notification.CATEGORY_TRANSPORT)
+		// Intent resultIntent = new Intent(this, USER_CLASS);
+		// TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		// stackBuilder.addParentStack(USER_CLASS);
+		// stackBuilder.addNextIntent(resultIntent);
+		// PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		// builder.setContentIntent(resultPendingIntent);
+		// Notification note = builder.build();
+		// startForeground(NOTIFY_PLAYING_ID, note);
 	}
 
 	@Override

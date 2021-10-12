@@ -6,7 +6,7 @@ import io.realm.RealmResults;
 import io.realm.RealmChangeListener;
 import io.realm.Sort;
 import com.mamewo.podplayer0.util.Log;
-import android.support.v4.util.LongSparseArray;
+import android.util.LongSparseArray;
 
 import static com.mamewo.podplayer0.Const.*;
 

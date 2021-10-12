@@ -18,12 +18,12 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import com.mamewo.podplayer0.util.Log;
 
-import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.Preference.OnPreferenceClickListener;
-import android.support.v7.preference.ListPreference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.Preference;
+import androidx.preference.Preference.OnPreferenceClickListener;
+import androidx.preference.ListPreference;
 
-import android.support.v4.app.DialogFragment;
+import android.app.DialogFragment;
 
 public class PodplayerPreferenceFragment
     extends PreferenceFragmentCompat
@@ -166,9 +166,9 @@ public class PodplayerPreferenceFragment
     }
 
     @Override
-    public void onDisplayPreferenceDialog(Preference preference){
+    public void onDisplayPreferenceDialog(Preference preference) {
         //TODO: check exist
-        if(preference instanceof SimpleDialogPreference){
+        if(preference instanceof SimpleDialogPreference) {
             DialogFragment f = SimpleDialogPreferenceFragment.newInstance(preference.getKey());
             f.setTargetFragment(this, 0);
             f.show(getFragmentManager(), DIALOG_FRAGMENT_TAG);

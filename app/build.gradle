@@ -12,17 +12,17 @@ apply plugin: 'spoon'
 apply plugin: 'realm-android'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 28
+    //buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId 'com.mamewo.podplayer0'
-        minSdkVersion 10
+        minSdkVersion 28
         //to use java.util.Objects minSdkVersion is 19
         //minSdkVersion 19
         //now Google Play accepts SDK over 28
-        targetSdkVersion 28
-        versionCode 17
-        versionName '1.2.3'
+        targetSdkVersion 27
+        versionCode 16
+        versionName '1.2.4'
 
         //For espresso
         //testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
@@ -99,9 +99,14 @@ dependencies {
   //implementation 'com.squareup.okhttp3:okhttp:4.6.0'
   implementation 'commons-io:commons-io:2.4'
 
-  implementation 'com.android.support:support-v4:24.2.1'
+  //  compile 'com.android.support:support-v4:27.0.2'
+  compile 'com.android.support:support-compat:28.0.0'
+  compile 'com.android.support:appcompat-v7:25.1.0'
+  implementation "com.android.support:support-compat:28.0.0"
+
+//  implementation 'com.android.support:support-v4:24.2.1'
   //implementation 'com.android.support:support-compat:28.0.0'
-  implementation 'com.android.support:appcompat-v7:24.2.1'
+  //implementation 'com.android.support:appcompat-v7:24.2.1'
   implementation 'com.android.support:preference-v7:24.2.1'
   implementation 'com.android.support:cardview-v7:24.2.1'
   implementation 'com.android.support:recyclerview-v7:24.2.1'
