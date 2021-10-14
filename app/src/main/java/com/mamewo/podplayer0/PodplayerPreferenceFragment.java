@@ -22,8 +22,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.Preference;
 import androidx.preference.Preference.OnPreferenceClickListener;
 import androidx.preference.ListPreference;
-
-import android.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
 
 public class PodplayerPreferenceFragment
     extends PreferenceFragmentCompat

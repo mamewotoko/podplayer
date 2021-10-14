@@ -73,7 +73,7 @@ public class PlayerService
 	final static
 	private Class<MainActivity> USER_CLASS = MainActivity.class;
 	final static
-	private int NOTIFY_PLAYING_ID = 12332;
+	private int NOTIFY_PLAYING_ID = 1;
 	private final IBinder binder_ = new LocalBinder();
 	private RealmResults<PodcastRealm> podcastList_;
 	private RealmResults<EpisodeRealm> currentPlaylist_;
@@ -489,23 +489,28 @@ public class PlayerService
 		// if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 		// 	channelId = createNotificationChannel("com.mamewo.podplayer0", "PlayerService");
 		// }
-		NotificationChannel channel = new NotificationChannel("com.mamewo.podplayer0",
-															  "PodPlayer",
+		String NOTIFICATION_CHANNEL_ID = "com.mamewo.podplayer0";
+		String channelName = "PodPlayer";
+		NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
+															  channelName,
 															  NotificationManager.IMPORTANCE_DEFAULT);
         int iconId = R.drawable.ic_status;
         Log.d(TAG, "showNotification:" + episodeTitle);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channel.toString())
+
+		NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		manager.createNotificationChannel(channel);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_status)
             .setContentTitle(episodeTitle)
             .setAutoCancel(false)
             .setOngoing(true);
 
-        Intent resultIntent = new Intent(this, userClass_);
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(userClass_);
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(resultPendingIntent);
+        // Intent resultIntent = new Intent(this, userClass_);
+        // TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        // stackBuilder.addParentStack(userClass_);
+        // stackBuilder.addNextIntent(resultIntent);
+        // PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        // builder.setContentIntent(resultPendingIntent);
         Notification note = builder.build();
         Log.d(TAG, "startForeground");
         startForeground(NOTIFY_PLAYING_ID, note);

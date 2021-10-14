@@ -21,7 +21,6 @@ import static com.mamewo.podplayer0.Const.*;
 public class SimpleDialogPreferenceFragment
     extends PreferenceDialogFragmentCompat
     implements View.OnClickListener
-
 {
 	static final
 	public String GITHUB_URL = "https://github.com/mamewotoko/podplayer";
