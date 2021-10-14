@@ -484,6 +484,7 @@ public class PlayerService
 	}
 
 	//TODO: show podcast title / episode title
+	//TODO: support old android < O
 	private void showNotification(String episodeTitle) {
 		// String channelId = "";
 		// if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -494,9 +495,6 @@ public class PlayerService
 		NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
 															  channelName,
 															  NotificationManager.IMPORTANCE_DEFAULT);
-        int iconId = R.drawable.ic_status;
-        Log.d(TAG, "showNotification:" + episodeTitle);
-
 		NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		manager.createNotificationChannel(channel);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
@@ -505,14 +503,13 @@ public class PlayerService
             .setAutoCancel(false)
             .setOngoing(true);
 
-        // Intent resultIntent = new Intent(this, userClass_);
-        // TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        // stackBuilder.addParentStack(userClass_);
-        // stackBuilder.addNextIntent(resultIntent);
-        // PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        // builder.setContentIntent(resultPendingIntent);
+        Intent resultIntent = new Intent(this, userClass_);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(userClass_);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(resultPendingIntent);
         Notification note = builder.build();
-        Log.d(TAG, "startForeground");
         startForeground(NOTIFY_PLAYING_ID, note);
 		
 		// RemoteViews rvs = new RemoteViews(getClass().getPackage().getName(), R.layout.notification);
