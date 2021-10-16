@@ -20,9 +20,9 @@ android {
         //to use java.util.Objects minSdkVersion is 19
         //minSdkVersion 19
         //now Google Play accepts SDK over 28
-        targetSdkVersion 27
-        versionCode 16
-        versionName '1.2.4'
+        targetSdkVersion 28
+        versionCode 17
+        versionName '1.3.0'
 
         //For espresso
         //testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'

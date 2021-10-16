@@ -65,27 +65,38 @@ How to run UI test using Robotium
 
 TODO
 ----
+
+* categorize TODOs below...
+* release
+  * separate release for old devices and new ones
 * update lib
-* add download feature
+  * realm
+  * http lib
+* UI
+  * move action bar to bottom
+  * add seek bar?
+  * marking, tagging to audio position.
+  * A-B repeat?
+  * add favorite button?
+  * design layout with AndroidStudio
+  * use com.android.support:design (material design)
+  * notification
+    * add controll button to notificaiton
+  * use RecyclerView
+    * animation
+    * efficient memory use?
+  * material icon: change loading icon of pulltorefresh
+  * layout for TV (landscape)
+* use SwifeRefreshLayout
+* add function to save/cache podcast episode and audio file as files
 * support adding podcast from link with pcast, podto, podcast schema 
 * add filter of language, region 
 * podcast list is slow (freezes)
   * loading icon
-* notification is not displayed on recent Android devices
 * add search UI to filter podcast by language, region, category
 * add weather news?
 * display author info of episode/podcast
 * ask stop playing episode when exit menu is selected
-* realm integration
-  * putlltorefresh view
-    * filter
-  * card view
-  * exp view
-* add settings
-  * cache size
-    * icon, podcast xml
-    * display current used cache size
-    * modify size in MB
 * Try navutil
 * spoon test
   * bug: MainActivityTest, PodcastActivity then testAbortReload blocks...
@@ -101,10 +112,6 @@ TODO
   * notification
   * landscape UI
   * enable episode long click
-* fix bug
-  * open Podcast list editor, press detail button, rotate screen
-    -> crash
-    -> selectedPodcastInfo_ is null, touched
 * podcast detail as activity
   * channel/description or itunes:subtitle
   * channel/copyright
@@ -112,6 +119,9 @@ TODO
   * Luke's ENGLISH Podcast - Learn British English with Luke Thompson
     https://audioboom.com/channels/1919834.rss
 * fix bugs
+  * open Podcast list editor, press detail button, rotate screen
+    -> crash
+    -> selectedPodcastInfo_ is null, touched
   * when prepare error occurs, cursor moves to next episode
     * stop playing
       * or mark error item and try playing next unerror item
@@ -120,14 +130,10 @@ TODO
 * fast load
   * improve incremental update algorithm to reduce cpu usage
     * problem: displayed episode is not played by click while loading episodes
-* podcast title should be nullable?    
-* change color of category text in preference screen   
+* podcast title should be nullable?
+* change color of category text in preference screen
 * add option to exit by pressing back button
   * display confirm dialog: exit or playing background, live as servcie and display notification
-* cache
-  * podcast xml
-  * episode item
-    * introduce simple memory based cache
 * display toast when network error occurs
 * handle opml as input to specify podcast list
 * share podcast with friend / author (add to preset)
@@ -143,14 +149,6 @@ TODO
   * review lint.xml and enable appropriate options
   * check report of code inspection of Android Studio
   * enable Google App Indexing
-* improve UI
-  * design layout with AndroidStudio
-  * use com.android.support:design (material design)
-  * notification layout
-  * use RecyclerView
-    * animation
-    * efficient memory use?
-  * material icon: change loading icon of pulltorefresh  
 * support http auth for fetching podcast xml and episodes (#2)
   * cache auth info for each host?
   * support preemptive authentication: http://hc.apache.org/httpclient-3.x/authentication.html
