@@ -1,6 +1,7 @@
 package com.mamewo.podplayer0;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -735,7 +736,7 @@ public class PlayerService
 				Log.d(TAG, "media button");
 				Intent i = new Intent(context, PlayerService.class);
 				i.setAction(MEDIA_BUTTON_ACTION);
-				i.putExtra("event", intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT));
+				i.putExtra("event", (Serializable)intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT));
 				context.startService(i);
 			}
 		}
