@@ -59,7 +59,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Build;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import com.mamewo.podplayer0.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;

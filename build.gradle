@@ -6,7 +6,7 @@ buildscript {
         google()
     }
     dependencies {
-      classpath 'com.android.tools.build:gradle:3.4.0'
+      classpath 'com.android.tools.build:gradle:7.0.2'
       classpath 'io.realm:realm-gradle-plugin:7.0.8'
       classpath 'xml-apis:xml-apis:1.0.b2'
       // NOTE: Do not place your application dependencies here; they belong
@@ -19,11 +19,11 @@ allprojects {
         jcenter()
         google()
     }
-    // gradle.projectsEvaluated {
-    //     tasks.withType(JavaCompile) {
-    //       options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-    //     }
-    // }    
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+          options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }    
 }
 
 task clean(type: Delete) {

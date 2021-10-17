@@ -33,7 +33,7 @@ import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import com.mamewo.podplayer0.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;

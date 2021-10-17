@@ -25,7 +25,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ArrayAdapter;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import android.content.res.Resources;
 import android.widget.Spinner;
 import android.widget.ImageButton;

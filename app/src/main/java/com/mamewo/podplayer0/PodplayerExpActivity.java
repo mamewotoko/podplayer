@@ -18,7 +18,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import com.mamewo.podplayer0.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;

@@ -42,7 +42,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import android.widget.SpinnerAdapter;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Cache;
