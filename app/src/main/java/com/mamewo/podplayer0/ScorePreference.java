@@ -8,7 +8,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import androidx.preference.DialogPreference;
+import android.preference.DialogPreference;
 
 public class ScorePreference
 	extends DialogPreference
