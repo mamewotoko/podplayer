@@ -71,10 +71,11 @@ TODO
   * separate release for old devices and new ones
 * update lib
   * realm
-  * http lib
+  * okhttp3
+  * glide
 * UI
-  * move action bar to bottom
-  * add seek bar?
+  * use SwifeRefreshLayout
+  * add seek bar of audio?
   * marking, tagging to audio position.
   * A-B repeat?
   * add favorite button?
@@ -87,17 +88,15 @@ TODO
     * efficient memory use?
   * material icon: change loading icon of pulltorefresh
   * layout for TV (landscape)
-* use SwifeRefreshLayout
+  * display author info of episode/podcast
+  * podcast detail as activity
+    * channel/description or itunes:subtitle
+    * channel/copyright
 * add function to save/cache podcast episode and audio file as files
 * support adding podcast from link with pcast, podto, podcast schema 
-* add filter of language, region 
-* podcast list is slow (freezes)
-  * loading icon
-* add search UI to filter podcast by language, region, category
-* add weather news?
-* display author info of episode/podcast
+* add filter of language, region
+  * English<?>
 * ask stop playing episode when exit menu is selected
-* Try navutil
 * spoon test
   * bug: MainActivityTest, PodcastActivity then testAbortReload blocks...
   * add test of share function
@@ -111,13 +110,12 @@ TODO
   * preference
   * notification
   * landscape UI
+  * add episode search UI
   * enable episode long click
-* podcast detail as activity
-  * channel/description or itunes:subtitle
-  * channel/copyright
 * add podcast to podcast site
   * Luke's ENGLISH Podcast - Learn British English with Luke Thompson
     https://audioboom.com/channels/1919834.rss
+  * add weather news?
 * fix bugs
   * open Podcast list editor, press detail button, rotate screen
     -> crash
@@ -195,15 +193,15 @@ TODO
   * setContentView takes long time
 * Autoload: load when create activity or when podcast list setting is changed
 * play episode which is clicked while preparing other episode
-* add episode search UI
-* add slider to show current playing position
 * add error handling
 * write user guide?
 * display playing icon in group of expandable list
 
 Third-party libraries
 ---------------------
+
 The podplayer uses the following software, resource and tool.
+
 * [Pull To Refresh for Android](https://github.com/johannilsson/android-pulltorefresh)
   Copyright (c) 2011 [Johan Nilsson](http://markupartist.com)  
 * [Glide](https://github.com/bumptech/glide)
@@ -214,7 +212,7 @@ The podplayer uses the following software, resource and tool.
 License
 -------
 
-    Copyright (c) 2012-2020 Takashi Masuyama. All rights reserved.
+    Copyright (c) 2012-2021 Takashi Masuyama. All rights reserved.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
