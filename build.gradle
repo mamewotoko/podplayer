@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
       classpath 'com.android.tools.build:gradle:3.4.0'
-      classpath 'io.realm:realm-gradle-plugin:5.11.0'
+      classpath 'io.realm:realm-gradle-plugin:7.0.8'
       classpath 'xml-apis:xml-apis:1.0.b2'
       // NOTE: Do not place your application dependencies here; they belong
       // in the individual module build.gradle files

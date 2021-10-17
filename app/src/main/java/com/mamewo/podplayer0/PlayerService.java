@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-//import com.mamewo.podplayer0.parser.EpisodeInfo;
 import com.mamewo.podplayer0.db.PodcastRealm;
 import com.mamewo.podplayer0.db.EpisodeRealm;
 import com.mamewo.podplayer0.db.SimpleQuery;
 import com.mamewo.podplayer0.parser.Util;
 import io.realm.RealmResults;
-import io.realm.Realm;
 
 import static com.mamewo.podplayer0.Const.*;
 
