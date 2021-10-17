@@ -88,6 +88,7 @@ TODO
     * efficient memory use?
   * material icon: change loading icon of pulltorefresh
   * layout for TV (landscape)
+    * add activity for tv?
   * display author info of episode/podcast
   * podcast detail as activity
     * channel/description or itunes:subtitle
@@ -132,7 +133,6 @@ TODO
 * change color of category text in preference screen
 * add option to exit by pressing back button
   * display confirm dialog: exit or playing background, live as servcie and display notification
-* display toast when network error occurs
 * handle opml as input to specify podcast list
 * share podcast with friend / author (add to preset)
   * bluetooth
@@ -144,6 +144,7 @@ TODO
 * use minifyEnabled option of build.gradle
   * disable logging
 * fix lint warnings
+  * use `java.util.concurrent` instead of `java.io.AsyncTask`
   * review lint.xml and enable appropriate options
   * check report of code inspection of Android Studio
   * enable Google App Indexing
@@ -158,12 +159,10 @@ TODO
   * fix dependency
     * commons-io
     * okhttp3 (linked with podcast_parser)
-* sort by pubdate
+* sort episodes by pubdate
   * fix sort crash
     * or sort on database
   * add test
-* modify icon
-  * use opaque orange
 * just add podcast url without check (preference)? 
 * use database to manage loaded episodes
   * display mark which is already played, new item etc...
@@ -171,11 +170,8 @@ TODO
   * show description of playing episode
   * save podcast list and updated time as state
   * add/mark listened item list
-    * ? not listened / ! listened
-    * remember listened timestamp
 * add score thershold preference dialog 
 * add preference to display pubdate as "X days before"
-* add activity for tv?
 * save latest few item to savedInstanceState
 * filter not listened item only (preference)
 * move state to service
