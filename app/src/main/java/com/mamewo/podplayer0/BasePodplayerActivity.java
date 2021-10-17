@@ -11,11 +11,9 @@ import org.json.JSONException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-//import com.google.firebase.analytics.FirebaseAnalytics;
 import com.mamewo.podplayer0.parser.BaseGetPodcastTask;
 import com.mamewo.podplayer0.parser.EpisodeInfo;
 import com.mamewo.podplayer0.parser.Podcast;
-//import com.mamewo.podplayer0.parser.PodcastInfo;
 
 import com.mamewo.podplayer0.db.PodcastRealm;
 import com.mamewo.podplayer0.db.EpisodeRealm;
@@ -96,18 +94,14 @@ abstract public class BasePodplayerActivity
     
     protected SharedPreferences pref_;
     protected DateFormat dateFormat_;
-    //remove
-    //private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Obtain the FirebaseAnalytics instance.
-        //mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         Realm.init(getApplicationContext());
         RealmConfiguration realmConfig = new RealmConfiguration.Builder()
-            .schemaVersion(1)
+			.schemaVersion(1)
             .build();
         Realm.setDefaultConfiguration(realmConfig);
         
