@@ -25,7 +25,7 @@ How to build
 
 2. Clone source
 
-    ```
+    ```bash
     git clone https://github.com/mamewotoko/podplayer.git
     git submodule update --init
     ```
@@ -33,7 +33,7 @@ How to build
 ### Gradle
 1. Build
 
-    ```
+    ```bash
     ./gradlew assembleDebug
     ```
 
@@ -44,7 +44,7 @@ A file bin/podplayer-debug.apk is created if succeed.
 Continuous build
 ---------------------------------
 
-```
+```bash
 ./gradlew -t assembleDebug
 ```
 
@@ -53,13 +53,13 @@ How to run UI test using Robotium
 1. Connect android device or start android emulator
 2. Start testing
 
-    ```
+    ```bash
     ./gradlew spoon
     ```
 3. A test report is created as ` app/build/spoon/debug/index.html `
 4. To select test class, pass spoonClassName gradle property with test class name
 
-   ```
+   ```bash
    ./gradlew -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity spoon
    ```
 

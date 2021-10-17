@@ -4,6 +4,20 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
               android:orientation="vertical" >
+  <android.gesture.GestureOverlayView
+      android:id="@+id/gesture_view"
+      android:layout_width="match_parent"
+      android:layout_height="0dip"
+      android:layout_weight="1.0"
+      android:eventsInterceptionEnabled="true"
+      android:gestureStrokeType="single"
+      android:orientation="vertical" >
+    <com.markupartist.android.widget.PullToRefreshListView
+        android:id="@+id/list"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        />
+  </android.gesture.GestureOverlayView>
   <androidx.appcompat.widget.Toolbar
       android:id="@+id/toolbar"
       android:layout_width="match_parent"
@@ -27,18 +41,5 @@
         android:layout_marginRight="8dp"
         />
   </androidx.appcompat.widget.Toolbar>
-  <android.gesture.GestureOverlayView
-      android:id="@+id/gesture_view"
-      android:layout_width="match_parent"
-      android:layout_height="0dip"
-      android:layout_weight="1.0"
-      android:eventsInterceptionEnabled="true"
-      android:gestureStrokeType="single"
-      android:orientation="vertical" >
-    <com.markupartist.android.widget.PullToRefreshListView
-        android:id="@+id/list"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        />
-  </android.gesture.GestureOverlayView>
+
 </LinearLayout>

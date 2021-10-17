@@ -23,6 +23,6 @@
         card_view:cardCornerRadius="8dp">
 
       <include layout="@layout/episode_item"
-      android:id="@+id/cardview" />
+	       android:id="@+id/cardview" />
     </androidx.cardview.widget.CardView>
 </LinearLayout>

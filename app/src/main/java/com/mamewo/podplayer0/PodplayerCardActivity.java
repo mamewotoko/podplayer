@@ -196,7 +196,8 @@ public class PodplayerCardActivity
         //stop loading?
         ArrayAdapter<String> adapter =
             new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-		//adapter.setDropDownViewResource(android.R.layout.support_simple_spinner_dropdown_item);
+		// set appropriate height of dropdown
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         selector_.setAdapter(adapter);
     }
 
