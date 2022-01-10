@@ -1,10 +1,10 @@
 <img src="https://github.com/mamewotoko/podplayer/raw/pullupdate/res/drawable-hdpi/ic_launcher.png" width="40" height="40">podplayer - An android podcast player [![Build Status](https://travis-ci.org/mamewotoko/podplayer.svg?branch=master)](https://travis-ci.org/mamewotoko/podplayer) [![Android CI](https://github.com/mamewotoko/podplayer/actions/workflows/android.yml/badge.svg)](https://github.com/mamewotoko/podplayer/actions/workflows/android.yml)
 =====================================
 
-[README_ja.md](日本語のREADME)
+[README.md](README in English)
 
-Screenshot
-----------
+画面
+---------------
 ![main screen](https://raw.githubusercontent.com/mamewotoko/podplayer/master/doc/mainscreen.png)
 ![gestures](https://raw.githubusercontent.com/mamewotoko/podplayer/master/doc/gesture_dialog.png)
 
@@ -17,49 +17,45 @@ Google Play
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" width="192" height="75">](https://play.google.com/store/apps/details?id=com.mamewo.podplayer0)
 <img src="https://github.com/mamewotoko/podplayer/raw/pullupdate/res/drawable/qr.png" width="86" height="86">
 
+Androidのスマートフォンへのインストールはこちらから。
+
 https://play.google.com/store/apps/details?id=com.mamewo.podplayer0
 
-How to build
+ビルド方法
 ------------
-1. Install "Android support repository" using [Android SDK Manager](https://developer.android.com/studio/intro/update.html?hl=ja#sdk-manager)
+
+1. [Android SDK Manager](https://developer.android.com/studio/intro/update.html?hl=ja#sdk-manager)
+を使って "Android support repository" をインストールする。
 
   Install script: ` ci/snapci/init_android.sh `
 
-2. Clone source
+2. このソースコードを git clone する。
 
     ```bash
     git clone https://github.com/mamewotoko/podplayer.git
     git submodule update --init
     ```
 
-### Gradle
-1. Build
+### Gradle でビルドする
+
+1. 以下のコマンドでビルドする。
 
     ```bash
     ./gradlew assembleDebug
     ```
 
-apk file created in `./app/build/outputs/apk/app-debug.apk`
+apk ファイルが `./app/build/outputs/apk/app-debug.apk` に作成される。
 
-A file bin/podplayer-debug.apk is created if succeed.
-
-Continuous build
+Robotium を使った UI のテスト方法
 ---------------------------------
-
-```bash
-./gradlew -t assembleDebug
-```
-
-How to run UI test using Robotium
----------------------------------
-1. Connect android device or start android emulator
-2. Start testing
+1. AndroidのスマートフォンをPCに接続するか、エミュレータをPCで起動する。
+2. テストを以下のコマンドで実行する。
 
     ```bash
     ./gradlew spoon
     ```
-3. A test report is created as ` app/build/spoon/debug/index.html `
-4. To select test class, pass spoonClassName gradle property with test class name
+3. テスト結果のレポートが ` app/build/spoon/debug/index.html ` として作成される。
+4. テスト対象のクラスを選択するには, spoonClassName という gradle のプロパティに実行するテストのクラス名を渡すこと。
 
    ```bash
    ./gradlew -PspoonClassName=com.mamewo.podplayer0.tests.TestPodplayerExpActivity spoon
@@ -195,19 +191,19 @@ TODO
 * write user guide?
 * display playing icon in group of expandable list
 
-Third-party libraries
+podplayerで使用しているライブラリ
 ---------------------
 
-The podplayer uses the following software, resource and tool.
+podplayer は以下のソフトウェア、リソースを使用している。
 
 * [Pull To Refresh for Android](https://github.com/johannilsson/android-pulltorefresh)
   Copyright (c) 2011 [Johan Nilsson](http://markupartist.com)
 * [Glide](https://github.com/bumptech/glide)
 * [realm/realm-java](https://github.com/realm/realm-java)
 * [Meterial icons](https://design.google.com/icons/)
-* Gesture data is built with GestureBuilder sample application of android (legacy/GestureBuilder)
+s* Gesture data is built with GestureBuilder sample application of android (legacy/GestureBuilder)
 
-License
+ライセンス
 -------
 
     Copyright (c) 2012-2021 Takashi Masuyama. All rights reserved.
@@ -224,7 +220,7 @@ License
     See the License for the specific language governing permissions and
     limitations under the License.
 
-Keywords
+キーワード
 ----------
 Android, MediaPlayer, Podcast, AsyncTask, PullToRefresh, Gesture, Gradle,
 Spoon, FalconSpoon, Robotium, Glide, Travis CI
